@@ -1,4 +1,5 @@
 # HypotheticalCode
+This repository contains Hypothetical Code's project for ECE 458: Engineering Software for Maintainability.
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 7.2.1.
 
