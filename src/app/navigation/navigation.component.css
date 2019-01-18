@@ -1,0 +1,21 @@
+.header {
+    padding: 20px;
+    text-align: center;
+    background: #1abc9c;
+    color: white;
+    font-size: 20px;
+}
+
+.sidenav-container, .sidenav-container * {
+    text-align: center;
+    background: #099778;
+    color: white;
+    font-size: 16px;
+}
+
+.sidenav-content {
+    text-align: center;
+    background: #eaeeed;
+    color: black;
+    font-size: 16px;
+}
