@@ -8,6 +8,7 @@ import { SecondComponent } from './second/second.component';
 import { FirstComponent } from './first/first.component';
 import {RouterModule, Routes} from "@angular/router";
 import {CustomMaterialModule} from "./core/material.module";
+import { FooterComponent } from './footer/footer.component';
 
 const appRoutes: Routes = [
   { path: '', component: FirstComponent, data: { title: 'First Component' } },
@@ -19,7 +20,8 @@ const appRoutes: Routes = [
     AppComponent,
     NavigationComponent,
     SecondComponent,
-    FirstComponent
+    FirstComponent,
+    FooterComponent
   ],
   imports: [
     BrowserModule,
