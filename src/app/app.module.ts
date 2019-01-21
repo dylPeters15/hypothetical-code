@@ -9,9 +9,14 @@ import { FirstComponent } from './first/first.component';
 import {RouterModule, Routes} from "@angular/router";
 import {CustomMaterialModule} from "./core/material.module";
 import { FooterComponent } from './footer/footer.component';
+import { LoginComponent } from './login/login.component';
+import { UserComponent } from './user/user.component';
+
+import {FormsModule} from '@angular/forms';
+import {AppRoutingModule} from './app-routing.module'
 
 const appRoutes: Routes = [
-  { path: '', component: FirstComponent, data: { title: 'First Component' } },
+  { path: '', component: LoginComponent, data: { title: 'Log In' } },
   { path: 'first', component: FirstComponent, data: { title: 'First Component' } },
   { path: 'second', component: SecondComponent, data: { title: 'Second Component' } }
 ];
@@ -21,7 +26,9 @@ const appRoutes: Routes = [
     NavigationComponent,
     SecondComponent,
     FirstComponent,
-    FooterComponent
+    FooterComponent,
+    LoginComponent,
+    UserComponent
   ],
   imports: [
     BrowserModule,
@@ -30,7 +37,9 @@ const appRoutes: Routes = [
       appRoutes,
       { useHash: false }
     ),
-    CustomMaterialModule
+    CustomMaterialModule,
+    FormsModule,
+    AppRoutingModule
   ],
   providers: [],
   bootstrap: [AppComponent]
