@@ -28,7 +28,7 @@ const appRoutes: Routes = [
     BrowserAnimationsModule,
     RouterModule.forRoot(
       appRoutes,
-      { useHash: true }
+      { useHash: false }
     ),
     CustomMaterialModule
   ],
