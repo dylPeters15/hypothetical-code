@@ -4,8 +4,6 @@ import { NgModule } from '@angular/core';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NavigationComponent } from './navigation/navigation.component';
-import { SecondComponent } from './second/second.component';
-import { FirstComponent } from './first/first.component';
 import {RouterModule, Routes} from "@angular/router";
 import {CustomMaterialModule} from "./core/material.module";
 import { FooterComponent } from './footer/footer.component';
@@ -17,15 +15,19 @@ import {AppRoutingModule} from './app-routing.module'
 
 const appRoutes: Routes = [
   { path: '', component: LoginComponent, data: { title: 'Log In' } },
-  { path: 'first', component: FirstComponent, data: { title: 'First Component' } },
-  { path: 'second', component: SecondComponent, data: { title: 'Second Component' } }
+  { path: 'manufacturing-calculator', component: LoginComponent, data: { title: 'Log In' } },
+  { path: 'ingredient-dependency-report', component: LoginComponent, data: { title: 'Log In' } },
+  { path: 'manufacturing-goal', component: LoginComponent, data: { title: 'Log In' } },
+  { path: 'ingredient-inventory', component: LoginComponent, data: { title: 'Log In' } },
+  { path: 'sku-inventory', component: LoginComponent, data: { title: 'Log In' } },
+  { path: 'product-line-inventory', component: LoginComponent, data: { title: 'Log In' } },
+  { path: 'import-export', component: LoginComponent, data: { title: 'Log In' } }
 ];
+
 @NgModule({
   declarations: [
     AppComponent,
     NavigationComponent,
-    SecondComponent,
-    FirstComponent,
     FooterComponent,
     LoginComponent,
     UserComponent
