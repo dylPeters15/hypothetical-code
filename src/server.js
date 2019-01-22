@@ -35,9 +35,15 @@ MongoClient.connect('mongodb://localhost:27017', (err, database) => {
         });
     });
 
-    function onetimeAdminSetup(){
-        
-    }
+    // function onetimeAdminSetup(){
+    //     db.collection('users').save(, (err, result) => {
+    //         if (err) {
+    //             return console.log(err);
+    //         }
+
+    // console.log('saved to database');
+    //     })
+    // }
 
 });
 
