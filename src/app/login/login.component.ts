@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import {Router} from '@angular/router';
+import { RestService } from '../rest.service';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import {MatDialog} from '@angular/material'
 @Component({
@@ -9,8 +10,10 @@ import {MatDialog} from '@angular/material'
 })
 export class LoginComponent implements OnInit {
 
-  constructor(private router: Router) { }
+  products:any = [];
 
+  constructor(public rest:RestService, private route: ActivatedRoute, private router: Router) { }
+  
   username: string;
   
   password: string;
@@ -24,6 +27,33 @@ export class LoginComponent implements OnInit {
     console.log(this.username);
     console.log("Password: ");
     console.log(this.password);
+    this.rest.login(this.username, this.password).subscribe(
+      (data: {}) => {
+        console.log(data);
+      }
+    )
+}
+
+  getProducts() {
+    this.products = [];
+    this.rest.getProducts().subscribe((data: {}) => {
+      console.log(data);
+      this.products = data;
+    });
+  }
+
+  add() {
+    this.router.navigate(['/product-add']);
+  }
+
+  delete(id) {
+    this.rest.deleteProduct(id)
+      .subscribe(res => {
+          this.getProducts();
+        }, (err) => {
+          console.log(err);
+        }
+      );
   }
 
 }

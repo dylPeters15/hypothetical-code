@@ -13,6 +13,8 @@ import { UserComponent } from './user/user.component';
 import {FormsModule} from '@angular/forms';
 import {AppRoutingModule} from './app-routing.module'
 
+import { HttpClientModule } from '@angular/common/http';
+
 const appRoutes: Routes = [
   { path: '', component: LoginComponent, data: { title: 'Log In' } },
   { path: 'manufacturing-calculator', component: LoginComponent, data: { title: 'Log In' } },
@@ -41,7 +43,8 @@ const appRoutes: Routes = [
     ),
     CustomMaterialModule,
     FormsModule,
-    AppRoutingModule
+    AppRoutingModule,
+    HttpClientModule
   ],
   providers: [],
   bootstrap: [AppComponent]
