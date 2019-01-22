@@ -22,12 +22,22 @@ MongoClient.connect('mongodb://localhost:27017', (err, database) => {
     app.listen(8000, () => {
         console.log('Server started!');
     });
+
+    app.route('/api/v1/login').get((req, res) => {
+        console.log(req.headers['username']);
+        console.log(req.headers['password']);
+        db.collection('users').find().toArray(function(err, results) {
+            console.log(results);
+            // send HTML file populated with quotes here
+          });
+        res.send({
+            cats: [{ name: 'lilly' }, { name: 'lucy' }]
+        });
+    });
+
+    function onetimeAdminSetup(){
+        
+    }
+
 });
 
-app.route('/api/v1/login').get((req, res) => {
-    console.log(req.headers['username']);
-    console.log(req.headers['saltedhashedpassword']);
-    res.send({
-        cats: [{ name: 'lilly' }, { name: 'lucy' }]
-    });
-});

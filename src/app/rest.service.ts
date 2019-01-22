@@ -21,16 +21,16 @@ export class RestService {
     return body || {};
   }
 
-  sendLoginRequest(username, saltedHashedPassword): Observable<any> {
+  sendLoginRequest(username, password): Observable<any> {
     let header:HttpHeaders = new HttpHeaders({
       'Content-Type': 'application/json',
       'username': username,
-      'saltedHashedPassword':saltedHashedPassword
+      'password':password
     });
     let httpOptions = {
       headers: header
     };
-    console.log(saltedHashedPassword);
+    console.log(password);
     console.log(JSON.stringify(httpOptions));
     return this.http.get(endpoint + 'login', httpOptions).pipe(map(this.extractData));
   }
