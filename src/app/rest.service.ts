@@ -4,11 +4,11 @@ import { Observable, of } from 'rxjs';
 import { map, catchError, tap } from 'rxjs/operators';
 
 const endpoint = 'http://localhost:8000/api/v1/';
-const httpOptions = {
-  headers: new HttpHeaders({
-    'Content-Type': 'application/json'
-  })
-};
+// const httpOptions = {
+//   headers: new HttpHeaders({
+//     'Content-Type': 'application/json'
+//   })
+// };
 @Injectable({
   providedIn: 'root'
 })
@@ -21,40 +21,18 @@ export class RestService {
     return body || {};
   }
 
-  login(username, password): Observable<any> {
-    return this.http.get(endpoint + 'login/user1', httpOptions).pipe(map(this.extractData));
-  }
-
-  getProducts(): Observable<any> {
-    return this.http.get(endpoint + 'products').pipe(
-      map(this.extractData));
-  }
-
-  getProduct(id): Observable<any> {
-    return this.http.get(endpoint + 'products/' + id).pipe(
-      map(this.extractData));
-  }
-
-  addProduct(product): Observable<any> {
-    console.log(product);
-    return this.http.post<any>(endpoint + 'products', JSON.stringify(product), httpOptions).pipe(
-      tap((product) => console.log(`added product w/ id=${product.id}`)),
-      catchError(this.handleError<any>('addProduct'))
-    );
-  }
-
-  updateProduct(id, product): Observable<any> {
-    return this.http.put(endpoint + 'products/' + id, JSON.stringify(product), httpOptions).pipe(
-      tap(_ => console.log(`updated product id=${id}`)),
-      catchError(this.handleError<any>('updateProduct'))
-    );
-  }
-
-  deleteProduct(id): Observable<any> {
-    return this.http.delete<any>(endpoint + 'products/' + id, httpOptions).pipe(
-      tap(_ => console.log(`deleted product id=${id}`)),
-      catchError(this.handleError<any>('deleteProduct'))
-    );
+  sendLoginRequest(username, saltedHashedPassword): Observable<any> {
+    let header:HttpHeaders = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'username': username,
+      'saltedHashedPassword':saltedHashedPassword
+    });
+    let httpOptions = {
+      headers: header
+    };
+    console.log(saltedHashedPassword);
+    console.log(JSON.stringify(httpOptions));
+    return this.http.get(endpoint + 'login', httpOptions).pipe(map(this.extractData));
   }
 
   private handleError<T> (operation = 'operation', result?: T) {
