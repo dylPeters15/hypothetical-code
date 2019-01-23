@@ -8,10 +8,11 @@ import { userloggedin, usertoken } from '../login/login.component'
 })
 export class NavigationComponent implements OnInit {
 
+  loggedin: boolean = false;
+
   constructor() {
     userloggedin.subscribe(loggedinvalue => {
-      console.log("loggedinvalue: " + loggedinvalue);
-      console.log("token value: " + usertoken);
+      this.loggedin = loggedinvalue;
     })
    }
 

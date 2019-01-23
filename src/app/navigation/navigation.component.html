@@ -1,6 +1,6 @@
 <mat-toolbar class="header">
   <mat-toolbar-row style="width:100%;text-align: center;">
-    <div style="width:30%;text-align:left;">
+    <div [hidden]="!loggedin" style="width:30%;text-align:left;">
       <button type="button" aria-label="Toggle sidenav" mat-icon-button (click)="drawer.toggle()" color="primary">
         <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
       </button>
@@ -10,7 +10,7 @@
   </mat-toolbar-row>
 </mat-toolbar>
 <mat-sidenav-container>
-  <mat-sidenav #drawer mode="side" opened role="navigation" class="sidenav-container">
+  <mat-sidenav #drawer mode="side" closed role="navigation" class="sidenav-container">
     <mat-nav-list>
       <a mat-list-item routerLink='/manufacturing-calculator'>Manufacturing Calculator</a>
       <a mat-list-item routerLink='/ingredient-dependency-report'>Ingredient Dependency Report</a>
