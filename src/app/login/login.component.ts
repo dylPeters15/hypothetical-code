@@ -19,6 +19,8 @@ export class LoginComponent implements OnInit {
 
   token: string;
 
+  public loggedin: boolean = false;
+
   failedLogin: boolean = false;
   
     ngOnInit() {
@@ -36,6 +38,7 @@ export class LoginComponent implements OnInit {
         if (data['token']) {
           console.log("logged in");
           this.token = data['token'];
+          this.loggedin = true;
         } else {
           console.log("not logged in");
           this.failedLogin = true;
