@@ -39,6 +39,7 @@ export class LoginComponent implements OnInit {
           usertoken = data['token'];
           username = this.myusername;
           userloggedinBehaviorSubject.next(true);
+          this.router.navigateByUrl('/home');
         } else {
           //incorrect login
           this.failedLogin = true;
