@@ -6,6 +6,7 @@ import { BehaviorSubject, Observable, of as ObservableOf } from 'rxjs';
 var userloggedinBehaviorSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 export var userloggedin: Observable<boolean> = userloggedinBehaviorSubject.asObservable();
 export var usertoken: string = '';
+export var username: string = '';
 
 @Component({
   selector: 'app-login',
@@ -18,9 +19,9 @@ export class LoginComponent implements OnInit {
 
   constructor(public rest:RestService, private route: ActivatedRoute, private router: Router) { }
   
-  username: string;
+  myusername: string;
   
-  password: string;
+  mypassword: string;
 
   failedLogin: boolean = false;
   
@@ -29,18 +30,20 @@ export class LoginComponent implements OnInit {
     }
 
   login() : void {
-    this.rest.sendLoginRequest(this.username, this.password).subscribe(
+    this.rest.sendLoginRequest(this.myusername, this.mypassword).subscribe(
       (data: {}) => {
         console.log(data);
         if (data['token']) {
           //logged in successfully
           this.failedLogin = false;
           usertoken = data['token'];
+          username = this.myusername;
           userloggedinBehaviorSubject.next(true);
         } else {
           //incorrect login
           this.failedLogin = true;
           usertoken = '';
+          username = '';
           userloggedinBehaviorSubject.next(false);
         }
       }
