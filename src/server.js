@@ -3,6 +3,7 @@ const cors = require('cors');
 var headerParser = require('header-parser');
 const bodyParser = require('body-parser');
 const MongoClient = require('mongodb').MongoClient
+const  crypto = require('crypto');
 
 const app = express();
 var corsOptions = {
@@ -24,11 +25,27 @@ MongoClient.connect('mongodb://localhost:27017', (err, database) => {
     });
 
     app.route('/api/v1/login').get((req, res) => {
-        console.log(req.headers['username']);
-        console.log(req.headers['password']);
-        db.collection('users').find().toArray(function(err, results) {
+        let entered_username = req.headers['username'];
+        let entered_password = req.headers['password'];
+        db.collection('users').find({
+            username: entered_username
+        }).toArray(function(err, results) {
             console.log(results);
             // send HTML file populated with quotes here
+            if (results.length == 1) {
+                let user = results[0];
+                let enteredSaltedHashedPassword = crypto.pbkdf2Sync(entered_password, user.salt, 1000, 64, 'sha512').toString('hex');
+                if (enteredSaltedHashedPassword === user.saltedHashedPassword) {
+                    //return token
+                    console.log("token: " + user.token);
+                } else {
+                    //incorrect password
+                    console.log("incorrect password");
+                }
+            } else {
+                //incorrect username
+                console.log("incorrect username");
+            }
           });
         res.send({
             cats: [{ name: 'lilly' }, { name: 'lucy' }]
