@@ -16,6 +16,10 @@ export class LoginComponent implements OnInit {
   username: string;
   
   password: string;
+
+  token: string;
+
+  failedLogin: boolean = false;
   
     ngOnInit() {
   
@@ -29,6 +33,13 @@ export class LoginComponent implements OnInit {
     this.rest.sendLoginRequest(this.username, this.password).subscribe(
       (data: {}) => {
         console.log(data);
+        if (data['token']) {
+          console.log("logged in");
+          this.token = data['token'];
+        } else {
+          console.log("not logged in");
+          this.failedLogin = true;
+        }
       }
     )
 }

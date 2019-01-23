@@ -1,4 +1,5 @@
-<mat-card class="example-card">
+<div>
+  <mat-card class="example-card">
 
   <mat-card-header>
 
@@ -49,3 +50,6 @@
   </mat-card-actions>
 
 </mat-card>
+
+<div [hidden]="!failedLogin"><p>Incorrect username or password</p></div>
+</div>
