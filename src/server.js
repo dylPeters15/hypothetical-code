@@ -18,7 +18,7 @@ app.use(bodyParser.urlencoded({ extended: true }))
 
 MongoClient.connect('mongodb://localhost:27017', (err, database) => {
     // ... start the server
-    db = database.db('test-db'); // whatever your database name is
+    db = database.db('my-test-db'); // whatever your database name is
     app.listen(8000, () => {
         console.log('Server started!');
     });
