@@ -38,18 +38,24 @@ MongoClient.connect('mongodb://localhost:27017', (err, database) => {
                 if (enteredSaltedHashedPassword === user.saltedHashedPassword) {
                     //return token
                     console.log("token: " + user.token);
+                    res.send({
+                        token: user.token
+                    });
                 } else {
                     //incorrect password
                     console.log("incorrect password");
+                    res.send({
+                        message: "Incorrect password."
+                    });
                 }
             } else {
                 //incorrect username
                 console.log("incorrect username");
+                res.send({
+                    message: "Incorrect username."
+                });
             }
           });
-        res.send({
-            cats: [{ name: 'lilly' }, { name: 'lucy' }]
-        });
     });
 
     // function onetimeAdminSetup(){
