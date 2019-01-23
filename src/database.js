@@ -42,7 +42,6 @@ var userModel = mongoose.model('user', userSchema);
 
 
 
-
 module.exports = {
     Database: new Database(),
     userModel: userModel
