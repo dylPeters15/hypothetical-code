@@ -1,12 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { RestService } from '../rest.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { BehaviorSubject, Observable, of as ObservableOf } from 'rxjs';
-
-var userloggedinBehaviorSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-export var userloggedin: Observable<boolean> = userloggedinBehaviorSubject.asObservable();
-export var usertoken: string = '';
-export var username: string = '';
+import * as myGlobals from '../../globals';
 
 @Component({
   selector: 'app-login',
@@ -36,19 +31,15 @@ export class LoginComponent implements OnInit {
         if (data['token']) {
           //logged in successfully
           this.failedLogin = false;
-          usertoken = data['token'];
-          username = this.myusername;
-          userloggedinBehaviorSubject.next(true);
+          myGlobals.updateLogin(true, this.myusername, data['token']);
           this.router.navigateByUrl('/home');
         } else {
           //incorrect login
           this.failedLogin = true;
-          usertoken = '';
-          username = '';
-          userloggedinBehaviorSubject.next(false);
+          myGlobals.updateLogin(false, '', '');
         }
       }
-    )
+    );
 }
 
 }

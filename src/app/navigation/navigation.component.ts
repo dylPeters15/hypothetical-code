@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { userloggedin, usertoken } from '../login/login.component'
 import { MAT_DRAWER_DEFAULT_AUTOSIZE } from '@angular/material';
+import * as myGlobals from '../../globals';
 
 @Component({
   selector: 'app-navigation',
@@ -12,7 +12,7 @@ export class NavigationComponent implements OnInit {
   loggedin: boolean = false;
 
   constructor() {
-    userloggedin.subscribe(loggedinvalue => {
+    myGlobals.userloggedin.subscribe(loggedinvalue => {
       this.loggedin = loggedinvalue;
     });
    }

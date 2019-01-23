@@ -58,5 +58,18 @@ MongoClient.connect('mongodb://localhost:27017', (err, database) => {
           });
     });
 
+    app.route('/api/v1/verifytoken').get((req, res) => {
+        let enteredToken = req.headers['Authentication'];
+        db.collection('users').find({
+            token: enteredToken
+        }).toArray(function(err, results) {
+            console.log(results);
+            // send HTML file populated with quotes here
+            res.send({
+                verified: results.length == 1
+            });
+          });
+    });
+
 });
 

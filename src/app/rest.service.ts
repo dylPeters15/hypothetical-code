@@ -30,9 +30,19 @@ export class RestService {
     let httpOptions = {
       headers: header
     };
-    console.log(password);
-    console.log(JSON.stringify(httpOptions));
     return this.http.get(endpoint + 'login', httpOptions).pipe(map(this.extractData));
+  }
+
+  sendVerifyTokenRequest(usertoken): Observable<any> {
+    console.log(usertoken);
+    let header:HttpHeaders = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authentication': usertoken
+    });
+    let httpOptions = {
+      headers: header
+    };
+    return this.http.get(endpoint + 'verifytoken', httpOptions).pipe(map(this.extractData));
   }
 
   private handleError<T> (operation = 'operation', result?: T) {
