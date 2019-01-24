@@ -1,0 +1,68 @@
+<mat-card>
+    <!-- <mat-card-header>
+      <div mat-card-avatar style="background-image: url('https://material.angular.io/assets/img/examples/shiba1.jpg'); background-size: cover;"></div>
+      <mat-card-title>Account Settings</mat-card-title>
+    </mat-card-header> -->
+    <!-- <mat-card-header>
+        <div mat-card-avatar style="background-image: url(../../assets/account_settings_icon.png); background-size: 100% 100%;"></div>
+        
+      </mat-card-header> -->
+      <mat-card-title>Account Settings</mat-card-title>
+    <br>
+    <mat-divider></mat-divider>
+    <br>
+    <mat-card-header>
+      <mat-card-title>Change Password</mat-card-title>
+    </mat-card-header>
+    <mat-card-content style="display: grid; width: 100%; justify-items: center;">
+        <!-- <mat-form-field style="width: 75%;">
+            <input matInput placeholder="Enter new password" [type]="hidePassword1 ? 'password' : 'text'" required [formControl]="password1">
+            <mat-icon matSuffix (click)="hidePassword1 = !hidePassword1" [(ngModel)]="newPassword1">{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+          </mat-form-field>
+    
+          <mat-form-field style="width: 75%;">
+              <input matInput placeholder="Re-enter new password" [type]="hidePassword2 ? 'password' : 'text'" (keydown.enter)="changePassword()" required>
+              <mat-icon matSuffix (click)="hidePassword2 = !hidePassword2">{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+              <mat-error *ngIf="true">Passwords Don't Match</mat-error>
+          </mat-form-field> -->
+
+
+
+
+          <form [formGroup]="form" style="display: grid; width: 75%; text-align: center;">
+              <mat-form-field>
+                <input matInput placeholder="Password" [type]="hidePassword1 ? 'password' : 'text'" formControlName="password" [errorStateMatcher]="passwordErrorMatcher">
+                <mat-icon matSuffix (click)="hidePassword1 = !hidePassword1">{{hidePassword1 ? 'visibility_off' : 'visibility'}}</mat-icon>
+                <mat-error>Error: {{ getErrorMessage('password') }}</mat-error>
+              </mat-form-field>
+            
+              <mat-form-field>
+                <input matInput placeholder="Confirm" [type]="hidePassword2 ? 'password' : 'text'" formControlName="confirm" [errorStateMatcher]="confirmErrorMatcher">
+                <mat-icon matSuffix (click)="hidePassword2 = !hidePassword2">{{hidePassword2 ? 'visibility_off' : 'visibility'}}</mat-icon>
+                <mat-error>Error: {{ getErrorMessage('confirm') }}</mat-error>
+              </mat-form-field>
+            </form>
+
+
+
+
+
+
+    </mat-card-content>
+    <mat-card-actions>
+        <button mat-raised-button (click)="changePassword()" color="primary">Change Password</button>
+      </mat-card-actions>
+  </mat-card>
+
+  <!-- <form [formGroup]="form">
+      <mat-form-field>
+        <input matInput placeholder="Password" formControlName="password" [errorStateMatcher]="passwordErrorMatcher">
+        <mat-error>Error: {{ getErrorMessage('password') }}</mat-error>
+      </mat-form-field>
+    
+      <mat-form-field>
+        <input matInput placeholder="Confirm" formControlName="confirm" [errorStateMatcher]="confirmErrorMatcher">
+        <mat-error>Error: {{ getErrorMessage('confirm') }}</mat-error>
+      </mat-form-field>
+    </form>
+   -->
