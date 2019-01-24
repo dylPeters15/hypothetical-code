@@ -21,21 +21,26 @@ export class AccountSettingsComponent implements OnInit {
   ngOnInit() {
   }
 
-  openDialog() {
+  openDialog(title, message) {
     const dialogConfig = new MatDialogConfig();
     this.dialogRef = this.dialog.open(UserNotificationDialogComponent, dialogConfig);
+    this.dialogRef.componentInstance.title = title;
+    this.dialogRef.componentInstance.message = message;
 }
 
   changePassword() {
     if (this.passwordsValid()) {
       const newPass = this.form.get('password').value;
       this.rest.sendChangePasswordRequest(newPass).subscribe(response => {
-        console.log(response);
+        if (response['success']) {
+          this.openDialog("Success!", "Password successfully updated!");
+        } else {
+          this.openDialog("Error", "There was an error updating your password. Please refresh the page and try again.");
+        }
       });
     } else {
       console.log("Passwords invalid.");
     }
-    this.openDialog();
   }
 
   deleteAccount() {

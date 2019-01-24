@@ -8,6 +8,9 @@ import { MatDialogRef} from "@angular/material";
 })
 export class UserNotificationDialogComponent implements OnInit {
 
+  public title: string = "Title";
+  public message: string = "message";
+
   constructor(private dialogRef: MatDialogRef<UserNotificationDialogComponent>) { }
 
   ngOnInit() {
