@@ -10,10 +10,12 @@ import { auth } from '../auth.service';
 export class NavigationComponent implements OnInit {
 
   loggedin: boolean = false;
+  admin: boolean = false;
 
   constructor() {
     auth.getLoggedInObservable().subscribe(value => {
       this.loggedin = value;
+      this.admin = auth.isAuthenticatedForAdminOperation();
     });
    }
 

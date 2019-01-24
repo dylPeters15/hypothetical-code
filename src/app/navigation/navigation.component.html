@@ -15,12 +15,12 @@
     <mat-nav-list>
       <a mat-list-item routerLink='/home'>Home</a>
       <a mat-list-item routerLink='/manufacturing-calculator'>Manufacturing Calculator</a>
-      <a mat-list-item routerLink='/ingredient-dependency-report'>Ingredient Dependency Report</a>
       <a mat-list-item routerLink='/manufacturing-goal'>Manufacturing Goal</a>
-      <a mat-list-item routerLink='/ingredient-inventory'>Ingredient Inventory</a>
-      <a mat-list-item routerLink='/sku-inventory'>SKU Inventory</a>
-      <a mat-list-item routerLink='/product-line-inventory'>Product Line Inventory</a>
-      <a mat-list-item routerLink='/import-export'>Import Export</a>
+      <a mat-list-item routerLink='/ingredient-dependency-report'>Ingredient Dependency Report</a>
+      <a mat-list-item *ngIf="admin" routerLink='/ingredient-inventory'>Ingredient Inventory</a>
+      <a mat-list-item *ngIf="admin" routerLink='/sku-inventory'>SKU Inventory</a>
+      <a mat-list-item *ngIf="admin" routerLink='/product-line-inventory'>Product Line Inventory</a>
+      <a mat-list-item *ngIf="admin" routerLink='/import-export'>Import Export</a>
     </mat-nav-list>
   </mat-sidenav>
   <mat-sidenav-content class="sidenav-content">

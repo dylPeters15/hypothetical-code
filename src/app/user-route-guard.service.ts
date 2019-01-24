@@ -7,12 +7,9 @@ import { auth } from './auth.service';
 })
 export class UserRouteGuardService implements CanActivate {
 
-  constructor(public router: Router) { 
-    console.log("constructing user route guard service.");
-  }
+  constructor(public router: Router) { }
 
   canActivate(): boolean {
-    console.log("checking if can access page.");
     if (!auth.isAuthenticatedForUserOperation()) {
       this.router.navigate(['login']);
       return false;
