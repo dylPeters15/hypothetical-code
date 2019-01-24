@@ -3,7 +3,15 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatSidenav } from '@angular/material';
 import { auth } from '../auth.service';
 // import { SidenavServiceService } from '../sidenav-service.ts';
-import { SidenavServiceService } from '../sidenav-service.service';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class SidenavService {
+
+  public sideNav:MatSidenav;
+  constructor() { }
+}
 
 @Component({
   selector: 'app-navigation',
@@ -16,7 +24,7 @@ export class NavigationComponent implements OnInit {
   loggedin: boolean = false;
   admin: boolean = false;
 
-  constructor(private sidenavService: SidenavServiceService) {
+  constructor(private sidenavService: SidenavService) {
     
    }
 
