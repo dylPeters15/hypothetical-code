@@ -46,46 +46,29 @@ MongoClient.connect('mongodb://localhost:27017', (err, database) => {
         db.collection('users').find({
             username: entered_username
         }).toArray(function (err, results) {
-            console.log(results);
             // send HTML file populated with quotes here
             if (results.length == 1) {
                 let user = results[0];
                 let enteredSaltedHashedPassword = crypto.pbkdf2Sync(entered_password, user.salt, 1000, 64, 'sha512').toString('hex');
                 if (enteredSaltedHashedPassword === user.saltedHashedPassword) {
                     //return token
-                    console.log("token: " + user.token);
                     res.send({
                         token: user.token
                     });
                 } else {
                     //incorrect password
-                    console.log("incorrect password");
                     res.send({
                         message: "Incorrect password."
                     });
                 }
             } else {
                 //incorrect username
-                console.log("incorrect username");
                 res.send({
                     message: "Incorrect username."
                 });
             }
         });
     });
-
-    // app.route('/api/v1/verifytoken').get((req, res) => {
-    //     let enteredToken = req.headers['Authentication'];
-    //     db.collection('users').find({
-    //         token: enteredToken
-    //     }).toArray(function(err, results) {
-    //         console.log(results);
-    //         // send HTML file populated with quotes here
-    //         res.send({
-    //             verified: results.length == 1
-    //         });
-    //       });
-    // });
 
     app.route('/api/v1/change-password').put((req, res) => {
         const username = req.headers['username'];
@@ -98,9 +81,7 @@ MongoClient.connect('mongodb://localhost:27017', (err, database) => {
                     token: token
                 };
                 db.collection('users').findOne(filterschema, function(dberr, dbres) {
-                    console.log(dbres.salt);
                     const newSaltedHash = crypto.pbkdf2Sync(newPass, dbres.salt, 1000, 64, 'sha512').toString('hex');
-                    console.log(newSaltedHash);
                     db.collection('users').updateOne(filterschema, {
                         $set: {
                             saltedHashedPassword: newSaltedHash
@@ -111,17 +92,6 @@ MongoClient.connect('mongodb://localhost:27017', (err, database) => {
                         });
                     });
                 });
-
-
-                // db.collection('users').updateOne({
-                //     username: username,
-                //     token: token
-                // },
-                // {
-                //     $set: {
-
-                //     }
-                // });
             } else {
                 res.send({
                     errormessage: 'Not permitted to perform operation.'

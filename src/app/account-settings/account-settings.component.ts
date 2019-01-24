@@ -50,8 +50,6 @@ export class AccountSettingsComponent implements OnInit {
   passwordsValid() {
     const pass = this.form.get('password').value;
     const conf = this.form.get('confirm').value;
-    console.log(pass);
-    console.log(conf);
     return pass == conf && pass != null && pass.length >= 4;
   }
 
