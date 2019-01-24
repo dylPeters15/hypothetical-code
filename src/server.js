@@ -3,18 +3,17 @@ const cors = require('cors');
 var headerParser = require('header-parser');
 const bodyParser = require('body-parser');
 const MongoClient = require('mongodb').MongoClient
-const  crypto = require('crypto');
+const crypto = require('crypto');
 
 const app = express();
 var corsOptions = {
     origin: '*',
     optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204 
-  }
-  
-  app.use(cors(corsOptions))
-  app.use(headerParser);
-app.use(bodyParser.urlencoded({ extended: true }))
+}
 
+app.use(cors(corsOptions))
+app.use(headerParser);
+app.use(bodyParser.json());
 
 
 MongoClient.connect('mongodb://localhost:27017', (err, database) => {
@@ -24,12 +23,29 @@ MongoClient.connect('mongodb://localhost:27017', (err, database) => {
         console.log('Server started!');
     });
 
+    function verifiedForUserOperations(entered_username, entered_token, callback) {
+        db.collection('users').find({
+            username: entered_username,
+            token: entered_token
+        }).toArray(function (err, results) {
+            callback(results.length == 1);
+        });
+    }
+
+    function verifiedForAdminOperations(entered_username, entered_token, callback) {
+        if (entered_username == 'admin') {
+            verifiedForUserOperations(entered_username, entered_token, callback);
+        } else {
+            callback(false);
+        }
+    }
+
     app.route('/api/v1/login').get((req, res) => {
         let entered_username = req.headers['username'];
         let entered_password = req.headers['password'];
         db.collection('users').find({
             username: entered_username
-        }).toArray(function(err, results) {
+        }).toArray(function (err, results) {
             console.log(results);
             // send HTML file populated with quotes here
             if (results.length == 1) {
@@ -55,20 +71,63 @@ MongoClient.connect('mongodb://localhost:27017', (err, database) => {
                     message: "Incorrect username."
                 });
             }
-          });
+        });
     });
 
-    app.route('/api/v1/verifytoken').get((req, res) => {
-        let enteredToken = req.headers['Authentication'];
-        db.collection('users').find({
-            token: enteredToken
-        }).toArray(function(err, results) {
-            console.log(results);
-            // send HTML file populated with quotes here
-            res.send({
-                verified: results.length == 1
-            });
-          });
+    // app.route('/api/v1/verifytoken').get((req, res) => {
+    //     let enteredToken = req.headers['Authentication'];
+    //     db.collection('users').find({
+    //         token: enteredToken
+    //     }).toArray(function(err, results) {
+    //         console.log(results);
+    //         // send HTML file populated with quotes here
+    //         res.send({
+    //             verified: results.length == 1
+    //         });
+    //       });
+    // });
+
+    app.route('/api/v1/change-password').put((req, res) => {
+        const username = req.headers['username'];
+        const token = req.headers['token'];
+        verifiedForUserOperations(username, token, function (verified) {
+            const newPass = req.body['newpassword'];
+            if (verified) {
+                const filterschema = {
+                    username: username,
+                    token: token
+                };
+                db.collection('users').findOne(filterschema, function(dberr, dbres) {
+                    console.log(dbres.salt);
+                    const newSaltedHash = crypto.pbkdf2Sync(newPass, dbres.salt, 1000, 64, 'sha512').toString('hex');
+                    console.log(newSaltedHash);
+                    db.collection('users').updateOne(filterschema, {
+                        $set: {
+                            saltedHashedPassword: newSaltedHash
+                        }
+                    }, function(innerdberr, innerdbres) {
+                        res.send({
+                            success: true
+                        });
+                    });
+                });
+
+
+                // db.collection('users').updateOne({
+                //     username: username,
+                //     token: token
+                // },
+                // {
+                //     $set: {
+
+                //     }
+                // });
+            } else {
+                res.send({
+                    errormessage: 'Not permitted to perform operation.'
+                });
+            }
+        });
     });
 
 });

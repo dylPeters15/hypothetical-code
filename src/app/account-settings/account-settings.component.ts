@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators, FormGroupDirective } from '@angular/forms';
-import { ErrorStateMatcher } from '@angular/material';
+import { RestService } from '../rest.service';
 
 @Component({
   selector: 'app-account-settings',
@@ -13,16 +13,19 @@ export class AccountSettingsComponent implements OnInit {
   hidePassword2: boolean = true;
   hidePassword3: boolean = true;
 
-  constructor() { }
+  constructor(private rest: RestService) { }
 
   ngOnInit() {
   }
 
   changePassword() {
     if (this.passwordsValid()) {
-      console.log(this.form.get('password').value);
+      const newPass = this.form.get('password').value;
+      this.rest.sendChangePasswordRequest(newPass).subscribe(response => {
+        console.log(response);
+      });
     } else {
-      console.log("not valid");
+      console.log("Passwords invalid.");
     }
   }
 
@@ -47,7 +50,9 @@ export class AccountSettingsComponent implements OnInit {
   passwordsValid() {
     const pass = this.form.get('password').value;
     const conf = this.form.get('confirm').value;
-    return pass == conf && pass != null && pass.length > 4;
+    console.log(pass);
+    console.log(conf);
+    return pass == conf && pass != null && pass.length >= 4;
   }
 
   passwordErrorMatcher = {
