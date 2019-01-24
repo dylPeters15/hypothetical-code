@@ -22,9 +22,14 @@ export class AccountSettingsComponent implements OnInit {
   }
 
   changePassword() {
-    console.log(this.form.get('password').value);
+    if (this.passwordsValid()){
+      console.log(this.form.get('password').value);
+    } else {
+      console.log("not valid");
+    }
   }
 
+  
 
   form = new FormGroup(
     {
@@ -33,6 +38,12 @@ export class AccountSettingsComponent implements OnInit {
     },
     passwordMatchValidator
   );
+
+  passwordsValid() {
+    const pass = this.form.get('password').value;
+    const conf = this.form.get('confirm').value;
+    return pass == conf && pass != null && pass.length > 4;
+  }
 
   passwordErrorMatcher = {
     isErrorState: (control: FormControl, form: FormGroupDirective): boolean => {
