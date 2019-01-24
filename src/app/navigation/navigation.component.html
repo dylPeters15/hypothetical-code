@@ -1,13 +1,30 @@
 <mat-toolbar class="header">
   <mat-toolbar-row style="width:100%;text-align: center;">
     <div [hidden]="!loggedin" style="width:30%;text-align:left;">
-      <button type="button" aria-label="Toggle sidenav" mat-icon-button (click)="drawer.toggle()" color="primary">
+      <button type="button" aria-label="Toggle sidenav" mat-icon-button (click)="drawer.toggle()" color="white">
         <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
       </button>
     </div>
     <div [hidden]="loggedin" style="width:30%;text-align:left;"></div>
     <h1 style="width:40%;text-align:center;">Hypothetical Code <img src="../assets/applelogo.png" style="width:50px;height:50px;"></h1>
-    <a [hidden]="!loggedin" routerLink="/logout" style="width:30%;text-align:right;">Log Out</a>
+    <div [hidden]="!loggedin" style="width:30%;text-align:right;">
+      <button mat-icon-button [matMenuTriggerFor]="menu">
+        <mat-icon>account_circle</mat-icon>
+      </button>
+      <mat-menu #menu="matMenu">
+        <button mat-menu-item>
+          <mat-icon>settings</mat-icon>
+          <span>Account Settings</span>
+        </button>
+        <button mat-menu-item>
+          <mat-icon>exit_to_app</mat-icon>
+          <span>Log Out</span>
+        </button>
+      </mat-menu>
+    </div>
+
+
+
   </mat-toolbar-row>
 </mat-toolbar>
 <mat-sidenav-container>

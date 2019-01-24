@@ -17,6 +17,11 @@ import { AlreadyLoggedInRouteGuardService } from './already-logged-in-route-guar
 import { UserComponent } from './user/user.component';
 import { LogoutComponent } from './logout/logout.component';
 
+
+
+import {MatSelectModule} from '@angular/material/select'; 
+import {MatIconModule, MatIcon} from '@angular/material/icon'; 
+
 const appRoutes: Routes = [
   { path: 'login', component: LoginComponent, data: { title: 'Log In' }, canActivate: [AlreadyLoggedInRouteGuardService] },
   { path: 'home', component: HomeComponent, data: { title: 'Home' }, canActivate: [UserRouteGuardService] },
@@ -53,7 +58,9 @@ const appRoutes: Routes = [
     CustomMaterialModule,
     FormsModule,
     AppRoutingModule,
-    HttpClientModule
+    HttpClientModule,
+    MatSelectModule,
+    MatIconModule
   ],
   providers: [],
   bootstrap: [AppComponent]
