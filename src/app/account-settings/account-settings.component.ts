@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import {FormGroup, FormControl, Validators, FormGroupDirective} from '@angular/forms';
-import {ErrorStateMatcher} from '@angular/material';
+import { FormGroup, FormControl, Validators, FormGroupDirective } from '@angular/forms';
+import { ErrorStateMatcher } from '@angular/material';
 
 @Component({
   selector: 'app-account-settings',
@@ -11,10 +11,7 @@ export class AccountSettingsComponent implements OnInit {
 
   hidePassword1: boolean = true;
   hidePassword2: boolean = true;
-  passwordsMatch: boolean = true;
-  password1 = new FormControl('', [Validators.required]);
-  password2 = new FormControl('', [Validators.required]);
-  newPassword1: string;
+  hidePassword3: boolean = true;
 
   constructor() { }
 
@@ -22,14 +19,16 @@ export class AccountSettingsComponent implements OnInit {
   }
 
   changePassword() {
-    if (this.passwordsValid()){
+    if (this.passwordsValid()) {
       console.log(this.form.get('password').value);
     } else {
       console.log("not valid");
     }
   }
 
-  
+  deleteAccount() {
+
+  }
 
   form = new FormGroup(
     {
@@ -37,6 +36,12 @@ export class AccountSettingsComponent implements OnInit {
       confirm: new FormControl('', Validators.minLength(4)),
     },
     passwordMatchValidator
+  );
+
+  deleteForm = new FormGroup(
+    {
+      confirmDelete: new FormControl('')
+    }
   );
 
   passwordsValid() {
