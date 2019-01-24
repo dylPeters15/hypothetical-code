@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { MAT_DRAWER_DEFAULT_AUTOSIZE } from '@angular/material';
+import { auth } from '../auth.service';
 
 @Component({
   selector: 'app-navigation',
@@ -10,7 +11,11 @@ export class NavigationComponent implements OnInit {
 
   loggedin: boolean = false;
 
-  constructor() { }
+  constructor() {
+    auth.getLoggedInObservable().subscribe(value => {
+      this.loggedin = value;
+    });
+   }
 
   ngOnInit() {
   }

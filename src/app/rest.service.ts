@@ -34,7 +34,6 @@ export class RestService {
   }
 
   sendVerifyTokenRequest(usertoken): Observable<any> {
-    console.log(usertoken);
     let header:HttpHeaders = new HttpHeaders({
       'Content-Type': 'application/json',
       'Authentication': usertoken

@@ -1,7 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { RestService } from '../rest.service';
-import { ActivatedRoute, Router } from '@angular/router';
-import { BehaviorSubject, Observable, of as ObservableOf } from 'rxjs';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-home',
@@ -10,7 +8,7 @@ import { BehaviorSubject, Observable, of as ObservableOf } from 'rxjs';
 })
 export class HomeComponent implements OnInit {
 
-  constructor(public rest:RestService, private route: ActivatedRoute, private router: Router) { }
+  constructor(private router: Router) { }
 
   ngOnInit() {
   }

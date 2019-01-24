@@ -19,7 +19,7 @@
 
             <mat-form-field class="example-full-width">
 
-            <input matInput placeholder="Username" [(ngModel)]="myusername" name="username" required>
+            <input matInput placeholder="Username" [(ngModel)]="myusername" name="username" required (keydown.enter)="login()">
 
             </mat-form-field>
 
@@ -31,7 +31,7 @@
 
         <td><mat-form-field class="example-full-width">
 
-          <input matInput placeholder="Password" [(ngModel)]="mypassword"type="password" name="password" required>
+          <input matInput placeholder="Password" [(ngModel)]="mypassword"type="password" name="password" required (keydown.enter)="login()">
 
         </mat-form-field></td>
 
@@ -45,7 +45,7 @@
 
   <mat-card-actions>
 
-    <button mat-raised-button (click)="login()" color="primary">Login</button>
+    <button mat-raised-button (click)="login()" color="primary" (keydown.enter)="login()">Login</button>
 
   </mat-card-actions>
 
