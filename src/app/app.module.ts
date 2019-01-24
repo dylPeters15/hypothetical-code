@@ -1,7 +1,6 @@
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { BrowserModule } from '@angular/platform-browser';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule, Routes } from "@angular/router";
 import { AppRoutingModule } from './app-routing.module';
@@ -17,10 +16,18 @@ import { AlreadyLoggedInRouteGuardService } from './already-logged-in-route-guar
 import { UserComponent } from './user/user.component';
 import { LogoutComponent } from './logout/logout.component';
 
+
+
+import {MatSelectModule} from '@angular/material/select'; 
+import {MatIconModule, MatIcon} from '@angular/material/icon';
+import { AccountSettingsComponent } from './account-settings/account-settings.component';
+import { UserNotificationDialogComponent } from './user-notification-dialog/user-notification-dialog.component'; 
+
 const appRoutes: Routes = [
   { path: 'login', component: LoginComponent, data: { title: 'Log In' }, canActivate: [AlreadyLoggedInRouteGuardService] },
   { path: 'home', component: HomeComponent, data: { title: 'Home' }, canActivate: [UserRouteGuardService] },
   { path: 'user-management', component: HomeComponent, data: { title: 'User Management' }, canActivate: [AdminRouteGuardService] },
+  { path: 'account-settings', component: AccountSettingsComponent, data: { title: 'Account Settings' }, canActivate: [UserRouteGuardService] },
   { path: 'account-settings', component: HomeComponent, data: { title: 'Account Settings' }, canActivate: [UserRouteGuardService] },
   { path: 'manufacturing-calculator', component: HomeComponent, data: { title: 'Manufacturing Calculator' }, canActivate: [UserRouteGuardService] },
   { path: 'ingredient-dependency-report', component: HomeComponent, data: { title: 'Ingredient Dependency Report' }, canActivate: [UserRouteGuardService] },
@@ -41,7 +48,9 @@ const appRoutes: Routes = [
     LoginComponent,
     UserComponent,
     HomeComponent,
-    LogoutComponent
+    LogoutComponent,
+    AccountSettingsComponent,
+    UserNotificationDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -53,9 +62,13 @@ const appRoutes: Routes = [
     CustomMaterialModule,
     FormsModule,
     AppRoutingModule,
-    HttpClientModule
+    HttpClientModule,
+    MatSelectModule,
+    MatIconModule,
+    ReactiveFormsModule
   ],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  entryComponents: [UserNotificationDialogComponent]
 })
 export class AppModule { }

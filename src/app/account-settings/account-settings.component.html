@@ -1,0 +1,65 @@
+<mat-card>
+  <mat-card-title>Account Settings</mat-card-title>
+
+  <br>
+  <mat-divider></mat-divider>
+  <br>
+
+  <mat-card-header>
+    <mat-card-title>Change Password</mat-card-title>
+  </mat-card-header>
+  <mat-card-content style="display: grid; width: 100%; justify-items: center;">
+    <form [formGroup]="form" style="display: grid; width: 75%; text-align: center;">
+
+        <mat-form-field>
+            <input matInput placeholder="Current Password" [type]="hidePassword0 ? 'password' : 'text'"
+              formControlName="currentPass">
+            <mat-icon matSuffix (click)="hidePassword0 = !hidePassword0">{{hidePassword0 ? 'visibility_off' :
+              'visibility'}}</mat-icon>
+          </mat-form-field>
+
+
+      <mat-form-field>
+        <input matInput placeholder="Password" [type]="hidePassword1 ? 'password' : 'text'" formControlName="password"
+          [errorStateMatcher]="passwordErrorMatcher">
+        <mat-icon matSuffix (click)="hidePassword1 = !hidePassword1">{{hidePassword1 ? 'visibility_off' :
+          'visibility'}}</mat-icon>
+        <mat-error>Error: {{ getErrorMessage('password') }}</mat-error>
+      </mat-form-field>
+
+      <mat-form-field>
+        <input matInput placeholder="Confirm" [type]="hidePassword2 ? 'password' : 'text'" formControlName="confirm"
+          [errorStateMatcher]="confirmErrorMatcher">
+        <mat-icon matSuffix (click)="hidePassword2 = !hidePassword2">{{hidePassword2 ? 'visibility_off' :
+          'visibility'}}</mat-icon>
+        <mat-error>Error: {{ getErrorMessage('confirm') }}</mat-error>
+      </mat-form-field>
+    </form>
+  </mat-card-content>
+  <mat-card-actions>
+    <button mat-raised-button (click)="changePassword()" color="primary">Change Password</button>
+  </mat-card-actions>
+
+  <br>
+  <mat-divider></mat-divider>
+  <br>
+
+  <mat-card-header>
+    <mat-card-title>Delete Account</mat-card-title>
+  </mat-card-header>
+  <mat-card-content style="display: grid; width: 100%; justify-items: center;">
+    <form [formGroup]="deleteForm" style="display: grid; width: 75%; text-align: center;">
+      <mat-form-field>
+        <input matInput placeholder="Enter password to confirm delete" [type]="hidePassword3 ? 'password' : 'text'"
+          formControlName="confirmDelete" [errorStateMatcher]="confirmDeleteErrorMatcher">
+        <mat-icon matSuffix (click)="hidePassword3 = !hidePassword3">{{hidePassword3 ? 'visibility_off' :
+          'visibility'}}</mat-icon>
+        <mat-error>Incorrect Password</mat-error>
+      </mat-form-field>
+    </form>
+  </mat-card-content>
+  <mat-card-actions>
+    <button mat-raised-button (click)="deleteAccount()" style="color: white; background-color: red;">Delete Account</button>
+  </mat-card-actions>
+
+</mat-card>

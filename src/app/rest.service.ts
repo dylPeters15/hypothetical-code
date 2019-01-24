@@ -2,13 +2,9 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { map, catchError, tap } from 'rxjs/operators';
+import { auth } from './auth.service'
 
 const endpoint = 'http://localhost:8000/api/v1/';
-// const httpOptions = {
-//   headers: new HttpHeaders({
-//     'Content-Type': 'application/json'
-//   })
-// };
 @Injectable({
   providedIn: 'root'
 })
@@ -21,7 +17,20 @@ export class RestService {
     return body || {};
   }
 
+  private getHTTPOptions() {
+    let header:HttpHeaders = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'username': auth.getUsername(),
+      'token':auth.getToken()
+    });
+    let httpOptions = {
+      headers: header
+    };
+    return httpOptions;
+  }
+
   sendLoginRequest(username, password): Observable<any> {
+    //Use GET becuase we are requesting the user token
     let header:HttpHeaders = new HttpHeaders({
       'Content-Type': 'application/json',
       'username': username,
@@ -33,15 +42,26 @@ export class RestService {
     return this.http.get(endpoint + 'login', httpOptions).pipe(map(this.extractData));
   }
 
-  sendVerifyTokenRequest(usertoken): Observable<any> {
+  sendChangePasswordRequest(myOldPassword, myNewPassword): Observable<any> {
+    //Use PUT because we are requesting to modify the user object in database
+    var body = {
+      oldpassword: myOldPassword,
+      newpassword: myNewPassword
+    };
+    return this.http.put(endpoint + 'change-password', body, this.getHTTPOptions()).pipe(map(this.extractData));
+  }
+
+  sendDeleteAccountRequest(password): Observable<any> {
     let header:HttpHeaders = new HttpHeaders({
       'Content-Type': 'application/json',
-      'Authentication': usertoken
+      'username': auth.getUsername(),
+      'token':auth.getToken(),
+      'password': password
     });
     let httpOptions = {
       headers: header
     };
-    return this.http.get(endpoint + 'verifytoken', httpOptions).pipe(map(this.extractData));
+    return this.http.delete(endpoint + 'delete-account', httpOptions).pipe(map(this.extractData));
   }
 
   private handleError<T> (operation = 'operation', result?: T) {
