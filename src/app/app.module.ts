@@ -15,6 +15,7 @@ import { UserRouteGuardService } from './user-route-guard.service';
 import { AdminRouteGuardService } from './admin-route-guard.service';
 import { AlreadyLoggedInRouteGuardService } from './already-logged-in-route-guard.service';
 import { UserComponent } from './user/user.component';
+import { LogoutComponent } from './logout/logout.component';
 
 const appRoutes: Routes = [
   { path: 'login', component: LoginComponent, data: { title: 'Log In' }, canActivate: [AlreadyLoggedInRouteGuardService] },
@@ -28,6 +29,7 @@ const appRoutes: Routes = [
   { path: 'sku-inventory', component: HomeComponent, data: { title: 'SKU Inventory' }, canActivate: [AdminRouteGuardService] },
   { path: 'product-line-inventory', component: HomeComponent, data: { title: 'Product Line Inventory' }, canActivate: [AdminRouteGuardService] },
   { path: 'import-export', component: HomeComponent, data: { title: 'Import Export' }, canActivate: [AdminRouteGuardService] },
+  { path: 'logout', component: LogoutComponent, data: { title: "Logout" }, canActivate: [UserRouteGuardService] },
   { path: '**', redirectTo: 'home' }
 ];
 
@@ -38,7 +40,8 @@ const appRoutes: Routes = [
     FooterComponent,
     LoginComponent,
     UserComponent,
-    HomeComponent
+    HomeComponent,
+    LogoutComponent
   ],
   imports: [
     BrowserModule,
