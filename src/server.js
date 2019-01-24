@@ -15,6 +15,10 @@ app.use(cors(corsOptions))
 app.use(headerParser);
 app.use(bodyParser.json());
 
+function saltAndHash(password, salt) {
+    return crypto.pbkdf2Sync(password, salt, 1000, 64, 'sha512').toString('hex');
+}
+
 
 MongoClient.connect('mongodb://localhost:27017', (err, database) => {
     // ... start the server
@@ -100,6 +104,50 @@ MongoClient.connect('mongodb://localhost:27017', (err, database) => {
                         });
                     }
                 });
+            } else {
+                res.send({
+                    errormessage: 'Not permitted to perform operation.'
+                });
+            }
+        });
+    });
+
+    app.route('/api/v1/delete-account').delete((req, res) => {
+        const username = req.headers['username'];
+        const token = req.headers['token'];
+        verifiedForUserOperations(username, token, function (verified) {
+            if (verified) {
+                const password = req.headers['password'];
+                const filterschema = {
+                    username: username,
+                    token: token
+                };
+                db.collection('users').findOne(filterschema, (dberr, dbres) => {
+                    if (dberr) {
+                        res.send({
+                            errormessage: "Error finding user."
+                        });
+                    } else {
+                        var saltedHashedPassword = saltAndHash(password, dbres['salt']);
+                        if (saltedHashedPassword == dbres['saltedHashedPassword']) {
+                            db.collection('users').deleteOne(filterschema, (innerdberr, innerdbres) => {
+                                if (innerdberr) {
+                                    res.send({
+                                        errormessage: "Error deleting user."
+                                    });
+                                } else {
+                                    res.send({
+                                        success: true
+                                    });
+                                }
+                            });
+                        } else {
+                            res.send({
+                                errormessage: "Incorrect password."
+                            })
+                        }
+                    }
+                })
             } else {
                 res.send({
                     errormessage: 'Not permitted to perform operation.'

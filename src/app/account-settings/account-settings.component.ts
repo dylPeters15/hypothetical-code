@@ -3,6 +3,9 @@ import { FormGroup, FormControl, Validators, FormGroupDirective } from '@angular
 import { RestService } from '../rest.service';
 import {MatDialog, MatDialogConfig, MatDialogRef} from "@angular/material";
 import { UserNotificationDialogComponent } from '../user-notification-dialog/user-notification-dialog.component';
+import { Router } from '@angular/router';
+import { auth } from '../auth.service';
+
 
 @Component({
   selector: 'app-account-settings',
@@ -17,13 +20,14 @@ export class AccountSettingsComponent implements OnInit {
   hidePassword3: boolean = true;
   dialogRef: MatDialogRef<UserNotificationDialogComponent>;
 
-  constructor(private rest: RestService, private dialog: MatDialog) { }
+  constructor(private rest: RestService, private dialog: MatDialog, public router: Router) { }
 
   ngOnInit() {
   }
 
   openDialog(title, message) {
     const dialogConfig = new MatDialogConfig();
+    dialogConfig.closeOnNavigation = false;
     this.dialogRef = this.dialog.open(UserNotificationDialogComponent, dialogConfig);
     this.dialogRef.componentInstance.title = title;
     this.dialogRef.componentInstance.message = message;
@@ -41,12 +45,21 @@ export class AccountSettingsComponent implements OnInit {
         }
       });
     } else {
-      console.log("Passwords invalid.");
+      this.openDialog("Error", "There was an error updating your password. Check that you entered your current password correctly and try again.");
     }
   }
 
   deleteAccount() {
-    console.log(this.deleteForm.get('confirmDelete').value);
+    const pass = this.deleteForm.get('confirmDelete').value
+    this.rest.sendDeleteAccountRequest(pass).subscribe(response => {
+      if (response['success']) {
+        this.openDialog("Success", "Account deleted successfully. You will be redirected to the login page.");
+        auth.clearLogin();
+        this.router.navigate(['login']);
+      } else {
+        this.openDialog("Error", "There was an error updating your password. Check that you entered your current password correctly and try again.");
+      }
+    });
   }
 
   form = new FormGroup(

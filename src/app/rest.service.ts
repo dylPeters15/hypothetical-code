@@ -51,6 +51,19 @@ export class RestService {
     return this.http.put(endpoint + 'change-password', body, this.getHTTPOptions()).pipe(map(this.extractData));
   }
 
+  sendDeleteAccountRequest(password): Observable<any> {
+    let header:HttpHeaders = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'username': auth.getUsername(),
+      'token':auth.getToken(),
+      'password': password
+    });
+    let httpOptions = {
+      headers: header
+    };
+    return this.http.delete(endpoint + 'delete-account', httpOptions).pipe(map(this.extractData));
+  }
+
   private handleError<T> (operation = 'operation', result?: T) {
     return (error: any): Observable<T> => {
   
