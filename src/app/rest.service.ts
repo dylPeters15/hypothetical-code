@@ -3,7 +3,7 @@ import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http
 import { Observable, of } from 'rxjs';
 import { map, catchError, tap } from 'rxjs/operators';
 
-const endpoint = 'http://vcm-8405.vm.duke.edu:8000/api/v1/';
+const endpoint = 'http://localhost:8000/api/v1/';
 // const httpOptions = {
 //   headers: new HttpHeaders({
 //     'Content-Type': 'application/json'
@@ -30,9 +30,18 @@ export class RestService {
     let httpOptions = {
       headers: header
     };
-    console.log(password);
-    console.log(JSON.stringify(httpOptions));
     return this.http.get(endpoint + 'login', httpOptions).pipe(map(this.extractData));
+  }
+
+  sendVerifyTokenRequest(usertoken): Observable<any> {
+    let header:HttpHeaders = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authentication': usertoken
+    });
+    let httpOptions = {
+      headers: header
+    };
+    return this.http.get(endpoint + 'verifytoken', httpOptions).pipe(map(this.extractData));
   }
 
   private handleError<T> (operation = 'operation', result?: T) {
