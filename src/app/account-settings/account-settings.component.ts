@@ -11,6 +11,7 @@ import { UserNotificationDialogComponent } from '../user-notification-dialog/use
 })
 export class AccountSettingsComponent implements OnInit {
 
+  hidePassword0: boolean = true;
   hidePassword1: boolean = true;
   hidePassword2: boolean = true;
   hidePassword3: boolean = true;
@@ -30,12 +31,13 @@ export class AccountSettingsComponent implements OnInit {
 
   changePassword() {
     if (this.passwordsValid()) {
+      const oldPass = this.form.get('currentPass').value;
       const newPass = this.form.get('password').value;
-      this.rest.sendChangePasswordRequest(newPass).subscribe(response => {
+      this.rest.sendChangePasswordRequest(oldPass, newPass).subscribe(response => {
         if (response['success']) {
           this.openDialog("Success!", "Password successfully updated!");
         } else {
-          this.openDialog("Error", "There was an error updating your password. Please refresh the page and try again.");
+          this.openDialog("Error", "There was an error updating your password. Check that you entered your current password correctly and try again.");
         }
       });
     } else {
@@ -49,6 +51,7 @@ export class AccountSettingsComponent implements OnInit {
 
   form = new FormGroup(
     {
+      currentPass: new FormControl('', []),
       password: new FormControl('', [Validators.minLength(4)]),
       confirm: new FormControl('', Validators.minLength(4)),
     },

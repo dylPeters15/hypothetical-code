@@ -75,22 +75,30 @@ MongoClient.connect('mongodb://localhost:27017', (err, database) => {
         const token = req.headers['token'];
         verifiedForUserOperations(username, token, function (verified) {
             const newPass = req.body['newpassword'];
+            const oldPass = req.body['oldpassword'];
             if (verified) {
                 const filterschema = {
                     username: username,
                     token: token
                 };
                 db.collection('users').findOne(filterschema, function(dberr, dbres) {
-                    const newSaltedHash = crypto.pbkdf2Sync(newPass, dbres.salt, 1000, 64, 'sha512').toString('hex');
-                    db.collection('users').updateOne(filterschema, {
-                        $set: {
-                            saltedHashedPassword: newSaltedHash
-                        }
-                    }, function(innerdberr, innerdbres) {
-                        res.send({
-                            success: true
+                    const oldSaltedHash = crypto.pbkdf2Sync(oldPass, dbres.salt, 1000, 64, 'sha512').toString('hex');
+                    if (oldSaltedHash == dbres.saltedHashedPassword) {
+                        const newSaltedHash = crypto.pbkdf2Sync(newPass, dbres.salt, 1000, 64, 'sha512').toString('hex');
+                        db.collection('users').updateOne(filterschema, {
+                            $set: {
+                                saltedHashedPassword: newSaltedHash
+                            }
+                        }, function(innerdberr, innerdbres) {
+                            res.send({
+                                success: true
+                            });
                         });
-                    });
+                    } else {
+                        res.send({
+                            errormessage: 'Incorrect password.'
+                        });
+                    }
                 });
             } else {
                 res.send({

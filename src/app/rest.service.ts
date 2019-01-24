@@ -42,9 +42,10 @@ export class RestService {
     return this.http.get(endpoint + 'login', httpOptions).pipe(map(this.extractData));
   }
 
-  sendChangePasswordRequest(myNewPassword): Observable<any> {
+  sendChangePasswordRequest(myOldPassword, myNewPassword): Observable<any> {
     //Use PUT because we are requesting to modify the user object in database
     var body = {
+      oldpassword: myOldPassword,
       newpassword: myNewPassword
     };
     return this.http.put(endpoint + 'change-password', body, this.getHTTPOptions()).pipe(map(this.extractData));
