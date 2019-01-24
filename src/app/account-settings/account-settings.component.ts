@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators, FormGroupDirective } from '@angular/forms';
 import { RestService } from '../rest.service';
+import {MatDialog, MatDialogConfig, MatDialogRef} from "@angular/material";
+import { UserNotificationDialogComponent } from '../user-notification-dialog/user-notification-dialog.component';
 
 @Component({
   selector: 'app-account-settings',
@@ -12,11 +14,17 @@ export class AccountSettingsComponent implements OnInit {
   hidePassword1: boolean = true;
   hidePassword2: boolean = true;
   hidePassword3: boolean = true;
+  dialogRef: MatDialogRef<UserNotificationDialogComponent>;
 
-  constructor(private rest: RestService) { }
+  constructor(private rest: RestService, private dialog: MatDialog) { }
 
   ngOnInit() {
   }
+
+  openDialog() {
+    const dialogConfig = new MatDialogConfig();
+    this.dialogRef = this.dialog.open(UserNotificationDialogComponent, dialogConfig);
+}
 
   changePassword() {
     if (this.passwordsValid()) {
@@ -27,6 +35,7 @@ export class AccountSettingsComponent implements OnInit {
     } else {
       console.log("Passwords invalid.");
     }
+    this.openDialog();
   }
 
   deleteAccount() {

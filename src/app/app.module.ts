@@ -20,7 +20,8 @@ import { LogoutComponent } from './logout/logout.component';
 
 import {MatSelectModule} from '@angular/material/select'; 
 import {MatIconModule, MatIcon} from '@angular/material/icon';
-import { AccountSettingsComponent } from './account-settings/account-settings.component'; 
+import { AccountSettingsComponent } from './account-settings/account-settings.component';
+import { UserNotificationDialogComponent } from './user-notification-dialog/user-notification-dialog.component'; 
 
 const appRoutes: Routes = [
   { path: 'login', component: LoginComponent, data: { title: 'Log In' }, canActivate: [AlreadyLoggedInRouteGuardService] },
@@ -48,7 +49,8 @@ const appRoutes: Routes = [
     UserComponent,
     HomeComponent,
     LogoutComponent,
-    AccountSettingsComponent
+    AccountSettingsComponent,
+    UserNotificationDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -66,6 +68,7 @@ const appRoutes: Routes = [
     ReactiveFormsModule
   ],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  entryComponents: [UserNotificationDialogComponent]
 })
 export class AppModule { }
