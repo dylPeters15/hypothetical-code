@@ -27,7 +27,7 @@ export class AccountSettingsComponent implements OnInit {
   }
 
   deleteAccount() {
-
+    console.log(this.deleteForm.get('confirmDelete').value);
   }
 
   form = new FormGroup(
