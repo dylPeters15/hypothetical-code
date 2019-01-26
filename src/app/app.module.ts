@@ -21,7 +21,8 @@ import { LogoutComponent } from './logout/logout.component';
 import {MatSelectModule} from '@angular/material/select'; 
 import {MatIconModule, MatIcon} from '@angular/material/icon';
 import { AccountSettingsComponent } from './account-settings/account-settings.component';
-import { UserNotificationDialogComponent } from './user-notification-dialog/user-notification-dialog.component'; 
+import { UserNotificationDialogComponent } from './user-notification-dialog/user-notification-dialog.component';
+import { ManufacturingCalculatorComponent } from './manufacturing-calculator/manufacturing-calculator.component'; 
 
 const appRoutes: Routes = [
   { path: 'login', component: LoginComponent, data: { title: 'Log In' }, canActivate: [AlreadyLoggedInRouteGuardService] },
@@ -50,7 +51,8 @@ const appRoutes: Routes = [
     HomeComponent,
     LogoutComponent,
     AccountSettingsComponent,
-    UserNotificationDialogComponent
+    UserNotificationDialogComponent,
+    ManufacturingCalculatorComponent
   ],
   imports: [
     BrowserModule,
