@@ -14,9 +14,9 @@ export class ManufacturingCalculatorComponent implements OnInit {
   constructor(public rest:RestService, private route: ActivatedRoute, private router: Router) { }
 
   ngOnInit() {
-  this.rest.getGoals().subscribe(
+  this.rest.getGoals().subscribe(data => {
     this.goals = data;
-  );
+  });
   }
 
 }
