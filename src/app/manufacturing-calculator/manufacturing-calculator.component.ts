@@ -15,9 +15,7 @@ export class ManufacturingCalculatorComponent implements OnInit {
 
   ngOnInit() {
   this.rest.getGoals().subscribe(
-    (data:{}) => {
-      this.goals = data;
-    }
+    this.goals = data;
   );
   }
 
