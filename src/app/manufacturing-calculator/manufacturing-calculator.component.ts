@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import { RestService } from '../rest.service';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-manufacturing-calculator',
@@ -15,7 +16,7 @@ export class ManufacturingCalculatorComponent implements OnInit {
   ngOnInit() {
   this.rest.getGoals().subscribe(
     (data:{}) => {
-      goals = data;
+      this.goals = data;
     }
   );
   }
