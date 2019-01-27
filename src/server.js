@@ -8,7 +8,7 @@ const crypto = require('crypto');
 const app = express();
 var corsOptions = {
     origin: '*',
-    optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204 
+    optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
 }
 
 app.use(cors(corsOptions))
@@ -43,6 +43,13 @@ MongoClient.connect('mongodb://localhost:27017', (err, database) => {
             callback(false);
         }
     }
+
+    app.route('/api/v1/manufacturing-calculator').get((req,res) =>{
+      db.collection.find().toArray(function(err,results)){
+        res.send(results);
+      }
+    });
+
 
     app.route('/api/v1/login').get((req, res) => {
         let entered_username = req.headers['username'];
@@ -157,4 +164,3 @@ MongoClient.connect('mongodb://localhost:27017', (err, database) => {
     });
 
 });
-

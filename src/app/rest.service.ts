@@ -64,6 +64,10 @@ export class RestService {
     return this.http.delete(endpoint + 'delete-account', httpOptions).pipe(map(this.extractData));
   }
 
+  getGoals(): Observable<any> {
+    return this.http.get(endpoint + 'manufacturing-calculator')
+  }
+
   private handleError<T> (operation = 'operation', result?: T) {
     return (error: any): Observable<T> => {
 
