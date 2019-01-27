@@ -4,9 +4,15 @@
     font-size: 20px;
   }*/
 
-.sku-table {
+table {
   text-align: center;
-  width: auto;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+tr, td{
+  border: 1px solid black;
+  padding: 10px;
 }
 
 .goals-list{
