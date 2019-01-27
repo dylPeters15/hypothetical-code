@@ -48,7 +48,7 @@ MongoClient.connect('mongodb://localhost:27017', (err, database) => {
       db.collection.find().toArray(function(err,results) {
         res.send(results);
       });
-    }
+    });
 
 
     app.route('/api/v1/login').get((req, res) => {
