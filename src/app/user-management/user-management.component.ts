@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { RestService } from '../rest.service';
+import {MatSnackBar} from '@angular/material';
 
 /**
  * @title Table dynamically changing the columns displayed
@@ -11,7 +12,7 @@ import { RestService } from '../rest.service';
   })
 export class UserManagementComponent implements OnInit {
 
-  constructor(public rest:RestService) { }
+  constructor(public rest:RestService, private snackBar: MatSnackBar) { }
 
   displayedColumns: string[] = ['checked', 'username', 'actions'];
   data = [];
@@ -28,6 +29,12 @@ export class UserManagementComponent implements OnInit {
   deleteUser(username) {
     this.rest.sendAdminDeleteUserRequest(username).subscribe(response => {
       console.log(response);
+      this.snackBar.open("User " + username + " deleted successfully.", "close", {
+        duration: 2000,
+      });
+      this.data = this.data.filter((value, index, arr) => {
+        return value.username != username;
+      });
     })
   }
 
@@ -35,7 +42,11 @@ export class UserManagementComponent implements OnInit {
   }
 
   deleteSelected() {
-
+    this.data.forEach(user => {
+      if (user.checked) {
+        this.deleteUser(user.username);
+      }
+    });
   }
 
   deselectAll() {

@@ -15,7 +15,7 @@ import { AdminRouteGuardService } from './admin-route-guard.service';
 import { AlreadyLoggedInRouteGuardService } from './already-logged-in-route-guard.service';
 import { LogoutComponent } from './logout/logout.component';
 
-
+import {MatSnackBarModule} from '@angular/material';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import {MatSelectModule} from '@angular/material/select'; 
 import {MatIconModule, MatIcon} from '@angular/material/icon';
@@ -67,7 +67,8 @@ const appRoutes: Routes = [
     MatSelectModule,
     MatIconModule,
     ReactiveFormsModule,
-    MatCheckboxModule
+    MatCheckboxModule,
+    MatSnackBarModule
   ],
   providers: [],
   bootstrap: [AppComponent],
