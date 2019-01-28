@@ -19,10 +19,19 @@ export class UserManagementComponent implements OnInit {
 
   ngOnInit() {
     this.rest.sendUserListRequest().subscribe(response => {
-      this.data = response['userlist'];
+      this.data = response['userlist'].filter((value, index, arr) => {
+        return value.username != 'admin';
+      });
       this.data.forEach(user => {
         user['checked'] = false;
       });
+      this.sortData();
+    });
+  }
+
+  sortData() {
+    this.data.sort((a,b) => {
+      return a.username > b.username ? 1 : -1;
     });
   }
 
@@ -35,6 +44,7 @@ export class UserManagementComponent implements OnInit {
       this.data = this.data.filter((value, index, arr) => {
         return value.username != username;
       });
+      this.sortData();
     })
   }
 
