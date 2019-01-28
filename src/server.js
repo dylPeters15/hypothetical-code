@@ -184,5 +184,33 @@ MongoClient.connect('mongodb://localhost:27017', (err, database) => {
         });
     });
 
+    app.route('/api/v1/admin-delete-user').delete((req, res) => {
+        const username = req.headers['username'];
+        const token = req.headers['token'];
+        verifiedForAdminOperations(username, token, verified => {
+            if (!verified) {
+                res.send({
+                    errormessage: 'Not permitted to perform operation.'
+                });
+                return
+            }
+            const usernameToDelete = req.headers['usernametodelete'];
+            const filterschema = {
+                username: usernameToDelete
+            };
+            db.collection('users').deleteOne(filterschema, (dberr, dbres) => {
+                if (dberr) {
+                    res.send({
+                        errormessage: 'Unable to perform operation.'
+                    });
+                    return
+                }
+                res.send({
+                    success: true
+                });
+            });
+        });
+    });
+
 });
 

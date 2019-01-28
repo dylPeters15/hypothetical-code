@@ -26,13 +26,16 @@ export class UserManagementComponent implements OnInit {
   }
 
   deleteUser(username) {
-    console.log(username);
+    this.rest.sendAdminDeleteUserRequest(username).subscribe(response => {
+      console.log(response);
+    })
   }
 
   newUser() {
   }
 
   deleteSelected() {
+
   }
 
   deselectAll() {
