@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialogRef} from "@angular/material";
+import { RestService } from '../rest.service';
 
 @Component({
   selector: 'app-new-user-dialog',
@@ -12,7 +13,7 @@ export class NewUserDialogComponent implements OnInit {
   password: string = 'password';
   hidePassword: boolean = false;
 
-  constructor(private dialogRef: MatDialogRef<NewUserDialogComponent>) { }
+  constructor(private dialogRef: MatDialogRef<NewUserDialogComponent>, public rest:RestService) { }
 
   ngOnInit() {
   }
@@ -24,8 +25,9 @@ export class NewUserDialogComponent implements OnInit {
   }
 
   createUser() {
-    console.log("Username: " + this.username);
-    console.log("Password: " + this.password);
+    this.rest.adminCreateNewUser(this.username, this.password).subscribe(response => {
+      console.log(response);
+    });
   }
 
 }

@@ -4,6 +4,8 @@ var headerParser = require('header-parser');
 const bodyParser = require('body-parser');
 const MongoClient = require('mongodb').MongoClient
 const crypto = require('crypto');
+const database_library = require('./database.js');
+
 
 const app = express();
 var corsOptions = {
@@ -85,7 +87,7 @@ MongoClient.connect('mongodb://localhost:27017', (err, database) => {
                     username: username,
                     token: token
                 };
-                db.collection('users').findOne(filterschema, function(dberr, dbres) {
+                db.collection('users').findOne(filterschema, function (dberr, dbres) {
                     const oldSaltedHash = crypto.pbkdf2Sync(oldPass, dbres.salt, 1000, 64, 'sha512').toString('hex');
                     if (oldSaltedHash == dbres.saltedHashedPassword) {
                         const newSaltedHash = crypto.pbkdf2Sync(newPass, dbres.salt, 1000, 64, 'sha512').toString('hex');
@@ -93,7 +95,7 @@ MongoClient.connect('mongodb://localhost:27017', (err, database) => {
                             $set: {
                                 saltedHashedPassword: newSaltedHash
                             }
-                        }, function(innerdberr, innerdbres) {
+                        }, function (innerdberr, innerdbres) {
                             res.send({
                                 success: true
                             });
@@ -173,7 +175,7 @@ MongoClient.connect('mongodb://localhost:27017', (err, database) => {
                                 username: user['username']
                             });
                         });
-                        res.send({userlist: userlist});
+                        res.send({ userlist: userlist });
                     }
                 });
             } else {
@@ -209,6 +211,49 @@ MongoClient.connect('mongodb://localhost:27017', (err, database) => {
                     success: true
                 });
             });
+        });
+    });
+
+    app.route('/api/v1/create-user').post((req, res) => {
+        const adminusername = req.headers['username'];
+        const admintoken = req.headers['token'];
+        verifiedForAdminOperations(adminusername, admintoken, verified => {
+            if (!verified) {
+                res.send({
+                    errormessage: 'Not permitted to perform operation.'
+                });
+                return
+            }
+            let user_salt = crypto.randomBytes(16).toString('hex');
+            let username = req.body['username'];
+            let password = req.body['password'];
+            console.log(username);
+            console.log(password);
+            console.log(JSON.stringify(req.headers));
+            let user = database_library.userModel({
+                username: username,
+                salt: user_salt,
+                saltedHashedPassword: saltAndHash(password, user_salt),
+                token: crypto.randomBytes(16).toString('hex')
+            });
+            user.save().then(
+                doc => {
+                    res.send({
+                        success: true,
+                        doc: doc
+                    });
+                    console.log(doc);
+                    return;
+                }
+            ).catch(
+                err => {
+                    res.send({
+                        errormessage: "Unable to save user."
+                    });
+                    console.log(err);
+                    return;
+                }
+            );
         });
     });
 

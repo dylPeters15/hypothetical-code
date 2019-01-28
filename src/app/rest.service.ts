@@ -29,6 +29,13 @@ export class RestService {
     return httpOptions;
   }
 
+  adminCreateNewUser(username, password): Observable<any> {
+    return this.http.post(endpoint + 'create-user', {
+      username: username,
+      password: password
+    }, this.getHTTPOptions());
+  }
+
   sendLoginRequest(username, password): Observable<any> {
     //Use GET becuase we are requesting the user token
     let header:HttpHeaders = new HttpHeaders({
