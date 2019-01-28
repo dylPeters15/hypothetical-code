@@ -15,9 +15,8 @@ import { AdminRouteGuardService } from './admin-route-guard.service';
 import { AlreadyLoggedInRouteGuardService } from './already-logged-in-route-guard.service';
 import { UserComponent } from './user/user.component';
 import { LogoutComponent } from './logout/logout.component';
-
-
-
+import { IngredientDependencyComponent } from './ingredient-dependency-report/ingredient-dependency-report.component';
+import { MatTableModule } from '@angular/material';
 import {MatSelectModule} from '@angular/material/select'; 
 import {MatIconModule, MatIcon} from '@angular/material/icon';
 import { AccountSettingsComponent } from './account-settings/account-settings.component';
@@ -30,7 +29,7 @@ const appRoutes: Routes = [
   { path: 'account-settings', component: AccountSettingsComponent, data: { title: 'Account Settings' }, canActivate: [UserRouteGuardService] },
   { path: 'account-settings', component: HomeComponent, data: { title: 'Account Settings' }, canActivate: [UserRouteGuardService] },
   { path: 'manufacturing-calculator', component: HomeComponent, data: { title: 'Manufacturing Calculator' }, canActivate: [UserRouteGuardService] },
-  { path: 'ingredient-dependency-report', component: HomeComponent, data: { title: 'Ingredient Dependency Report' }, canActivate: [UserRouteGuardService] },
+  { path: 'ingredient-dependency-report', component: IngredientDependencyComponent, data: { title: 'Ingredient Dependency Report' }, canActivate: [UserRouteGuardService] },
   { path: 'manufacturing-goal', component: HomeComponent, data: { title: 'Manufacturing Goals' }, canActivate: [UserRouteGuardService] },
   { path: 'ingredient-inventory', component: HomeComponent, data: { title: 'Ingredient Inventory' }, canActivate: [AdminRouteGuardService] },
   { path: 'sku-inventory', component: HomeComponent, data: { title: 'SKU Inventory' }, canActivate: [AdminRouteGuardService] },
@@ -50,7 +49,8 @@ const appRoutes: Routes = [
     HomeComponent,
     LogoutComponent,
     AccountSettingsComponent,
-    UserNotificationDialogComponent
+    UserNotificationDialogComponent,
+    IngredientDependencyComponent
   ],
   imports: [
     BrowserModule,
@@ -64,6 +64,7 @@ const appRoutes: Routes = [
     AppRoutingModule,
     HttpClientModule,
     MatSelectModule,
+    MatTableModule,
     MatIconModule,
     ReactiveFormsModule
   ],
