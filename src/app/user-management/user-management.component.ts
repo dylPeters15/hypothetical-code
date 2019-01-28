@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { RestService } from '../rest.service';
 import {MatSnackBar} from '@angular/material';
-
+import { MatDialogRef, MatDialog, MatDialogConfig } from "@angular/material";
+import { NewUserDialogComponent } from '../new-user-dialog/new-user-dialog.component'
 /**
  * @title Table dynamically changing the columns displayed
  */
@@ -12,10 +13,11 @@ import {MatSnackBar} from '@angular/material';
   })
 export class UserManagementComponent implements OnInit {
 
-  constructor(public rest:RestService, private snackBar: MatSnackBar) { }
+  constructor(public rest:RestService, private snackBar: MatSnackBar, private dialog: MatDialog) { }
 
   displayedColumns: string[] = ['checked', 'username', 'actions'];
   data = [];
+  dialogRef: MatDialogRef<NewUserDialogComponent>;
 
   ngOnInit() {
     this.rest.sendUserListRequest().subscribe(response => {
@@ -27,6 +29,11 @@ export class UserManagementComponent implements OnInit {
       });
       this.sortData();
     });
+  }
+
+  openDialog() {
+    const dialogConfig = new MatDialogConfig();
+    this.dialogRef = this.dialog.open(NewUserDialogComponent, dialogConfig);
   }
 
   sortData() {
@@ -49,6 +56,7 @@ export class UserManagementComponent implements OnInit {
   }
 
   newUser() {
+    this.openDialog();
   }
 
   deleteSelected() {

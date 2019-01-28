@@ -21,7 +21,8 @@ import {MatSelectModule} from '@angular/material/select';
 import {MatIconModule, MatIcon} from '@angular/material/icon';
 import { AccountSettingsComponent } from './account-settings/account-settings.component';
 import { UserNotificationDialogComponent } from './user-notification-dialog/user-notification-dialog.component';
-import { UserManagementComponent } from './user-management/user-management.component'; 
+import { UserManagementComponent } from './user-management/user-management.component';
+import { NewUserDialogComponent } from './new-user-dialog/new-user-dialog.component'; 
 
 const appRoutes: Routes = [
   { path: 'login', component: LoginComponent, data: { title: 'Log In' }, canActivate: [AlreadyLoggedInRouteGuardService] },
@@ -51,7 +52,8 @@ const appRoutes: Routes = [
     LogoutComponent,
     AccountSettingsComponent,
     UserNotificationDialogComponent,
-    UserManagementComponent
+    UserManagementComponent,
+    NewUserDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -72,6 +74,6 @@ const appRoutes: Routes = [
   ],
   providers: [],
   bootstrap: [AppComponent],
-  entryComponents: [UserNotificationDialogComponent]
+  entryComponents: [UserNotificationDialogComponent, NewUserDialogComponent]
 })
 export class AppModule { }

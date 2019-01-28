@@ -1,0 +1,19 @@
+<h2 mat-dialog-title align="center">Create New User</h2>
+<mat-dialog-content align="center">
+  <mat-card>
+    <mat-card-content style="display: grid; width: 100%; justify-items: center;">
+      <mat-form-field>
+        <input matInput placeholder="Username" required>
+      </mat-form-field>
+
+      <mat-form-field>
+        <input matInput placeholder="Password">
+        <mat-hint>Optional. Default password is "password"</mat-hint>
+      </mat-form-field>
+    </mat-card-content>
+  </mat-card>
+</mat-dialog-content>
+<mat-dialog-actions align="center">
+  <button class="mat-raised-button" (click)="closeDialog()">Cancel</button>
+  <button class="mat-raised-button" (click)="createUser()">Create</button>
+</mat-dialog-actions>
