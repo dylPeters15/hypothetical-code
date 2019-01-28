@@ -19,4 +19,23 @@ export class UserManagementComponent {
     console.log(username);
   }
 
+  newUser() {
+  }
+
+  deleteSelected() {
+
+  }
+
+  deselectAll() {
+    this.data.forEach(user => {
+      user.checked = false;
+    });
+  }
+
+  selectAll() {
+    this.data.forEach(user => {
+      user.checked = true;
+    });
+  }
+
 }
