@@ -17,7 +17,7 @@ import { UserComponent } from './user/user.component';
 import { LogoutComponent } from './logout/logout.component';
 
 
-
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import {MatSelectModule} from '@angular/material/select'; 
 import {MatIconModule, MatIcon} from '@angular/material/icon';
 import { AccountSettingsComponent } from './account-settings/account-settings.component';
@@ -68,7 +68,8 @@ const appRoutes: Routes = [
     HttpClientModule,
     MatSelectModule,
     MatIconModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    MatCheckboxModule
   ],
   providers: [],
   bootstrap: [AppComponent],
