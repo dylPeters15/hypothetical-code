@@ -10,6 +10,7 @@ export class NewUserDialogComponent implements OnInit {
 
   username: string = '';
   password: string = 'password';
+  hidePassword: boolean = false;
 
   constructor(private dialogRef: MatDialogRef<NewUserDialogComponent>) { }
 
@@ -18,6 +19,8 @@ export class NewUserDialogComponent implements OnInit {
 
   closeDialog() {
     this.dialogRef.close();
+    this.username = '';
+    this.password = 'password';
   }
 
   createUser() {
