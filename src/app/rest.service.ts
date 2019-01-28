@@ -64,6 +64,10 @@ export class RestService {
     return this.http.delete(endpoint + 'delete-account', httpOptions).pipe(map(this.extractData));
   }
 
+  sendUserListRequest(): Observable<any> {
+    return this.http.get(endpoint + 'user-list', this.getHTTPOptions()).pipe(map(this.extractData));
+  }
+
   private handleError<T> (operation = 'operation', result?: T) {
     return (error: any): Observable<T> => {
   

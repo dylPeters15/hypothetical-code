@@ -9,9 +9,9 @@ const app = express();
 var corsOptions = {
     origin: '*',
     optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204 
-}
+};
 
-app.use(cors(corsOptions))
+app.use(cors(corsOptions));
 app.use(headerParser);
 app.use(bodyParser.json());
 
@@ -148,6 +148,34 @@ MongoClient.connect('mongodb://localhost:27017', (err, database) => {
                         }
                     }
                 })
+            } else {
+                res.send({
+                    errormessage: 'Not permitted to perform operation.'
+                });
+            }
+        });
+    });
+
+    app.route('/api/v1/user-list').get((req, res) => {
+        const username = req.headers['username'];
+        const token = req.headers['token'];
+        verifiedForAdminOperations(username, token, verified => {
+            if (verified) {
+                db.collection('users').find({}).toArray(function (err, results) {
+                    if (err) {
+                        res.send({
+                            errormessage: 'Error finding users.'
+                        });
+                    } else {
+                        var userlist = [];
+                        results.forEach(user => {
+                            userlist.push({
+                                username: user['username']
+                            });
+                        });
+                        res.send({userlist: userlist});
+                    }
+                });
             } else {
                 res.send({
                     errormessage: 'Not permitted to perform operation.'

@@ -13,7 +13,6 @@ import { NavigationComponent } from './navigation/navigation.component';
 import { UserRouteGuardService } from './user-route-guard.service';
 import { AdminRouteGuardService } from './admin-route-guard.service';
 import { AlreadyLoggedInRouteGuardService } from './already-logged-in-route-guard.service';
-import { UserComponent } from './user/user.component';
 import { LogoutComponent } from './logout/logout.component';
 
 
@@ -48,7 +47,6 @@ const appRoutes: Routes = [
     NavigationComponent,
     FooterComponent,
     LoginComponent,
-    UserComponent,
     HomeComponent,
     LogoutComponent,
     AccountSettingsComponent,

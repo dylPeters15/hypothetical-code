@@ -1,4 +1,5 @@
-import {Component} from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { RestService } from '../rest.service';
 
 /**
  * @title Table dynamically changing the columns displayed
@@ -8,12 +9,21 @@ import {Component} from '@angular/core';
     templateUrl: './user-management.component.html',
     styleUrls: ['./user-management.component.css']
   })
-export class UserManagementComponent {
+export class UserManagementComponent implements OnInit {
+
+  constructor(public rest:RestService) { }
+
   displayedColumns: string[] = ['checked', 'username', 'actions'];
-  data = [
-    {checked: true, username: 'asdf'},
-    {checked: false, username: 'qwerty'}
-  ];
+  data = [];
+
+  ngOnInit() {
+    this.rest.sendUserListRequest().subscribe(response => {
+      this.data = response['userlist'];
+      this.data.forEach(user => {
+        user['checked'] = false;
+      });
+    });
+  }
 
   deleteUser(username) {
     console.log(username);
@@ -23,7 +33,6 @@ export class UserManagementComponent {
   }
 
   deleteSelected() {
-
   }
 
   deselectAll() {
