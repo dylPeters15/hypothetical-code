@@ -29,6 +29,13 @@ export class RestService {
     return httpOptions;
   }
 
+  adminCreateNewUser(username, password): Observable<any> {
+    return this.http.post(endpoint + 'create-user', {
+      username: username,
+      password: password
+    }, this.getHTTPOptions());
+  }
+
   sendLoginRequest(username, password): Observable<any> {
     //Use GET becuase we are requesting the user token
     let header:HttpHeaders = new HttpHeaders({
@@ -62,6 +69,23 @@ export class RestService {
       headers: header
     };
     return this.http.delete(endpoint + 'delete-account', httpOptions).pipe(map(this.extractData));
+  }
+
+  sendUserListRequest(): Observable<any> {
+    return this.http.get(endpoint + 'user-list', this.getHTTPOptions()).pipe(map(this.extractData));
+  }
+
+  sendAdminDeleteUserRequest(usernameToDelete): Observable<any> {
+    let header:HttpHeaders = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'username': auth.getUsername(),
+      'token':auth.getToken(),
+      'usernametodelete': usernameToDelete
+    });
+    let httpOptions = {
+      headers: header
+    };
+    return this.http.delete(endpoint + 'admin-delete-user', httpOptions).pipe(map(this.extractData));
   }
 
   private handleError<T> (operation = 'operation', result?: T) {

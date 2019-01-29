@@ -13,18 +13,20 @@ import { NavigationComponent } from './navigation/navigation.component';
 import { UserRouteGuardService } from './user-route-guard.service';
 import { AdminRouteGuardService } from './admin-route-guard.service';
 import { AlreadyLoggedInRouteGuardService } from './already-logged-in-route-guard.service';
-import { UserComponent } from './user/user.component';
 import { LogoutComponent } from './logout/logout.component';
 
-
-
+import {MatSnackBarModule} from '@angular/material';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import {MatSelectModule} from '@angular/material/select'; 
 import {MatIconModule, MatIcon} from '@angular/material/icon';
 import { AccountSettingsComponent } from './account-settings/account-settings.component';
-import { UserNotificationDialogComponent } from './user-notification-dialog/user-notification-dialog.component'; 
+import { UserNotificationDialogComponent } from './user-notification-dialog/user-notification-dialog.component';
+import { UserManagementComponent } from './user-management/user-management.component';
+import { NewUserDialogComponent } from './new-user-dialog/new-user-dialog.component'; 
 
 const appRoutes: Routes = [
   { path: 'login', component: LoginComponent, data: { title: 'Log In' }, canActivate: [AlreadyLoggedInRouteGuardService] },
+  { path: 'user-management', component: UserManagementComponent, data: { title: 'User Management' }, canActivate: [AdminRouteGuardService] },
   { path: 'home', component: HomeComponent, data: { title: 'Home' }, canActivate: [UserRouteGuardService] },
   { path: 'user-management', component: HomeComponent, data: { title: 'User Management' }, canActivate: [AdminRouteGuardService] },
   { path: 'account-settings', component: AccountSettingsComponent, data: { title: 'Account Settings' }, canActivate: [UserRouteGuardService] },
@@ -46,11 +48,12 @@ const appRoutes: Routes = [
     NavigationComponent,
     FooterComponent,
     LoginComponent,
-    UserComponent,
     HomeComponent,
     LogoutComponent,
     AccountSettingsComponent,
-    UserNotificationDialogComponent
+    UserNotificationDialogComponent,
+    UserManagementComponent,
+    NewUserDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -65,10 +68,12 @@ const appRoutes: Routes = [
     HttpClientModule,
     MatSelectModule,
     MatIconModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    MatCheckboxModule,
+    MatSnackBarModule
   ],
   providers: [],
   bootstrap: [AppComponent],
-  entryComponents: [UserNotificationDialogComponent]
+  entryComponents: [UserNotificationDialogComponent, NewUserDialogComponent]
 })
 export class AppModule { }
