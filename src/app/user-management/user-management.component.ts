@@ -1,8 +1,16 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { RestService } from '../rest.service';
 import {MatSnackBar} from '@angular/material';
-import { MatDialogRef, MatDialog, MatDialogConfig } from "@angular/material";
+import { MatDialogRef, MatDialog, MatDialogConfig, MatTableDataSource, MatPaginator } from "@angular/material";
 import { NewUserDialogComponent } from '../new-user-dialog/new-user-dialog.component'
+import { AfterViewChecked } from '@angular/core';
+
+export interface UserForTable {
+  username: string;
+  checked: boolean;
+}
+
+
 /**
  * @title Table dynamically changing the columns displayed
  */
@@ -14,13 +22,19 @@ import { NewUserDialogComponent } from '../new-user-dialog/new-user-dialog.compo
 export class UserManagementComponent implements OnInit {
 
   constructor(public rest:RestService, private snackBar: MatSnackBar, private dialog: MatDialog) { }
-
+  allReplacement = 54321;
   displayedColumns: string[] = ['checked', 'username', 'actions'];
-  data = [];
+  data: UserForTable[] = [];
+  dataSource =  new MatTableDataSource<UserForTable>(this.data);
   dialogRef: MatDialogRef<NewUserDialogComponent>;
+  @ViewChild(MatPaginator) paginator: MatPaginator;
 
   ngOnInit() {
     this.refreshData();
+  }
+
+  getPageSizeOptions() {
+    return [5, 10, 20, this.allReplacement];
   }
 
   refreshData() {
@@ -32,7 +46,10 @@ export class UserManagementComponent implements OnInit {
         user['checked'] = false;
       });
       this.sortData();
+      this.dataSource =  new MatTableDataSource<UserForTable>(this.data);
+    this.dataSource.paginator = this.paginator;
     });
+    
   }
 
   openDialog() {
@@ -57,7 +74,7 @@ export class UserManagementComponent implements OnInit {
       this.data = this.data.filter((value, index, arr) => {
         return value.username != username;
       });
-      this.sortData();
+      this.refreshData();
     })
   }
 
@@ -83,6 +100,29 @@ export class UserManagementComponent implements OnInit {
     this.data.forEach(user => {
       user.checked = true;
     });
+  }
+
+  ngAfterViewChecked() {
+    const matOptions = document.querySelectorAll('mat-option');
+   
+   
+    // If the replacement element was found...
+    if (matOptions) {
+      const matOptionsLen = matOptions.length;
+      // We'll iterate the array backwards since the allReplacement should be at the end of the array
+      for (let i = matOptionsLen - 1; i >= 0; i--) {
+        const matOption = matOptions[i];
+   
+        // Store the span in a variable for re-use
+        const span = matOption.querySelector('span.mat-option-text');
+        // If the spans innerHTML string value is the same as the allReplacement variables string value...
+        if ('' + span.innerHTML === '' + this.allReplacement) {
+          // Change the span text to "All"
+          span.innerHTML = 'All';
+          break;
+        }
+      }
+    }
   }
 
 }
