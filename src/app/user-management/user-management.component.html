@@ -1,6 +1,6 @@
 <button mat-raised-button (click)="selectAll()"> Select All </button>
 <button mat-raised-button (click)="deselectAll()"> Deselect All </button>
-<button mat-raised-button (click)="deleteSelected()" style="color: white; background-color: red;"> Delete Selected </button>
+<button mat-raised-button (click)="deleteSelected()" style="color: white; background-color: red;" [disabled]="dataSource.data.length==0"> Delete Selected </button>
 <button mat-raised-button (click)="newUser()"> New User </button>
 
 <mat-table [dataSource]="dataSource" class="mat-elevation-z8">
