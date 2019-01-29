@@ -15,14 +15,15 @@ import { AdminRouteGuardService } from './admin-route-guard.service';
 import { AlreadyLoggedInRouteGuardService } from './already-logged-in-route-guard.service';
 import { LogoutComponent } from './logout/logout.component';
 
-import {MatSnackBarModule, MatPaginatorModule} from '@angular/material';
+import {MatSnackBarModule, MatPaginatorModule, MAT_DIALOG_DATA} from '@angular/material';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import {MatSelectModule} from '@angular/material/select'; 
 import {MatIconModule, MatIcon} from '@angular/material/icon';
 import { AccountSettingsComponent } from './account-settings/account-settings.component';
 import { UserNotificationDialogComponent } from './user-notification-dialog/user-notification-dialog.component';
 import { UserManagementComponent } from './user-management/user-management.component';
-import { NewUserDialogComponent } from './new-user-dialog/new-user-dialog.component'; 
+import { NewUserDialogComponent } from './new-user-dialog/new-user-dialog.component';
+import { PasswordConfirmationDialogComponent } from './password-confirmation-dialog/password-confirmation-dialog.component'; 
 
 const appRoutes: Routes = [
   { path: 'login', component: LoginComponent, data: { title: 'Log In' }, canActivate: [AlreadyLoggedInRouteGuardService] },
@@ -53,7 +54,8 @@ const appRoutes: Routes = [
     AccountSettingsComponent,
     UserNotificationDialogComponent,
     UserManagementComponent,
-    NewUserDialogComponent
+    NewUserDialogComponent,
+    PasswordConfirmationDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -75,6 +77,6 @@ const appRoutes: Routes = [
   ],
   providers: [],
   bootstrap: [AppComponent],
-  entryComponents: [UserNotificationDialogComponent, NewUserDialogComponent]
+  entryComponents: [UserNotificationDialogComponent, NewUserDialogComponent, PasswordConfirmationDialogComponent]
 })
 export class AppModule { }
