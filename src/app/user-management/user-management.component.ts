@@ -2,8 +2,9 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { RestService } from '../rest.service';
 import {MatSnackBar} from '@angular/material';
 import { MatDialogRef, MatDialog, MatDialogConfig, MatTableDataSource, MatPaginator } from "@angular/material";
-import { NewUserDialogComponent } from '../new-user-dialog/new-user-dialog.component'
+import { NewUserDialogComponent } from '../new-user-dialog/new-user-dialog.component';
 import { AfterViewChecked } from '@angular/core';
+import { PasswordConfirmationDialogComponent } from '../password-confirmation-dialog/password-confirmation-dialog.component';
 
 export interface UserForTable {
   username: string;
@@ -27,6 +28,7 @@ export class UserManagementComponent implements OnInit {
   data: UserForTable[] = [];
   dataSource =  new MatTableDataSource<UserForTable>(this.data);
   dialogRef: MatDialogRef<NewUserDialogComponent>;
+  passwordDialogRef: MatDialogRef<PasswordConfirmationDialogComponent>;
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
   ngOnInit() {
@@ -66,7 +68,7 @@ export class UserManagementComponent implements OnInit {
     });
   }
 
-  deleteUser(username) {
+  deleteUserConfirmed(username) {
     this.rest.sendAdminDeleteUserRequest(username).subscribe(response => {
       this.snackBar.open("User " + username + " deleted successfully.", "close", {
         duration: 2000,
@@ -75,7 +77,17 @@ export class UserManagementComponent implements OnInit {
         return value.username != username;
       });
       this.refreshData();
-    })
+    });
+  }
+
+  deleteUser(username) {
+    const dialogConfig = new MatDialogConfig();
+    this.passwordDialogRef = this.dialog.open(PasswordConfirmationDialogComponent, dialogConfig);
+    this.passwordDialogRef.afterClosed().subscribe(event => {
+      if (event.validated) {
+        this.deleteUserConfirmed(username);
+      }
+    });
   }
 
   newUser() {
@@ -83,9 +95,15 @@ export class UserManagementComponent implements OnInit {
   }
 
   deleteSelected() {
-    this.data.forEach(user => {
-      if (user.checked) {
-        this.deleteUser(user.username);
+    const dialogConfig = new MatDialogConfig();
+    this.passwordDialogRef = this.dialog.open(PasswordConfirmationDialogComponent, dialogConfig);
+    this.passwordDialogRef.afterClosed().subscribe(event => {
+      if (event.validated) {
+        this.data.forEach(user => {
+          if (user.checked) {
+            this.deleteUserConfirmed(user.username);
+          }
+        });
       }
     });
   }
