@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialogRef } from "@angular/material";
+import { RestService } from '../rest.service';
+import { auth } from '../auth.service';
 
 @Component({
   selector: 'app-password-confirmation-dialog',
@@ -8,7 +10,7 @@ import { MatDialogRef } from "@angular/material";
 })
 export class PasswordConfirmationDialogComponent implements OnInit {
 
-  constructor(private dialogRef: MatDialogRef<PasswordConfirmationDialogComponent>) { }
+  constructor(private dialogRef: MatDialogRef<PasswordConfirmationDialogComponent>, public rest:RestService) { }
 
   hidePassword: boolean = true;
   password: string = '';
@@ -21,7 +23,9 @@ export class PasswordConfirmationDialogComponent implements OnInit {
   }
 
   submit() {
-    this.dialogRef.close({validated:true});
+    this.rest.sendLoginRequest(auth.getUsername(), this.password).subscribe(response => {
+      this.dialogRef.close({validated:response['token']!=undefined});
+    })
   }
 
 }
