@@ -5,6 +5,8 @@ const bodyParser = require('body-parser');
 const MongoClient = require('mongodb').MongoClient
 const crypto = require('crypto');
 const database_library = require('./database.js');
+var fs = require('fs');
+var https = require('https');
 
 
 const app = express();
@@ -25,7 +27,10 @@ function saltAndHash(password, salt) {
 MongoClient.connect('mongodb://localhost:27017', (err, database) => {
     // ... start the server
     db = database.db('my-test-db'); // whatever your database name is
-    app.listen(8000, () => {
+    https.createServer({
+        key: fs.readFileSync('./ssl/privkey.pem'),
+        cert: fs.readFileSync('./ssl/fullchain.pem')
+    }, app).listen(8443, () => {
         console.log('Server started!');
     });
 
