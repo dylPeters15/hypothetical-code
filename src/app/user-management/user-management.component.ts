@@ -1,8 +1,15 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { RestService } from '../rest.service';
 import {MatSnackBar} from '@angular/material';
-import { MatDialogRef, MatDialog, MatDialogConfig } from "@angular/material";
+import { MatDialogRef, MatDialog, MatDialogConfig, MatTableDataSource, MatPaginator } from "@angular/material";
 import { NewUserDialogComponent } from '../new-user-dialog/new-user-dialog.component'
+
+export interface UserForTable {
+  username: string;
+  checked: boolean;
+}
+
+
 /**
  * @title Table dynamically changing the columns displayed
  */
@@ -16,8 +23,10 @@ export class UserManagementComponent implements OnInit {
   constructor(public rest:RestService, private snackBar: MatSnackBar, private dialog: MatDialog) { }
 
   displayedColumns: string[] = ['checked', 'username', 'actions'];
-  data = [];
+  data: UserForTable[] = [];
+  dataSource =  new MatTableDataSource<UserForTable>(this.data);
   dialogRef: MatDialogRef<NewUserDialogComponent>;
+  @ViewChild(MatPaginator) paginator: MatPaginator;
 
   ngOnInit() {
     this.refreshData();
@@ -32,7 +41,12 @@ export class UserManagementComponent implements OnInit {
         user['checked'] = false;
       });
       this.sortData();
+      this.dataSource =  new MatTableDataSource<UserForTable>(this.data);
+    this.dataSource.paginator = this.paginator;
+    console.log(this.data);
+    console.log(JSON.stringify(this.dataSource.data));
     });
+    
   }
 
   openDialog() {
@@ -57,7 +71,7 @@ export class UserManagementComponent implements OnInit {
       this.data = this.data.filter((value, index, arr) => {
         return value.username != username;
       });
-      this.sortData();
+      this.refreshData();
     })
   }
 
