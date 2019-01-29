@@ -51,7 +51,6 @@ export class UserManagementComponent implements OnInit {
 
   deleteUser(username) {
     this.rest.sendAdminDeleteUserRequest(username).subscribe(response => {
-      console.log(response);
       this.snackBar.open("User " + username + " deleted successfully.", "close", {
         duration: 2000,
       });
