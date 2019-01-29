@@ -20,6 +20,10 @@ export class UserManagementComponent implements OnInit {
   dialogRef: MatDialogRef<NewUserDialogComponent>;
 
   ngOnInit() {
+    this.refreshData();
+  }
+
+  refreshData() {
     this.rest.sendUserListRequest().subscribe(response => {
       this.data = response['userlist'].filter((value, index, arr) => {
         return value.username != 'admin';
@@ -34,6 +38,9 @@ export class UserManagementComponent implements OnInit {
   openDialog() {
     const dialogConfig = new MatDialogConfig();
     this.dialogRef = this.dialog.open(NewUserDialogComponent, dialogConfig);
+    this.dialogRef.afterClosed().subscribe(event => {
+      this.refreshData();
+    });
   }
 
   sortData() {

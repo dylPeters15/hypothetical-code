@@ -227,9 +227,6 @@ MongoClient.connect('mongodb://localhost:27017', (err, database) => {
             let user_salt = crypto.randomBytes(16).toString('hex');
             let username = req.body['username'];
             let password = req.body['password'];
-            console.log(username);
-            console.log(password);
-            console.log(JSON.stringify(req.headers));
             let user = database_library.userModel({
                 username: username,
                 salt: user_salt,

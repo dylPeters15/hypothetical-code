@@ -26,7 +26,12 @@ export class NewUserDialogComponent implements OnInit {
 
   createUser() {
     this.rest.adminCreateNewUser(this.username, this.password).subscribe(response => {
-      console.log(response);
+      this.closeDialog();
+      if (response['success']) {
+        
+      } else {
+
+      }
     });
   }
 
