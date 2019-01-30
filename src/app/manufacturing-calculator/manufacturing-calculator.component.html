@@ -1,9 +1,11 @@
 <div class="manufacturing-calculator">
   <title>Manufacturing Calculator</title>
   <h1> Select a Saved Manufacturing Goal:</h1>
-  <ul class="goals-list">
-      <li *ngFor="let goal of goals">{{goal.name}}</li>
-  </ul>
+  <form action="http://vcm-8238.vm.duke.edu:8000/api/v1/get-goal-by-name" target="result" method="get">
+    <select name="fruit">
+      <option *ngFor="let goal of goals" value ="{{goal.name}}">{{goal.name}}</option>
+    </select>
+  </form>
   <h1> Selected Goal:</h1>
   <table>
     <tr>
