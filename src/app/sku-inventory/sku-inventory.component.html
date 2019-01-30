@@ -1,15 +1,33 @@
 <div class="sku-inventory">
-  <title>Manufacturing Calculator</title>
-  <h1> Select a Saved Manufacturing Goal:</h1>
+  <title>Sku Inventory</title>
   <ul class="ingredients-list">
       <li *ngFor="let ingredient of ingredients">{{ingredient.name}}</li>
-      <li> yipee ki yay </li>
+      <li> example 1 </li>
   </ul>
-  <h1> Selected Goal:</h1>
+  
+  <div class="topnav">
+    <a class="active" href="#home">Home</a>
+    <a href="#about">About</a>
+    <a href="#contact">Contact</a>
+    <div class="search-container">
+      <form action="/action_page.php">
+        <input type="text" placeholder="Search.." name="search">
+        <button type="submit">Submit</button>
+      </form>
+    </div>
+  </div>
+
+  <h1> Skus</h1>
   <table>
     <tr>
-      <th>Ingredient</th>
-      <th>Number of Packages</th>
+      <th>Name   </th>
+      <th>   Sku#   </th>
+      <th>   Case UPC#   </th>
+      <th>   Unit UPC#   </th>
+      <th>   Unit size   </th>
+      <th>   Count per case   </th>
+      <th>   Product line   </th>
+      <th>   Ingredients   </th>
     </tr>
     <tr>
       <td>Flour</td>

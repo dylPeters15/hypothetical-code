@@ -75,7 +75,7 @@ MongoClient.connect('mongodb://localhost:27017', (err, database) => {
     });
 
     app.route('/api/v1/sku-inventory').get((req,res) =>{
-        db.collection('ingredient').find().toArray(function(err,results) {
+        db.collection('ingredients').find().toArray(function(err,results) {
           res.send(results);
         });
       });

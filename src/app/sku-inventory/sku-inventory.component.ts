@@ -16,6 +16,7 @@ export class SkuInventoryComponent implements OnInit {
   ngOnInit() {
   this.rest.getIngredients().subscribe(data => {
     this.ingredients = data;
+    console.log(data);
   });
   }
 
