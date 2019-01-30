@@ -64,9 +64,40 @@ var manufacturingGoalsSchema = new mongoose.Schema({
 })
 
 var goalsModel = mongoose.model('goal', manufacturingGoalsSchema);
+var ingredientSchema = mongoose.Schema({
+    name: {
+        type: String,
+        required: true,
+        unique: true
+    },
+    number: {
+        type: Number,
+        required: true,
+        unique: true
+    },
+    vendorInfo: {
+        type: String,
+        required: true
+    },
+    packageSize: {
+        type: String,
+        required: true
+    },
+    costPerPackage: {
+        type: String,
+        required: true
+    },
+    comments: {
+        type: String,
+        required: false
+    }
+});
+
+var ingredientModel = mongoose.model('ingredient', ingredientSchema); 
 
 module.exports = {
     Database: new Database(),
     userModel: userModel,
-    goalsModel: goalsModel
+    goalsModel: goalsModel,
+    ingredientModel: ingredientModel
 };

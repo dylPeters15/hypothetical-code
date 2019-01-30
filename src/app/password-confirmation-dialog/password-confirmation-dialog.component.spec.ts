@@ -1,11 +1,11 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { UserNotificationDialogComponent } from './user-notification-dialog.component';
+import { PasswordConfirmationDialogComponent } from './password-confirmation-dialog.component';
 import { AppModule } from '../app.module';
 
-describe('UserNotificationDialogComponent', () => {
-  let component: UserNotificationDialogComponent;
-  let fixture: ComponentFixture<UserNotificationDialogComponent>;
+describe('PasswordConfirmationDialogComponent', () => {
+  let component: PasswordConfirmationDialogComponent;
+  let fixture: ComponentFixture<PasswordConfirmationDialogComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -17,7 +17,7 @@ describe('UserNotificationDialogComponent', () => {
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(UserNotificationDialogComponent);
+    fixture = TestBed.createComponent(PasswordConfirmationDialogComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

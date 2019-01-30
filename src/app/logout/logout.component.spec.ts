@@ -1,6 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { LogoutComponent } from './logout.component';
+import { AppModule } from '../app.module';
 
 describe('LogoutComponent', () => {
   let component: LogoutComponent;
@@ -8,7 +9,9 @@ describe('LogoutComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ LogoutComponent ]
+      imports: [
+        AppModule
+      ]
     })
     .compileComponents();
   }));

@@ -4,7 +4,11 @@ import { Observable, of } from 'rxjs';
 import { map, catchError, tap } from 'rxjs/operators';
 import { auth } from './auth.service'
 
+<<<<<<< HEAD
 const endpoint = 'http://vcm-8238.vm.duke.edu:8000/api/v1/';
+=======
+const endpoint = 'https://localhost:8443/api/v1/';
+>>>>>>> f66f0a8dab5ca4a9e9bee89bd9a8548b49ad5271
 @Injectable({
   providedIn: 'root'
 })
@@ -27,6 +31,13 @@ export class RestService {
       headers: header
     };
     return httpOptions;
+  }
+
+  adminCreateNewUser(username, password): Observable<any> {
+    return this.http.post(endpoint + 'create-user', {
+      username: username,
+      password: password
+    }, this.getHTTPOptions());
   }
 
   sendLoginRequest(username, password): Observable<any> {
@@ -76,6 +87,23 @@ export class RestService {
       headers: header
     }
     return this.http.get(endpoint + 'get-goal-by-name', httpOptions)
+  }
+  
+  sendUserListRequest(): Observable<any> {
+    return this.http.get(endpoint + 'user-list', this.getHTTPOptions()).pipe(map(this.extractData));
+  }
+
+  sendAdminDeleteUserRequest(usernameToDelete): Observable<any> {
+    let header:HttpHeaders = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'username': auth.getUsername(),
+      'token':auth.getToken(),
+      'usernametodelete': usernameToDelete
+    });
+    let httpOptions = {
+      headers: header
+    };
+    return this.http.delete(endpoint + 'admin-delete-user', httpOptions).pipe(map(this.extractData));
   }
 
   private handleError<T> (operation = 'operation', result?: T) {

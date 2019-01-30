@@ -1,11 +1,11 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { UserNotificationDialogComponent } from './user-notification-dialog.component';
+import { UserManagementComponent } from './user-management.component';
 import { AppModule } from '../app.module';
 
-describe('UserNotificationDialogComponent', () => {
-  let component: UserNotificationDialogComponent;
-  let fixture: ComponentFixture<UserNotificationDialogComponent>;
+describe('UserManagementComponent', () => {
+  let component: UserManagementComponent;
+  let fixture: ComponentFixture<UserManagementComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -17,8 +17,12 @@ describe('UserNotificationDialogComponent', () => {
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(UserNotificationDialogComponent);
+    fixture = TestBed.createComponent(UserManagementComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
   });
 });
