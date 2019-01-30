@@ -40,9 +40,39 @@ var userSchema = new mongoose.Schema({
 });
 var userModel = mongoose.model('user', userSchema);
 
+var ingredientSchema = mongoose.Schema({
+    name: {
+        type: String,
+        required: true,
+        unique: true
+    },
+    number: {
+        type: Number,
+        required: true,
+        unique: true
+    },
+    vendorInfo: {
+        type: String,
+        required: true
+    },
+    packageSize: {
+        type: String,
+        required: true
+    },
+    costPerPackage: {
+        type: String,
+        required: true
+    },
+    comments: {
+        type: String,
+        required: false
+    }
+});
 
+var ingredientModel = mongoose.model('ingredient', ingredientSchema); 
 
 module.exports = {
     Database: new Database(),
-    userModel: userModel
+    userModel: userModel,
+    ingredientModel: ingredientModel
 };

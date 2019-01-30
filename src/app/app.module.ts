@@ -14,7 +14,8 @@ import { UserRouteGuardService } from './user-route-guard.service';
 import { AdminRouteGuardService } from './admin-route-guard.service';
 import { AlreadyLoggedInRouteGuardService } from './already-logged-in-route-guard.service';
 import { LogoutComponent } from './logout/logout.component';
-
+import { IngredientDependencyComponent } from './ingredient-dependency-report/ingredient-dependency-report.component';
+import { MatTableModule, MatSortModule } from '@angular/material';
 import {MatSnackBarModule, MatPaginatorModule, MAT_DIALOG_DATA} from '@angular/material';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import {MatSelectModule} from '@angular/material/select'; 
@@ -33,7 +34,7 @@ const appRoutes: Routes = [
   { path: 'account-settings', component: AccountSettingsComponent, data: { title: 'Account Settings' }, canActivate: [UserRouteGuardService] },
   { path: 'account-settings', component: HomeComponent, data: { title: 'Account Settings' }, canActivate: [UserRouteGuardService] },
   { path: 'manufacturing-calculator', component: HomeComponent, data: { title: 'Manufacturing Calculator' }, canActivate: [UserRouteGuardService] },
-  { path: 'ingredient-dependency-report', component: HomeComponent, data: { title: 'Ingredient Dependency Report' }, canActivate: [UserRouteGuardService] },
+  { path: 'ingredient-dependency-report', component: IngredientDependencyComponent, data: { title: 'Ingredient Dependency Report' }, canActivate: [UserRouteGuardService] },
   { path: 'manufacturing-goal', component: HomeComponent, data: { title: 'Manufacturing Goals' }, canActivate: [UserRouteGuardService] },
   { path: 'ingredient-inventory', component: HomeComponent, data: { title: 'Ingredient Inventory' }, canActivate: [AdminRouteGuardService] },
   { path: 'sku-inventory', component: HomeComponent, data: { title: 'SKU Inventory' }, canActivate: [AdminRouteGuardService] },
@@ -53,6 +54,7 @@ const appRoutes: Routes = [
     LogoutComponent,
     AccountSettingsComponent,
     UserNotificationDialogComponent,
+    IngredientDependencyComponent,
     UserManagementComponent,
     NewUserDialogComponent,
     PasswordConfirmationDialogComponent
@@ -69,6 +71,8 @@ const appRoutes: Routes = [
     AppRoutingModule,
     HttpClientModule,
     MatSelectModule,
+    MatTableModule,
+    MatSortModule,
     MatIconModule,
     ReactiveFormsModule,
     MatCheckboxModule,
