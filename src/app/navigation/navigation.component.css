@@ -13,10 +13,16 @@
     font-size: 16px;
 }
 
+
 .sidenav-content {
     text-align: center;
     background: #eaeeed;
     /* background-color: lightpink; */
     color: black;
     font-size: 16px;
+}
+
+.mat-sidenav-container {
+    min-height: 450px;
+    background-color: rgb(234, 238, 237)
 }
