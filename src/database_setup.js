@@ -19,7 +19,7 @@ admin.save().then(
     }
 );
 
-let testIngredient = new database_library.ingedientSchema({
+let testIngredient = new database_library.ingredientModel({
     name: 'Tomato',
     number: 10,
     venderInformation: 'hey jude, dont make it bad',

@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import {HttpClient} from '@angular/common/http';
+import { RestService } from '../rest.service';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-sku-inventory',
@@ -7,10 +9,14 @@ import { Router } from '@angular/router';
   styleUrls: ['./sku-inventory.component.css']
 })
 export class SkuInventoryComponent implements OnInit {
+  ingredients: any = [];
 
-  constructor(private router: Router) { }
+  constructor(public rest:RestService, private route: ActivatedRoute, private router: Router) { }
 
   ngOnInit() {
+  this.rest.getIngredients().subscribe(data => {
+    this.ingredients = data;
+  });
   }
 
 }

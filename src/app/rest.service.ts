@@ -88,6 +88,10 @@ export class RestService {
     return this.http.delete(endpoint + 'admin-delete-user', httpOptions).pipe(map(this.extractData));
   }
 
+  getIngredients(): Observable<any> {
+    return this.http.get(endpoint + 'sku-inventory')
+  }
+
   private handleError<T> (operation = 'operation', result?: T) {
     return (error: any): Observable<T> => {
   
