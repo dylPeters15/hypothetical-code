@@ -19,6 +19,24 @@ admin.save().then(
     }
 );
 
+let testIngredient = new database_library.ingedientSchema({
+    name: 'Tomato',
+    number: 10,
+    venderInformation: 'hey jude, dont make it bad',
+    packageSize: '60lb drum',
+    costPerPackage: '100',
+    comment: 'Take a sad song and make it better'
+  });
+  testIngredient.save().then(
+      doc => {
+          console.log(doc);
+      }
+  ).catch(
+      err => {
+          console.log(err);
+      }
+  );
+
 // let user1_salt = crypto.randomBytes(16).toString('hex');
 // let user1 = new database_library.userModel({
 //     username: 'user1',

@@ -19,7 +19,7 @@ class Database {
     }
 }
 
-var skuSchema = new mongoose.Schema({
+var ingedientSchema = new mongoose.Schema({
     name: {
       type: String,
       required: true,
@@ -52,7 +52,7 @@ var skuSchema = new mongoose.Schema({
       }
   })
 
-  var skuModel = mongoose.model('sku', skuSchema);
+  var ingredientModel = mongoose.model('ingredient', ingedientSchema);
 
 var userSchema = new mongoose.Schema({
     username: {
@@ -80,5 +80,5 @@ var userModel = mongoose.model('user', userSchema);
 module.exports = {
     Database: new Database(),
     userModel: userModel,
-    skuModel: skuModel
+    ingredientModel: ingredientModel
 };
