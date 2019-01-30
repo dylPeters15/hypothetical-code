@@ -1,5 +1,5 @@
 import { HttpClientModule } from '@angular/common/http';
-import { NgModule } from '@angular/core';
+import { NgModule, ViewChild } from '@angular/core';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule, Routes } from "@angular/router";
@@ -13,17 +13,22 @@ import { NavigationComponent } from './navigation/navigation.component';
 import { UserRouteGuardService } from './user-route-guard.service';
 import { AdminRouteGuardService } from './admin-route-guard.service';
 import { AlreadyLoggedInRouteGuardService } from './already-logged-in-route-guard.service';
-import { UserComponent } from './user/user.component';
 import { LogoutComponent } from './logout/logout.component';
 import { IngredientDependencyComponent } from './ingredient-dependency-report/ingredient-dependency-report.component';
 import { MatTableModule, MatSortModule } from '@angular/material';
+import {MatSnackBarModule, MatPaginatorModule, MAT_DIALOG_DATA} from '@angular/material';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import {MatSelectModule} from '@angular/material/select'; 
 import {MatIconModule, MatIcon} from '@angular/material/icon';
 import { AccountSettingsComponent } from './account-settings/account-settings.component';
-import { UserNotificationDialogComponent } from './user-notification-dialog/user-notification-dialog.component'; 
+import { UserNotificationDialogComponent } from './user-notification-dialog/user-notification-dialog.component';
+import { UserManagementComponent } from './user-management/user-management.component';
+import { NewUserDialogComponent } from './new-user-dialog/new-user-dialog.component';
+import { PasswordConfirmationDialogComponent } from './password-confirmation-dialog/password-confirmation-dialog.component'; 
 
 const appRoutes: Routes = [
   { path: 'login', component: LoginComponent, data: { title: 'Log In' }, canActivate: [AlreadyLoggedInRouteGuardService] },
+  { path: 'user-management', component: UserManagementComponent, data: { title: 'User Management' }, canActivate: [AdminRouteGuardService] },
   { path: 'home', component: HomeComponent, data: { title: 'Home' }, canActivate: [UserRouteGuardService] },
   { path: 'user-management', component: HomeComponent, data: { title: 'User Management' }, canActivate: [AdminRouteGuardService] },
   { path: 'account-settings', component: AccountSettingsComponent, data: { title: 'Account Settings' }, canActivate: [UserRouteGuardService] },
@@ -45,12 +50,14 @@ const appRoutes: Routes = [
     NavigationComponent,
     FooterComponent,
     LoginComponent,
-    UserComponent,
     HomeComponent,
     LogoutComponent,
     AccountSettingsComponent,
     UserNotificationDialogComponent,
-    IngredientDependencyComponent
+    IngredientDependencyComponent,
+    UserManagementComponent,
+    NewUserDialogComponent,
+    PasswordConfirmationDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -67,10 +74,13 @@ const appRoutes: Routes = [
     MatTableModule,
     MatSortModule,
     MatIconModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    MatCheckboxModule,
+    MatSnackBarModule,
+    MatPaginatorModule
   ],
   providers: [],
   bootstrap: [AppComponent],
-  entryComponents: [UserNotificationDialogComponent]
+  entryComponents: [UserNotificationDialogComponent, NewUserDialogComponent, PasswordConfirmationDialogComponent]
 })
 export class AppModule { }
