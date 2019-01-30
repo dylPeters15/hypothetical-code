@@ -16,7 +16,7 @@ import { AlreadyLoggedInRouteGuardService } from './already-logged-in-route-guar
 import { UserComponent } from './user/user.component';
 import { LogoutComponent } from './logout/logout.component';
 import { IngredientDependencyComponent } from './ingredient-dependency-report/ingredient-dependency-report.component';
-import { MatTableModule } from '@angular/material';
+import { MatTableModule, MatSortModule } from '@angular/material';
 import {MatSelectModule} from '@angular/material/select'; 
 import {MatIconModule, MatIcon} from '@angular/material/icon';
 import { AccountSettingsComponent } from './account-settings/account-settings.component';
@@ -65,6 +65,7 @@ const appRoutes: Routes = [
     HttpClientModule,
     MatSelectModule,
     MatTableModule,
+    MatSortModule,
     MatIconModule,
     ReactiveFormsModule
   ],

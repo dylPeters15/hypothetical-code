@@ -4,28 +4,31 @@
           <mat-card-title>Ingredient Dependency Report</mat-card-title>
       </mat-card-header>
       <mat-card-content>
-        <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
-          <!-- Position Column -->
+        <mat-form-field>
+          <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter">
+        </mat-form-field>
+        <table mat-table [dataSource]="dataSource" matSort (matSortChange)="sortData($event)" class="mat-elevation-z8">
+          <!-- Position Column
           <ng-container matColumnDef="completion">
             <th mat-header-cell *matHeaderCellDef> Completion Status </th>
             <td mat-cell *matCellDef="let element"> {{element.completion}} </td>
-          </ng-container>
+          </ng-container> -->
         
           <!-- Name Column -->
           <ng-container matColumnDef="ingredient">
-            <th mat-header-cell *matHeaderCellDef> Ingredient </th>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Ingredient </th>
             <td mat-cell *matCellDef="let element"> {{element.ingredient}} </td>
           </ng-container>
         
           <!-- Weight Column -->
           <ng-container matColumnDef="numberSKUs">
-            <th mat-header-cell *matHeaderCellDef> Number of SKUs </th>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Number of SKUs </th>
             <td mat-cell *matCellDef="let element"> {{element.numberSKUs}} </td>
           </ng-container>
         
           <!-- Symbol Column -->
           <ng-container matColumnDef="SKUs">
-            <th mat-header-cell *matHeaderCellDef> SKUs </th>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> SKUs </th>
             <td mat-cell *matCellDef="let element"> {{element.SKUs}} </td>
           </ng-container>
         
