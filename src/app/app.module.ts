@@ -51,7 +51,8 @@ const appRoutes: Routes = [
     HomeComponent,
     LogoutComponent,
     AccountSettingsComponent,
-    UserNotificationDialogComponent
+    UserNotificationDialogComponent,
+    SkuInventoryComponent
   ],
   imports: [
     BrowserModule,
