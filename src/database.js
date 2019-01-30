@@ -19,6 +19,41 @@ class Database {
     }
 }
 
+var skuSchema = new mongoose.Schema({
+    name: {
+      type: String,
+      required: true,
+      unique: true
+    },
+    number: {
+      type: Number,
+      required: true,
+      unique: true
+    },
+    venderInformation: {
+      type: String,
+      required: false,
+      unique: false
+    },
+    packageSize: {
+      type: String,
+      required: true,
+      unique: false
+    },
+    costPerPackage: {
+        type: Number,
+        required: true,
+        unique: false
+      },
+    comment: {
+        type: String,
+        required: false,
+        unique: false
+      }
+  })
+
+  var skuModel = mongoose.model('sku', skuSchema);
+
 var userSchema = new mongoose.Schema({
     username: {
         type: String,
@@ -44,5 +79,6 @@ var userModel = mongoose.model('user', userSchema);
 
 module.exports = {
     Database: new Database(),
-    userModel: userModel
+    userModel: userModel,
+    skuModel: skuModel
 };
