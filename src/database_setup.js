@@ -37,7 +37,6 @@ for (i = 0; i < 10; i++) {
     );
 }
 
-<<<<<<< HEAD
 let testGoal = new database_library.goalsModel({
   name: 'Goal-1',
   skus: [1,2,3,4,5],
@@ -70,5 +69,3 @@ testGoal.save().then(
 //         console.log(err);
 //     }
 // );
-=======
->>>>>>> f66f0a8dab5ca4a9e9bee89bd9a8548b49ad5271

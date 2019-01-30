@@ -12,13 +12,8 @@ var https = require('https');
 const app = express();
 var corsOptions = {
     origin: '*',
-<<<<<<< HEAD
-    optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
-}
-=======
     optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204 
 };
->>>>>>> f66f0a8dab5ca4a9e9bee89bd9a8548b49ad5271
 
 app.use(cors(corsOptions));
 app.use(headerParser);
