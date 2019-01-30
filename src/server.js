@@ -50,21 +50,15 @@ MongoClient.connect('mongodb://localhost:27017', (err, database) => {
       });
     });
 
-    app.route('api/v1/get-goal-by-name').get((req,res)) => {
-      let goalName = req.headers['name'];
-      db.collection('goals').find({
-        name: goalName
-      }).toArray(function(err,results)){
-        if(results.length == 1){
-          res.send(results);
-        }
-        else{
-          res.send({
-            message: "Could not find Goal Named " + goalName;
-          })
-        }
-      }
-    }
+    app.route('/api/v1/get-goal-by-name').get((req,res) => {
+        let goalName = req.headers['name'];
+        const filterschema = {
+            name: goalName
+        };
+        db.collection('goals').findOne(filterschema, function(err,results) {
+            res.send(results);
+        });
+    });
 
 
     app.route('/api/v1/login').get((req, res) => {

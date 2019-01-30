@@ -20,7 +20,7 @@ admin.save().then(
 );
 
 let testGoal = new database_library.goalsModel({
-  name: 'Goal 1',
+  name: 'Goal-1',
   skus: [1,2,3,4,5],
   quantities: [2.1,3.2,1.1,5,6],
   date: Date.now()

@@ -1,30 +1,25 @@
-<div class="manufacturing-calculator">
+
   <title>Manufacturing Calculator</title>
   <h1> Select a Saved Manufacturing Goal:</h1>
-  <form action="http://vcm-8238.vm.duke.edu:8000/api/v1/get-goal-by-name" target="result" method="get">
-    <select name="fruit">
-      <option *ngFor="let goal of goals" value ="{{goal.name}}">{{goal.name}}</option>
-    </select>
-  </form>
-  <h1> Selected Goal:</h1>
-  <table>
-    <tr>
-      <th>Ingredient</th>
-      <th>Number of Packages</th>
-    </tr>
-    <tr>
-      <td>Flour</td>
-      <td>6.5</td>
-    </tr>
-    <tr>
-      <td>Sugar</td>
-      <td>4</td>
-    </tr>
-    <tr>
-      <td>Chicken</td>
-      <td>3</td>
-    </tr>
-  </table>
-</div>
+  <mat-form-field>
+    <mat-select [(ngModel)]="selectedValue">
+      <mat-option *ngFor="let goal of goals" value ="{{goal.name}}">{{goal.name}}</mat-option>
+    </mat-select>
+    <br><br>
+  </mat-form-field>
+<button mat-raised-button (click)="getGoalByName(selectedValue)" color="primary">Show Details</button>
+<div [hidden]="!showDetails">
+<h1> {{selectedValue}}</h1>
+<table>
+  <tr>
+    <th>SKU</th>
+    <th>Quantity</th> 
+  </tr>
+  <tr *ngFor="let pair of data">
+    <th>{{pair.sku}}</th> 
+    <th>{{pair.quantity}}</th>
+  </tr>
+</table>
 <button mat-raised-button>Export to CSV</button>
 <button mat-raised-button>Export to PDF</button>
+</div>

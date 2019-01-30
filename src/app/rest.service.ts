@@ -68,6 +68,16 @@ export class RestService {
     return this.http.get(endpoint + 'manufacturing-calculator')
   }
 
+  getGoalByName(goalName): Observable<any>{
+    let header:HttpHeaders = new HttpHeaders({
+      'name': goalName
+    });
+    let httpOptions = {
+      headers: header
+    }
+    return this.http.get(endpoint + 'get-goal-by-name', httpOptions)
+  }
+
   private handleError<T> (operation = 'operation', result?: T) {
     return (error: any): Observable<T> => {
 
