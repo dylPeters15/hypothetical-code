@@ -4,14 +4,18 @@ var headerParser = require('header-parser');
 const bodyParser = require('body-parser');
 const MongoClient = require('mongodb').MongoClient
 const crypto = require('crypto');
+const database_library = require('./database.js');
+var fs = require('fs');
+var https = require('https');
+
 
 const app = express();
 var corsOptions = {
     origin: '*',
     optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204 
-}
+};
 
-app.use(cors(corsOptions))
+app.use(cors(corsOptions));
 app.use(headerParser);
 app.use(bodyParser.json());
 
@@ -23,7 +27,10 @@ function saltAndHash(password, salt) {
 MongoClient.connect('mongodb://localhost:27017', (err, database) => {
     // ... start the server
     db = database.db('my-test-db'); // whatever your database name is
-    app.listen(8000, () => {
+    https.createServer({
+        key: fs.readFileSync('./ssl/privkey.pem'),
+        cert: fs.readFileSync('./ssl/fullchain.pem')
+    }, app).listen(8443, () => {
         console.log('Server started!');
     });
 
@@ -91,7 +98,7 @@ MongoClient.connect('mongodb://localhost:27017', (err, database) => {
                     username: username,
                     token: token
                 };
-                db.collection('users').findOne(filterschema, function(dberr, dbres) {
+                db.collection('users').findOne(filterschema, function (dberr, dbres) {
                     const oldSaltedHash = crypto.pbkdf2Sync(oldPass, dbres.salt, 1000, 64, 'sha512').toString('hex');
                     if (oldSaltedHash == dbres.saltedHashedPassword) {
                         const newSaltedHash = crypto.pbkdf2Sync(newPass, dbres.salt, 1000, 64, 'sha512').toString('hex');
@@ -99,7 +106,7 @@ MongoClient.connect('mongodb://localhost:27017', (err, database) => {
                             $set: {
                                 saltedHashedPassword: newSaltedHash
                             }
-                        }, function(innerdberr, innerdbres) {
+                        }, function (innerdberr, innerdbres) {
                             res.send({
                                 success: true
                             });
@@ -159,6 +166,102 @@ MongoClient.connect('mongodb://localhost:27017', (err, database) => {
                     errormessage: 'Not permitted to perform operation.'
                 });
             }
+        });
+    });
+
+    app.route('/api/v1/user-list').get((req, res) => {
+        const username = req.headers['username'];
+        const token = req.headers['token'];
+        verifiedForAdminOperations(username, token, verified => {
+            if (verified) {
+                db.collection('users').find({}).toArray(function (err, results) {
+                    if (err) {
+                        res.send({
+                            errormessage: 'Error finding users.'
+                        });
+                    } else {
+                        var userlist = [];
+                        results.forEach(user => {
+                            userlist.push({
+                                username: user['username']
+                            });
+                        });
+                        res.send({ userlist: userlist });
+                    }
+                });
+            } else {
+                res.send({
+                    errormessage: 'Not permitted to perform operation.'
+                });
+            }
+        });
+    });
+
+    app.route('/api/v1/admin-delete-user').delete((req, res) => {
+        const username = req.headers['username'];
+        const token = req.headers['token'];
+        verifiedForAdminOperations(username, token, verified => {
+            if (!verified) {
+                res.send({
+                    errormessage: 'Not permitted to perform operation.'
+                });
+                return
+            }
+            const usernameToDelete = req.headers['usernametodelete'];
+            const filterschema = {
+                username: usernameToDelete
+            };
+            db.collection('users').deleteOne(filterschema, (dberr, dbres) => {
+                if (dberr) {
+                    res.send({
+                        errormessage: 'Unable to perform operation.'
+                    });
+                    return
+                }
+                res.send({
+                    success: true
+                });
+            });
+        });
+    });
+
+    app.route('/api/v1/create-user').post((req, res) => {
+        const adminusername = req.headers['username'];
+        const admintoken = req.headers['token'];
+        verifiedForAdminOperations(adminusername, admintoken, verified => {
+            if (!verified) {
+                res.send({
+                    errormessage: 'Not permitted to perform operation.'
+                });
+                return
+            }
+            let user_salt = crypto.randomBytes(16).toString('hex');
+            let username = req.body['username'];
+            let password = req.body['password'];
+            let user = database_library.userModel({
+                username: username,
+                salt: user_salt,
+                saltedHashedPassword: saltAndHash(password, user_salt),
+                token: crypto.randomBytes(16).toString('hex')
+            });
+            user.save().then(
+                doc => {
+                    res.send({
+                        success: true,
+                        doc: doc
+                    });
+                    console.log(doc);
+                    return;
+                }
+            ).catch(
+                err => {
+                    res.send({
+                        errormessage: "Unable to save user."
+                    });
+                    console.log(err);
+                    return;
+                }
+            );
         });
     });
 
