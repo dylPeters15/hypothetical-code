@@ -1,6 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { NewUserDialogComponent } from './new-user-dialog.component';
+import { AppModule } from '../app.module';
 
 describe('NewUserDialogComponent', () => {
   let component: NewUserDialogComponent;
@@ -8,7 +9,9 @@ describe('NewUserDialogComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ NewUserDialogComponent ]
+      imports: [
+        AppModule
+      ]
     })
     .compileComponents();
   }));

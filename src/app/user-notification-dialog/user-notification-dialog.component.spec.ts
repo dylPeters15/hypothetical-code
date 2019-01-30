@@ -1,6 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { UserNotificationDialogComponent } from './user-notification-dialog.component';
+import { AppModule } from '../app.module';
 
 describe('UserNotificationDialogComponent', () => {
   let component: UserNotificationDialogComponent;
@@ -8,7 +9,9 @@ describe('UserNotificationDialogComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ UserNotificationDialogComponent ]
+      imports: [
+        AppModule
+      ]
     })
     .compileComponents();
   }));
