@@ -22,6 +22,7 @@ export class SkuQuantityTable{
 export class ManufacturingCalculatorComponent implements OnInit {
   goals: any = [];
   selectedGoal: any;
+  displayedColumns: string[] = ['sku', 'quantity'];
   data: SkuQuantityTable[] = [];
   dataSource = new MatTableDataSource<SkuQuantityTable>(this.data);
   showDetails:boolean = false;
