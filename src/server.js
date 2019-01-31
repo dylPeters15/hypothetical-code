@@ -22,18 +22,17 @@ app.use(bodyParser.json());
 function saltAndHash(password, salt) {
     return crypto.pbkdf2Sync(password, salt, 1000, 64, 'sha512').toString('hex');
 }
-
-
+let server = https.createServer({
+    key: fs.readFileSync('./ssl/privkey.pem'),
+    cert: fs.readFileSync('./ssl/fullchain.pem')
+}, app).listen(8443, () => {
+    console.log('Server started!');
+});
+module.exports = server;
 MongoClient.connect('mongodb://localhost:27017', (err, database) => {
     // ... start the server
     db = database.db('my-test-db'); // whatever your database name is
-    https.createServer({
-        key: fs.readFileSync('./ssl/privkey.pem'),
-        cert: fs.readFileSync('./ssl/fullchain.pem')
-    }, app).listen(8443, () => {
-        console.log('Server started!');
-    });
-
+    
     function verifiedForUserOperations(entered_username, entered_token, callback) {
         db.collection('users').find({
             username: entered_username,
@@ -51,6 +50,23 @@ MongoClient.connect('mongodb://localhost:27017', (err, database) => {
         }
     }
 
+    app.route('/api/v1/manufacturing-calculator').get((req,res) =>{
+      db.collection('goals').find().toArray(function(err,results) {
+        res.send(results);
+      });
+    });
+
+    app.route('/api/v1/get-goal-by-name').get((req,res) => {
+        let goalName = req.headers['name'];
+        const filterschema = {
+            name: goalName
+        };
+        db.collection('goals').findOne(filterschema, function(err,results) {
+            res.send(results);
+        });
+    });
+
+
     app.route('/api/v1/login').get((req, res) => {
         let entered_username = req.headers['username'];
         let entered_password = req.headers['password'];
@@ -63,18 +79,18 @@ MongoClient.connect('mongodb://localhost:27017', (err, database) => {
                 let enteredSaltedHashedPassword = crypto.pbkdf2Sync(entered_password, user.salt, 1000, 64, 'sha512').toString('hex');
                 if (enteredSaltedHashedPassword === user.saltedHashedPassword) {
                     //return token
-                    res.send({
+                    res.status(200).send({
                         token: user.token
                     });
                 } else {
                     //incorrect password
-                    res.send({
+                    res.status(403).send({
                         message: "Incorrect password."
                     });
                 }
             } else {
                 //incorrect username
-                res.send({
+                res.status(403).send({
                     message: "Incorrect username."
                 });
             }
@@ -260,4 +276,3 @@ MongoClient.connect('mongodb://localhost:27017', (err, database) => {
     });
 
 });
-

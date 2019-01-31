@@ -40,6 +40,30 @@ var userSchema = new mongoose.Schema({
 });
 var userModel = mongoose.model('user', userSchema);
 
+var manufacturingGoalsSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: true,
+    unique: true
+  },
+  skus: {
+    type: [Number],
+    required: true,
+    unique: false
+  },
+  quantities: {
+    type: [Number],
+    required: true,
+    unique: false
+  },
+  date: {
+    type: Date,
+    required: true,
+    unique: true
+  }
+})
+
+var goalsModel = mongoose.model('goal', manufacturingGoalsSchema);
 var ingredientSchema = mongoose.Schema({
     name: {
         type: String,
@@ -74,5 +98,6 @@ var ingredientModel = mongoose.model('ingredient', ingredientSchema);
 module.exports = {
     Database: new Database(),
     userModel: userModel,
+    goalsModel: goalsModel,
     ingredientModel: ingredientModel
 };

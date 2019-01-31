@@ -1,0 +1,25 @@
+
+  <title>Manufacturing Calculator</title>
+  <h1> Select a Saved Manufacturing Goal:</h1>
+  <mat-form-field>
+    <mat-select [(ngModel)]="selectedValue">
+      <mat-option *ngFor="let goal of goals" value ="{{goal.name}}">{{goal.name}}</mat-option>
+    </mat-select>
+    <br><br>
+  </mat-form-field>
+<button mat-raised-button (click)="getGoalByName(selectedValue)" color="primary">Show Details</button>
+<div [hidden]="!showDetails">
+<h1> {{selectedValue}}</h1>
+<table>
+  <tr>
+    <th>SKU</th>
+    <th>Quantity</th> 
+  </tr>
+  <tr *ngFor="let pair of data">
+    <th>{{pair.sku}}</th> 
+    <th>{{pair.quantity}}</th>
+  </tr>
+</table>
+<button mat-raised-button>Export to CSV</button>
+<button mat-raised-button>Export to PDF</button>
+</div>

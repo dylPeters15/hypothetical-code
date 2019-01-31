@@ -1,6 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { PasswordConfirmationDialogComponent } from './password-confirmation-dialog.component';
+import { AppModule } from '../app.module';
 
 describe('PasswordConfirmationDialogComponent', () => {
   let component: PasswordConfirmationDialogComponent;
@@ -8,7 +9,9 @@ describe('PasswordConfirmationDialogComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ PasswordConfirmationDialogComponent ]
+      imports: [
+        AppModule
+      ]
     })
     .compileComponents();
   }));
@@ -17,9 +20,5 @@ describe('PasswordConfirmationDialogComponent', () => {
     fixture = TestBed.createComponent(PasswordConfirmationDialogComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
-  });
-
-  it('should create', () => {
-    expect(component).toBeTruthy();
   });
 });
