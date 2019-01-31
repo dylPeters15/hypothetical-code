@@ -27,7 +27,8 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { UserManagementComponent } from './user-management/user-management.component';
 import { NewUserDialogComponent } from './new-user-dialog/new-user-dialog.component';
 import { PasswordConfirmationDialogComponent } from './password-confirmation-dialog/password-confirmation-dialog.component';
-import { PrivacyPolicyDialogComponent } from './privacy-policy-dialog/privacy-policy-dialog.component'; 
+import { PrivacyPolicyDialogComponent } from './privacy-policy-dialog/privacy-policy-dialog.component';
+import { TermsAndConditionsDialogComponent } from './terms-and-conditions-dialog/terms-and-conditions-dialog.component'; 
 
 const appRoutes: Routes = [
   { path: 'login', component: LoginComponent, data: { title: 'Log In' }, canActivate: [AlreadyLoggedInRouteGuardService] },
@@ -62,7 +63,8 @@ const appRoutes: Routes = [
     UserManagementComponent,
     NewUserDialogComponent,
     PasswordConfirmationDialogComponent,
-    PrivacyPolicyDialogComponent
+    PrivacyPolicyDialogComponent,
+    TermsAndConditionsDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -86,6 +88,6 @@ const appRoutes: Routes = [
   ],
   providers: [],
   bootstrap: [AppComponent],
-  entryComponents: [UserNotificationDialogComponent, NewUserDialogComponent, PasswordConfirmationDialogComponent, PrivacyPolicyDialogComponent]
+  entryComponents: [UserNotificationDialogComponent, NewUserDialogComponent, PasswordConfirmationDialogComponent, PrivacyPolicyDialogComponent, TermsAndConditionsDialogComponent]
 })
 export class AppModule { }

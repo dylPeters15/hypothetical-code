@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {MatDialog, MatDialogConfig, MatDialogRef} from "@angular/material";
 import { PrivacyPolicyDialogComponent } from '../privacy-policy-dialog/privacy-policy-dialog.component';
+import { TermsAndConditionsDialogComponent } from '../terms-and-conditions-dialog/terms-and-conditions-dialog.component';
 
 @Component({
   selector: 'app-footer',
@@ -20,7 +21,8 @@ export class FooterComponent implements OnInit {
   }
 
   openTermsAndConditions() {
-
+    const dialogConfig = new MatDialogConfig();
+    this.dialog.open(TermsAndConditionsDialogComponent, dialogConfig);
   }
 
 }
