@@ -79,18 +79,18 @@ MongoClient.connect('mongodb://localhost:27017', (err, database) => {
                 let enteredSaltedHashedPassword = crypto.pbkdf2Sync(entered_password, user.salt, 1000, 64, 'sha512').toString('hex');
                 if (enteredSaltedHashedPassword === user.saltedHashedPassword) {
                     //return token
-                    res.status(200).send({
+                    res.send({
                         token: user.token
                     });
                 } else {
                     //incorrect password
-                    res.status(403).send({
+                    res.send({
                         message: "Incorrect password."
                     });
                 }
             } else {
                 //incorrect username
-                res.status(403).send({
+                res.send({
                     message: "Incorrect username."
                 });
             }
