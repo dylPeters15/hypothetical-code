@@ -26,7 +26,9 @@ import {MatSnackBarModule, MatPaginatorModule, MAT_DIALOG_DATA} from '@angular/m
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { UserManagementComponent } from './user-management/user-management.component';
 import { NewUserDialogComponent } from './new-user-dialog/new-user-dialog.component';
-import { PasswordConfirmationDialogComponent } from './password-confirmation-dialog/password-confirmation-dialog.component'; 
+import { PasswordConfirmationDialogComponent } from './password-confirmation-dialog/password-confirmation-dialog.component';
+import { PrivacyPolicyDialogComponent } from './privacy-policy-dialog/privacy-policy-dialog.component'; 
+
 const appRoutes: Routes = [
   { path: 'login', component: LoginComponent, data: { title: 'Log In' }, canActivate: [AlreadyLoggedInRouteGuardService] },
   { path: 'user-management', component: UserManagementComponent, data: { title: 'User Management' }, canActivate: [AdminRouteGuardService] },
@@ -59,7 +61,8 @@ const appRoutes: Routes = [
     IngredientDependencyComponent,
     UserManagementComponent,
     NewUserDialogComponent,
-    PasswordConfirmationDialogComponent
+    PasswordConfirmationDialogComponent,
+    PrivacyPolicyDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -83,6 +86,6 @@ const appRoutes: Routes = [
   ],
   providers: [],
   bootstrap: [AppComponent],
-  entryComponents: [UserNotificationDialogComponent, NewUserDialogComponent, PasswordConfirmationDialogComponent]
+  entryComponents: [UserNotificationDialogComponent, NewUserDialogComponent, PasswordConfirmationDialogComponent, PrivacyPolicyDialogComponent]
 })
 export class AppModule { }
