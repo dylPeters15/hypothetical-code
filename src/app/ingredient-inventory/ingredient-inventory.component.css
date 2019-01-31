@@ -1,0 +1,3 @@
+.mat-card-content>:last-child:not(.mat-card-footer), .mat-card>:last-child:not(.mat-card-footer) {
+    width: 100%;
+}

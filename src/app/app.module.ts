@@ -15,6 +15,7 @@ import { AdminRouteGuardService } from './admin-route-guard.service';
 import { AlreadyLoggedInRouteGuardService } from './already-logged-in-route-guard.service';
 import { LogoutComponent } from './logout/logout.component';
 import { IngredientDependencyComponent } from './ingredient-dependency-report/ingredient-dependency-report.component';
+import { IngredientInventoryComponent } from './ingredient-inventory/ingredient-inventory.component';
 import { MatTableModule, MatSortModule } from '@angular/material';
 import {MatSnackBarModule, MatPaginatorModule, MAT_DIALOG_DATA} from '@angular/material';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -36,7 +37,7 @@ const appRoutes: Routes = [
   { path: 'manufacturing-calculator', component: HomeComponent, data: { title: 'Manufacturing Calculator' }, canActivate: [UserRouteGuardService] },
   { path: 'ingredient-dependency-report', component: IngredientDependencyComponent, data: { title: 'Ingredient Dependency Report' }, canActivate: [UserRouteGuardService] },
   { path: 'manufacturing-goal', component: HomeComponent, data: { title: 'Manufacturing Goals' }, canActivate: [UserRouteGuardService] },
-  { path: 'ingredient-inventory', component: HomeComponent, data: { title: 'Ingredient Inventory' }, canActivate: [AdminRouteGuardService] },
+  { path: 'ingredient-inventory', component: IngredientInventoryComponent, data: { title: 'Ingredient Inventory' }, canActivate: [AdminRouteGuardService] },
   { path: 'sku-inventory', component: HomeComponent, data: { title: 'SKU Inventory' }, canActivate: [AdminRouteGuardService] },
   { path: 'product-line-inventory', component: HomeComponent, data: { title: 'Product Line Inventory' }, canActivate: [AdminRouteGuardService] },
   { path: 'import-export', component: HomeComponent, data: { title: 'Import Export' }, canActivate: [AdminRouteGuardService] },
@@ -57,7 +58,8 @@ const appRoutes: Routes = [
     IngredientDependencyComponent,
     UserManagementComponent,
     NewUserDialogComponent,
-    PasswordConfirmationDialogComponent
+    PasswordConfirmationDialogComponent,
+    IngredientInventoryComponent
   ],
   imports: [
     BrowserModule,

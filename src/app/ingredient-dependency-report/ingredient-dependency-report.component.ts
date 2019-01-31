@@ -1,14 +1,14 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {MatSort, MatTableDataSource} from '@angular/material';
 
-export interface IngredientData {
+export interface IngredientDependencyData {
   // completion: boolean;
   ingredient: string;
   numberSKUs: number;
   SKUs: string;
 }
 
-const INGREDIENT_DATA: IngredientData[] = [
+const INGREDIENT_DATA: IngredientDependencyData[] = [
   // {completion: false, ingredient: 'Chicken', numberSKUs: 2, SKUs: 'Chicken Noodle Soup; Chicken Tenders'},
   // {completion: false, ingredient: 'Salt', numberSKUs: 2, SKUs: 'Chicken Noodle Soup; Tortillas'},
   // {completion: false, ingredient: 'Flour', numberSKUs: 1, SKUs: 'Tortillas'}

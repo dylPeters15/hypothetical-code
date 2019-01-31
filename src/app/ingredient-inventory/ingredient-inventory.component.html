@@ -1,0 +1,47 @@
+<div>
+    <mat-card class="example">
+        <mat-card-header style="align-content: center; align-items: center; justify-content: center; display: grid;">
+            <mat-card-title>Ingredient Inventory</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <mat-form-field>
+            <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter">
+          </mat-form-field>
+          <table mat-table [dataSource]="dataSource" matSort (matSortChange)="sortData($event)" class="mat-elevation-z8">
+
+            <ng-container matColumnDef="name">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Name </th>
+              <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="number">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Number  </th>
+              <td mat-cell *matCellDef="let element"> {{element.number}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="vendorInfo">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Vendor </th>
+              <td mat-cell *matCellDef="let element"> {{element.vendorInfo}} </td>
+            </ng-container>
+          
+            <ng-container matColumnDef="packageSize">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Package Size </th>
+                <td mat-cell *matCellDef="let element"> {{element.packageSize}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="cost">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Cost Per Package </th>
+                <td mat-cell *matCellDef="let element"> {{element.cost}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="comment">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Comment </th>
+                <td mat-cell *matCellDef="let element"> {{element.comment}} </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+          </table>
+        </mat-card-content>
+    </mat-card>
+  </div>
