@@ -39,6 +39,8 @@
     "commander": "^2.19.0",
     "core-js": "^2.5.4",
     "cors": "^2.8.5",
+    "csv": "^5.1.1",
+    "export-to-csv": "^0.2.1",
     "express": "^4.16.4",
     "hammerjs": "^2.0.8",
     "header-parser": "^1.0.0",

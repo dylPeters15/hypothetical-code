@@ -2,6 +2,7 @@ import { Component, OnInit,ViewChild } from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import { RestService } from '../rest.service';
 import { ActivatedRoute, Router } from '@angular/router';
+import {ExportToCsv} from 'export-to-csv';
 import { MatDialogRef, MatDialog, MatDialogConfig, MatTableDataSource } from "@angular/material";
 
 export class SkuQuantityTable{
@@ -22,6 +23,7 @@ export class SkuQuantityTable{
 export class ManufacturingCalculatorComponent implements OnInit {
   goals: any = [];
   selectedGoal: any;
+  displayedColumns: string[] = ['sku', 'quantity'];
   data: SkuQuantityTable[] = [];
   dataSource = new MatTableDataSource<SkuQuantityTable>(this.data);
   showDetails:boolean = false;
@@ -54,6 +56,22 @@ export class ManufacturingCalculatorComponent implements OnInit {
       console.log(this.data.length);
       this.dataSource = new MatTableDataSource<SkuQuantityTable>(this.data);
     });
+  }
+
+  exportToCsv() {
+    const options = { 
+      fieldSeparator: ',',
+      quoteStrings: '"',
+      decimalSeparator: '.',
+      showLabels: true, 
+      showTitle: true,
+      title: 'Calculation Result',
+      useTextFile: false,
+      useBom: true,
+      useKeysAsHeaders: true,
+    };
+    const csvExporter = new ExportToCsv(options);
+    csvExporter.generateCsv(this.data);
   }
 
 }
