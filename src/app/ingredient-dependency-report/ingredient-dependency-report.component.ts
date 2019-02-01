@@ -1,5 +1,5 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
-import {MatSort, MatTableDataSource} from '@angular/material';
+import {Component, OnInit, ViewChild, Inject} from '@angular/core';
+import {MatSort, MatTableDataSource, MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material';
 
 export interface IngredientDependencyData {
   // completion: boolean;

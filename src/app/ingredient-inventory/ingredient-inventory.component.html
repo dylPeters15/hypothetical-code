@@ -4,6 +4,9 @@
             <mat-card-title>Ingredient Inventory</mat-card-title>
         </mat-card-header>
         <mat-card-content>
+          <button mat-raised-button (click)="openDialog()"> Add </button>
+          <button mat-button (click)="openDialog()"> Modify Selected </button>
+          <button mat-button (click)="openDialog()"> Remove Selected </button>
           <mat-form-field>
             <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter">
           </mat-form-field>

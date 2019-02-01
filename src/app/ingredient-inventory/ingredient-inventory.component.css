@@ -1,3 +1,12 @@
 .mat-card-content>:last-child:not(.mat-card-footer), .mat-card>:last-child:not(.mat-card-footer) {
     width: 100%;
 }
+
+.mat-dialog-container {
+    width: 700px;
+    align-self: center;
+}
+
+#cdk-overlay-0.cdk-overlay-pane {
+    max-width: 80vw;
+}
