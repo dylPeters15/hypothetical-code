@@ -1,6 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { ManufacturingCalculatorComponent } from './manufacturing-calculator.component';
+import { AppModule } from '../app.module';
+import { APP_BASE_HREF } from '@angular/common';
 
 describe('ManufacturingCalculatorComponent', () => {
   let component: ManufacturingCalculatorComponent;
@@ -8,18 +9,22 @@ describe('ManufacturingCalculatorComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ManufacturingCalculatorComponent ]
+      imports: [ AppModule ],
+      providers: [
+        {provide: APP_BASE_HREF, useValue: '/'}
+      ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(ManufacturingCalculatorComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
+    component = fixture.debugElement.componentInstance;
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
+  it('title should be Manufacturing Calculator', () => {
+    fixture.detectChanges();
+    const compiled = fixture.debugElement.nativeElement;
+    expect(compiled.querySelector('mat-card-title').textContent).toContain("Manufacturing Calculator");
   });
 });
