@@ -4,13 +4,28 @@
             <mat-card-title>Ingredient Inventory</mat-card-title>
         </mat-card-header>
         <mat-card-content>
-          <button mat-raised-button (click)="openDialog()"> Add </button>
+          <button mat-button (click)="openDialog()"> Add </button>
           <button mat-button (click)="openDialog()"> Modify Selected </button>
-          <button mat-button (click)="openDialog()"> Remove Selected </button>
+          <button mat-button (click)="deleteSelected()"> Remove Selected </button>
           <mat-form-field>
             <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter">
           </mat-form-field>
           <table mat-table [dataSource]="dataSource" matSort (matSortChange)="sortData($event)" class="mat-elevation-z8">
+
+            <ng-container matColumnDef="select">
+              <th mat-header-cell *matHeaderCellDef>
+                <mat-checkbox (change)="$event ? masterToggle() : null"
+                              [checked]="selection.hasValue() && isAllSelected()"
+                              [indeterminate]="selection.hasValue() && !isAllSelected()">
+                </mat-checkbox>
+              </th>
+              <td mat-cell *matCellDef="let row">
+                <mat-checkbox (click)="$event.stopPropagation()"
+                              (change)="$event ? selection.toggle(row) : null"
+                              [checked]="selection.isSelected(row)">
+                </mat-checkbox>
+              </td>
+            </ng-container>
 
             <ng-container matColumnDef="name">
               <th mat-header-cell *matHeaderCellDef mat-sort-header> Name </th>
@@ -32,9 +47,9 @@
                 <td mat-cell *matCellDef="let element"> {{element.packageSize}} </td>
             </ng-container>
 
-            <ng-container matColumnDef="cost">
+            <ng-container matColumnDef="costPerPackage">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header> Cost Per Package </th>
-                <td mat-cell *matCellDef="let element"> {{element.cost}} </td>
+                <td mat-cell *matCellDef="let element"> {{element.costPerPackage}} </td>
             </ng-container>
 
             <ng-container matColumnDef="comment">
@@ -43,7 +58,9 @@
             </ng-container>
 
             <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"
+              (click)="selection.toggle(row)">
+          </tr>
           </table>
         </mat-card-content>
     </mat-card>

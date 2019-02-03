@@ -56,6 +56,12 @@ MongoClient.connect('mongodb://localhost:27017', (err, database) => {
       });
     });
 
+    app.route('/api/v1/ingredient-inventory').get((req,res) =>{
+      db.collection('ingredients').find().toArray(function(err,results) {
+        res.send(results);
+      });
+    });
+
     app.route('/api/v1/get-goal-by-name').get((req,res) => {
         let goalName = req.headers['name'];
         const filterschema = {

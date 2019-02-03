@@ -4,7 +4,7 @@ import { Observable, of } from 'rxjs';
 import { map, catchError, tap } from 'rxjs/operators';
 import { auth } from './auth.service'
 
-const endpoint = 'https://vcm-8238.vm.duke.edu:8443/api/v1/';
+const endpoint = 'https://localhost:8443/api/v1/';
 @Injectable({
   providedIn: 'root'
 })
@@ -83,6 +83,10 @@ export class RestService {
       headers: header
     }
     return this.http.get(endpoint + 'get-goal-by-name', httpOptions)
+  }
+
+  getIngredients(): Observable<any> {
+    return this.http.get(endpoint + 'ingredient-inventory', this.getHTTPOptions()).pipe(map(this.extractData));
   }
   
   sendUserListRequest(): Observable<any> {

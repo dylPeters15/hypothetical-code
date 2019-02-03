@@ -53,6 +53,25 @@ testGoal.save().then(
     }
 );
 
+let ingredientData = new database_library.ingredientModel({
+    name: 'tomato', 
+    number: 12, 
+    vendorInfo: 'Hypothetical Farm', 
+    packageSize: '200 units', 
+    costPerPackage: '$50', 
+    comment: 'This is a comment.'
+});
+
+ingredientData.save().then(
+    doc => {
+        console.log(doc);
+    }
+).catch(
+    err => {
+        console.log(err)
+    }
+);
+
 // let user1_salt = crypto.randomBytes(16).toString('hex');
 // let user1 = new database_library.userModel({
 //     username: 'user1',

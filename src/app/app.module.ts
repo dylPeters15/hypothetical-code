@@ -21,7 +21,7 @@ import { AccountSettingsComponent } from './account-settings/account-settings.co
 import { UserNotificationDialogComponent } from './user-notification-dialog/user-notification-dialog.component';
 import { ManufacturingCalculatorComponent } from './manufacturing-calculator/manufacturing-calculator.component';
 import { IngredientDependencyComponent } from './ingredient-dependency-report/ingredient-dependency-report.component';
-import { IngredientInventoryComponent, AddIngredientDialogComponent } from './ingredient-inventory/ingredient-inventory.component';
+import { IngredientInventoryComponent, AddIngredientDialogComponent, DeleteIngredientDialogComponent } from './ingredient-inventory/ingredient-inventory.component';
 import { MatTableModule, MatSortModule } from '@angular/material';
 import {MatSnackBarModule, MatPaginatorModule, MAT_DIALOG_DATA} from '@angular/material';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -66,6 +66,7 @@ const appRoutes: Routes = [
     PasswordConfirmationDialogComponent,
     IngredientInventoryComponent,
     AddIngredientDialogComponent,
+    DeleteIngredientDialogComponent,
     PrivacyPolicyDialogComponent,
     TermsAndConditionsDialogComponent
   ],
@@ -91,6 +92,9 @@ const appRoutes: Routes = [
   ],
   providers: [],
   bootstrap: [AppComponent],
-  entryComponents: [UserNotificationDialogComponent, NewUserDialogComponent, PasswordConfirmationDialogComponent, PrivacyPolicyDialogComponent, TermsAndConditionsDialogComponent, AddIngredientDialogComponent]
+  entryComponents: [UserNotificationDialogComponent, NewUserDialogComponent, 
+    PasswordConfirmationDialogComponent, PrivacyPolicyDialogComponent, 
+    TermsAndConditionsDialogComponent, AddIngredientDialogComponent, 
+    DeleteIngredientDialogComponent]
 })
 export class AppModule { }

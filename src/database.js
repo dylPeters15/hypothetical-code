@@ -64,6 +64,7 @@ var manufacturingGoalsSchema = new mongoose.Schema({
 })
 
 var goalsModel = mongoose.model('goal', manufacturingGoalsSchema);
+
 var ingredientSchema = mongoose.Schema({
     name: {
         type: String,
@@ -87,7 +88,7 @@ var ingredientSchema = mongoose.Schema({
         type: String,
         required: true
     },
-    comments: {
+    comment: {
         type: String,
         required: false
     }
