@@ -282,6 +282,34 @@ MongoClient.connect('mongodb://localhost:27017', (err, database) => {
         });
     });
 
+    app.route('/api/v1/admin-delete-sku').delete((req, res) => {
+        const username = req.headers['username'];
+        const token = req.headers['token'];
+        verifiedForAdminOperations(username, token, verified => {
+            if (!verified) {
+                res.send({
+                    errormessage: 'Not permitted to perform operation.'
+                });
+                return
+            }
+            const nameToDelete = req.headers['nametodelete'];
+            const filterschema = {
+                name: nameToDelete
+            };
+            db.collection('skus').deleteOne(filterschema, (dberr, dbres) => {
+                if (dberr) {
+                    res.send({
+                        errormessage: 'Unable to perform operation.'
+                    });
+                    return
+                }
+                res.send({
+                    success: true
+                });
+            });
+        });
+    });
+
     app.route('/api/v1/create-user').post((req, res) => {
         const adminusername = req.headers['username'];
         const admintoken = req.headers['token'];

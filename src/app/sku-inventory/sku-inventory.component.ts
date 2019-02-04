@@ -76,6 +76,27 @@ export class SkuInventoryComponent  implements OnInit {
     });
   }
 
+  deleteSkuConfirmed(name) {
+    this.rest.sendAdminDeleteSkuRequest(name).subscribe(response => {
+      this.snackBar.open("Sku " + name + " deleted successfully.", "close", {
+        duration: 2000,
+      });
+      this.data = this.data.filter((value, index, arr) => {
+        return value.name != name;
+      });
+      this.refreshData();
+    });
+  }
+
+  deleteSelected() {
+    const dialogConfig = new MatDialogConfig();
+        this.data.forEach(user => {
+          if (user.checked) {
+            this.deleteSkuConfirmed(user.name);
+          }
+        });
+      }
+
   deselectAll() {
     this.data.forEach(user => {
       user.checked = false;

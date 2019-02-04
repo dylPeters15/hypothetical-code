@@ -107,6 +107,19 @@ export class RestService {
     return this.http.delete(endpoint + 'admin-delete-user', httpOptions).pipe(map(this.extractData));
   }
 
+  sendAdminDeleteSkuRequest(nameToDelete): Observable<any> {
+    let header:HttpHeaders = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'username': auth.getUsername(),
+      'token':auth.getToken(),
+      'nametodelete': nameToDelete
+    });
+    let httpOptions = {
+      headers: header
+    };
+    return this.http.delete(endpoint + 'admin-delete-sku', httpOptions).pipe(map(this.extractData));
+  }
+
   private handleError<T> (operation = 'operation', result?: T) {
     return (error: any): Observable<T> => {
   
