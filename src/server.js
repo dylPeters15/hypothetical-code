@@ -50,7 +50,7 @@ MongoClient.connect('mongodb://localhost:27017', (err, database) => {
         }
     }
 
-    app.route('/api/v1/manufacturing-calculator').get((req,res) =>{
+    app.route('/api/v1/manufacturing-goals').get((req,res) =>{
       db.collection('goals').find().toArray(function(err,results) {
         res.send(results);
       });
