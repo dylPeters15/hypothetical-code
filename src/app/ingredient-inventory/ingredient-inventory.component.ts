@@ -1,141 +1,135 @@
-import {Component, OnInit, ViewChild, Inject} from '@angular/core';
-import {SelectionModel} from '@angular/cdk/collections';
-import {MatSort, MatTableDataSource, MatDialog, MatDialogConfig, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { RestService } from '../rest.service';
+import {MatSnackBar} from '@angular/material';
+import { MatDialogRef, MatDialog, MatDialogConfig, MatTableDataSource, MatPaginator } from "@angular/material";
+import { MoreInfoDialogComponent } from '../more-info-dialog/more-info-dialog.component';
+import { NewIngredientDialogComponent } from '../new-ingredient-dialog/new-ingredient-dialog.component';
+import { AfterViewChecked } from '@angular/core';
 
-export interface IngredientData {
+export interface UserForTable {
   name: string;
-  number: number;
-  vendorInfo: string;
-  packageSize: string;
-  costPerPackage: string;
-  comment: string;
+  checked: boolean;
 }
 
-let INGREDIENT_DATA;  
-// const INGREDIENT_DATA: IngredientData[] = [
-//     {name: 'tomato', number: 12, vendorInfo: 'Hypothetical Farm', 
-//     packageSize: '200 units', cost: '$50', comment: 'This is a comment.'}
-// ];
+
+/**
+ * @title Table dynamically changing the columns displayed
+ */
 @Component({
-  selector: 'app-ingredient-inventory',
-  templateUrl: './ingredient-inventory.component.html',
-  styleUrls: ['./ingredient-inventory.component.css']
-})
-export class IngredientInventoryComponent implements OnInit {
+    selector: 'app-ingredient-inventory',
+    templateUrl: './ingredient-inventory.component.html',
+    styleUrls: ['./ingredient-inventory.component.css']
+  })
+export class IngredientInventoryComponent  implements OnInit {
 
-  name: string;
-  number: number;
-  vendorInfo: string;
-  packageSize: string;
-  costPerPackage: string;
-  comment: string;
-  ingredients: any = [];
-  data: IngredientData[] = [];
-  dataSource =  new MatTableDataSource<IngredientData>(this.data);
-
-  constructor(public dialog: MatDialog, public rest:RestService) {}
+  constructor(public rest:RestService, private snackBar: MatSnackBar, private dialog: MatDialog) { }
+  allReplacement = 54321;
+  displayedColumns: string[] = ['checked', 'name', 'number','vendorInformation', 'packageSize', 'costPerPackage', 'comment'];
+  data: UserForTable[] = [];
+  dialogRef: MatDialogRef<MoreInfoDialogComponent>;
+  newDialogRef: MatDialogRef<NewIngredientDialogComponent>;
+  dataSource =  new MatTableDataSource<UserForTable>(this.data);
+  @ViewChild(MatPaginator) paginator: MatPaginator;
 
   ngOnInit() {
     this.refreshData();
   }
 
-  refreshData() {
-    this.rest.getIngredients().subscribe(data => {
-      this.ingredients = data
-      console.log(data);
-      this.ingredients.forEach(ingredient => {
-        console.log(ingredient)
-        this.data.push(ingredient);
-      });
-      this.dataSource = new MatTableDataSource<IngredientData>(this.data);
-      // this.dataSource.paginator = this.paginator;
-    });
+  getPageSizeOptions() {
+    return [5, 10, 20, this.allReplacement];
   }
 
-  openDialog(): void {
-    const dialogRef = this.dialog.open(AddIngredientDialogComponent, {
-      width: '700px',
-      data: {name: this.name, number: this.number, vendorInfo: this.vendorInfo, 
-            packageSize: this.packageSize, costPerPackage: this.costPerPackage, 
-            comment: this.comment}
+  refreshData() {
+    this.rest.getIngredients().subscribe(response => {
+      this.data = response;
+      this.data.forEach(user => {
+        user['checked'] = false;
+      });
+      console.log("got here. data is: " + this.data);
+      this.sortData();
+      this.dataSource =  new MatTableDataSource<UserForTable>(this.data);
+    this.dataSource.paginator = this.paginator;
     });
+    
+  }
 
-    dialogRef.afterClosed().subscribe(result => {
-      console.log('The dialog was closed: ', result);
-      this.rest.addIngredient(result);
-      this.data = [];
+  seeInfo(type, content) {
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.data = {information_content: content, information_type: type};
+    this.dialogRef = this.dialog.open(MoreInfoDialogComponent, dialogConfig);
+    this.dialogRef.afterClosed().subscribe(event => {
       this.refreshData();
     });
   }
 
-  displayedColumns: string[] = ['select', 'name', 'number', 'vendorInfo', 
-  'packageSize', 'costPerPackage', 'comment'];
-  
-  selection = new SelectionModel<IngredientInventoryComponent>(true, []);
-
-  deleteSelected() {
+  newIngredient() {
     const dialogConfig = new MatDialogConfig();
-    const dialogRef = this.dialog.open(DeleteIngredientDialogComponent, dialogConfig);
-    dialogRef.afterClosed().subscribe(event => {
-      if (event.validated) {
-        INGREDIENT_DATA.forEach(ingredient => {
-          if (ingredient.checked) {
-            // this.deleteIngredient(ingredient.name);
-          }
-        });
-      }
+    this.newDialogRef = this.dialog.open(NewIngredientDialogComponent, dialogConfig);
+    this.newDialogRef.afterClosed().subscribe(event => {
+      this.refreshData();
     });
   }
 
-  isAllSelected() {
-    const numSelected = this.selection.selected.length;
-    const numRows = this.dataSource.data.length;
-    return numSelected === numRows;
+  sortData() {
+    this.data.sort((a,b) => {
+      return a.name > b.name ? 1 : -1;
+    });
   }
 
-  /** Selects all rows if they are not all selected; otherwise clear selection. */
-  // masterToggle() {
-  //   this.isAllSelected() ?
-  //       this.selection.clear() :
-  //       this.dataSource.data.forEach(row => this.selection.select(row));
-  // }
-  
-  @ViewChild(MatSort) sort: MatSort;
-
-  applyFilter(filterValue: string) {
-      this.dataSource.filter = filterValue.trim().toLowerCase();
+  deleteIngredientConfirmed(name) {
+    this.rest.sendAdminDeleteIngredientRequest(name).subscribe(response => {
+      this.snackBar.open("Ingredient " + name + " deleted successfully.", "close", {
+        duration: 2000,
+      });
+      this.data = this.data.filter((value, index, arr) => {
+        return value.name != name;
+      });
+      this.refreshData();
+    });
   }
+
+  deleteSelected() {
+    const dialogConfig = new MatDialogConfig();
+        this.data.forEach(user => {
+          if (user.checked) {
+            this.deleteIngredientConfirmed(user.name);
+          }
+        });
+      }
+
+  deselectAll() {
+    this.data.forEach(user => {
+      user.checked = false;
+    });
+  }
+
+  selectAll() {
+    this.data.forEach(user => {
+      user.checked = true;
+    });
+  }
+
+  ngAfterViewChecked() {
+    const matOptions = document.querySelectorAll('mat-option');
+   
+   
+    // If the replacement element was found...
+    if (matOptions) {
+      const matOptionsLen = matOptions.length;
+      // We'll iterate the array backwards since the allReplacement should be at the end of the array
+      for (let i = matOptionsLen - 1; i >= 0; i--) {
+        const matOption = matOptions[i];
+   
+        // Store the span in a variable for re-use
+        const span = matOption.querySelector('span.mat-option-text');
+        // If the spans innerHTML string value is the same as the allReplacement variables string value...
+        if ('' + span.innerHTML === '' + this.allReplacement) {
+          // Change the span text to "All"
+          span.innerHTML = 'All';
+          break;
+        }
+      }
+    }
+  }
+
 }
-
-@Component({
-  selector: 'app-add-ingredient-dialog',
-  templateUrl: './add-ingredient.component.html',
-})
-export class AddIngredientDialogComponent {
-  constructor(
-    public dialogRef: MatDialogRef<AddIngredientDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: IngredientData) {}
-
-  onNoClick(): void {
-    this.dialogRef.close();
-  }
-}
-
-@Component({
-  selector: 'app-delete-ingredient-dialog',
-  templateUrl: './delete-ingredient.component.html',
-})
-export class DeleteIngredientDialogComponent {
-  constructor(
-    public dialogRef: MatDialogRef<DeleteIngredientDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: IngredientData) {}
-
-  onNoClick(): void {
-    this.dialogRef.close();
-  }
-}
-
-
-
-  

@@ -56,48 +56,6 @@ MongoClient.connect('mongodb://localhost:27017', (err, database) => {
       });
     });
 
-    app.route('/api/v1/ingredient-inventory').get((req,res) =>{
-      db.collection('ingredients').find().toArray(function(err,results) {
-        res.send(results);
-      });
-    });
-
-    app.route('/api/v1/add-ingredient').get((req,res) =>{
-        let name = req.body['name'];
-        let number = req.body['number'];
-        let vendorInfo = req.body['vendorInfo'];
-        let packageSize = req.body['packageSize'];
-        let costPerPackage = req.body['costPerPackage'];
-        let comment = req.body['comment'];
-        let ingredient = new database_library.ingredientModel({
-            name: name,
-            number: number,
-            vendorInfo: vendorInfo,
-            packageSize: packageSize,
-            costPerPackage: costPerPackage,
-            comment: comment
-        });
-        console.log(ingredient)
-        ingredient.save().then(
-            doc => {
-                res.send({
-                    success: true,
-                    doc: doc
-                });
-                console.log(doc);
-                return;
-            }
-        ).catch(
-            err => {
-                res.send({
-                    errormessage: "Unable to save ingredient."
-                });
-                console.log(err);
-                return;
-            }
-        );
-    });
-
     app.route('/api/v1/get-goal-by-name').get((req,res) => {
         let goalName = req.headers['name'];
         const filterschema = {
@@ -138,6 +96,122 @@ MongoClient.connect('mongodb://localhost:27017', (err, database) => {
             }
         });
     });
+
+    app.route('/api/v1/sku-inventory').get((req,res) =>{
+        db.collection('skus').find().toArray(function(err,results) {
+          res.send(results);
+        });
+      });
+
+      app.route('/api/v1/sku-inventory').post((req, res) => {
+        const adminusername = req.headers['username'];
+        const admintoken = req.headers['token'];
+        verifiedForAdminOperations(adminusername, admintoken, verified => {
+            if (!verified) {
+                res.send({
+                    errormessage: 'Not permitted to perform operation.'
+                });
+                return
+            }
+            let name = req.body['name'];
+            let skuNumber = req.body['skuNumber'];
+            let caseUpcNumber = req.body['caseUpcNumber'];
+            let unitUpcNumber = req.body['unitUpcNumber'];
+            let unitSize = req.body['unitSize'];
+            let countPerCase = req.body['countPerCase'];
+            let productLine = req.body['productLine'];
+            let ingredientTuples = req.body['ingredientTuples'];
+            let comment = req.body['comment'];
+ 
+            let sku = database_library.skuModel({
+                name: name,
+                skuNumber: skuNumber,
+                caseUpcNumber: caseUpcNumber,
+                unitUpcNumber: unitUpcNumber,
+                unitSize: unitSize,
+                countPerCase: countPerCase,
+                productLine: productLine,
+                ingredientTuples: ingredientTuples,
+                comment: comment,
+            });
+            sku.save().then(
+                doc => {
+                    res.send({
+                        success: true,
+                        doc: doc
+                    });
+                    console.log(doc);
+                    return;
+                }
+            ).catch(
+                err => {
+                    res.send({
+                        errormessage: "Unable to save sku."
+                    });
+                    console.log(err);
+                    return;
+                }
+            );
+        });
+    });
+
+    app.route('/api/v1/ingredient-inventory').get((req,res) =>{
+        db.collection('ingredients').find().toArray(function(err,results) {
+          res.send(results);
+        });
+      });
+
+      app.route('/api/v1/ingredient-inventory').post((req, res) => {
+        const adminusername = req.headers['username'];
+        const admintoken = req.headers['token'];
+        verifiedForAdminOperations(adminusername, admintoken, verified => {
+            if (!verified) {
+                res.send({
+                    errormessage: 'Not permitted to perform operation.'
+                });
+                return
+            }
+            let name = req.body['name'];
+            let number = req.body['number'];
+            let venderInformation = req.body['venderInformation'];
+            let packageSize = req.body['packageSize'];
+            let costPerPackage = req.body['costPerPackage'];
+            let comment = req.body['comment'];
+
+ 
+            let ingredient = database_library.ingredientModel({
+                name: name,
+                number: number,
+                venderInformation: venderInformation,
+                packageSize: packageSize,
+                costPerPackage: costPerPackage,
+                comment: comment,
+            });
+            ingredient.save().then(
+                doc => {
+                    res.send({
+                        success: true,
+                        doc: doc
+                    });
+                    console.log(doc);
+                    return;
+                }
+            ).catch(
+                err => {
+                    res.send({
+                        errormessage: "Unable to save ingredient."
+                    });
+                    console.log(err);
+                    return;
+                }
+            );
+        });
+    });
+
+
+
+
+
 
     app.route('/api/v1/change-password').put((req, res) => {
         const username = req.headers['username'];
@@ -264,6 +338,62 @@ MongoClient.connect('mongodb://localhost:27017', (err, database) => {
                 username: usernameToDelete
             };
             db.collection('users').deleteOne(filterschema, (dberr, dbres) => {
+                if (dberr) {
+                    res.send({
+                        errormessage: 'Unable to perform operation.'
+                    });
+                    return
+                }
+                res.send({
+                    success: true
+                });
+            });
+        });
+    });
+
+    app.route('/api/v1/admin-delete-sku').delete((req, res) => {
+        const username = req.headers['username'];
+        const token = req.headers['token'];
+        verifiedForAdminOperations(username, token, verified => {
+            if (!verified) {
+                res.send({
+                    errormessage: 'Not permitted to perform operation.'
+                });
+                return
+            }
+            const nameToDelete = req.headers['nametodelete'];
+            const filterschema = {
+                name: nameToDelete
+            };
+            db.collection('skus').deleteOne(filterschema, (dberr, dbres) => {
+                if (dberr) {
+                    res.send({
+                        errormessage: 'Unable to perform operation.'
+                    });
+                    return
+                }
+                res.send({
+                    success: true
+                });
+            });
+        });
+    });
+
+    app.route('/api/v1/admin-delete-ingredient').delete((req, res) => {
+        const username = req.headers['username'];
+        const token = req.headers['token'];
+        verifiedForAdminOperations(username, token, verified => {
+            if (!verified) {
+                res.send({
+                    errormessage: 'Not permitted to perform operation.'
+                });
+                return
+            }
+            const nameToDelete = req.headers['nametodelete'];
+            const filterschema = {
+                name: nameToDelete
+            };
+            db.collection('ingredients').deleteOne(filterschema, (dberr, dbres) => {
                 if (dberr) {
                     res.send({
                         errormessage: 'Unable to perform operation.'

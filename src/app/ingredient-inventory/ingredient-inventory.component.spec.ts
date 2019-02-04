@@ -1,17 +1,14 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { IngredientInventoryComponent } from './ingredient-inventory.component';
-import { AppModule } from '../app.module';
 
-describe('IngredientInventoryComponent', () => {
+describe('ManufacturingCalculatorComponent', () => {
   let component: IngredientInventoryComponent;
   let fixture: ComponentFixture<IngredientInventoryComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [
-        AppModule
-      ]
+      declarations: [ IngredientInventoryComponent ]
     })
     .compileComponents();
   }));

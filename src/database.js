@@ -19,27 +19,6 @@ class Database {
     }
 }
 
-var userSchema = new mongoose.Schema({
-    username: {
-        type: String,
-        required: true,
-        unique: true
-    },
-    salt: {
-        type: String,
-        required: true
-    },
-    saltedHashedPassword: {
-        type: String,
-        required: true
-    },
-    token: {
-        type: String,
-        required: true
-    }
-});
-var userModel = mongoose.model('user', userSchema);
-
 var manufacturingGoalsSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -65,40 +44,116 @@ var manufacturingGoalsSchema = new mongoose.Schema({
 
 var goalsModel = mongoose.model('goal', manufacturingGoalsSchema);
 
-var ingredientSchema = mongoose.Schema({
+var ingredientSchema = new mongoose.Schema({
     name: {
-        type: String,
-        required: true,
-        unique: true
+      type: String,
+      required: true,
+      unique: true
     },
     number: {
+      type: Number,
+      required: true,
+      unique: true
+    },
+    vendorInformation: {
+      type: String,
+      required: false,
+      unique: false
+    },
+    packageSize: {
+      type: String,
+      required: true,
+      unique: false
+    },
+    costPerPackage: {
         type: Number,
+        required: true,
+        unique: false
+      },
+    comment: {
+        type: String,
+        required: false,
+        unique: false
+      }
+  })
+
+  var ingredientModel = mongoose.model('ingredient', ingredientSchema);
+
+  var skuSchema = new mongoose.Schema({
+    name: {
+      type: String,
+      required: true,
+      unique: true
+    },
+    skuNumber: {
+      type: Number,
+      required: true,
+      unique: true
+    },
+    caseUpcNumber: {
+      type: String,
+      required: true,
+      unique: true
+    },
+    unitUpcNumber: {
+      type: String,
+      required: true,
+      unique: false
+    },
+    unitSize: {
+        type: String,
+        required: true,
+        unique: false
+      },
+    countPerCase: {
+        type: Number,
+        required: true,
+        unique: false
+      },
+    productLine: {
+        type: String,
+        required: true,
+        unique: false
+      },
+    ingredientTuples: {
+          type: Array,
+          required: true,
+          unique: false
+        },
+    comment: {
+          type: String,
+          required: false,
+          unique: false
+     }   
+  })
+
+  var skuModel = mongoose.model('sku', skuSchema);
+
+var userSchema = new mongoose.Schema({
+    username: {
+        type: String,
         required: true,
         unique: true
     },
-    vendorInfo: {
+    salt: {
         type: String,
         required: true
     },
-    packageSize: {
+    saltedHashedPassword: {
         type: String,
         required: true
     },
-    costPerPackage: {
+    token: {
         type: String,
         required: true
-    },
-    comment: {
-        type: String,
-        required: false
     }
 });
-
-var ingredientModel = mongoose.model('ingredient', ingredientSchema); 
+var userModel = mongoose.model('user', userSchema);
 
 module.exports = {
     Database: new Database(),
     userModel: userModel,
     goalsModel: goalsModel,
-    ingredientModel: ingredientModel
+    ingredientModel: ingredientModel,
+    skuModel: skuModel
 };

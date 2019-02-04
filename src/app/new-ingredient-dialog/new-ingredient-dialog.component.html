@@ -1,0 +1,37 @@
+<h2 mat-dialog-title align="center">Create New Ingredient</h2>
+<mat-dialog-content align="center">
+  <mat-card>
+    <mat-card-content style="display: grid; width: 100%; justify-items: center;">
+      <mat-form-field>
+        <input matInput [(ngModel)]="name" placeholder="Name" required>
+      </mat-form-field>
+
+      <mat-form-field>
+        <input matInput [(ngModel)]="number" placeholder="Number">
+        <mat-hint>Optional</mat-hint>
+      </mat-form-field>
+
+      <mat-form-field>
+        <input matInput [(ngModel)]="vendor_information" placeholder="Vendor Information">
+      </mat-form-field>
+
+      <mat-form-field>
+        <input matInput [(ngModel)]="package_size" placeholder="Package Size" required>
+        <mat-hint>e.g. "60lb", "55 gallon drum", etc.</mat-hint>
+      </mat-form-field>
+
+      <mat-form-field>
+        <input matInput [(ngModel)]="cost_per_package" placeholder="Cost Per Package (USD)" required>
+      </mat-form-field>
+
+      <mat-form-field>
+        <input matInput [(ngModel)]="comment" placeholder="Additional Comments">
+      </mat-form-field>
+
+    </mat-card-content>
+  </mat-card>
+</mat-dialog-content>
+<mat-dialog-actions align="center">
+  <button class="mat-raised-button" (click)="closeDialog()">Cancel</button>
+  <button class="mat-raised-button" (click)="createIngredient()" [disabled]="username==''" color="primary">Create</button>
+</mat-dialog-actions>
