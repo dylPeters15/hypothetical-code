@@ -36,3 +36,24 @@ testGoal.save().then(
         console.log(err);
     }
 );
+
+let testSku = new database_library.skuModel({
+    name: 'Tomato Soup 2',
+    skuNumber: 2,
+    caseUpcNumber: '018273821922',
+    unitUpcNumber: '163728391922',
+    unitSize: '28oz',
+    countPerCase: 10,
+    productLine: 'Example product line',
+    ingredientTuples: ['Tomatoes', 5, 'pears', 0.5],
+    comment: "Enjoy this lovely can of tomato soup!"
+  });
+  testSku.save().then(
+      doc => {
+          console.log(doc);
+      }
+  ).catch(
+      err => {
+          console.log(err);
+      }
+  );
