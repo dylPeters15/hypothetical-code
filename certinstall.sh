@@ -1,5 +1,3 @@
-# In another tab run:
-# sudo node certinstall.js
 sudo apt-get update
 sudo apt-get install software-properties-common
 sudo add-apt-repository universe

@@ -1,6 +1,7 @@
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule, ViewChild } from '@angular/core';
-import {FormsModule, ReactiveFormsModule} from '@angular/forms';import { BrowserModule } from '@angular/platform-browser';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule, Routes } from "@angular/router";
 import { AppRoutingModule } from './app-routing.module';
@@ -15,19 +16,22 @@ import { UserRouteGuardService } from './user-route-guard.service';
 import { AdminRouteGuardService } from './admin-route-guard.service';
 import { AlreadyLoggedInRouteGuardService } from './already-logged-in-route-guard.service';
 import { LogoutComponent } from './logout/logout.component';
+import {MatSelectModule} from '@angular/material/select';
+import {MatIconModule, MatIcon} from '@angular/material/icon';
+import { AccountSettingsComponent } from './account-settings/account-settings.component';
+import { UserNotificationDialogComponent } from './user-notification-dialog/user-notification-dialog.component';
+import { ManufacturingCalculatorComponent } from './manufacturing-calculator/manufacturing-calculator.component';
 import { IngredientDependencyComponent } from './ingredient-dependency-report/ingredient-dependency-report.component';
 import { MatTableModule, MatSortModule } from '@angular/material';
 import {MatSnackBarModule, MatPaginatorModule, MAT_DIALOG_DATA} from '@angular/material';
 import { MatCheckboxModule } from '@angular/material/checkbox';
-import {MatSelectModule} from '@angular/material/select'; 
-import {MatIconModule, MatIcon} from '@angular/material/icon';
-import { AccountSettingsComponent } from './account-settings/account-settings.component';
-import { UserNotificationDialogComponent } from './user-notification-dialog/user-notification-dialog.component';
 import { UserManagementComponent } from './user-management/user-management.component';
 import { NewUserDialogComponent } from './new-user-dialog/new-user-dialog.component';
 import { NewSkuDialogComponent } from './new-sku-dialog/new-sku-dialog.component';
 import { MoreInfoDialogComponent } from './more-info-dialog/more-info-dialog.component';
 import { PasswordConfirmationDialogComponent } from './password-confirmation-dialog/password-confirmation-dialog.component'; 
+import { PrivacyPolicyDialogComponent } from './privacy-policy-dialog/privacy-policy-dialog.component';
+import { TermsAndConditionsDialogComponent } from './terms-and-conditions-dialog/terms-and-conditions-dialog.component'; 
 
 const appRoutes: Routes = [
   { path: 'login', component: LoginComponent, data: { title: 'Log In' }, canActivate: [AlreadyLoggedInRouteGuardService] },
@@ -36,7 +40,7 @@ const appRoutes: Routes = [
   { path: 'user-management', component: HomeComponent, data: { title: 'User Management' }, canActivate: [AdminRouteGuardService] },
   { path: 'account-settings', component: AccountSettingsComponent, data: { title: 'Account Settings' }, canActivate: [UserRouteGuardService] },
   { path: 'account-settings', component: HomeComponent, data: { title: 'Account Settings' }, canActivate: [UserRouteGuardService] },
-  { path: 'manufacturing-calculator', component: HomeComponent, data: { title: 'Manufacturing Calculator' }, canActivate: [UserRouteGuardService] },
+  { path: 'manufacturing-calculator', component: ManufacturingCalculatorComponent, data: { title: 'Manufacturing Calculator' }, canActivate: [UserRouteGuardService] },
   { path: 'ingredient-dependency-report', component: IngredientDependencyComponent, data: { title: 'Ingredient Dependency Report' }, canActivate: [UserRouteGuardService] },
   { path: 'manufacturing-goal', component: HomeComponent, data: { title: 'Manufacturing Goals' }, canActivate: [UserRouteGuardService] },
   { path: 'ingredient-inventory', component: HomeComponent, data: { title: 'Ingredient Inventory' }, canActivate: [AdminRouteGuardService] },
@@ -58,12 +62,15 @@ const appRoutes: Routes = [
     AccountSettingsComponent,
     UserNotificationDialogComponent,
     SkuInventoryComponent,
+    NewSkuDialogComponent,
+    MoreInfoDialogComponent,
+    ManufacturingCalculatorComponent,
     IngredientDependencyComponent,
     UserManagementComponent,
     NewUserDialogComponent,
-    NewSkuDialogComponent,
-    MoreInfoDialogComponent,
-    PasswordConfirmationDialogComponent
+    PasswordConfirmationDialogComponent,
+    PrivacyPolicyDialogComponent,
+    TermsAndConditionsDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -87,6 +94,6 @@ const appRoutes: Routes = [
   ],
   providers: [],
   bootstrap: [AppComponent],
-  entryComponents: [UserNotificationDialogComponent, NewUserDialogComponent, NewSkuDialogComponent, PasswordConfirmationDialogComponent, MoreInfoDialogComponent]
+  entryComponents: [UserNotificationDialogComponent, NewUserDialogComponent, PasswordConfirmationDialogComponent, PrivacyPolicyDialogComponent, TermsAndConditionsDialogComponent, MoreInfoDialogComponent, NewSkuDialogComponent]
 })
 export class AppModule { }

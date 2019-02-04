@@ -90,6 +90,20 @@ export class RestService {
     return this.http.delete(endpoint + 'delete-account', httpOptions).pipe(map(this.extractData));
   }
 
+  getGoals(): Observable<any> {
+    return this.http.get(endpoint + 'manufacturing-calculator')
+  }
+
+  getGoalByName(goalName): Observable<any>{
+    let header:HttpHeaders = new HttpHeaders({
+      'name': goalName
+    });
+    let httpOptions = {
+      headers: header
+    }
+    return this.http.get(endpoint + 'get-goal-by-name', httpOptions)
+  }
+  
   sendUserListRequest(): Observable<any> {
     return this.http.get(endpoint + 'user-list', this.getHTTPOptions()).pipe(map(this.extractData));
   }
@@ -122,13 +136,13 @@ export class RestService {
 
   private handleError<T> (operation = 'operation', result?: T) {
     return (error: any): Observable<T> => {
-  
+
       // TODO: send the error to remote logging infrastructure
       console.error(error); // log to console instead
-  
+
       // TODO: better job of transforming error for user consumption
       console.log(`${operation} failed: ${error.message}`);
-  
+
       // Let the app keep running by returning an empty result.
       return of(result as T);
     };

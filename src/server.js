@@ -22,18 +22,17 @@ app.use(bodyParser.json());
 function saltAndHash(password, salt) {
     return crypto.pbkdf2Sync(password, salt, 1000, 64, 'sha512').toString('hex');
 }
-
-
+let server = https.createServer({
+    key: fs.readFileSync('./ssl/privkey.pem'),
+    cert: fs.readFileSync('./ssl/fullchain.pem')
+}, app).listen(8443, () => {
+    console.log('Server started!');
+});
+module.exports = server;
 MongoClient.connect('mongodb://localhost:27017', (err, database) => {
     // ... start the server
     db = database.db('my-test-db'); // whatever your database name is
-    https.createServer({
-        key: fs.readFileSync('./ssl/privkey.pem'),
-        cert: fs.readFileSync('./ssl/fullchain.pem')
-    }, app).listen(8443, () => {
-        console.log('Server started!');
-    });
-
+    
     function verifiedForUserOperations(entered_username, entered_token, callback) {
         db.collection('users').find({
             username: entered_username,
@@ -50,6 +49,23 @@ MongoClient.connect('mongodb://localhost:27017', (err, database) => {
             callback(false);
         }
     }
+
+    app.route('/api/v1/manufacturing-calculator').get((req,res) =>{
+      db.collection('goals').find().toArray(function(err,results) {
+        res.send(results);
+      });
+    });
+
+    app.route('/api/v1/get-goal-by-name').get((req,res) => {
+        let goalName = req.headers['name'];
+        const filterschema = {
+            name: goalName
+        };
+        db.collection('goals').findOne(filterschema, function(err,results) {
+            res.send(results);
+        });
+    });
+
 
     app.route('/api/v1/login').get((req, res) => {
         let entered_username = req.headers['username'];
@@ -351,4 +367,3 @@ MongoClient.connect('mongodb://localhost:27017', (err, database) => {
     });
 
 });
-

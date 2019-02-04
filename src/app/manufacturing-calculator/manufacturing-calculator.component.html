@@ -1,0 +1,33 @@
+
+  <!-- <div class="manufacturing-calculator"> -->
+    <mat-card-header style="align-content: center; align-items: center; justify-content: center; display: grid;">
+      <mat-card-title>Manufacturing Calculator</mat-card-title>
+    </mat-card-header>
+  <h1 style="align-content: center; align-items: center; justify-content: center; display: grid;"> Select a Saved Manufacturing Goal:</h1>
+  <mat-form-field style="align-content: center; align-items: center; justify-content: center; display: grid;">
+    <mat-select [(ngModel)]="selectedValue">
+      <mat-option *ngFor="let goal of goals" value ="{{goal.name}}">{{goal.name}}</mat-option>
+    </mat-select>
+    <br><br>
+  </mat-form-field>
+<button mat-raised-button (click)="getGoalByName(selectedValue)" color="primary">Show Details</button>
+<div [hidden]="!showDetails" >
+<h1> {{selectedValue}}</h1>
+<mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+<ng-container matColumnDef="sku">
+  <mat-header-cell *matHeaderCellDef>SKU</mat-header-cell>
+  <mat-cell *matCellDef="let element">{{element.sku}}</mat-cell>
+</ng-container>
+
+<ng-container matColumnDef="quantity">
+  <mat-header-cell *matHeaderCellDef>Quantity</mat-header-cell>
+  <mat-cell *matCellDef="let element">{{element.quantity}}</mat-cell>
+</ng-container>
+
+<mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+<mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+</mat-table>
+<button mat-raised-button (click)="exportToCsv()">Export to CSV</button>
+<button mat-raised-button>Export to PDF</button>
+</div>
+<!-- </div> -->

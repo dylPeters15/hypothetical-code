@@ -19,6 +19,31 @@ class Database {
     }
 }
 
+var manufacturingGoalsSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: true,
+    unique: true
+  },
+  skus: {
+    type: [Number],
+    required: true,
+    unique: false
+  },
+  quantities: {
+    type: [Number],
+    required: true,
+    unique: false
+  },
+  date: {
+    type: Date,
+    required: true,
+    unique: true
+  }
+})
+
+var goalsModel = mongoose.model('goal', manufacturingGoalsSchema);
+
 var ingedientSchema = new mongoose.Schema({
     name: {
       type: String,
@@ -128,6 +153,7 @@ var userModel = mongoose.model('user', userSchema);
 module.exports = {
     Database: new Database(),
     userModel: userModel,
+    goalsModel: goalsModel,
     ingredientModel: ingredientModel,
     skuModel: skuModel
 };
