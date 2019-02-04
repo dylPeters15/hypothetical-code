@@ -11,10 +11,10 @@ import {MatSnackBar} from '@angular/material';
 export class NewIngredientDialogComponent implements OnInit {
 
   name: string = '';
-  number: any = -1;
+  number: any = '';
   vendor_information: string = '';
   package_size: string = '';
-  cost_per_package: any = -1;
+  cost_per_package: any = '';
   comment: string = '';
 
   constructor(private dialogRef: MatDialogRef<NewIngredientDialogComponent>, public rest:RestService, private snackBar: MatSnackBar) { }
@@ -25,10 +25,10 @@ export class NewIngredientDialogComponent implements OnInit {
   closeDialog() {
     this.dialogRef.close();
     this.name = '';
-    this.number = -1;
+    this.number = '';
     this.vendor_information = '';
     this.package_size = '';
-    this.cost_per_package = -1;
+    this.cost_per_package = '';
     this.comment = '';
   }
 

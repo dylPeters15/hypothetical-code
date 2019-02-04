@@ -56,7 +56,7 @@ export class RestService {
       number: number,
       venderInformation: vendor_information,
       packageSize: package_size,
-      cosetPerPackage: cost_per_package,
+      costPerPackage: cost_per_package,
       comment: comment,
     }, this.getHTTPOptions());
   }
