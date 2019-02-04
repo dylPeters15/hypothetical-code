@@ -4,7 +4,7 @@ import { Observable, of } from 'rxjs';
 import { map, catchError, tap } from 'rxjs/operators';
 import { auth } from './auth.service'
 
-const endpoint = 'https://vcm-8405.vm.duke.edu:8443/api/v1/';
+const endpoint = 'https://localhost:8443/api/v1/';
 @Injectable({
   providedIn: 'root'
 })
