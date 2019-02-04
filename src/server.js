@@ -62,6 +62,42 @@ MongoClient.connect('mongodb://localhost:27017', (err, database) => {
       });
     });
 
+    app.route('/api/v1/add-ingredient').get((req,res) =>{
+        let name = req.body['name'];
+        let number = req.body['number'];
+        let vendorInfo = req.body['vendorInfo'];
+        let packageSize = req.body['packageSize'];
+        let costPerPackage = req.body['costPerPackage'];
+        let comment = req.body['comment'];
+        let ingredient = new database_library.ingredientModel({
+            name: name,
+            number: number,
+            vendorInfo: vendorInfo,
+            packageSize: packageSize,
+            costPerPackage: costPerPackage,
+            comment: comment
+        });
+        console.log(ingredient)
+        ingredient.save().then(
+            doc => {
+                res.send({
+                    success: true,
+                    doc: doc
+                });
+                console.log(doc);
+                return;
+            }
+        ).catch(
+            err => {
+                res.send({
+                    errormessage: "Unable to save ingredient."
+                });
+                console.log(err);
+                return;
+            }
+        );
+    });
+
     app.route('/api/v1/get-goal-by-name').get((req,res) => {
         let goalName = req.headers['name'];
         const filterschema = {

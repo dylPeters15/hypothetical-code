@@ -88,6 +88,12 @@ export class RestService {
   getIngredients(): Observable<any> {
     return this.http.get(endpoint + 'ingredient-inventory', this.getHTTPOptions()).pipe(map(this.extractData));
   }
+
+  addIngredient(ingredient): Observable<any> {
+    return this.http.post(endpoint + 'add-ingredient', {
+      ingredient: ingredient
+    }, this.getHTTPOptions());
+  }
   
   sendUserListRequest(): Observable<any> {
     return this.http.get(endpoint + 'user-list', this.getHTTPOptions()).pipe(map(this.extractData));

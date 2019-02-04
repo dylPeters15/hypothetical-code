@@ -47,8 +47,6 @@ export class IngredientInventoryComponent implements OnInit {
       this.ingredients.forEach(ingredient => {
         console.log(ingredient)
         this.data.push(ingredient);
-        console.log(ingredient['costPerPackage'])
-        console.log(ingredient['comment'])
       });
       this.dataSource = new MatTableDataSource<IngredientData>(this.data);
       // this.dataSource.paginator = this.paginator;
@@ -64,7 +62,10 @@ export class IngredientInventoryComponent implements OnInit {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      console.log('The dialog was closed');
+      console.log('The dialog was closed: ', result);
+      this.rest.addIngredient(result);
+      this.data = [];
+      this.refreshData();
     });
   }
 
