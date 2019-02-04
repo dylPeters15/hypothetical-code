@@ -74,7 +74,12 @@ var ingredientSchema = new mongoose.Schema({
         type: String,
         required: false,
         unique: false
-      }
+      },
+    skus: {
+        type: Array,
+        required: false,
+        unique: false
+    }
   })
 
   var ingredientModel = mongoose.model('ingredient', ingredientSchema);

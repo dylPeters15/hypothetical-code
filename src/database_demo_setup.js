@@ -57,3 +57,22 @@ let testSku = new database_library.skuModel({
           console.log(err);
       }
   );
+
+  let testIngredient = new database_library.ingredientModel({
+    name: 'tomato',
+    number: 1,
+    vendorInformation: 'hypothetical farm',
+    packageSize: '50 units',
+    costPerPackage: 20,
+    comment: 'This is a comment!',
+    skus: ['Tomato Soup']
+  });
+  testIngredient.save().then(
+      doc => {
+          console.log(doc);
+      }
+  ).catch(
+      err => {
+          console.log(err);
+      }
+  );
