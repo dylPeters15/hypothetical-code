@@ -1,7 +1,7 @@
 <button mat-raised-button (click)="selectAll()"> Select All </button>
 <button mat-raised-button (click)="deselectAll()"> Deselect All </button>
 <button mat-raised-button (click)="deleteSelected()" style="color: white; background-color: red;" [disabled]="dataSource.data.length==0"> Delete Selected </button>
-<button mat-raised-button (click)="newUser()"> New Sku </button>
+<button mat-raised-button (click)="newSku()"> New Sku </button>
 
 <mat-table [dataSource]="dataSource" class="mat-elevation-z8">
   <ng-container matColumnDef="checked">

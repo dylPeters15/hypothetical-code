@@ -1,0 +1,50 @@
+<h2 mat-dialog-title align="center">Create New Sku</h2>
+<mat-dialog-content align="center">
+  <mat-card>
+    <mat-card-content style="display: grid; width: 100%; justify-items: center;">
+      <mat-form-field>
+        <input matInput [(ngModel)]="name" placeholder="Name" required>
+      </mat-form-field>
+
+      <mat-form-field>
+        <input matInput [(ngModel)]="sku_number" placeholder="Sku#">
+        <mat-hint>Optional</mat-hint>
+      </mat-form-field>
+
+      <mat-form-field>
+        <input matInput [(ngModel)]="case_upc_number" placeholder="Case UPC#" required>
+        <mat-hint>Must confirm to UPC-A standard (12 digit)</mat-hint>
+      </mat-form-field>
+
+      <mat-form-field>
+        <input matInput [(ngModel)]="unit_upc_number" placeholder="Unit UPC#" required>
+        <mat-hint>Must confirm to UPC-A standard (12 digit)</mat-hint>
+      </mat-form-field>
+
+      <mat-form-field>
+        <input matInput [(ngModel)]="unit_size" placeholder="Unit Size" required>
+      </mat-form-field>
+
+      <mat-form-field>
+        <input matInput [(ngModel)]="count_per_case" placeholder="Count Per Case" required>
+      </mat-form-field>
+
+      <mat-form-field>
+        <input matInput [(ngModel)]="product_line" placeholder="Product Line" required>
+      </mat-form-field>
+
+      <mat-form-field>
+        <input matInput [(ngModel)]="ingredients" placeholder="Ingredients" required>
+        <mat-hint>Enter in this format: ingredient1,quantity1, ingredient2,quantity2, etc</mat-hint>
+      </mat-form-field>
+
+      <mat-form-field>
+        <input matInput [(ngModel)]="comment" placeholder="Additional Comments">
+      </mat-form-field>
+    </mat-card-content>
+  </mat-card>
+</mat-dialog-content>
+<mat-dialog-actions align="center">
+  <button class="mat-raised-button" (click)="closeDialog()">Cancel</button>
+  <button class="mat-raised-button" (click)="createSku()" [disabled]="username==''" color="primary">Create</button>
+</mat-dialog-actions>

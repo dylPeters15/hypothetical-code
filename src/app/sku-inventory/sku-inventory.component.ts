@@ -3,8 +3,8 @@ import { RestService } from '../rest.service';
 import {MatSnackBar} from '@angular/material';
 import { MatDialogRef, MatDialog, MatDialogConfig, MatTableDataSource, MatPaginator } from "@angular/material";
 import { MoreInfoDialogComponent } from '../more-info-dialog/more-info-dialog.component';
+import { NewSkuDialogComponent } from '../new-sku-dialog/new-sku-dialog.component';
 import { AfterViewChecked } from '@angular/core';
-import { PasswordConfirmationDialogComponent } from '../password-confirmation-dialog/password-confirmation-dialog.component';
 
 export interface UserForTable {
   name: string;
@@ -27,6 +27,7 @@ export class SkuInventoryComponent  implements OnInit {
   displayedColumns: string[] = ['checked', 'name', 'skuNumber','caseUpcNumber', 'unitUpcNumber', 'unitSize', 'countPerCase', 'productLine', 'ingredientTuples', "comment"];
   data: UserForTable[] = [];
   dialogRef: MatDialogRef<MoreInfoDialogComponent>;
+  newDialogRef: MatDialogRef<NewSkuDialogComponent>;
   dataSource =  new MatTableDataSource<UserForTable>(this.data);
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
@@ -44,7 +45,7 @@ export class SkuInventoryComponent  implements OnInit {
       this.data.forEach(user => {
         user['checked'] = false;
       });
-      console.log("got here. data is: " + this.data.length);
+      console.log("got here. data is: " + this.data);
       this.sortData();
       this.dataSource =  new MatTableDataSource<UserForTable>(this.data);
     this.dataSource.paginator = this.paginator;
@@ -57,6 +58,14 @@ export class SkuInventoryComponent  implements OnInit {
     dialogConfig.data = {information_content: content, information_type: type};
     this.dialogRef = this.dialog.open(MoreInfoDialogComponent, dialogConfig);
     this.dialogRef.afterClosed().subscribe(event => {
+      this.refreshData();
+    });
+  }
+
+  newSku() {
+    const dialogConfig = new MatDialogConfig();
+    this.newDialogRef = this.dialog.open(NewSkuDialogComponent, dialogConfig);
+    this.newDialogRef.afterClosed().subscribe(event => {
       this.refreshData();
     });
   }

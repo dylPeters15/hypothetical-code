@@ -25,6 +25,7 @@ import { AccountSettingsComponent } from './account-settings/account-settings.co
 import { UserNotificationDialogComponent } from './user-notification-dialog/user-notification-dialog.component';
 import { UserManagementComponent } from './user-management/user-management.component';
 import { NewUserDialogComponent } from './new-user-dialog/new-user-dialog.component';
+import { NewSkuDialogComponent } from './new-sku-dialog/new-sku-dialog.component';
 import { MoreInfoDialogComponent } from './more-info-dialog/more-info-dialog.component';
 import { PasswordConfirmationDialogComponent } from './password-confirmation-dialog/password-confirmation-dialog.component'; 
 
@@ -60,6 +61,7 @@ const appRoutes: Routes = [
     IngredientDependencyComponent,
     UserManagementComponent,
     NewUserDialogComponent,
+    NewSkuDialogComponent,
     MoreInfoDialogComponent,
     PasswordConfirmationDialogComponent
   ],
@@ -85,6 +87,6 @@ const appRoutes: Routes = [
   ],
   providers: [],
   bootstrap: [AppComponent],
-  entryComponents: [UserNotificationDialogComponent, NewUserDialogComponent, PasswordConfirmationDialogComponent, MoreInfoDialogComponent]
+  entryComponents: [UserNotificationDialogComponent, NewUserDialogComponent, NewSkuDialogComponent, PasswordConfirmationDialogComponent, MoreInfoDialogComponent]
 })
 export class AppModule { }

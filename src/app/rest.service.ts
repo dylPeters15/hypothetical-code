@@ -36,6 +36,25 @@ export class RestService {
     }, this.getHTTPOptions());
   }
 
+  adminCreateSku(name, sku_number, case_upc_number, unit_upc_number, unit_size, count_per_case, product_line,ingredients, comment): Observable<any> {
+    return this.http.post(endpoint + 'sku-inventory', {
+      name: name,
+      skuNumber: sku_number,
+      caseUpcNumber: case_upc_number,
+      unitUpcNumber: unit_upc_number,
+      unitSize: unit_size,
+      countPerCase: count_per_case,
+      productLine: product_line,
+      ingredientTuples: ingredients,
+      comment: comment
+    }, this.getHTTPOptions());
+  }
+
+  getSkus(): Observable<any> {
+    console.log("We made it here fam");
+    return this.http.get(endpoint + 'sku-inventory').pipe(map(this.extractData));
+  }
+
   sendLoginRequest(username, password): Observable<any> {
     //Use GET becuase we are requesting the user token
     let header:HttpHeaders = new HttpHeaders({
@@ -86,10 +105,6 @@ export class RestService {
       headers: header
     };
     return this.http.delete(endpoint + 'admin-delete-user', httpOptions).pipe(map(this.extractData));
-  }
-
-  getSkus(): Observable<any> {
-    return this.http.get(endpoint + 'sku-inventory').pipe(map(this.extractData));
   }
 
   private handleError<T> (operation = 'operation', result?: T) {
