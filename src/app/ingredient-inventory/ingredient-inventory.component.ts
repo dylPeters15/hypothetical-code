@@ -20,11 +20,11 @@ export interface UserForTable {
     templateUrl: './sku-inventory.component.html',
     styleUrls: ['./sku-inventory.component.css']
   })
-export class SkuInventoryComponent  implements OnInit {
+export class IngredientInventoryComponent  implements OnInit {
 
   constructor(public rest:RestService, private snackBar: MatSnackBar, private dialog: MatDialog) { }
   allReplacement = 54321;
-  displayedColumns: string[] = ['checked', 'name', 'skuNumber','caseUpcNumber', 'unitUpcNumber', 'unitSize', 'countPerCase', 'productLine', 'ingredientTuples', "comment"];
+  displayedColumns: string[] = ['checked', 'name', 'number','vendorInformation', 'packageSize', 'costPerPackage', 'comment'];
   data: UserForTable[] = [];
   dialogRef: MatDialogRef<MoreInfoDialogComponent>;
   newDialogRef: MatDialogRef<NewSkuDialogComponent>;
@@ -40,7 +40,7 @@ export class SkuInventoryComponent  implements OnInit {
   }
 
   refreshData() {
-    this.rest.getSkus().subscribe(response => {
+    this.rest.getIngredients().subscribe(response => {
       this.data = response;
       this.data.forEach(user => {
         user['checked'] = false;

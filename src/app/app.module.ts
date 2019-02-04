@@ -10,6 +10,7 @@ import { CustomMaterialModule } from "./core/material.module";
 import { FooterComponent } from './footer/footer.component';
 import { HomeComponent } from './home/home.component';
 import { SkuInventoryComponent } from './sku-inventory/sku-inventory.component';
+import { IngredientInventoryComponent } from './ingredient-inventory/ingredient-inventory.component';
 import { LoginComponent } from './login/login.component';
 import { NavigationComponent } from './navigation/navigation.component';
 import { UserRouteGuardService } from './user-route-guard.service';
@@ -43,7 +44,7 @@ const appRoutes: Routes = [
   { path: 'manufacturing-calculator', component: ManufacturingCalculatorComponent, data: { title: 'Manufacturing Calculator' }, canActivate: [UserRouteGuardService] },
   { path: 'ingredient-dependency-report', component: IngredientDependencyComponent, data: { title: 'Ingredient Dependency Report' }, canActivate: [UserRouteGuardService] },
   { path: 'manufacturing-goal', component: HomeComponent, data: { title: 'Manufacturing Goals' }, canActivate: [UserRouteGuardService] },
-  { path: 'ingredient-inventory', component: HomeComponent, data: { title: 'Ingredient Inventory' }, canActivate: [AdminRouteGuardService] },
+  { path: 'ingredient-inventory', component: IngredientInventoryComponent, data: { title: 'Ingredient Inventory' }, canActivate: [AdminRouteGuardService] },
   { path: 'sku-inventory', component: SkuInventoryComponent, data: { title: 'SKU Inventory' }, canActivate: [AdminRouteGuardService] },
   { path: 'product-line-inventory', component: HomeComponent, data: { title: 'Product Line Inventory' }, canActivate: [AdminRouteGuardService] },
   { path: 'import-export', component: HomeComponent, data: { title: 'Import Export' }, canActivate: [AdminRouteGuardService] },
@@ -62,6 +63,7 @@ const appRoutes: Routes = [
     AccountSettingsComponent,
     UserNotificationDialogComponent,
     SkuInventoryComponent,
+    IngredientInventoryComponent,
     NewSkuDialogComponent,
     MoreInfoDialogComponent,
     ManufacturingCalculatorComponent,

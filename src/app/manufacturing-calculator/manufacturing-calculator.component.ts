@@ -70,8 +70,8 @@ export class ManufacturingCalculatorComponent implements OnInit {
       useBom: true,
       useKeysAsHeaders: true,
     };
-    const csvExporter = new ExportToCsv(options);
-    csvExporter.generateCsv(this.data);
+    //const csvExporter = new ExportToCsv(options);
+    //csvExporter.generateCsv(this.data);
   }
 
 }

@@ -6,78 +6,57 @@
 <mat-table [dataSource]="dataSource" class="mat-elevation-z8">
   <ng-container matColumnDef="checked">
     <mat-header-cell *matHeaderCellDef>Selected</mat-header-cell>
-    <mat-cell *matCellDef="let sku">
-      <mat-checkbox [(ngModel)]="sku['checked']"></mat-checkbox>
+    <mat-cell *matCellDef="let ingredient">
+      <mat-checkbox [(ngModel)]="ingredient['checked']"></mat-checkbox>
     </mat-cell>
   </ng-container>
 
   <ng-container matColumnDef="name">
     <mat-header-cell *matHeaderCellDef>Name</mat-header-cell>
-    <mat-cell *matCellDef="let sku">
-      {{sku['name']}}
+    <mat-cell *matCellDef="let ingredient">
+      {{ingredient['name']}}
     </mat-cell>
   </ng-container>
 
-  <ng-container matColumnDef="skuNumber">
+  <ng-container matColumnDef="number">
     <mat-header-cell *matHeaderCellDef>SKU#</mat-header-cell>
-    <mat-cell *matCellDef="let sku">
-      {{sku['skuNumber']}}
+    <mat-cell *matCellDef="let ingredient">
+      {{ingredient['number']}}
     </mat-cell>
   </ng-container>
 
-  <ng-container matColumnDef="caseUpcNumber">
+  <ng-container matColumnDef="venderInformation">
     <mat-header-cell *matHeaderCellDef>Case UPC#</mat-header-cell>
-    <mat-cell *matCellDef="let sku">
-      {{sku['caseUpcNumber']}}
+    <mat-cell *matCellDef="let ingredient">
+      {{ingredient['venderInformation']}}
     </mat-cell>
   </ng-container>
 
-  <ng-container matColumnDef="unitUpcNumber">
+  <ng-container matColumnDef="packageSize">
     <mat-header-cell *matHeaderCellDef>Unit UPC#</mat-header-cell>
-    <mat-cell *matCellDef="let sku">
-      {{sku['unitUpcNumber']}}
+    <mat-cell *matCellDef="let ingredient">
+      {{ingredient['packageSize']}}
     </mat-cell>
   </ng-container>
 
-  <ng-container matColumnDef="unitSize">
+  <ng-container matColumnDef="costPerPackage">
     <mat-header-cell *matHeaderCellDef>Unit size</mat-header-cell>
-    <mat-cell *matCellDef="let sku">
-      {{sku['unitSize']}}
+    <mat-cell *matCellDef="let ingredient">
+      {{ingredient['costPerPackage']}}
     </mat-cell>
   </ng-container>
-
-  <ng-container matColumnDef="countPerCase">
-      <mat-header-cell *matHeaderCellDef>Count per case</mat-header-cell>
-      <mat-cell *matCellDef="let sku">
-        {{sku['countPerCase']}}
-      </mat-cell>
-    </ng-container>
-
-    <ng-container matColumnDef="productLine">
-        <mat-header-cell *matHeaderCellDef>Product line</mat-header-cell>
-        <mat-cell *matCellDef="let sku">
-          {{sku['productLine']}}
-        </mat-cell>
-      </ng-container>
-
-      <ng-container matColumnDef="ingredientTuples">
-          <mat-header-cell *matHeaderCellDef>Ingredients</mat-header-cell>
-          <mat-cell *matCellDef="let sku">
-            {{sku['ingredientTuples']}}
-          </mat-cell>
-        </ng-container>
 
       <ng-container matColumnDef="comment">
           <mat-header-cell *matHeaderCellDef>Comment</mat-header-cell>
-          <mat-cell *matCellDef="let sku">
-            <button mat-raised-button (click)="seeInfo('Comment', sku['comment'])" style="color: white; background-color: red;"> See comment </button>
+          <mat-cell *matCellDef="let ingredient">
+            <button mat-raised-button (click)="seeInfo('Comment', ingredient['comment'])" style="color: white; background-color: red;"> See comment </button>
           </mat-cell>
         </ng-container>
 
   <ng-container matColumnDef="actions">
     <mat-header-cell *matHeaderCellDef>Actions</mat-header-cell>
-    <mat-cell *matCellDef="let sku">
-      <button mat-raised-button (click)="deleteSku(element['name'])" style="color: white; background-color: red;"> Delete sku </button>
+    <mat-cell *matCellDef="let ingredient">
+      <button mat-raised-button (click)="deleteIngredient(element['name'])" style="color: white; background-color: red;"> Delete sku </button>
     </mat-cell>
   </ng-container>
 

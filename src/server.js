@@ -155,6 +155,59 @@ MongoClient.connect('mongodb://localhost:27017', (err, database) => {
         });
     });
 
+    app.route('/api/v1/ingredient-inventory').get((req,res) =>{
+        db.collection('ingredients').find().toArray(function(err,results) {
+          res.send(results);
+        });
+      });
+
+      app.route('/api/v1/ingredient-inventory').post((req, res) => {
+        const adminusername = req.headers['username'];
+        const admintoken = req.headers['token'];
+        verifiedForAdminOperations(adminusername, admintoken, verified => {
+            if (!verified) {
+                res.send({
+                    errormessage: 'Not permitted to perform operation.'
+                });
+                return
+            }
+            let name = req.body['name'];
+            let number = req.body['number'];
+            let venderInformation = req.body['venderInformation'];
+            let packageSize = req.body['packageSize'];
+            let costPerPackage = req.body['costPerPackage'];
+            let comment = req.body['comment'];
+
+ 
+            let ingredient = database_library.ingredientModel({
+                name: name,
+                number: number,
+                venderInformation: venderInformation,
+                packageSize: packageSize,
+                costPerPackage: costPerPackage,
+                comment: comment,
+            });
+            ingredient.save().then(
+                doc => {
+                    res.send({
+                        success: true,
+                        doc: doc
+                    });
+                    console.log(doc);
+                    return;
+                }
+            ).catch(
+                err => {
+                    res.send({
+                        errormessage: "Unable to save ingredient."
+                    });
+                    console.log(err);
+                    return;
+                }
+            );
+        });
+    });
+
 
 
 
