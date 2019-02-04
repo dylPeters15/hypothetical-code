@@ -4,7 +4,7 @@ import { Observable, of } from 'rxjs';
 import { map, catchError, tap } from 'rxjs/operators';
 import { auth } from './auth.service'
 
-const endpoint = 'https://localhost:8443/api/v1/';
+const endpoint = 'https://vcm-8405.vm.duke.edu:8443/api/v1/';
 @Injectable({
   providedIn: 'root'
 })
@@ -88,8 +88,8 @@ export class RestService {
     return this.http.delete(endpoint + 'admin-delete-user', httpOptions).pipe(map(this.extractData));
   }
 
-  getIngredients(): Observable<any> {
-    return this.http.get(endpoint + 'sku-inventory')
+  getSkus(): Observable<any> {
+    return this.http.get(endpoint + 'sku-inventory').pipe(map(this.extractData));
   }
 
   private handleError<T> (operation = 'operation', result?: T) {

@@ -1,47 +1,87 @@
-<div class="sku-inventory">
-  <title>Sku Inventory</title>
-  <ul class="ingredients-list">
-      <li *ngFor="let ingredient of ingredients">{{ingredient.name}}</li>
-      <li> example 1 </li>
-  </ul>
-  
-  <div class="topnav">
-    <a class="active" href="#home">Home</a>
-    <a href="#about">About</a>
-    <a href="#contact">Contact</a>
-    <div class="search-container">
-      <form action="/action_page.php">
-        <input type="text" placeholder="Search.." name="search">
-        <button type="submit">Submit</button>
-      </form>
-    </div>
-  </div>
+<button mat-raised-button (click)="selectAll()"> Select All </button>
+<button mat-raised-button (click)="deselectAll()"> Deselect All </button>
+<button mat-raised-button (click)="deleteSelected()" style="color: white; background-color: red;" [disabled]="dataSource.data.length==0"> Delete Selected </button>
+<button mat-raised-button (click)="newUser()"> New Sku </button>
 
-  <h1> Skus</h1>
-  <table>
-    <tr>
-      <th>Name   </th>
-      <th>   Sku#   </th>
-      <th>   Case UPC#   </th>
-      <th>   Unit UPC#   </th>
-      <th>   Unit size   </th>
-      <th>   Count per case   </th>
-      <th>   Product line   </th>
-      <th>   Ingredients   </th>
-    </tr>
-    <tr>
-      <td>Flour</td>
-      <td>6.5</td>
-    </tr>
-    <tr>
-      <td>Sugar</td>
-      <td>4</td>
-    </tr>
-    <tr>
-      <td>Chicken</td>
-      <td>3</td>
-    </tr>
-  </table>
-</div>
-<button mat-raised-button>Export to CSV</button>
-<button mat-raised-button>Export to PDF</button>
+<mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+  <ng-container matColumnDef="checked">
+    <mat-header-cell *matHeaderCellDef>Selected</mat-header-cell>
+    <mat-cell *matCellDef="let sku">
+      <mat-checkbox [(ngModel)]="sku['checked']"></mat-checkbox>
+    </mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="name">
+    <mat-header-cell *matHeaderCellDef>Name</mat-header-cell>
+    <mat-cell *matCellDef="let sku">
+      {{sku['name']}}
+    </mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="skuNumber">
+    <mat-header-cell *matHeaderCellDef>SKU#</mat-header-cell>
+    <mat-cell *matCellDef="let sku">
+      {{sku['skuNumber']}}
+    </mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="caseUpcNumber">
+    <mat-header-cell *matHeaderCellDef>Case UPC#</mat-header-cell>
+    <mat-cell *matCellDef="let sku">
+      {{sku['caseUpcNumber']}}
+    </mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="unitUpcNumber">
+    <mat-header-cell *matHeaderCellDef>Unit UPC#</mat-header-cell>
+    <mat-cell *matCellDef="let sku">
+      {{sku['unitUpcNumber']}}
+    </mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="unitSize">
+    <mat-header-cell *matHeaderCellDef>Unit size</mat-header-cell>
+    <mat-cell *matCellDef="let sku">
+      {{sku['unitSize']}}
+    </mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="countPerCase">
+      <mat-header-cell *matHeaderCellDef>Count per case</mat-header-cell>
+      <mat-cell *matCellDef="let sku">
+        {{sku['countPerCase']}}
+      </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="productLine">
+        <mat-header-cell *matHeaderCellDef>Product line</mat-header-cell>
+        <mat-cell *matCellDef="let sku">
+          {{sku['productLine']}}
+        </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="ingredientTuples">
+          <mat-header-cell *matHeaderCellDef>Ingredients</mat-header-cell>
+          <mat-cell *matCellDef="let sku">
+            {{sku['ingredientTuples']}}
+          </mat-cell>
+        </ng-container>
+
+      <ng-container matColumnDef="comment">
+          <mat-header-cell *matHeaderCellDef>Comment</mat-header-cell>
+          <mat-cell *matCellDef="let sku">
+            <button mat-raised-button (click)="seeInfo('Comment', sku['comment'])" style="color: white; background-color: red;"> See comment </button>
+          </mat-cell>
+        </ng-container>
+
+  <ng-container matColumnDef="actions">
+    <mat-header-cell *matHeaderCellDef>Actions</mat-header-cell>
+    <mat-cell *matCellDef="let sku">
+      <button mat-raised-button (click)="deleteSku(element['name'])" style="color: white; background-color: red;"> Delete sku </button>
+    </mat-cell>
+  </ng-container>
+
+  <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+  <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+</mat-table>
+<mat-paginator id="elementsTablePaginator" [pageSizeOptions]="getPageSizeOptions()" showFirstLastButtons></mat-paginator>
