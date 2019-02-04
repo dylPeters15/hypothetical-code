@@ -4,7 +4,7 @@
   <mat-form-field>
     <input matInput [(ngModel)]="data.name">
   </mat-form-field>
-  <p>Number of Ingredients</p>
+  <p> Quantity of this Ingredient</p>
   <mat-form-field>
     <input matInput [(ngModel)]="data.number">
   </mat-form-field>
@@ -18,7 +18,7 @@
   </mat-form-field>
   <p>Cost per Package</p>
   <mat-form-field>
-    <input matInput [(ngModel)]="data.cost">
+    <input matInput [(ngModel)]="data.costPerPackage">
   </mat-form-field>
   <p>Enter any Comments</p>
   <mat-form-field>
@@ -26,5 +26,5 @@
   </mat-form-field>
 </div>
 <div mat-dialog-actions>
-  <button mat-button [mat-dialog-close]="data.name" cdkFocusInitial>Add</button>
+  <button mat-button [mat-dialog-close]="data" cdkFocusInitial>Add</button>
 </div>
