@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit,ViewChild } from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import { RestService } from '../rest.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { MatDialogRef, MatDialog, MatDialogConfig, MatTableDataSource } from "@angular/material";
+import { MatDialogRef, MatDialog, MatDialogConfig, MatTableDataSource,MatPaginator } from "@angular/material";
 
 export class ManufacturingGoal {
   skus: any = [];
@@ -24,13 +24,19 @@ export class ManufacturingGoal {
 })
 
 export class ManufacturingGoalsComponent implements OnInit {
-
+  allReplacement = 54321;
   goals:any = [];
   displayedColumns: string[] = ['name', 'skus','quantities', 'date'];
   data: ManufacturingGoal[] = [];
   dataSource = new MatTableDataSource<ManufacturingGoal>(this.data);
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+  // newDialogRef: MatDialogRef<NewGoalComponent>;
 
   constructor(public rest:RestService, private route: ActivatedRoute, private router: Router) {  }
+
+  getPageSizeOptions() {
+    return [5, 10, 20, this.allReplacement];
+  }
 
   ngOnInit() {
     this.data = [];
@@ -47,6 +53,7 @@ export class ManufacturingGoalsComponent implements OnInit {
           this.data.push(currentGoal);
         }
         this.dataSource = new MatTableDataSource<ManufacturingGoal>(this.data);
+        this.dataSource.paginator = this.paginator;
     })
 
   }

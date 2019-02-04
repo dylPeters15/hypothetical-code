@@ -35,6 +35,7 @@ import { PasswordConfirmationDialogComponent } from './password-confirmation-dia
 import { PrivacyPolicyDialogComponent } from './privacy-policy-dialog/privacy-policy-dialog.component';
 import { TermsAndConditionsDialogComponent } from './terms-and-conditions-dialog/terms-and-conditions-dialog.component'; 
 import { ManufacturingGoalsComponent } from './manufacturing-goals/manufacturing-goals.component';
+import { NewGoalComponent } from './new-goal/new-goal.component';
 const appRoutes: Routes = [
   { path: 'login', component: LoginComponent, data: { title: 'Log In' }, canActivate: [AlreadyLoggedInRouteGuardService] },
   { path: 'user-management', component: UserManagementComponent, data: { title: 'User Management' }, canActivate: [AdminRouteGuardService] },
@@ -75,7 +76,8 @@ const appRoutes: Routes = [
     PasswordConfirmationDialogComponent,
     PrivacyPolicyDialogComponent,
     TermsAndConditionsDialogComponent,
-    ManufacturingGoalsComponent
+    ManufacturingGoalsComponent,
+    NewGoalComponent
   ],
   imports: [
     BrowserModule,
