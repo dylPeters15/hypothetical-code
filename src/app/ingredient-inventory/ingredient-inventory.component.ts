@@ -3,7 +3,7 @@ import { RestService } from '../rest.service';
 import {MatSnackBar} from '@angular/material';
 import { MatDialogRef, MatDialog, MatDialogConfig, MatTableDataSource, MatPaginator } from "@angular/material";
 import { MoreInfoDialogComponent } from '../more-info-dialog/more-info-dialog.component';
-import { NewSkuDialogComponent } from '../new-sku-dialog/new-sku-dialog.component';
+import { NewIngredientDialogComponent } from '../new-ingredient-dialog/new-ingredient-dialog.component';
 import { AfterViewChecked } from '@angular/core';
 
 export interface UserForTable {
@@ -16,9 +16,9 @@ export interface UserForTable {
  * @title Table dynamically changing the columns displayed
  */
 @Component({
-    selector: 'app-sku-inventory',
-    templateUrl: './sku-inventory.component.html',
-    styleUrls: ['./sku-inventory.component.css']
+    selector: 'app-ingredient-inventory',
+    templateUrl: './ingredient-inventory.component.html',
+    styleUrls: ['./ingredient-inventory.component.css']
   })
 export class IngredientInventoryComponent  implements OnInit {
 
@@ -27,7 +27,7 @@ export class IngredientInventoryComponent  implements OnInit {
   displayedColumns: string[] = ['checked', 'name', 'number','vendorInformation', 'packageSize', 'costPerPackage', 'comment'];
   data: UserForTable[] = [];
   dialogRef: MatDialogRef<MoreInfoDialogComponent>;
-  newDialogRef: MatDialogRef<NewSkuDialogComponent>;
+  newDialogRef: MatDialogRef<NewIngredientDialogComponent>;
   dataSource =  new MatTableDataSource<UserForTable>(this.data);
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
@@ -62,9 +62,9 @@ export class IngredientInventoryComponent  implements OnInit {
     });
   }
 
-  newSku() {
+  newIngredient() {
     const dialogConfig = new MatDialogConfig();
-    this.newDialogRef = this.dialog.open(NewSkuDialogComponent, dialogConfig);
+    this.newDialogRef = this.dialog.open(NewIngredientDialogComponent, dialogConfig);
     this.newDialogRef.afterClosed().subscribe(event => {
       this.refreshData();
     });
@@ -76,9 +76,9 @@ export class IngredientInventoryComponent  implements OnInit {
     });
   }
 
-  deleteSkuConfirmed(name) {
-    this.rest.sendAdminDeleteSkuRequest(name).subscribe(response => {
-      this.snackBar.open("Sku " + name + " deleted successfully.", "close", {
+  deleteIngredientConfirmed(name) {
+    this.rest.sendAdminDeleteIngredientRequest(name).subscribe(response => {
+      this.snackBar.open("Ingredient " + name + " deleted successfully.", "close", {
         duration: 2000,
       });
       this.data = this.data.filter((value, index, arr) => {
@@ -92,7 +92,7 @@ export class IngredientInventoryComponent  implements OnInit {
     const dialogConfig = new MatDialogConfig();
         this.data.forEach(user => {
           if (user.checked) {
-            this.deleteSkuConfirmed(user.name);
+            this.deleteIngredientConfirmed(user.name);
           }
         });
       }

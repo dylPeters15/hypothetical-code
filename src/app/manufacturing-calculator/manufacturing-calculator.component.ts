@@ -2,7 +2,7 @@ import { Component, OnInit,ViewChild } from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import { RestService } from '../rest.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import {ExportToCsv} from 'export-to-csv';
+//import {ExportToCsv} from 'export-to-csv';
 import { MatDialogRef, MatDialog, MatDialogConfig, MatTableDataSource } from "@angular/material";
 
 export class SkuQuantityTable{

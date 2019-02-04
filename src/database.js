@@ -44,7 +44,7 @@ var manufacturingGoalsSchema = new mongoose.Schema({
 
 var goalsModel = mongoose.model('goal', manufacturingGoalsSchema);
 
-var ingedientSchema = new mongoose.Schema({
+var ingredientSchema = new mongoose.Schema({
     name: {
       type: String,
       required: true,
@@ -55,7 +55,7 @@ var ingedientSchema = new mongoose.Schema({
       required: true,
       unique: true
     },
-    venderInformation: {
+    vendorInformation: {
       type: String,
       required: false,
       unique: false
@@ -77,7 +77,7 @@ var ingedientSchema = new mongoose.Schema({
       }
   })
 
-  var ingredientModel = mongoose.model('ingredient', ingedientSchema);
+  var ingredientModel = mongoose.model('ingredient', ingredientSchema);
 
   var skuSchema = new mongoose.Schema({
     name: {
