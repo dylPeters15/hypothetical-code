@@ -1,0 +1,11 @@
+<h2 mat-dialog-title align="center">{{ information_type }}</h2>
+<mat-dialog-content align="center">
+  <mat-card>
+    <mat-card-content style="display: grid; width: 100%; justify-items: center;">
+          <p> {{ information_content }} </p>
+    </mat-card-content>
+  </mat-card>
+</mat-dialog-content>
+<mat-dialog-actions align="center">
+  <button class="mat-raised-button" (click)="closeDialog()">Dismiss</button>
+</mat-dialog-actions>
