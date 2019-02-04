@@ -4,7 +4,7 @@ import { Observable, of } from 'rxjs';
 import { map, catchError, tap } from 'rxjs/operators';
 import { auth } from './auth.service'
 
-const endpoint = 'https://vcm-8238.vm.duke.edu:8443/api/v1/';
+const endpoint = 'https://vcm-8405.vm.duke.edu:8443/api/v1/';
 @Injectable({
   providedIn: 'root'
 })
@@ -34,6 +34,25 @@ export class RestService {
       username: username,
       password: password
     }, this.getHTTPOptions());
+  }
+
+  adminCreateSku(name, sku_number, case_upc_number, unit_upc_number, unit_size, count_per_case, product_line,ingredients, comment): Observable<any> {
+    return this.http.post(endpoint + 'sku-inventory', {
+      name: name,
+      skuNumber: sku_number,
+      caseUpcNumber: case_upc_number,
+      unitUpcNumber: unit_upc_number,
+      unitSize: unit_size,
+      countPerCase: count_per_case,
+      productLine: product_line,
+      ingredientTuples: ingredients,
+      comment: comment
+    }, this.getHTTPOptions());
+  }
+
+  getSkus(): Observable<any> {
+    console.log("We made it here fam");
+    return this.http.get(endpoint + 'sku-inventory').pipe(map(this.extractData));
   }
 
   sendLoginRequest(username, password): Observable<any> {
@@ -100,6 +119,19 @@ export class RestService {
       headers: header
     };
     return this.http.delete(endpoint + 'admin-delete-user', httpOptions).pipe(map(this.extractData));
+  }
+
+  sendAdminDeleteSkuRequest(nameToDelete): Observable<any> {
+    let header:HttpHeaders = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'username': auth.getUsername(),
+      'token':auth.getToken(),
+      'nametodelete': nameToDelete
+    });
+    let httpOptions = {
+      headers: header
+    };
+    return this.http.delete(endpoint + 'admin-delete-sku', httpOptions).pipe(map(this.extractData));
   }
 
   private handleError<T> (operation = 'operation', result?: T) {

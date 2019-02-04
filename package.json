@@ -7,7 +7,7 @@
     "startangularprod": "npm run startangulardylan",
     "startangulardylan": "sudo ng serve --host vcm-8205.vm.duke.edu --port 443 --disable-host-check --ssl true --ssl-key ssl/privkey.pem --ssl-cert ssl/fullchain.pem",
     "startangularfaith": "sudo ng serve --port 443 --disable-host-check --ssl true --ssl-key ssl/privkey.pem --ssl-cert ssl/fullchain.pem",
-    "startangularnoah": "sudo ng serve --host vcm-8205.vm.duke.edu --port 443 --disable-host-check --ssl true --ssl-key ssl/privkey.pem --ssl-cert ssl/fullchain.pem",
+    "startangularnoah": "sudo ng serve --host vcm-8405.vm.duke.edu --port 443 --disable-host-check --ssl true --ssl-key ssl/privkey.pem --ssl-cert ssl/fullchain.pem",
     "startangularben": "sudo ng serve --host vcm-8205.vm.duke.edu --port 443 --disable-host-check --ssl true --ssl-key ssl/privkey.pem --ssl-cert ssl/fullchain.pem",
     "startangularlocal": "sudo ng serve --port 443 --disable-host-check --ssl true --ssl-key ssl/privkey.pem --ssl-cert ssl/fullchain.pem",
     "starthttpredirectprod": "npm run starthttpredirectdylan",

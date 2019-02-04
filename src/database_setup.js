@@ -2,6 +2,7 @@ const database_library = require('./database.js');
 const crypto = require('crypto');
 
 let db = database_library.Database;
+/* 
 let admin_salt = crypto.randomBytes(16).toString('hex');
 let admin = new database_library.userModel({
     username: 'admin',
@@ -36,6 +37,28 @@ for (i = 0; i < 10; i++) {
         }
     );
 }
+*/
+
+let testSku = new database_library.skuModel({
+    name: 'Tomato Soup 2',
+    skuNumber: 2,
+    caseUpcNumber: '018273821922',
+    unitUpcNumber: '163728391922',
+    unitSize: '28oz',
+    countPerCase: 10,
+    productLine: 'Example product line',
+    ingredientTuples: ['Tomatoes', 5, 'pears', 0.5],
+    comment: "Enjoy this lovely can of tomato soup!"
+  });
+  testSku.save().then(
+      doc => {
+          console.log(doc);
+      }
+  ).catch(
+      err => {
+          console.log(err);
+      }
+  );
 
 let testGoal = new database_library.goalsModel({
   name: 'Goal-1',
