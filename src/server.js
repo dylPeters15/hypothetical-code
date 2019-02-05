@@ -415,6 +415,27 @@ MongoClient.connect('mongodb://localhost:27017', (err, database) => {
         });
     });
 
+    app.route('/api/v1/delete-goal').delete((req,res) => {
+        const username = req.headers['username'];
+        const token = req.headers['token'];
+        const nameToDelete = req.headers['nametodelete'];
+        const filterschema = {
+            name: nameToDelete
+        };
+        db.collection('goals').deleteOne(filterschema, (dberr, dbres) => {
+            if (dberr) {
+                res.send({
+                    errormessage: 'Unable to perform operation.'
+                });
+                return
+            }
+            res.send({
+                success: true
+            });
+        });
+    });
+    
+
     app.route('/api/v1/admin-delete-ingredient').delete((req, res) => {
         const username = req.headers['username'];
         const token = req.headers['token'];

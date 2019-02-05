@@ -170,7 +170,18 @@ export class RestService {
     };
     return this.http.delete(endpoint + 'admin-delete-ingredient', httpOptions).pipe(map(this.extractData));
   }
-
+  sendDeleteGoalRequest(name): Observable<any> {
+    let header:HttpHeaders = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'username': auth.getUsername(),
+      'token':auth.getToken(),
+      'nametodelete': name
+    });
+    let httpOptions = {
+      headers: header
+    };
+    return this.http.delete(endpoint + 'delete-goal', httpOptions).pipe(map(this.extractData));
+  }
   private handleError<T> (operation = 'operation', result?: T) {
     return (error: any): Observable<T> => {
 
