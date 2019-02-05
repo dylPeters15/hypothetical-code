@@ -50,6 +50,12 @@ MongoClient.connect('mongodb://localhost:27017', (err, database) => {
         }
     }
 
+    app.route('/api/v1/my-file').get((req,res) =>{
+        db.collection('files').find().toArray(function(err,results) {
+          res.send(results);
+        });
+      });
+
     app.route('/api/v1/manufacturing-goals').get((req,res) =>{
       db.collection('goals').find().toArray(function(err,results) {
         res.send(results);

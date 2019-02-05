@@ -165,10 +165,26 @@ var userSchema = new mongoose.Schema({
 });
 var userModel = mongoose.model('user', userSchema);
 
+var fileSchema = new mongoose.Schema({
+  name: {
+      type: String,
+      required: true,
+      unique: false
+  },
+  file: {
+      type: String,
+      required: true,
+      unique: false
+  },
+});
+var fileModel = mongoose.model('file', fileSchema);
+
+
 module.exports = {
     Database: new Database(),
     userModel: userModel,
     goalsModel: goalsModel,
     ingredientModel: ingredientModel,
-    skuModel: skuModel
+    skuModel: skuModel,
+    fileModel: fileModel
 };

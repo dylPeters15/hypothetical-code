@@ -79,7 +79,7 @@ export class RestService {
       formData.append("file", file, file.name);
       return this.http.post(endpoint + 'my-file', {
         name: file.name,
-        content: file
+        file: file
       }, this.getHTTPOptions());
     });
   }
