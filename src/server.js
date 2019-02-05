@@ -210,6 +210,18 @@ MongoClient.connect('mongodb://localhost:27017', (err, database) => {
         });
     });
 
+    app.route('/api/v1/get-sku-by-number').get((req,res) => {
+        let skuNumber = req.headers['skuNumber'];
+        const filterschema = {
+            skuNumber: Number(skuNumber)
+        };
+        console.log(skuNumber);
+        console.log(req.headers);
+        db.collection('skus').findOne(filterschema, function(err,results) {
+            res.send(results);
+        });
+    });
+
     app.route('/api/v1/add-ingredient-sku').put((req, rest) => {
         const newPass = req.body['ingredient'];
         const oldPass = req.body['skus'];
