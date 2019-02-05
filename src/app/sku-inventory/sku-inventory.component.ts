@@ -76,8 +76,11 @@ export class SkuInventoryComponent  implements OnInit {
     });
   }
 
-  deleteSkuConfirmed(name) {
-    this.rest.sendAdminDeleteSkuRequest(name).subscribe(response => {
+  deleteSkuConfirmed(sku) {
+    this.rest.sendAdminDeleteSkuRequest(sku.name).subscribe(response => {
+      for (var i=0; i<sku.ingredientTuples.length-1; i = i+2) {
+        this.removeIngredient(sku.ingredientTuples[i], sku.name);
+      }
       this.snackBar.open("Sku " + name + " deleted successfully.", "close", {
         duration: 2000,
       });
@@ -90,13 +93,27 @@ export class SkuInventoryComponent  implements OnInit {
 
   deleteSelected() {
     const dialogConfig = new MatDialogConfig();
-        this.data.forEach(user => {
-          if (user.checked) {
-            this.deleteSkuConfirmed(user.name);
-          }
-        });
+    this.data.forEach(sku => {
+      if (sku.checked) {
+        this.deleteSkuConfirmed(sku);
       }
+    });
+  }
 
+  removeIngredient(ingredient, sku) {
+    let newSkus;
+    this.rest.getIngredientByNumber(ingredient).subscribe(response => {
+      newSkus = response.skus
+      console.log("new skus", newSkus)
+      newSkus.push(sku);
+      newSkus = newSkus.filter(function(e) { return e !== sku })
+      console.log("new skus", newSkus)
+      this.rest.addIngredientSku(ingredient, newSkus).subscribe(response => {
+        console.log("New ingredient data", response)
+      });
+    });
+  }
+  
   deselectAll() {
     this.data.forEach(user => {
       user.checked = false;

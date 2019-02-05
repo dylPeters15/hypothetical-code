@@ -210,40 +210,24 @@ MongoClient.connect('mongodb://localhost:27017', (err, database) => {
         });
     });
 
-    app.route('/api/v1/add-ingredient-sku').put((req, rest) => {
-        const newPass = req.body['ingredient'];
-        const oldPass = req.body['skus'];
-        // if (verified) {
-        //     const filterschema = {
-        //         username: username,
-        //         token: token
-        //     };
-        //     db.collection('users').findOne(filterschema, function (dberr, dbres) {
-        //         const oldSaltedHash = crypto.pbkdf2Sync(oldPass, dbres.salt, 1000, 64, 'sha512').toString('hex');
-        //         if (oldSaltedHash == dbres.saltedHashedPassword) {
-        //             const newSaltedHash = crypto.pbkdf2Sync(newPass, dbres.salt, 1000, 64, 'sha512').toString('hex');
-        //             db.collection('users').updateOne(filterschema, {
-        //                 $set: {
-        //                     saltedHashedPassword: newSaltedHash
-        //                 }
-        //             }, function (innerdberr, innerdbres) {
-        //                 res.send({
-        //                     success: true
-        //                 });
-        //             });
-        //         } else {
-        //             res.send({
-        //                 errormessage: 'Incorrect password.'
-        //             });
-        //         }
-        //     });
-        // } else {
-        //     res.send({
-        //         errormessage: 'Not permitted to perform operation.'
-        //     });
-        // }
+    app.route('/api/v1/add-ingredient-sku').put((req, res) => {
+        const ingredient = req.body['ingredient'];
+        const skus = req.body['skus'];
+        const filterschema = {
+            number: Number(ingredient)
+        };
+        db.collection('ingredients').findOne(filterschema, function (dberr, dbres) {
+            db.collection('ingredients').updateOne(filterschema, {
+                $set: {
+                    skus: skus
+                }
+            }, function (innerdberr, innerdbres) {
+                res.send({
+                    success: true
+                });
+            });
+        });
     });
-
 
     app.route('/api/v1/ingredient-inventory').post((req, res) => {
         const adminusername = req.headers['username'];
