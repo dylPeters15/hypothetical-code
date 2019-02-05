@@ -96,6 +96,10 @@ export class RestService {
     return this.http.get(endpoint + 'sku-inventory').pipe(map(this.extractData));
   }
 
+  getProductLines(): Observable<any> {
+    return this.http.get(endpoint + 'product-line').pipe(map(this.extractData));
+  }
+
   getIngredients(): Observable<any> {
     return this.http.get(endpoint + 'ingredient-inventory').pipe(map(this.extractData));
   }
@@ -196,6 +200,19 @@ export class RestService {
       headers: header
     };
     return this.http.delete(endpoint + 'admin-delete-sku', httpOptions).pipe(map(this.extractData));
+  }
+
+  sendAdminDeleteProductLineRequest(nameToDelete): Observable<any> {
+    let header:HttpHeaders = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'username': auth.getUsername(),
+      'token':auth.getToken(),
+      'nametodelete': nameToDelete
+    });
+    let httpOptions = {
+      headers: header
+    };
+    return this.http.delete(endpoint + 'admin-delete-product-line', httpOptions).pipe(map(this.extractData));
   }
 
   sendAdminDeleteIngredientRequest(nameToDelete): Observable<any> {

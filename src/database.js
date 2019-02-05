@@ -165,10 +165,29 @@ var userSchema = new mongoose.Schema({
 });
 var userModel = mongoose.model('user', userSchema);
 
+var productLineSchema = new mongoose.Schema({
+  name: {
+      type: String,
+      required: true,
+      unique: true
+  },
+  skus: {
+      type: Array,
+      required: true
+  },
+  id: {
+    type: Number,
+    required: true,
+    unique: true
+  }   
+});
+var productLineModel = mongoose.model('product-line', productLineSchema);
+
 module.exports = {
     Database: new Database(),
     userModel: userModel,
     goalsModel: goalsModel,
     ingredientModel: ingredientModel,
-    skuModel: skuModel
+    skuModel: skuModel,
+    productLineModel: productLineModel
 };
