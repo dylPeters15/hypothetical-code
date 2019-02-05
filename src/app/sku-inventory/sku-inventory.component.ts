@@ -157,10 +157,10 @@ export class SkuInventoryComponent  implements OnInit {
       const options = { 
         fieldSeparator: ',',
         filename: 'skus',
-        quoteStrings: '"',
+        quoteStrings: '',
         decimalSeparator: '.',
         showLabels: true, 
-        showTitle: true,
+        showTitle: false,
         title: 'SKUs',
         useTextFile: false,
         useBom: true,

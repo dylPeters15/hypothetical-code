@@ -402,6 +402,7 @@ MongoClient.connect('mongodb://localhost:27017', (err, database) => {
         const username = req.headers['username'];
         const token = req.headers['token'];
         verifiedForUserOperations(username, token, function (verified) {
+            console.log(req.body);
             const name = req.body['name'];
             const sku_number = req.body['sku_number'];
             const case_upc_number = req.body['case_upc_number'];
@@ -429,6 +430,8 @@ MongoClient.connect('mongodb://localhost:27017', (err, database) => {
                                 comment: comment
                             }
                         }, function (innerdberr, innerdbres) {
+                            console.log(innerdberr);
+                            console.log(innerdbres);
                             res.send({
                                 success: true
                             });
