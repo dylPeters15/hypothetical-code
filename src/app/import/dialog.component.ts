@@ -66,7 +66,7 @@ export class DialogComponent implements OnInit {
       }
     }
 
-    for (var i = 0; i < splitByLine.length; i = i+1) {
+    for (var i = 0; i < splitByLine.length; i = i + 1) {
       if (splitByLine[i] != "") {
         let splitByCommas = splitByLine[i].split(",");
 
@@ -75,7 +75,7 @@ export class DialogComponent implements OnInit {
           skuNumber: parseInt(splitByCommas[0]),
           caseUpcNumber: splitByCommas[2],
           unitUpcNumber: splitByCommas[3],
-          unitSize: splitByCommas[4], 
+          unitSize: splitByCommas[4],
           countPerCase: parseInt(splitByCommas[5]),
           productLine: splitByCommas[6],
           ingredientTuples: [],
@@ -90,8 +90,8 @@ export class DialogComponent implements OnInit {
           }
           var results = response['results'];
 
-          if (results.name == sku.name 
-            && results.skuNumber == sku.skuNumber 
+          if (results.name == sku.name
+            && results.skuNumber == sku.skuNumber
             && results.caseUpcNumber == sku.caseUpcNumber
             && results.unitUpcNumber == sku.unitUpcNumber
             && results.unitSize == sku.unitSize
@@ -105,16 +105,27 @@ export class DialogComponent implements OnInit {
             if (responses.length == numNonEmptyLines) {
               objectref.parseResponses(responses);
             }
-          } else if (results.name == sku.name 
-            || results.skuNumber == sku.skuNumber 
+          } else if (results.name == sku.name
+            || results.skuNumber == sku.skuNumber
             || results.caseUpcNumber == sku.caseUpcNumber
             || results.unitUpcNumber == sku.unitUpcNumber
             || results.id == sku.id) {
             console.log("Collision. Prompt user.");
-            
+
+            console.log(results);
+            console.log(sku);
+
             if (objectref.applyToAll) {
               if (objectref.useNew) {
                 console.log("use new");
+                objectref.rest.modifySkuRequest(sku.name, sku.skuNumber, sku.caseUpcNumber, sku.unitUpcNumber, sku.unitSize, sku.countPerCase, sku.productLine, results.ingredientTuples.join(), sku.comment, results.id).subscribe(response => {
+                  responses.push({
+                    success: true
+                  });
+                  if (responses.length == numNonEmptyLines) {
+                    objectref.parseResponses(responses);
+                  }
+                });
 
               } else {
                 responses.push({
@@ -131,7 +142,14 @@ export class DialogComponent implements OnInit {
                 objectref.useNew = event.useNew;
                 if (event.useNew) {
                   console.log("use new");
-                  
+                  objectref.rest.modifySkuRequest(sku.name, sku.skuNumber, sku.caseUpcNumber, sku.unitUpcNumber, sku.unitSize, sku.countPerCase, sku.productLine, results.ingredientTuples.join(), sku.comment, results.id).subscribe(response => {
+                    responses.push({
+                      success: true
+                    });
+                    if (responses.length == numNonEmptyLines) {
+                      objectref.parseResponses(responses);
+                    }
+                  });
 
                 } else {
                   responses.push({
@@ -145,9 +163,9 @@ export class DialogComponent implements OnInit {
             }
 
 
-            
 
-            
+
+
 
 
 
