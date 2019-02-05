@@ -71,6 +71,19 @@ export class RestService {
     return this.http.put(endpoint + 'change-sku', body, this.getHTTPOptions()).pipe(map(this.extractData));
   }
 
+  upload(files)
+  {
+    files.forEach(file => {
+      // create a new multipart-form for every file
+      const formData: FormData = new FormData();
+      formData.append("file", file, file.name);
+      return this.http.post(endpoint + 'my-file', {
+        name: file.name,
+        content: file
+      }, this.getHTTPOptions());
+    });
+  }
+
   adminCreateIngredient(name, number, vendor_information, package_size, cost_per_package, comment): Observable<any> {
     return this.http.post(endpoint + 'ingredient-inventory', {
       name: name,

@@ -1,0 +1,16 @@
+table {
+  width: 100%;
+}
+
+button {
+  margin: 16px 8px;
+}
+
+.mat-card {
+  min-width: fit-content;
+}
+
+.mat-cell, .mat-footer-cell, .mat-header-cell {
+  min-width: 110px;
+  
+}

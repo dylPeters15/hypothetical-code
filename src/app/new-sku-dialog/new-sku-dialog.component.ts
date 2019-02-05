@@ -11,7 +11,6 @@ import {MAT_DIALOG_DATA} from '@angular/material';
 })
 export class NewSkuDialogComponent implements OnInit {
 
-<<<<<<< HEAD
   dialog_title: String;
   edit: Boolean;
   name: String = '';
@@ -24,18 +23,6 @@ export class NewSkuDialogComponent implements OnInit {
   ingredients: Array<Number> = [];
   comment: String = '';
   current_id: Number;
-=======
-  name: string = '';
-  sku_number: any = '';
-  case_upc_number: string = '';
-  unit_upc_number: string = '';
-  unit_size: string = '';
-  count_per_case: string = '';
-  product_line: string = '';
-  ingredients: any = [];
-  comment: string = '';
-  // newSkus: any = [];
->>>>>>> master
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: any, private dialogRef: MatDialogRef<NewSkuDialogComponent>, public rest:RestService, private snackBar: MatSnackBar) { }
 

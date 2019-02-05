@@ -95,7 +95,77 @@
             <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
           </mat-table>
 
+<<<<<<< HEAD
+  <ng-container matColumnDef="name">
+    <mat-header-cell *matHeaderCellDef>Name</mat-header-cell>
+    <mat-cell *matCellDef="let sku">
+      {{sku['name']}}
+    </mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="skuNumber">
+    <mat-header-cell *matHeaderCellDef>SKU#</mat-header-cell>
+    <mat-cell *matCellDef="let sku">
+      {{sku['skuNumber']}}
+    </mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="caseUpcNumber">
+    <mat-header-cell *matHeaderCellDef>Case UPC#</mat-header-cell>
+    <mat-cell *matCellDef="let sku">
+      {{sku['caseUpcNumber']}}
+    </mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="unitUpcNumber">
+    <mat-header-cell *matHeaderCellDef>Unit UPC#</mat-header-cell>
+    <mat-cell *matCellDef="let sku">
+      {{sku['unitUpcNumber']}}
+    </mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="unitSize">
+    <mat-header-cell *matHeaderCellDef>Unit size</mat-header-cell>
+    <mat-cell *matCellDef="let sku">
+      {{sku['unitSize']}}
+    </mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="countPerCase">
+      <mat-header-cell *matHeaderCellDef>Count per case</mat-header-cell>
+      <mat-cell *matCellDef="let sku">
+        {{sku['countPerCase']}}
+      </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="productLine">
+        <mat-header-cell *matHeaderCellDef>Product line</mat-header-cell>
+        <mat-cell *matCellDef="let sku">
+          {{sku['productLine']}}
+        </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="ingredientTuples">
+          <mat-header-cell *matHeaderCellDef>Ingredients</mat-header-cell>
+          <mat-cell *matCellDef="let sku">
+            {{sku['ingredientTuples']}}
+          </mat-cell>
+        </ng-container>
+
+      <ng-container matColumnDef="comment">
+          <mat-header-cell *matHeaderCellDef>Comment</mat-header-cell>
+          <mat-cell *matCellDef="let sku">
+            {{sku['comment']}}
+          </mat-cell>
+        </ng-container>
+
+  <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+  <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+</mat-table>
+<mat-paginator id="elementsTablePaginator" [pageSizeOptions]="getPageSizeOptions()" showFirstLastButtons></mat-paginator>
+=======
           <mat-paginator id="elementsTablePaginator" [pageSizeOptions]="getPageSizeOptions()" showFirstLastButtons></mat-paginator>
       </mat-card-content>
   </mat-card>
 <div>
+>>>>>>> master
