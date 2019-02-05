@@ -61,6 +61,16 @@ export class RestService {
     }, this.getHTTPOptions());
   }
 
+  createGoal(name, skus, quantities, date){
+    console.log("Name: " + name + " SKUS: " + skus + " Quants: " + quantities + " Date: " +date);
+    return this.http.post(endpoint + 'manufacturing-goals',{
+      name: name,
+      skus: skus,
+      quantities: quantities,
+      date: date
+    }, this.getHTTPOptions());
+  }
+
   getSkus(): Observable<any> {
     return this.http.get(endpoint + 'sku-inventory').pipe(map(this.extractData));
   }

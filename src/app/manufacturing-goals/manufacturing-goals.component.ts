@@ -2,7 +2,8 @@ import { Component, OnInit,ViewChild } from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import { RestService } from '../rest.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { MatDialogRef, MatDialog, MatDialogConfig, MatTableDataSource,MatPaginator } from "@angular/material";
+import { NewGoalDialogComponent } from '../new-goal-dialog/new-goal-dialog.component'
+import { MatDialogRef, MatDialog, MatDialogConfig, MatTableDataSource,MatPaginator, MatSnackBar } from "@angular/material";
 
 export class ManufacturingGoal {
   skus: any = [];
@@ -30,15 +31,28 @@ export class ManufacturingGoalsComponent implements OnInit {
   data: ManufacturingGoal[] = [];
   dataSource = new MatTableDataSource<ManufacturingGoal>(this.data);
   @ViewChild(MatPaginator) paginator: MatPaginator;
-  // newDialogRef: MatDialogRef<NewGoalComponent>;
+  newDialogRef: MatDialogRef<NewGoalDialogComponent>;
 
-  constructor(public rest:RestService, private route: ActivatedRoute, private router: Router) {  }
+  constructor(public rest:RestService, private route: ActivatedRoute, private router: Router, private snackBar: MatSnackBar, private dialog: MatDialog) {  }
 
   getPageSizeOptions() {
     return [5, 10, 20, this.allReplacement];
   }
 
+  newGoal() {
+    const dialogConfig = new MatDialogConfig();
+    this.newDialogRef = this.dialog.open(NewGoalDialogComponent, dialogConfig);
+    this.newDialogRef.afterClosed().subscribe(event => {
+      this.refreshData();
+  });
+}
+
   ngOnInit() {
+    this.refreshData();
+
+  }
+
+  refreshData() {
     this.data = [];
     this.rest.getGoals().subscribe(data => {
         this.goals = data;
@@ -55,7 +69,6 @@ export class ManufacturingGoalsComponent implements OnInit {
         this.dataSource = new MatTableDataSource<ManufacturingGoal>(this.data);
         this.dataSource.paginator = this.paginator;
     })
-
   }
 
 }
