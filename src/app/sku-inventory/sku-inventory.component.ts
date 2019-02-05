@@ -1,13 +1,23 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { RestService } from '../rest.service';
 import {MatSnackBar} from '@angular/material';
-import { MatDialogRef, MatDialog, MatDialogConfig, MatTableDataSource, MatPaginator } from "@angular/material";
+import { MatDialogRef, MatDialog, MatSort, MatDialogConfig, MatTableDataSource, MatPaginator } from "@angular/material";
 import { MoreInfoDialogComponent } from '../more-info-dialog/more-info-dialog.component';
 import { NewSkuDialogComponent } from '../new-sku-dialog/new-sku-dialog.component';
 import { AfterViewChecked } from '@angular/core';
+import { auth } from '../auth.service';
 
 export interface UserForTable {
-  name: string;
+  name: String;
+  skuNumber: Number;
+  caseUpcNumber: String;
+  unitUpcNumber: String;
+  unitSize: String;
+  countPerCase: Number;
+  productLine: String;
+  ingredientTuples: [];
+  comment: String;
+  id: Number;
   checked: boolean;
 }
 
@@ -29,9 +39,12 @@ export class SkuInventoryComponent  implements OnInit {
   dialogRef: MatDialogRef<MoreInfoDialogComponent>;
   newDialogRef: MatDialogRef<NewSkuDialogComponent>;
   dataSource =  new MatTableDataSource<UserForTable>(this.data);
+  admin: boolean = false;
   @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatSort) sort: MatSort;
 
   ngOnInit() {
+    this.admin = auth.isAuthenticatedForAdminOperation();
     this.refreshData();
   }
 
@@ -45,9 +58,9 @@ export class SkuInventoryComponent  implements OnInit {
       this.data.forEach(user => {
         user['checked'] = false;
       });
-      console.log("got here. data is: " + this.data);
-      this.sortData();
+      console.log(this.data);
       this.dataSource =  new MatTableDataSource<UserForTable>(this.data);
+      this.dataSource.sort = this.sort;
     this.dataSource.paginator = this.paginator;
     });
     
@@ -62,12 +75,19 @@ export class SkuInventoryComponent  implements OnInit {
     });
   }
 
-  newSku() {
+  // edit
+  newSku(edit, present_name, present_skuNumber, present_caseUpcNumber, present_unitUpcNumber, present_unitSize, present_countPerCase, present_productLine, present_ingredientTuples, present_comment, present_id) {
     const dialogConfig = new MatDialogConfig();
+    dialogConfig.data = {edit: edit, present_name: present_name, present_skuNumber: present_skuNumber, present_caseUpcNumber: present_caseUpcNumber, present_unitUpcNumber: present_unitUpcNumber, present_unitSize:present_unitSize, present_countPerCase:present_countPerCase, present_productLine:present_productLine,present_ingredientTuples:present_ingredientTuples, present_comment:present_comment, present_id:present_id};
     this.newDialogRef = this.dialog.open(NewSkuDialogComponent, dialogConfig);
     this.newDialogRef.afterClosed().subscribe(event => {
       this.refreshData();
     });
+  }
+
+  newSkuButton()
+  {
+    this.newSku(false, "", 0, "", "", "", 0, "", [], "", 0);
   }
 
   sortData() {
@@ -76,8 +96,11 @@ export class SkuInventoryComponent  implements OnInit {
     });
   }
 
-  deleteSkuConfirmed(name) {
-    this.rest.sendAdminDeleteSkuRequest(name).subscribe(response => {
+  deleteSkuConfirmed(sku) {
+    this.rest.sendAdminDeleteSkuRequest(sku.name).subscribe(response => {
+      for (var i=0; i<sku.ingredientTuples.length-1; i = i+2) {
+        this.removeIngredient(sku.ingredientTuples[i], sku.name);
+      }
       this.snackBar.open("Sku " + name + " deleted successfully.", "close", {
         duration: 2000,
       });
@@ -88,15 +111,62 @@ export class SkuInventoryComponent  implements OnInit {
     });
   }
 
+  modifySkuConfirmed(present_name, present_skuNumber, present_caseUpcNumber, present_unitUpcNumber,present_unitSize,present_countPerCase,present_productLine,present_ingredientTuples, present_comment, present_id) {
+    this.newSku(true, present_name, present_skuNumber, present_caseUpcNumber, present_unitUpcNumber, present_unitSize, present_countPerCase, present_productLine, present_ingredientTuples, present_comment, present_id);
+  }
+
   deleteSelected() {
     const dialogConfig = new MatDialogConfig();
+    this.data.forEach(sku => {
+      if (sku.checked) {
+        this.deleteSkuConfirmed(sku);
+      }
+    });
+  }
+
+   modifySelected() {
+        const dialogConfig = new MatDialogConfig();
+        let counter: number = 0;
         this.data.forEach(user => {
           if (user.checked) {
-            this.deleteSkuConfirmed(user.name);
+            counter++;
           }
         });
-      }
+        if (counter == 0) 
+        {
+          this.snackBar.open("Please select a sku to modify", "close", {
+            duration: 2000,
+          });
+        }
+        else if (counter != 1) 
+        {
+          this.snackBar.open("Please only select one sku to modify", "close", {
+            duration: 2000,
+          });
+        }
+        else{
+            this.data.forEach(user => {
+              if (user.checked) {
+                this.modifySkuConfirmed(user.name, user.skuNumber, user.caseUpcNumber, user.unitUpcNumber, user.unitSize, user.countPerCase, user.productLine, user.ingredientTuples, user.comment, user.id);
+              }
+            });
+          }   
+        }
 
+  removeIngredient(ingredient, sku) {
+    let newSkus;
+    this.rest.getIngredientByNumber(ingredient).subscribe(response => {
+      newSkus = response.skus
+      console.log("new skus", newSkus)
+      newSkus.push(sku);
+      newSkus = newSkus.filter(function(e) { return e !== sku })
+      console.log("new skus", newSkus)
+      this.rest.addIngredientSku(ingredient, newSkus).subscribe(response => {
+        console.log("New ingredient data", response)
+      });
+    });
+  }
+  
   deselectAll() {
     this.data.forEach(user => {
       user.checked = false;
@@ -109,6 +179,10 @@ export class SkuInventoryComponent  implements OnInit {
     });
   }
 
+  applyFilter(filterValue: string) {
+    this.dataSource.filter = filterValue.trim().toLowerCase();
+  }
+  
   ngAfterViewChecked() {
     const matOptions = document.querySelectorAll('mat-option');
    

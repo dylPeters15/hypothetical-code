@@ -4,7 +4,11 @@ import { Observable, of } from 'rxjs';
 import { map, catchError, tap } from 'rxjs/operators';
 import { auth } from './auth.service'
 
+//const endpoint = 'https://vcm-8238.vm.duke.edu:8443/api/v1/';
+// Noah: const endpoint = 'https://vcm-8405.vm.duke.edu:8443/api/v1/';
+// Faith/Dylan: 
 const endpoint = 'https://localhost:8443/api/v1/';
+
 @Injectable({
   providedIn: 'root'
 })
@@ -36,7 +40,7 @@ export class RestService {
     }, this.getHTTPOptions());
   }
 
-  adminCreateSku(name, sku_number, case_upc_number, unit_upc_number, unit_size, count_per_case, product_line,ingredients, comment): Observable<any> {
+  adminCreateSku(name, sku_number, case_upc_number, unit_upc_number, unit_size, count_per_case, product_line,ingredients, comment, id): Observable<any> {
     return this.http.post(endpoint + 'sku-inventory', {
       name: name,
       skuNumber: sku_number,
@@ -45,9 +49,27 @@ export class RestService {
       unitSize: unit_size,
       countPerCase: count_per_case,
       productLine: product_line,
-      ingredientTuples: ingredients,
-      comment: comment
+      ingredientTuples: ingredients.split(","),
+      comment: comment,
+      id: id
     }, this.getHTTPOptions());
+  }
+
+  modifySkuRequest(name, sku_number, case_upc_number, unit_upc_number, unit_size, count_per_case, product_line, ingredients, comment, id): Observable<any> {
+    //Use PUT because we are requesting to modify the user object in database
+    var body = {
+      name: name,
+      sku_number: sku_number,
+      case_upc_number: case_upc_number,
+      unit_upc_number: unit_upc_number,
+      unit_size: unit_size,
+      count_per_case: count_per_case,
+      product_line: product_line,
+      ingredients: ingredients,
+      comment: comment,
+      id: id
+    };
+    return this.http.put(endpoint + 'change-sku', body, this.getHTTPOptions()).pipe(map(this.extractData));
   }
 
   adminCreateIngredient(name, number, vendor_information, package_size, cost_per_package, comment): Observable<any> {
@@ -61,12 +83,41 @@ export class RestService {
     }, this.getHTTPOptions());
   }
 
+  createGoal(name, skus, quantities, date){
+    console.log("Name: " + name + " SKUS: " + skus + " Quants: " + quantities + " Date: " +date);
+    return this.http.post(endpoint + 'manufacturing-goals',{
+      name: name,
+      skus: skus,
+      quantities: quantities,
+      date: date
+    }, this.getHTTPOptions());
+  }
+
   getSkus(): Observable<any> {
     return this.http.get(endpoint + 'sku-inventory').pipe(map(this.extractData));
   }
 
   getIngredients(): Observable<any> {
     return this.http.get(endpoint + 'ingredient-inventory').pipe(map(this.extractData));
+  }
+
+  getIngredientByNumber(ingredientNumber): Observable<any>{
+    let header:HttpHeaders = new HttpHeaders({
+      'number': ingredientNumber
+    });
+    let httpOptions = {
+      headers: header
+    }
+    console.log(ingredientNumber)
+    return this.http.get(endpoint + 'get-ingredient-by-number', httpOptions).pipe(map(this.extractData));
+  }
+
+  addIngredientSku(ingredient, skus): Observable<any> {
+    var body = {
+      ingredient: ingredient,
+      skus: skus
+    }
+    return this.http.put(endpoint + 'add-ingredient-sku', body, this.getHTTPOptions()).pipe(map(this.extractData));
   }
 
   sendLoginRequest(username, password): Observable<any> {
@@ -105,7 +156,7 @@ export class RestService {
   }
 
   getGoals(): Observable<any> {
-    return this.http.get(endpoint + 'manufacturing-calculator')
+    return this.http.get(endpoint + 'manufacturing-goals').pipe(map(this.extractData));
   }
 
   getGoalByName(goalName): Observable<any>{
@@ -160,7 +211,18 @@ export class RestService {
     };
     return this.http.delete(endpoint + 'admin-delete-ingredient', httpOptions).pipe(map(this.extractData));
   }
-
+  sendDeleteGoalRequest(name): Observable<any> {
+    let header:HttpHeaders = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'username': auth.getUsername(),
+      'token':auth.getToken(),
+      'nametodelete': name
+    });
+    let httpOptions = {
+      headers: header
+    };
+    return this.http.delete(endpoint + 'delete-goal', httpOptions).pipe(map(this.extractData));
+  }
   private handleError<T> (operation = 'operation', result?: T) {
     return (error: any): Observable<T> => {
 

@@ -39,10 +39,12 @@ export class NewIngredientDialogComponent implements OnInit {
         this.snackBar.open("Successfully created ingredient " + this.name + ".", "close", {
           duration: 2000,
         });
+        console.log('success')
       } else {
         this.snackBar.open("Error creating ingredient " + this.name + ". Please refresh and try again.", "close", {
           duration: 2000,
         });
+        console.log('failure')
       }
       this.closeDialog();
     });

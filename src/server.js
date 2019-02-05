@@ -50,7 +50,7 @@ MongoClient.connect('mongodb://localhost:27017', (err, database) => {
         }
     }
 
-    app.route('/api/v1/manufacturing-calculator').get((req,res) =>{
+    app.route('/api/v1/manufacturing-goals').get((req,res) =>{
       db.collection('goals').find().toArray(function(err,results) {
         res.send(results);
       });
@@ -70,6 +70,7 @@ MongoClient.connect('mongodb://localhost:27017', (err, database) => {
     app.route('/api/v1/login').get((req, res) => {
         let entered_username = req.headers['username'];
         let entered_password = req.headers['password'];
+        console.log(req.headers)
         db.collection('users').find({
             username: entered_username
         }).toArray(function (err, results) {
@@ -122,6 +123,7 @@ MongoClient.connect('mongodb://localhost:27017', (err, database) => {
             let productLine = req.body['productLine'];
             let ingredientTuples = req.body['ingredientTuples'];
             let comment = req.body['comment'];
+            let id = req.body['id'];
  
             let sku = database_library.skuModel({
                 name: name,
@@ -133,6 +135,7 @@ MongoClient.connect('mongodb://localhost:27017', (err, database) => {
                 productLine: productLine,
                 ingredientTuples: ingredientTuples,
                 comment: comment,
+                id: id,
             });
             sku.save().then(
                 doc => {
@@ -155,13 +158,80 @@ MongoClient.connect('mongodb://localhost:27017', (err, database) => {
         });
     });
 
+    app.route('/api/v1/manufacturing-goals').post((req,res) => {
+        const username = req.headers['username'];
+        let name = req.body['name'];
+        let skus = req.body['skus'];
+        let skusArray = skus.split(",");
+        let quantities = req.body['quantities'];
+        let quantitiesArray = quantities.split(",");
+        let date = req.body['date'];
+        let dateAsDate = Date.parse(date);
+        let goal = database_library.goalsModel({
+            name: name,
+            skus: skusArray,
+            quantities: quantitiesArray,
+            date: dateAsDate
+        });
+        goal.save().then(
+            doc => {
+                res.send({
+                    success: true,
+                    doc: doc
+                });
+                console.log(doc);
+                return;
+            }
+        ).catch(
+            err => {
+                res.send({
+                    errormessage: "Unable to save goal."
+                });
+                console.log(err);
+                return;
+            }
+        )
+        
+    })
+
     app.route('/api/v1/ingredient-inventory').get((req,res) =>{
         db.collection('ingredients').find().toArray(function(err,results) {
           res.send(results);
         });
       });
 
-      app.route('/api/v1/ingredient-inventory').post((req, res) => {
+    app.route('/api/v1/get-ingredient-by-number').get((req,res) => {
+        let ingredientNumber = req.headers['number'];
+        const filterschema = {
+            number: Number(ingredientNumber)
+        };
+        console.log(ingredientNumber)
+        console.log(req.headers)
+        db.collection('ingredients').findOne(filterschema, function(err,results) {
+            res.send(results);
+        });
+    });
+
+    app.route('/api/v1/add-ingredient-sku').put((req, res) => {
+        const ingredient = req.body['ingredient'];
+        const skus = req.body['skus'];
+        const filterschema = {
+            number: Number(ingredient)
+        };
+        db.collection('ingredients').findOne(filterschema, function (dberr, dbres) {
+            db.collection('ingredients').updateOne(filterschema, {
+                $set: {
+                    skus: skus
+                }
+            }, function (innerdberr, innerdbres) {
+                res.send({
+                    success: true
+                });
+            });
+        });
+    });
+
+    app.route('/api/v1/ingredient-inventory').post((req, res) => {
         const adminusername = req.headers['username'];
         const admintoken = req.headers['token'];
         verifiedForAdminOperations(adminusername, admintoken, verified => {
@@ -176,9 +246,8 @@ MongoClient.connect('mongodb://localhost:27017', (err, database) => {
             let venderInformation = req.body['venderInformation'];
             let packageSize = req.body['packageSize'];
             let costPerPackage = req.body['costPerPackage'];
-            let comment = req.body['comment'];
-
- 
+            let comment = req.body['comment']; 
+                
             let ingredient = database_library.ingredientModel({
                 name: name,
                 number: number,
@@ -208,10 +277,51 @@ MongoClient.connect('mongodb://localhost:27017', (err, database) => {
         });
     });
 
+    app.route('/api/v1/change-sku').put((req, res) => {
+        console.log("made it in here even though they said we couldn't");
+        const username = req.headers['username'];
+        const token = req.headers['token'];
+        verifiedForUserOperations(username, token, function (verified) {
+            const name = req.body['name'];
+            const sku_number = req.body['sku_number'];
+            const case_upc_number = req.body['case_upc_number'];
+            const unit_upc_number = req.body['unit_upc_number'];
+            const unit_size = req.body['unit_size'];
+            const count_per_case = req.body['count_per_case'];
+            const product_line = req.body['product_line'];
+            const ingredients = req.body['ingredients'];
+            const comment = req.body['comment'];
+            const id = req.body['id'];
+            if (verified) {
+                const filterschema = {
+                    id: id,
+                };
+                        db.collection('skus').updateOne(filterschema, {
+                            $set: {
+                                name: name,
+                                skuNumber: sku_number,
+                                caseUpcNumber: case_upc_number,
+                                unitUpcNumber: unit_upc_number,
+                                unitSize: unit_size,
+                                countPerCase: count_per_case,
+                                productLine: product_line,
+                                ingredientTuples: ingredients,
+                                comment: comment
+                            }
+                        }, function (innerdberr, innerdbres) {
+                            res.send({
+                                success: true
+                            });
+                        });
+                    
 
-
-
-
+            } else {
+                res.send({
+                    errormessage: 'Not permitted to perform operation.'
+                });
+            }
+        });
+    });
 
     app.route('/api/v1/change-password').put((req, res) => {
         const username = req.headers['username'];
@@ -378,6 +488,27 @@ MongoClient.connect('mongodb://localhost:27017', (err, database) => {
             });
         });
     });
+
+    app.route('/api/v1/delete-goal').delete((req,res) => {
+        const username = req.headers['username'];
+        const token = req.headers['token'];
+        const nameToDelete = req.headers['nametodelete'];
+        const filterschema = {
+            name: nameToDelete
+        };
+        db.collection('goals').deleteOne(filterschema, (dberr, dbres) => {
+            if (dberr) {
+                res.send({
+                    errormessage: 'Unable to perform operation.'
+                });
+                return
+            }
+            res.send({
+                success: true
+            });
+        });
+    });
+    
 
     app.route('/api/v1/admin-delete-ingredient').delete((req, res) => {
         const username = req.headers['username'];

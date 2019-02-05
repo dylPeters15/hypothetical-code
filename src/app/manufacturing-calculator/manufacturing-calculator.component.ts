@@ -3,7 +3,7 @@ import {HttpClient} from '@angular/common/http';
 import { RestService } from '../rest.service';
 import { ActivatedRoute, Router } from '@angular/router';
 //import {ExportToCsv} from 'export-to-csv';
-import { MatDialogRef, MatDialog, MatDialogConfig, MatTableDataSource } from "@angular/material";
+import { MatDialogRef, MatDialog, MatDialogConfig, MatTableDataSource, MatPaginator } from "@angular/material";
 
 export class SkuQuantityTable{
   sku: any;
@@ -21,16 +21,21 @@ export class SkuQuantityTable{
 })
 //TODO: Integrate with SKU and Ingredient database to get ingredient name/list from SKU
 export class ManufacturingCalculatorComponent implements OnInit {
+  allReplacement = 54321;
   goals: any = [];
   selectedGoal: any;
   displayedColumns: string[] = ['sku', 'quantity'];
   data: SkuQuantityTable[] = [];
   dataSource = new MatTableDataSource<SkuQuantityTable>(this.data);
   showDetails:boolean = false;
+  @ViewChild(MatPaginator) paginator: MatPaginator;
 
   constructor(public rest:RestService, private route: ActivatedRoute, private router: Router) { }
 
 
+  getPageSizeOptions() {
+    return [5, 10, 20, this.allReplacement];
+  }
 
   ngOnInit() {
   this.rest.getGoals().subscribe(data => {
@@ -53,8 +58,8 @@ export class ManufacturingCalculatorComponent implements OnInit {
         let currentEntry = new SkuQuantityTable(currentSKU, currentQuantity);
         this.data.push(currentEntry);
       }
-      console.log(this.data.length);
       this.dataSource = new MatTableDataSource<SkuQuantityTable>(this.data);
+      this.dataSource.paginator = this.paginator;
     });
   }
 

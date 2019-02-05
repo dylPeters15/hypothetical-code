@@ -1,7 +1,25 @@
+<<<<<<< HEAD
 table {
   width: 100%;
 }
 
 button {
   margin: 16px 8px;
+=======
+table {
+  width: 100%;
+}
+
+button {
+  margin: 16px 8px;
+}
+
+.mat-card {
+  min-width: fit-content;
+}
+
+.mat-cell, .mat-footer-cell, .mat-header-cell {
+  min-width: 100px;
+  
+>>>>>>> b951fb2642a3fed03a10c4768aaf3dfdf4f26350
 }

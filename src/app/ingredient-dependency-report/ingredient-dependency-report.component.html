@@ -1,5 +1,5 @@
 <div>
-  <mat-card class="example">
+  <mat-card class="IngredientDependencyReport">
       <mat-card-header style="align-content: center; align-items: center; justify-content: center; display: grid;">
           <mat-card-title>Ingredient Dependency Report</mat-card-title>
       </mat-card-header>
@@ -8,33 +8,31 @@
           <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter">
         </mat-form-field>
         <table mat-table [dataSource]="dataSource" matSort (matSortChange)="sortData($event)" class="mat-elevation-z8">
-          <!-- Position Column
-          <ng-container matColumnDef="completion">
-            <th mat-header-cell *matHeaderCellDef> Completion Status </th>
-            <td mat-cell *matCellDef="let element"> {{element.completion}} </td>
-          </ng-container> -->
         
-          <!-- Name Column -->
-          <ng-container matColumnDef="ingredient">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header> Ingredient </th>
-            <td mat-cell *matCellDef="let element"> {{element.ingredient}} </td>
+          <ng-container matColumnDef="ingredientName">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Ingredient Name </th>
+            <td mat-cell *matCellDef="let ingredient"> {{ingredient.name}} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="ingredientNumber">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Ingredient Number </th>
+            <td mat-cell *matCellDef="let ingredient"> {{ingredient.number}} </td>
           </ng-container>
         
-          <!-- Weight Column -->
           <ng-container matColumnDef="numberSKUs">
             <th mat-header-cell *matHeaderCellDef mat-sort-header> Number of SKUs </th>
-            <td mat-cell *matCellDef="let element"> {{element.numberSKUs}} </td>
+            <td mat-cell *matCellDef="let ingredient"> {{ingredient.skus.length}} </td>
           </ng-container>
         
-          <!-- Symbol Column -->
           <ng-container matColumnDef="SKUs">
             <th mat-header-cell *matHeaderCellDef mat-sort-header> SKUs </th>
-            <td mat-cell *matCellDef="let element"> {{element.SKUs}} </td>
+            <td mat-cell *matCellDef="let ingredient"> {{ingredient.skus}} </td>
           </ng-container>
         
           <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
           <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
         </table>
+        <mat-paginator id="elementsTablePaginator" [pageSizeOptions]="getPageSizeOptions()" showFirstLastButtons></mat-paginator>
       </mat-card-content>
   </mat-card>
 </div>
