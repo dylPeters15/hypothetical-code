@@ -50,7 +50,7 @@ MongoClient.connect('mongodb://localhost:27017', (err, database) => {
         }
     }
 
-    app.route('/api/v1/manufacturing-calculator').get((req,res) =>{
+    app.route('/api/v1/manufacturing-goals').get((req,res) =>{
       db.collection('goals').find().toArray(function(err,results) {
         res.send(results);
       });
@@ -155,6 +155,42 @@ MongoClient.connect('mongodb://localhost:27017', (err, database) => {
             );
         });
     });
+
+    app.route('/api/v1/manufacturing-goals').post((req,res) => {
+        const username = req.headers['username'];
+        let name = req.body['name'];
+        let skus = req.body['skus'];
+        let skusArray = skus.split(",");
+        let quantities = req.body['quantities'];
+        let quantitiesArray = quantities.split(",");
+        let date = req.body['date'];
+        let dateAsDate = Date.parse(date);
+        let goal = database_library.goalsModel({
+            name: name,
+            skus: skusArray,
+            quantities: quantitiesArray,
+            date: dateAsDate
+        });
+        goal.save().then(
+            doc => {
+                res.send({
+                    success: true,
+                    doc: doc
+                });
+                console.log(doc);
+                return;
+            }
+        ).catch(
+            err => {
+                res.send({
+                    errormessage: "Unable to save goal."
+                });
+                console.log(err);
+                return;
+            }
+        )
+        
+    })
 
     app.route('/api/v1/ingredient-inventory').get((req,res) =>{
         db.collection('ingredients').find().toArray(function(err,results) {
@@ -404,6 +440,27 @@ MongoClient.connect('mongodb://localhost:27017', (err, database) => {
             });
         });
     });
+
+    app.route('/api/v1/delete-goal').delete((req,res) => {
+        const username = req.headers['username'];
+        const token = req.headers['token'];
+        const nameToDelete = req.headers['nametodelete'];
+        const filterschema = {
+            name: nameToDelete
+        };
+        db.collection('goals').deleteOne(filterschema, (dberr, dbres) => {
+            if (dberr) {
+                res.send({
+                    errormessage: 'Unable to perform operation.'
+                });
+                return
+            }
+            res.send({
+                success: true
+            });
+        });
+    });
+    
 
     app.route('/api/v1/admin-delete-ingredient').delete((req, res) => {
         const username = req.headers['username'];

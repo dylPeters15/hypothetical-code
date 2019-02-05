@@ -4,7 +4,10 @@ import { Observable, of } from 'rxjs';
 import { map, catchError, tap } from 'rxjs/operators';
 import { auth } from './auth.service'
 
-const endpoint = 'https://localhost:8443/api/v1/';
+const endpoint = 'https://vcm-8238.vm.duke.edu:8443/api/v1/';
+// Noah: const endpoint = 'https://vcm-8405.vm.duke.edu:8443/api/v1/';
+// Faith/Dylan: const endpoint = 'https://localhost:8443/api/v1/';
+
 @Injectable({
   providedIn: 'root'
 })
@@ -58,6 +61,16 @@ export class RestService {
       packageSize: package_size,
       costPerPackage: cost_per_package,
       comment: comment,
+    }, this.getHTTPOptions());
+  }
+
+  createGoal(name, skus, quantities, date){
+    console.log("Name: " + name + " SKUS: " + skus + " Quants: " + quantities + " Date: " +date);
+    return this.http.post(endpoint + 'manufacturing-goals',{
+      name: name,
+      skus: skus,
+      quantities: quantities,
+      date: date
     }, this.getHTTPOptions());
   }
 
@@ -124,7 +137,7 @@ export class RestService {
   }
 
   getGoals(): Observable<any> {
-    return this.http.get(endpoint + 'manufacturing-calculator')
+    return this.http.get(endpoint + 'manufacturing-goals').pipe(map(this.extractData));
   }
 
   getGoalByName(goalName): Observable<any>{
@@ -179,7 +192,18 @@ export class RestService {
     };
     return this.http.delete(endpoint + 'admin-delete-ingredient', httpOptions).pipe(map(this.extractData));
   }
-
+  sendDeleteGoalRequest(name): Observable<any> {
+    let header:HttpHeaders = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'username': auth.getUsername(),
+      'token':auth.getToken(),
+      'nametodelete': name
+    });
+    let httpOptions = {
+      headers: header
+    };
+    return this.http.delete(endpoint + 'delete-goal', httpOptions).pipe(map(this.extractData));
+  }
   private handleError<T> (operation = 'operation', result?: T) {
     return (error: any): Observable<T> => {
 
