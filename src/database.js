@@ -20,6 +20,11 @@ class Database {
 }
 
 var manufacturingGoalsSchema = new mongoose.Schema({
+  user: {
+    type: String,
+    required: true,
+    unique: false
+  },
   name: {
     type: String,
     required: true,
@@ -96,7 +101,7 @@ var ingredientSchema = new mongoose.Schema({
       unique: true
     },
     skuNumber: {
-      type: Number,
+      type: String,
       required: true,
       unique: true
     },

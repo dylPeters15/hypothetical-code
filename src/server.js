@@ -57,13 +57,25 @@ MongoClient.connect('mongodb://localhost:27017', (err, database) => {
       });
 
     app.route('/api/v1/manufacturing-goals').get((req,res) =>{
-      db.collection('goals').find().toArray(function(err,results) {
-        res.send(results);
+        let current_username = req.headers['username'];
+      db.collection('goals').find({
+          user: current_username
+      }).toArray(function(err,results) {
+          if(results.length > 0){
+            res.send(results);
+          }
+          else {
+              res.send({
+                message: "No goals found for user " + current_username
+              })
+          }
+        
       });
     });
 
     app.route('/api/v1/get-goal-by-name').get((req,res) => {
         let goalName = req.headers['name'];
+        let username = req.header['username'];
         const filterschema = {
             name: goalName
         };
@@ -219,6 +231,7 @@ MongoClient.connect('mongodb://localhost:27017', (err, database) => {
         let date = req.body['date'];
         let dateAsDate = Date.parse(date);
         let goal = database_library.goalsModel({
+            user: username,
             name: name,
             skus: skusArray,
             quantities: quantitiesArray,
@@ -256,29 +269,83 @@ MongoClient.connect('mongodb://localhost:27017', (err, database) => {
         const filterschema = {
             number: Number(ingredientNumber)
         };
-        console.log(ingredientNumber)
-        console.log(req.headers)
+        console.log(ingredientNumber);
+        console.log(req.headers);
         db.collection('ingredients').findOne(filterschema, function(err,results) {
             res.send(results);
         });
     });
 
-    app.route('/api/v1/add-ingredient-sku').put((req, res) => {
-        const ingredient = req.body['ingredient'];
-        const skus = req.body['skus'];
-        const filterschema = {
-            number: Number(ingredient)
-        };
-        db.collection('ingredients').findOne(filterschema, function (dberr, dbres) {
-            db.collection('ingredients').updateOne(filterschema, {
-                $set: {
-                    skus: skus
-                }
-            }, function (innerdberr, innerdbres) {
+    app.route('/api/v1/add-ingredient-sku').put((req, rest) => {
+        const newPass = req.body['ingredient'];
+        const oldPass = req.body['skus'];
+        // if (verified) {
+        //     const filterschema = {
+        //         username: username,
+        //         token: token
+        //     };
+        //     db.collection('users').findOne(filterschema, function (dberr, dbres) {
+        //         const oldSaltedHash = crypto.pbkdf2Sync(oldPass, dbres.salt, 1000, 64, 'sha512').toString('hex');
+        //         if (oldSaltedHash == dbres.saltedHashedPassword) {
+        //             const newSaltedHash = crypto.pbkdf2Sync(newPass, dbres.salt, 1000, 64, 'sha512').toString('hex');
+        //             db.collection('users').updateOne(filterschema, {
+        //                 $set: {
+        //                     saltedHashedPassword: newSaltedHash
+        //                 }
+        //             }, function (innerdberr, innerdbres) {
+        //                 res.send({
+        //                     success: true
+        //                 });
+        //             });
+        //         } else {
+        //             res.send({
+        //                 errormessage: 'Incorrect password.'
+        //             });
+        //         }
+        //     });
+        // } else {
+        //     res.send({
+        //         errormessage: 'Not permitted to perform operation.'
+        //     });
+        // }
+    });
+
+    app.route('/api/v1/change-ingredient').put((req, res) => {
+        console.log("made it in here even though they said we couldn't");
+        const username = req.headers['username'];
+        const token = req.headers['token'];
+        verifiedForUserOperations(username, token, function (verified) {
+            let name = req.body['name'];
+            let number = req.body['number'];
+            let vendorInformation = req.body['vendorInformation'];
+            let packageSize = req.body['packageSize'];
+            let costPerPackage = req.body['costPerPackage'];
+            let comment = req.body['comment']; 
+            const id = req.body['id'];
+            if (verified) {
+                const filterschema = {
+                    id: id,
+                };
+                        db.collection('ingredients').updateOne(filterschema, {
+                            $set: {
+                                name: name,
+                                number: number,
+                                vendorInformation: vendorInformation,
+                                packageSize: packageSize,
+                                costPerPackage: costPerPackage,
+                                comment: comment,
+                                id: id
+                            }
+                        }, function (innerdberr, innerdbres) {
+                            res.send({
+                                success: true
+                            });
+                        });
+            } else {
                 res.send({
-                    success: true
+                    errormessage: 'Not permitted to perform operation.'
                 });
-            });
+            }
         });
     });
 
@@ -294,18 +361,20 @@ MongoClient.connect('mongodb://localhost:27017', (err, database) => {
             }
             let name = req.body['name'];
             let number = req.body['number'];
-            let venderInformation = req.body['venderInformation'];
+            let vendorInformation = req.body['vendorInformation'];
             let packageSize = req.body['packageSize'];
             let costPerPackage = req.body['costPerPackage'];
             let comment = req.body['comment']; 
+            let id = req.body['id'];
                 
             let ingredient = database_library.ingredientModel({
                 name: name,
                 number: number,
-                venderInformation: venderInformation,
+                vendorInformation: vendorInformation,
                 packageSize: packageSize,
                 costPerPackage: costPerPackage,
                 comment: comment,
+                id: id
             });
             ingredient.save().then(
                 doc => {

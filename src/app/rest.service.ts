@@ -91,20 +91,35 @@ export class RestService {
     return id;
   }
 
-  adminCreateIngredient(name, number, vendor_information, package_size, cost_per_package, comment): Observable<any> {
+  adminCreateIngredient(name, number, vendorInformation, packageSize, costPerPackage, comment, id): Observable<any> {
     return this.http.post(endpoint + 'ingredient-inventory', {
       name: name,
       number: number,
-      venderInformation: vendor_information,
-      packageSize: package_size,
-      costPerPackage: cost_per_package,
+      vendorInformation: vendorInformation,
+      packageSize: packageSize,
+      costPerPackage: costPerPackage,
       comment: comment,
+      id: id,
     }, this.getHTTPOptions());
   }
 
+  modifyIngredientRequest(name, number, vendorInformation, packageSize, costPerPackage, comment, id): Observable<any> {
+    //Use PUT because we are requesting to modify the user object in database
+    var body = {
+      name: name,
+      number: number,
+      vendorInformation: vendorInformation,
+      packageSize: packageSize,
+      costPerPackage: costPerPackage,
+      comment: comment,
+      id: id
+    };
+    return this.http.put(endpoint + 'change-ingredient', body, this.getHTTPOptions()).pipe(map(this.extractData));
+  }
+
   createGoal(name, skus, quantities, date){
-    console.log("Name: " + name + " SKUS: " + skus + " Quants: " + quantities + " Date: " +date);
     return this.http.post(endpoint + 'manufacturing-goals',{
+      user: auth.getUsername,
       name: name,
       skus: skus,
       quantities: quantities,
@@ -127,7 +142,7 @@ export class RestService {
     let httpOptions = {
       headers: header
     }
-    console.log(ingredientNumber)
+    console.log(ingredientNumber);
     return this.http.get(endpoint + 'get-ingredient-by-number', httpOptions).pipe(map(this.extractData));
   }
 
@@ -175,7 +190,13 @@ export class RestService {
   }
 
   getGoals(): Observable<any> {
-    return this.http.get(endpoint + 'manufacturing-goals').pipe(map(this.extractData));
+    let header:HttpHeaders = new HttpHeaders({
+      'username': auth.getUsername()
+    });
+    let httpOptions = {
+      headers: header
+    };
+    return this.http.get(endpoint + 'manufacturing-goals', httpOptions).pipe(map(this.extractData));
   }
 
   getGoalByName(goalName): Observable<any>{
