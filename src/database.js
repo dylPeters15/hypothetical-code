@@ -91,7 +91,7 @@ var ingredientSchema = new mongoose.Schema({
       unique: true
     },
     skuNumber: {
-      type: Number,
+      type: String,
       required: true,
       unique: true
     },

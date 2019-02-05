@@ -45,7 +45,7 @@ let testSku = new database_library.skuModel({
     unitSize: '28oz',
     countPerCase: 10,
     productLine: 'Example product line',
-    ingredientTuples: ['Tomatoes', 5, 'pears', 0.5],
+    ingredientTuples: [1, 5, 2, 0.5],
     comment: "Enjoy this lovely can of tomato soup!"
   });
   testSku.save().then(

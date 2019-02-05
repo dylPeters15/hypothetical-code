@@ -26,7 +26,7 @@ export class ManufacturingCalculatorComponent implements OnInit {
   selectedGoal: any;
   displayedColumns: string[] = ['ingredientName', 'quantity'];
   data: SkuQuantityTable[] = [];
-  ingredients: any = [];
+  ingredients: string[] = [];
   dataSource = new MatTableDataSource<SkuQuantityTable>(this.data);
   showDetails:boolean = false;
   @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -59,39 +59,46 @@ export class ManufacturingCalculatorComponent implements OnInit {
         let currentQuantity = quantities[i];
         this.calculateIngredientsAndQuantities(currentSKU, currentQuantity);
       }
-      this.dataSource = new MatTableDataSource<SkuQuantityTable>(this.data);
-      this.dataSource.paginator = this.paginator;
     });
   }
 
   calculateIngredientsAndQuantities(SKU, goalQuantity) {
     console.log("SKU: " + SKU  + " Quantity: " + goalQuantity);
-    this.rest.getSKUByNumber(SKU).subscribe(data => {
+    this.rest.getSkus().subscribe(data => {
       console.log(data);
-      let sku = data;
-      let ingredients = data['ingredientTuples'];
-      var i;
-      for(i = 0; i<ingredients.length-1; i +=2){
-        this.addToDataSource(ingredients[i], ingredients[i+1], goalQuantity);
+      let skus = data;
+      for(i = 0; i< skus.length; i++){
+        let currentSKU = skus[i];
+        if(currentSKU['skuNumber'] == SKU){
+          let ingredientsFromDatabase = currentSKU['ingredientTuples'];
+          var i;
+          for(i = 0; i<ingredientsFromDatabase.length-1; i +=2){
+            this.addToDataSource(ingredientsFromDatabase[i], ingredientsFromDatabase[i+1], goalQuantity);
+          }
+        }
       }
+      
     });
   }
 
   addToDataSource(ingredientNumber, ingredientQuantity, goalQuantity){
     this.rest.getIngredientByNumber(ingredientNumber).subscribe(data => {
-      console.log("Ingredient: " + data);
       let ingredient = data;
-      let name = ingredient['name'];
+      console.log(ingredient);
+      let name = ingredient.name;
       let actualQuantity = ingredientQuantity * goalQuantity;
-      if(this.ingredients.contains(name)){
-        this.updateIngredient(name, actualQuantity);
-      }
-      else {
+      console.log("Name:" + name);
+      // if(this.ingredients.contains(name)){
+      //   this.updateIngredient(name, actualQuantity);
+      // }
+      // else {
         this.ingredients.push(name);
         let newIngredientPair = new SkuQuantityTable(name, actualQuantity);
         this.data.push(newIngredientPair);
-      }
-    })
+      this.dataSource = new MatTableDataSource<SkuQuantityTable>(this.data);
+      this.dataSource.paginator = this.paginator;
+      // }
+    });
   }
 
   updateIngredient(ingredientName, additionalQuantity){

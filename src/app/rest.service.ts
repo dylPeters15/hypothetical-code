@@ -65,7 +65,6 @@ export class RestService {
   }
 
   createGoal(name, skus, quantities, date){
-    console.log("Name: " + name + " SKUS: " + skus + " Quants: " + quantities + " Date: " +date);
     return this.http.post(endpoint + 'manufacturing-goals',{
       name: name,
       skus: skus,
@@ -89,7 +88,7 @@ export class RestService {
     let httpOptions = {
       headers: header
     }
-    console.log(ingredientNumber)
+    console.log(ingredientNumber);
     return this.http.get(endpoint + 'get-ingredient-by-number', httpOptions).pipe(map(this.extractData));
   }
 
