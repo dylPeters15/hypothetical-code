@@ -9,6 +9,8 @@ import { MatDialogRef} from "@angular/material";
 export class RecordCompareDialogComponent implements OnInit {
 
   applyToAll: boolean = false;
+  public oldData: string = "";
+  public newData: string = "";
 
   constructor(private dialogRef: MatDialogRef<RecordCompareDialogComponent>) { }
 

@@ -137,7 +137,10 @@ export class DialogComponent implements OnInit {
               }
             } else {
               const dialogConfig = new MatDialogConfig();
-              objectref.dialog.open(RecordCompareDialogComponent, dialogConfig).afterClosed().subscribe(event => {
+              var compareDialog = objectref.dialog.open(RecordCompareDialogComponent, dialogConfig);
+              compareDialog.componentInstance.oldData = JSON.stringify(results, null, 2);
+              compareDialog.componentInstance.newData = JSON.stringify(sku, null, 2);
+              compareDialog.afterClosed().subscribe(event => {
                 objectref.applyToAll = event.applyToAll;
                 objectref.useNew = event.useNew;
                 if (event.useNew) {
