@@ -1,7 +1,8 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatDialogRef } from '@angular/material';
 import { RestService } from '../rest.service';
-import {MatSnackBar} from '@angular/material';
+import { MatSnackBar } from '@angular/material';
+import { fillProperties } from '@angular/core/src/util/property';
 
 @Component({
   selector: 'app-dialog',
@@ -9,46 +10,36 @@ import {MatSnackBar} from '@angular/material';
   styleUrls: ['./dialog.component.css']
 })
 export class DialogComponent implements OnInit {
-  @ViewChild('file') file;
+  @ViewChild('fileSelector') fileSelector;
 
-  public files: Set<File> = new Set();
+  public fileObject: File;
 
-  constructor(public dialogRef: MatDialogRef<DialogComponent>, public rest:RestService, private snackBar: MatSnackBar) {}
+  constructor(public dialogRef: MatDialogRef<DialogComponent>, public rest: RestService, private snackBar: MatSnackBar) { }
 
-  ngOnInit() {}
+  ngOnInit() { }
 
   progress;
-  canBeClosed = true;
-  primaryButtonText = 'Upload';
-  showCancelButton = true;
-  uploading = false;
-  uploadSuccessful = false;
 
   onFilesAdded() {
-    const files: { [key: string]: File } = this.file.nativeElement.files;
+    const files: { [key: string]: File } = this.fileSelector.nativeElement.files;
+    console.log(files);
     for (let key in files) {
       if (!isNaN(parseInt(key))) {
-        this.files.add(files[key]);
+        this.fileObject = files[key];
       }
     }
+    console.log(this.fileObject);
   }
 
   addFiles() {
-    this.file.nativeElement.click();
+    this.fileSelector.nativeElement.click();
   }
 
   closeDialog() {
-    console.log("clicked finish boi");
-    // if everything was uploaded already, just close the dialog
-    if (this.uploadSuccessful) {
-      return this.dialogRef.close();
-    }
-
-    // set the component state to "uploading"
-    this.uploading = true;
+    console.log("clicked upload");
 
     // start the upload and save the progress map
-    this.upload(this.files);
+    this.upload();
     console.log("Uploading");
     // for (const key in this.progress) {
     //   this.progress[key].progress.subscribe(val => console.log(val));
@@ -73,39 +64,94 @@ export class DialogComponent implements OnInit {
     // this.showCancelButton = false;
   }
 
-  upload(files)
-  {
-    var responses = [];
-    console.log(files);
-    files.forEach(file => {
-      let fileReader = new FileReader();
-      fileReader.onload = (e) => {
-        var result = JSON.stringify(fileReader.result);
-        result = result.substring(1,result.length-1);
-        console.log("Result: " + result);
+  getFileAsString(callback, objectref) {
 
-        var splitbyquotes = result.split("\\\"");
+    let fileReader = new FileReader();
+    fileReader.onload = (e) => {
+      var result = JSON.stringify(fileReader.result)
+      result = result.substring(1, result.length - 1);
+      callback(result, objectref);
+    }
+    fileReader.readAsText(this.fileObject);
+
+  }
+
+  parseSKUs(text, objectref) {
+    var responses = [];
+
+    console.log("The text is: " + text);
+
+    var splitByLine = text.split("\\n");
+    console.log("Split by line: ");
+    console.log(splitByLine);
+
+    var numNonEmptyLines = 0;
+
+
+
+    for (let line in splitByLine) {
+      if (splitByLine[line] != "") {
+        numNonEmptyLines = numNonEmptyLines+1;
+      }
+    }
+
+    for (let line in splitByLine) {
+      if (splitByLine[line] != "") {
+        console.log("Working with line: " + splitByLine[line]);
+        var splitbyquotes = splitByLine[line].split("\\\"");
         var firsthalfsplit = splitbyquotes[0].split(",");
         var secondhalfsplit = splitbyquotes[2].split(",");
         console.log(splitbyquotes);
         console.log(firsthalfsplit);
         console.log(secondhalfsplit);
         console.log(JSON.stringify(splitbyquotes));
-        this.rest.adminCreateSku(firsthalfsplit[0], firsthalfsplit[1], firsthalfsplit[2], firsthalfsplit[3], firsthalfsplit[4], firsthalfsplit[5], firsthalfsplit[6], splitbyquotes[1], secondhalfsplit[1], this.rest.generateId()).subscribe(response => {
+        objectref.rest.adminCreateSku(firsthalfsplit[0], firsthalfsplit[1], firsthalfsplit[2], firsthalfsplit[3], firsthalfsplit[4], firsthalfsplit[5], firsthalfsplit[6], splitbyquotes[1], secondhalfsplit[1], objectref.rest.generateId()).subscribe(response => {
           responses.push(response);
-          if (responses.length == files.size) {
-            this.parseResponses(responses);
+          if (responses.length == numNonEmptyLines) {
+            objectref.parseResponses(responses);
           }
         });
       }
-      fileReader.readAsText(file);
-    });
+
+    }
+
+
+  }
+
+  parseIngredients(text, objectref) {
+
+  }
+
+  parseProductLines(text, objectref) {
+
+  }
+
+  parseFormulas(text, objectref) {
+
+  }
+
+  upload() {
+    if (this.fileObject.name.endsWith(".csv")) {
+      if (this.fileObject.name.startsWith("skus")) {
+        this.getFileAsString(this.parseSKUs, this);
+      } else if (this.fileObject.name.startsWith("ingredients")) {
+        this.getFileAsString(this.parseIngredients, this);
+      } else if (this.fileObject.name.startsWith("product_lines")) {
+        this.getFileAsString(this.parseProductLines, this);
+      } else if (this.fileObject.name.startsWith("formulas")) {
+        this.getFileAsString(this.parseFormulas, this);
+      } else {
+        this.snackBar.open("Error. File name must start with 'skus', 'ingredients', 'product_lines', or 'formulas'.", "close");
+      }
+    } else {
+      this.snackBar.open("Error. File name must end with '.csv'.", "close");
+    }
   }
 
   parseResponses(responses: any): void {
     console.log("Responses: " + JSON.stringify(responses));
     var allResponsesSuccess = true;
-    for (var i = 0; i < responses.length; i=i+1) {
+    for (var i = 0; i < responses.length; i = i + 1) {
       var response = responses[i];
       if (!response['success']) {
         allResponsesSuccess = false;
