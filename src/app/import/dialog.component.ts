@@ -57,14 +57,12 @@ export class DialogComponent implements OnInit {
 
     for (let myline in splitByLine) {
       if (splitByLine[myline] != "") {
-        console.log(splitByLine[myline]);
         numNonEmptyLines = numNonEmptyLines + 1;
       }
     }
 
     for (var i = 0; i < splitByLine.length; i = i+1) {
       if (splitByLine[i] != "") {
-        console.log(splitByLine[i]);
         let splitByCommas = splitByLine[i].split(",");
 
         let sku = {
@@ -81,15 +79,11 @@ export class DialogComponent implements OnInit {
         };
 
         objectref.rest.checkForSkuCollision(sku).subscribe(response => {
-          console.log(response);
           if (response['errormessage']) {
             this.snackBar.open("Error creating records. Please refresh and try again.", "close");
             return;
           }
           var results = response['results'];
-
-          console.log(results);
-          console.log(sku);
 
           if (results.name == sku.name 
             && results.skuNumber == sku.skuNumber 
@@ -100,27 +94,35 @@ export class DialogComponent implements OnInit {
             && results.productLine == sku.productLine
             && results.comment == sku.comment) {
             console.log("SKU match. Do nothing.");
+            responses.push({
+              success: true
+            });
+            if (responses.length == numNonEmptyLines) {
+              objectref.parseResponses(responses);
+            }
           } else if (results.name == sku.name 
             || results.skuNumber == sku.skuNumber 
             || results.caseUpcNumber == sku.caseUpcNumber
             || results.unitUpcNumber == sku.unitUpcNumber
             || results.id == sku.id) {
             console.log("Collision. Prompt user.");
+            responses.push({
+              success: true
+            });
+            if (responses.length == numNonEmptyLines) {
+              objectref.parseResponses(responses);
+            }
           } else {
             console.log("New SKU.");
             objectref.rest.adminCreateSku(sku.name, sku.skuNumber, sku.caseUpcNumber, sku.unitUpcNumber, sku.unitSize, sku.countPerCase, sku.productLine, "", sku.comment, sku.id).subscribe(response => {
-              console.log("Sku create response: " + JSON.stringify(response));
+              responses.push(response);
+              if (responses.length == numNonEmptyLines) {
+                objectref.parseResponses(responses);
+              }
             })
           }
 
         });
-
-        // objectref.rest.adminCreateSku(firsthalfsplit[0], firsthalfsplit[1], firsthalfsplit[2], firsthalfsplit[3], firsthalfsplit[4], firsthalfsplit[5], firsthalfsplit[6], splitbyquotes[1], secondhalfsplit[1], objectref.rest.generateId()).subscribe(response => {
-        //   responses.push(response);
-        //   if (responses.length == numNonEmptyLines) {
-        //     objectref.parseResponses(responses);
-        //   }
-        // });
       }
 
     }
