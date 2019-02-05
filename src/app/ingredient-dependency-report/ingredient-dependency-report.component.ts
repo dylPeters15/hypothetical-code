@@ -13,15 +13,6 @@ export interface IngredientData {
   numberSKUs: number;
   SKUs: string;
 }
-
-// const INGREDIENT_DATA: IngredientData[] = [
-//   // {completion: false, ingredient: 'Chicken', numberSKUs: 2, SKUs: 'Chicken Noodle Soup; Chicken Tenders'},
-//   // {completion: false, ingredient: 'Salt', numberSKUs: 2, SKUs: 'Chicken Noodle Soup; Tortillas'},
-//   // {completion: false, ingredient: 'Flour', numberSKUs: 1, SKUs: 'Tortillas'}
-//   {ingredient: 'Chicken', numberSKUs: 2, SKUs: 'Chicken Noodle Soup; Chicken Tenders'},
-//   {ingredient: 'Salt', numberSKUs: 2, SKUs: 'Chicken Noodle Soup; Tortillas'},
-//   {ingredient: 'Flour', numberSKUs: 1, SKUs: 'Tortillas'}
-// ];
  
 @Component({
   selector: 'app-ingredient-dependency-report',
@@ -29,6 +20,7 @@ export interface IngredientData {
   templateUrl: './ingredient-dependency-report.component.html',
 })
 export class IngredientDependencyComponent implements OnInit {
+  allReplacement = 54321;
   displayedColumns: string[] = ['ingredientName', 'ingredientNumber', 'numberSKUs', 'SKUs'];
   constructor(public rest:RestService, private snackBar: MatSnackBar, private dialog: MatDialog) { }
   data: IngredientData[] = [];
@@ -36,23 +28,24 @@ export class IngredientDependencyComponent implements OnInit {
   newDialogRef: MatDialogRef<NewIngredientDialogComponent>;
   dataSource =  new MatTableDataSource<IngredientData>(this.data);
 
+  @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
   ngOnInit() {
     this.refreshData();
   }
 
+  getPageSizeOptions() {
+    return [5, 10, 20, this.allReplacement];
+  }
+
   refreshData() {
     this.rest.getIngredients().subscribe(response => {
       this.data = response;
-      // this.data.forEach(user => {
-      //   user['checked'] = false;
-      // });
       console.log(this.data);
-      // this.sortData();
       this.dataSource.sort = this.sort;
       this.dataSource =  new MatTableDataSource<IngredientData>(this.data);
-    // this.dataSource.paginator = this.paginator;
+      this.dataSource.paginator = this.paginator;
     });
     
   }

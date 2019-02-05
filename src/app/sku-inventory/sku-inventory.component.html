@@ -1,87 +1,100 @@
-<button mat-raised-button (click)="selectAll()"> Select All </button>
-<button mat-raised-button (click)="deselectAll()"> Deselect All </button>
-<button mat-raised-button (click)="deleteSelected()" style="color: white; background-color: red;" [disabled]="dataSource.data.length==0"> Delete Selected </button>
-<button mat-raised-button (click)="newSku()"> New Sku </button>
+<div>
+  <mat-card class="Sku Inventory">
+      <mat-card-header style="align-content: center; align-items: center; justify-content: center; display: grid;">
+          <mat-card-title>Sku Inventory</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+          <button mat-raised-button (click)="selectAll()"> Select All </button>
+          <button mat-raised-button (click)="deselectAll()"> Deselect All </button>
+          <button mat-raised-button (click)="deleteSelected()" style="color: white; background-color: red;" [disabled]="dataSource.data.length==0"> Delete Selected </button>
+          <button mat-raised-button (click)="newSku()"> New Sku </button>          
+          <mat-form-field>
+            <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter">
+          </mat-form-field>
 
-<mat-table [dataSource]="dataSource" class="mat-elevation-z8">
-  <ng-container matColumnDef="checked">
-    <mat-header-cell *matHeaderCellDef>Selected</mat-header-cell>
-    <mat-cell *matCellDef="let sku">
-      <mat-checkbox [(ngModel)]="sku['checked']"></mat-checkbox>
-    </mat-cell>
-  </ng-container>
+          <mat-table [dataSource]="dataSource" matSort (matSortChange)="sortData($event)" class="mat-elevation-z8">
+            <ng-container matColumnDef="checked">
+              <mat-header-cell *matHeaderCellDef mat-sort-header>Selected</mat-header-cell>
+              <mat-cell *matCellDef="let sku">
+                <mat-checkbox [(ngModel)]="sku['checked']"></mat-checkbox>
+              </mat-cell>
+            </ng-container>
+          
+            <ng-container matColumnDef="name">
+              <mat-header-cell *matHeaderCellDef mat-sort-header>Name</mat-header-cell>
+              <mat-cell *matCellDef="let sku">
+                {{sku['name']}}
+              </mat-cell>
+            </ng-container>
+          
+            <ng-container matColumnDef="skuNumber">
+              <mat-header-cell *matHeaderCellDef mat-sort-header>SKU#</mat-header-cell>
+              <mat-cell *matCellDef="let sku">
+                {{sku['skuNumber']}}
+              </mat-cell>
+            </ng-container>
+          
+            <ng-container matColumnDef="caseUpcNumber">
+              <mat-header-cell *matHeaderCellDef mat-sort-header>Case UPC#</mat-header-cell>
+              <mat-cell *matCellDef="let sku">
+                {{sku['caseUpcNumber']}}
+              </mat-cell>
+            </ng-container>
+          
+            <ng-container matColumnDef="unitUpcNumber">
+              <mat-header-cell *matHeaderCellDef mat-sort-header>Unit UPC#</mat-header-cell>
+              <mat-cell *matCellDef="let sku">
+                {{sku['unitUpcNumber']}}
+              </mat-cell>
+            </ng-container>
+          
+            <ng-container matColumnDef="unitSize">
+              <mat-header-cell *matHeaderCellDef mat-sort-header>Unit size</mat-header-cell>
+              <mat-cell *matCellDef="let sku">
+                {{sku['unitSize']}}
+              </mat-cell>
+            </ng-container>
+          
+            <ng-container matColumnDef="countPerCase">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Count per case</mat-header-cell>
+                <mat-cell *matCellDef="let sku">
+                  {{sku['countPerCase']}}
+                </mat-cell>
+              </ng-container>
+          
+              <ng-container matColumnDef="productLine">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header>Product line</mat-header-cell>
+                  <mat-cell *matCellDef="let sku">
+                    {{sku['productLine']}}
+                  </mat-cell>
+                </ng-container>
+          
+                <ng-container matColumnDef="ingredientTuples">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header>Ingredients</mat-header-cell>
+                    <mat-cell *matCellDef="let sku">
+                      {{sku['ingredientTuples']}}
+                    </mat-cell>
+                  </ng-container>
+          
+                <ng-container matColumnDef="comment">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header>Comment</mat-header-cell>
+                    <mat-cell *matCellDef="let sku">
+                      {{sku['comment']}}
+                    </mat-cell>
+                  </ng-container>
+          
+            <ng-container matColumnDef="actions">
+              <mat-header-cell *matHeaderCellDef mat-sort-header>Actions</mat-header-cell>
+              <mat-cell *matCellDef="let sku">
+                <button mat-raised-button (click)="deleteSku(element['name'])" style="color: white; background-color: red;"> Delete sku </button>
+              </mat-cell>
+            </ng-container>
+          
+            <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+          </mat-table>
 
-  <ng-container matColumnDef="name">
-    <mat-header-cell *matHeaderCellDef>Name</mat-header-cell>
-    <mat-cell *matCellDef="let sku">
-      {{sku['name']}}
-    </mat-cell>
-  </ng-container>
-
-  <ng-container matColumnDef="skuNumber">
-    <mat-header-cell *matHeaderCellDef>SKU#</mat-header-cell>
-    <mat-cell *matCellDef="let sku">
-      {{sku['skuNumber']}}
-    </mat-cell>
-  </ng-container>
-
-  <ng-container matColumnDef="caseUpcNumber">
-    <mat-header-cell *matHeaderCellDef>Case UPC#</mat-header-cell>
-    <mat-cell *matCellDef="let sku">
-      {{sku['caseUpcNumber']}}
-    </mat-cell>
-  </ng-container>
-
-  <ng-container matColumnDef="unitUpcNumber">
-    <mat-header-cell *matHeaderCellDef>Unit UPC#</mat-header-cell>
-    <mat-cell *matCellDef="let sku">
-      {{sku['unitUpcNumber']}}
-    </mat-cell>
-  </ng-container>
-
-  <ng-container matColumnDef="unitSize">
-    <mat-header-cell *matHeaderCellDef>Unit size</mat-header-cell>
-    <mat-cell *matCellDef="let sku">
-      {{sku['unitSize']}}
-    </mat-cell>
-  </ng-container>
-
-  <ng-container matColumnDef="countPerCase">
-      <mat-header-cell *matHeaderCellDef>Count per case</mat-header-cell>
-      <mat-cell *matCellDef="let sku">
-        {{sku['countPerCase']}}
-      </mat-cell>
-    </ng-container>
-
-    <ng-container matColumnDef="productLine">
-        <mat-header-cell *matHeaderCellDef>Product line</mat-header-cell>
-        <mat-cell *matCellDef="let sku">
-          {{sku['productLine']}}
-        </mat-cell>
-      </ng-container>
-
-      <ng-container matColumnDef="ingredientTuples">
-          <mat-header-cell *matHeaderCellDef>Ingredients</mat-header-cell>
-          <mat-cell *matCellDef="let sku">
-            {{sku['ingredientTuples']}}
-          </mat-cell>
-        </ng-container>
-
-      <ng-container matColumnDef="comment">
-          <mat-header-cell *matHeaderCellDef>Comment</mat-header-cell>
-          <mat-cell *matCellDef="let sku">
-            {{sku['comment']}}
-          </mat-cell>
-        </ng-container>
-
-  <ng-container matColumnDef="actions">
-    <mat-header-cell *matHeaderCellDef>Actions</mat-header-cell>
-    <mat-cell *matCellDef="let sku">
-      <button mat-raised-button (click)="deleteSku(element['name'])" style="color: white; background-color: red;"> Delete sku </button>
-    </mat-cell>
-  </ng-container>
-
-  <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-  <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
-</mat-table>
-<mat-paginator id="elementsTablePaginator" [pageSizeOptions]="getPageSizeOptions()" showFirstLastButtons></mat-paginator>
+          <mat-paginator id="elementsTablePaginator" [pageSizeOptions]="getPageSizeOptions()" showFirstLastButtons></mat-paginator>
+      </mat-card-content>
+  </mat-card>
+<div>

@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { RestService } from '../rest.service';
 import {MatSnackBar} from '@angular/material';
-import { MatDialogRef, MatDialog, MatDialogConfig, MatTableDataSource, MatPaginator } from "@angular/material";
+import { MatDialogRef, MatDialog, MatSort, MatDialogConfig, MatTableDataSource, MatPaginator } from "@angular/material";
 import { MoreInfoDialogComponent } from '../more-info-dialog/more-info-dialog.component';
 import { NewSkuDialogComponent } from '../new-sku-dialog/new-sku-dialog.component';
 import { AfterViewChecked } from '@angular/core';
@@ -30,6 +30,7 @@ export class SkuInventoryComponent  implements OnInit {
   newDialogRef: MatDialogRef<NewSkuDialogComponent>;
   dataSource =  new MatTableDataSource<UserForTable>(this.data);
   @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatSort) sort: MatSort;
 
   ngOnInit() {
     this.refreshData();
@@ -46,8 +47,8 @@ export class SkuInventoryComponent  implements OnInit {
         user['checked'] = false;
       });
       console.log(this.data);
-      this.sortData();
       this.dataSource =  new MatTableDataSource<UserForTable>(this.data);
+      this.dataSource.sort = this.sort;
     this.dataSource.paginator = this.paginator;
     });
     
@@ -76,8 +77,11 @@ export class SkuInventoryComponent  implements OnInit {
     });
   }
 
-  deleteSkuConfirmed(name) {
-    this.rest.sendAdminDeleteSkuRequest(name).subscribe(response => {
+  deleteSkuConfirmed(sku) {
+    this.rest.sendAdminDeleteSkuRequest(sku.name).subscribe(response => {
+      for (var i=0; i<sku.ingredientTuples.length-1; i = i+2) {
+        this.removeIngredient(sku.ingredientTuples[i], sku.name);
+      }
       this.snackBar.open("Sku " + name + " deleted successfully.", "close", {
         duration: 2000,
       });
@@ -90,13 +94,27 @@ export class SkuInventoryComponent  implements OnInit {
 
   deleteSelected() {
     const dialogConfig = new MatDialogConfig();
-        this.data.forEach(user => {
-          if (user.checked) {
-            this.deleteSkuConfirmed(user.name);
-          }
-        });
+    this.data.forEach(sku => {
+      if (sku.checked) {
+        this.deleteSkuConfirmed(sku);
       }
+    });
+  }
 
+  removeIngredient(ingredient, sku) {
+    let newSkus;
+    this.rest.getIngredientByNumber(ingredient).subscribe(response => {
+      newSkus = response.skus
+      console.log("new skus", newSkus)
+      newSkus.push(sku);
+      newSkus = newSkus.filter(function(e) { return e !== sku })
+      console.log("new skus", newSkus)
+      this.rest.addIngredientSku(ingredient, newSkus).subscribe(response => {
+        console.log("New ingredient data", response)
+      });
+    });
+  }
+  
   deselectAll() {
     this.data.forEach(user => {
       user.checked = false;
@@ -109,6 +127,10 @@ export class SkuInventoryComponent  implements OnInit {
     });
   }
 
+  applyFilter(filterValue: string) {
+    this.dataSource.filter = filterValue.trim().toLowerCase();
+  }
+  
   ngAfterViewChecked() {
     const matOptions = document.querySelectorAll('mat-option');
    

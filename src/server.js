@@ -256,7 +256,6 @@ MongoClient.connect('mongodb://localhost:27017', (err, database) => {
         // }
     });
 
-
     app.route('/api/v1/ingredient-inventory').post((req, res) => {
         const adminusername = req.headers['username'];
         const admintoken = req.headers['token'];

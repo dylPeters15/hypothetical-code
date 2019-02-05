@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { RestService } from '../rest.service';
 import {MatSnackBar} from '@angular/material';
-import { MatDialogRef, MatDialog, MatDialogConfig, MatTableDataSource, MatPaginator } from "@angular/material";
+import { MatDialogRef, MatDialog, MatSort, MatDialogConfig, MatTableDataSource, MatPaginator } from "@angular/material";
 import { MoreInfoDialogComponent } from '../more-info-dialog/more-info-dialog.component';
 import { NewIngredientDialogComponent } from '../new-ingredient-dialog/new-ingredient-dialog.component';
 import { AfterViewChecked } from '@angular/core';
@@ -29,7 +29,9 @@ export class IngredientInventoryComponent  implements OnInit {
   dialogRef: MatDialogRef<MoreInfoDialogComponent>;
   newDialogRef: MatDialogRef<NewIngredientDialogComponent>;
   dataSource =  new MatTableDataSource<UserForTable>(this.data);
+  
   @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatSort) sort: MatSort;
 
   ngOnInit() {
     this.refreshData();
@@ -46,8 +48,8 @@ export class IngredientInventoryComponent  implements OnInit {
         user['checked'] = false;
       });
       console.log(this.data);
-      this.sortData();
       this.dataSource =  new MatTableDataSource<UserForTable>(this.data);
+      this.dataSource.sort = this.sort;
     this.dataSource.paginator = this.paginator;
     });
     
@@ -109,6 +111,10 @@ export class IngredientInventoryComponent  implements OnInit {
     });
   }
 
+  applyFilter(filterValue: string) {
+    this.dataSource.filter = filterValue.trim().toLowerCase();
+  }
+  
   ngAfterViewChecked() {
     const matOptions = document.querySelectorAll('mat-option');
    
