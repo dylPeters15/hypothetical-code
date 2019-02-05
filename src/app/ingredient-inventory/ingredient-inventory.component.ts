@@ -6,8 +6,14 @@ import { MoreInfoDialogComponent } from '../more-info-dialog/more-info-dialog.co
 import { NewIngredientDialogComponent } from '../new-ingredient-dialog/new-ingredient-dialog.component';
 import { auth } from '../auth.service';
 
-export interface UserForTable {
+export interface IngredientForTable {
   name: string;
+  number: number;
+  vendorInformation: string;
+  packageSize: string;
+  costPerPackage: string;
+  comment: string;
+  id: number;
   checked: boolean;
 }
 
@@ -25,10 +31,10 @@ export class IngredientInventoryComponent  implements OnInit {
   constructor(public rest:RestService, private snackBar: MatSnackBar, private dialog: MatDialog) { }
   allReplacement = 54321;
   displayedColumns: string[] = ['checked', 'name', 'number','vendorInformation', 'packageSize', 'costPerPackage', 'comment'];
-  data: UserForTable[] = [];
+  data: IngredientForTable[] = [];
   dialogRef: MatDialogRef<MoreInfoDialogComponent>;
   newDialogRef: MatDialogRef<NewIngredientDialogComponent>;
-  dataSource =  new MatTableDataSource<UserForTable>(this.data);
+  dataSource =  new MatTableDataSource<IngredientForTable>(this.data);
   admin: boolean = false;
   
   @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -50,7 +56,7 @@ export class IngredientInventoryComponent  implements OnInit {
         user['checked'] = false;
       });
       console.log(this.data);
-      this.dataSource =  new MatTableDataSource<UserForTable>(this.data);
+      this.dataSource =  new MatTableDataSource<IngredientForTable>(this.data);
       this.dataSource.sort = this.sort;
     this.dataSource.paginator = this.paginator;
     });
@@ -66,18 +72,56 @@ export class IngredientInventoryComponent  implements OnInit {
     });
   }
 
-  newIngredient() {
+  newIngredient(edit, name, number,vendorInformation, packageSize, costPerPackage, comment, id) {
+    console.log(vendorInformation)
     const dialogConfig = new MatDialogConfig();
+    dialogConfig.data = {edit: edit, name:name, number:number, vendorInformation:vendorInformation, packageSize:packageSize, costPerPackage: costPerPackage, comment: comment, id: id};
     this.newDialogRef = this.dialog.open(NewIngredientDialogComponent, dialogConfig);
     this.newDialogRef.afterClosed().subscribe(event => {
       this.refreshData();
     });
   }
 
+  newIngredientButton() {
+    this.newIngredient(false, "", 0, "","", 0, "", 0);
+  }
+
   sortData() {
     this.data.sort((a,b) => {
       return a.name > b.name ? 1 : -1;
     });
+  }
+
+  modifyIngredientConfirmed(present_name, present_number, present_vendorInformation, present_packageSize, present_costPerPackage, present_comment, present_id) {
+    this.newIngredient(true, present_name, present_number, present_vendorInformation, present_packageSize, present_costPerPackage, present_comment, present_id);
+  }
+
+  modifySelected() {
+    const dialogConfig = new MatDialogConfig();
+    let counter: number = 0;
+    this.data.forEach(ingredient => {
+      if (ingredient.checked) {
+        counter++;
+      }
+    });
+    if (counter == 0) {
+      this.snackBar.open("Please select am ingredient to modify", "close", {
+        duration: 2000,
+      });
+    }
+    else if (counter != 1) {
+      this.snackBar.open("Please only select one ingredient to modify", "close", {
+        duration: 2000,
+      });
+    }
+    else{
+      this.data.forEach(ingredient => {
+        if (ingredient.checked) {
+          this.modifyIngredientConfirmed(ingredient.name, ingredient.number, ingredient.vendorInformation, 
+          ingredient.packageSize, ingredient.costPerPackage, ingredient.comment, ingredient.id);
+        }
+      });
+    }   
   }
 
   deleteIngredientConfirmed(name) {
