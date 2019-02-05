@@ -39,14 +39,25 @@ export class RestService {
     }, this.getHTTPOptions());
   }
 
+  checkForSkuCollision(sku): Observable<any> {
+    sku['username'] = auth.getUsername();
+    sku['token'] = auth.getToken();
+    sku['Content-Type'] = 'application/json';
+    let header:HttpHeaders = new HttpHeaders(sku);
+    let httpOptions = {
+      headers: header
+    };
+    return this.http.get(endpoint + "find-sku-collision", httpOptions).pipe(map(this.extractData));
+  }
+
   adminCreateSku(name, sku_number, case_upc_number, unit_upc_number, unit_size, count_per_case, product_line,ingredients, comment, id): Observable<any> {
     var body = {
       name: name,
-      skuNumber: parseInt(sku_number),
+      skuNumber: sku_number,
       caseUpcNumber: case_upc_number,
       unitUpcNumber: unit_upc_number,
       unitSize: unit_size,
-      countPerCase: parseInt(count_per_case),
+      countPerCase: count_per_case,
       productLine: product_line,
       ingredientTuples: ingredients.split(","),
       comment: comment,

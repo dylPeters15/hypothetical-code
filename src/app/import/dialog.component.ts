@@ -57,7 +57,7 @@ export class DialogComponent implements OnInit {
 
     for (let line in splitByLine) {
       if (splitByLine[line] != "") {
-        numNonEmptyLines = numNonEmptyLines+1;
+        numNonEmptyLines = numNonEmptyLines + 1;
       }
     }
 
@@ -66,12 +66,58 @@ export class DialogComponent implements OnInit {
         var splitbyquotes = splitByLine[line].split("\\\"");
         var firsthalfsplit = splitbyquotes[0].split(",");
         var secondhalfsplit = splitbyquotes[2].split(",");
-        objectref.rest.adminCreateSku(firsthalfsplit[0], firsthalfsplit[1], firsthalfsplit[2], firsthalfsplit[3], firsthalfsplit[4], firsthalfsplit[5], firsthalfsplit[6], splitbyquotes[1], secondhalfsplit[1], objectref.rest.generateId()).subscribe(response => {
-          responses.push(response);
-          if (responses.length == numNonEmptyLines) {
-            objectref.parseResponses(responses);
+
+        var sku = {
+          name: firsthalfsplit[0],
+          skuNumber: parseInt(firsthalfsplit[1]),
+          caseUpcNumber: firsthalfsplit[2],
+          unitUpcNumber: firsthalfsplit[3],
+          unitSize: firsthalfsplit[4], 
+          countPerCase: parseInt(firsthalfsplit[5]),
+          productLine: firsthalfsplit[6],
+          ingredientTuples: splitbyquotes[1],
+          comment: secondhalfsplit[1],
+          id: objectref.rest.generateId()
+        };
+
+        objectref.rest.checkForSkuCollision(sku).subscribe(response => {
+          if (response['errormessage']) {
+            this.snackBar.open("Error creating records. Please refresh and try again.", "close");
+            return;
           }
+          var results = response['results'];
+
+          console.log(results);
+          console.log(sku);
+
+          if (results.name == sku.name 
+            && results.skuNumber == sku.skuNumber 
+            && results.caseUpcNumber == sku.caseUpcNumber
+            && results.unitUpcNumber == sku.unitUpcNumber
+            && results.unitSize == sku.unitSize
+            && results.countPerCase == sku.countPerCase
+            && results.productLine == sku.productLine
+            && results.comment == sku.comment
+            && results.ingredientTuples.join() == sku.ingredientTuples) {
+            console.log("match");
+          } else if (results.name == sku.name 
+            || results.skuNumber == sku.skuNumber 
+            || results.caseUpcNumber == sku.caseUpcNumber
+            || results.unitUpcNumber == sku.unitUpcNumber
+            || results.id == sku.id) {
+            console.log("collision");
+          } else {
+            console.log("new sku");
+          }
+
         });
+
+        // objectref.rest.adminCreateSku(firsthalfsplit[0], firsthalfsplit[1], firsthalfsplit[2], firsthalfsplit[3], firsthalfsplit[4], firsthalfsplit[5], firsthalfsplit[6], splitbyquotes[1], secondhalfsplit[1], objectref.rest.generateId()).subscribe(response => {
+        //   responses.push(response);
+        //   if (responses.length == numNonEmptyLines) {
+        //     objectref.parseResponses(responses);
+        //   }
+        // });
       }
 
     }

@@ -177,11 +177,11 @@ MongoClient.connect('mongodb://localhost:27017', (err, database) => {
                 });
                 return
             }
-            const name = req.body['name'];
-            const skuNumber = req.body['skuNumber'];
-            const caseUpcNumber = req.body['caseUpcNumber'];
-            const unitUpcNumber = req.body['unitUpcNumber'];
-            const id = req.body['id'];
+            const name = req.headers['name'];
+            const skuNumber = req.headers['skuNumber'];
+            const caseUpcNumber = req.headers['caseUpcNumber'];
+            const unitUpcNumber = req.headers['unitUpcNumber'];
+            const id = req.headers['id'];
             const filterSchema = {
                 $or:[
                     {name:name},
