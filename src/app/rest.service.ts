@@ -4,10 +4,9 @@ import { Observable, of } from 'rxjs';
 import { map, catchError, tap } from 'rxjs/operators';
 import { auth } from './auth.service'
 
-//Ben:
- const endpoint = 'https://vcm-8238.vm.duke.edu:8443/api/v1/';
+//const endpoint = 'https://vcm-8238.vm.duke.edu:8443/api/v1/';
 // Noah: const endpoint = 'https://vcm-8405.vm.duke.edu:8443/api/v1/';
-// Faith/Dylan: const endpoint = 'https://localhost:8443/api/v1/';
+const endpoint = 'https://localhost:8443/api/v1/';
 
 @Injectable({
   providedIn: 'root'
@@ -40,8 +39,19 @@ export class RestService {
     }, this.getHTTPOptions());
   }
 
+  checkForSkuCollision(sku): Observable<any> {
+    sku['username'] = auth.getUsername();
+    sku['token'] = auth.getToken();
+    sku['Content-Type'] = 'application/json';
+    let header:HttpHeaders = new HttpHeaders(sku);
+    let httpOptions = {
+      headers: header
+    };
+    return this.http.get(endpoint + "find-sku-collision", httpOptions).pipe(map(this.extractData));
+  }
+
   adminCreateSku(name, sku_number, case_upc_number, unit_upc_number, unit_size, count_per_case, product_line,ingredients, comment, id): Observable<any> {
-    return this.http.post(endpoint + 'sku-inventory', {
+    var body = {
       name: name,
       skuNumber: sku_number,
       caseUpcNumber: case_upc_number,
@@ -52,7 +62,9 @@ export class RestService {
       ingredientTuples: ingredients.split(","),
       comment: comment,
       id: id
-    }, this.getHTTPOptions());
+    };
+    var response = this.http.post(endpoint + 'sku-inventory', body, this.getHTTPOptions()).pipe(map(this.extractData));
+    return response;
   }
 
   modifySkuRequest(name, sku_number, case_upc_number, unit_upc_number, unit_size, count_per_case, product_line, ingredients, comment, id): Observable<any> {
@@ -69,7 +81,14 @@ export class RestService {
       comment: comment,
       id: id
     };
-    return this.http.put(endpoint + 'change-sku', body, this.getHTTPOptions()).pipe(map(this.extractData));
+    var response = this.http.put(endpoint + 'change-sku', body, this.getHTTPOptions()).pipe(map(this.extractData));
+    console.log("Response: " + response);
+    return response;
+  }
+
+  generateId() {
+    var id =  Math.floor((Math.random() * 1000000) + 1);
+    return id;
   }
 
   adminCreateIngredient(name, number, vendorInformation, packageSize, costPerPackage, comment, id): Observable<any> {
