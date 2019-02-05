@@ -48,27 +48,27 @@ export class DialogComponent implements OnInit {
 
     // start the upload and save the progress map
     this.progress = this.rest.upload(this.files);
-    console.log(this.progress);
-    for (const key in this.progress) {
-      this.progress[key].progress.subscribe(val => console.log(val));
-    }
+    console.log("Progress: " + this.progress);
+    // for (const key in this.progress) {
+    //   this.progress[key].progress.subscribe(val => console.log(val));
+    // }
 
-    // convert the progress map into an array
-    let allProgressObservables = [];
-    for (let key in this.progress) {
-      allProgressObservables.push(this.progress[key].progress);
-    }
+    // // convert the progress map into an array
+    // let allProgressObservables = [];
+    // for (let key in this.progress) {
+    //   allProgressObservables.push(this.progress[key].progress);
+    // }
 
-    // Adjust the state variables
+    // // Adjust the state variables
 
-    // The OK-button should have the text "Finish" now
-    this.primaryButtonText = 'Finish';
+    // // The OK-button should have the text "Finish" now
+    // this.primaryButtonText = 'Finish';
 
-    // The dialog should not be closed while uploading
-    this.canBeClosed = false;
-    this.dialogRef.disableClose = true;
+    // // The dialog should not be closed while uploading
+    // this.canBeClosed = false;
+    // this.dialogRef.disableClose = true;
 
-    // Hide the cancel-button
-    this.showCancelButton = false;
+    // // Hide the cancel-button
+    // this.showCancelButton = false;
   }
 }

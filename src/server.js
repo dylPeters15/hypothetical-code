@@ -110,7 +110,9 @@ MongoClient.connect('mongodb://localhost:27017', (err, database) => {
         });
       });
 
+      console.log("Creating sku inventory post.");
       app.route('/api/v1/sku-inventory').post((req, res) => {
+          console.log("sku inventory post being called.");
         const adminusername = req.headers['username'];
         const admintoken = req.headers['token'];
         verifiedForAdminOperations(adminusername, admintoken, verified => {
@@ -143,6 +145,7 @@ MongoClient.connect('mongodb://localhost:27017', (err, database) => {
                 comment: comment,
                 id: id,
             });
+            console.log("Sku object: " + sku);
             sku.save().then(
                 doc => {
                     res.send({

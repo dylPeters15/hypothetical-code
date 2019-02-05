@@ -5,8 +5,8 @@ import { map, catchError, tap } from 'rxjs/operators';
 import { auth } from './auth.service'
 
 //const endpoint = 'https://vcm-8238.vm.duke.edu:8443/api/v1/';
-Noah: const endpoint = 'https://vcm-8405.vm.duke.edu:8443/api/v1/';
-// Faith/Dylan: const endpoint = 'https://localhost:8443/api/v1/';
+// Noah: const endpoint = 'https://vcm-8405.vm.duke.edu:8443/api/v1/';
+const endpoint = 'https://localhost:8443/api/v1/';
 
 @Injectable({
   providedIn: 'root'
@@ -40,18 +40,25 @@ export class RestService {
   }
 
   adminCreateSku(name, sku_number, case_upc_number, unit_upc_number, unit_size, count_per_case, product_line,ingredients, comment, id): Observable<any> {
-    return this.http.post(endpoint + 'sku-inventory', {
+    var body = {
       name: name,
-      skuNumber: sku_number,
+      skuNumber: parseInt(sku_number),
       caseUpcNumber: case_upc_number,
       unitUpcNumber: unit_upc_number,
       unitSize: unit_size,
-      countPerCase: count_per_case,
+      countPerCase: parseInt(count_per_case),
       productLine: product_line,
       ingredientTuples: ingredients.split(","),
       comment: comment,
       id: id
-    }, this.getHTTPOptions());
+    };
+    console.log(body);
+    console.log(JSON.stringify(body));
+    var response = this.http.post(endpoint + 'sku-inventory', body, this.getHTTPOptions()).pipe(map(this.extractData));
+    response.subscribe(response => {
+      console.log("subscribed response: " + JSON.stringify(response));
+    });
+    return response;
   }
 
   modifySkuRequest(name, sku_number, case_upc_number, unit_upc_number, unit_size, count_per_case, product_line, ingredients, comment, id): Observable<any> {
@@ -68,20 +75,49 @@ export class RestService {
       comment: comment,
       id: id
     };
-    return this.http.put(endpoint + 'change-sku', body, this.getHTTPOptions()).pipe(map(this.extractData));
+    var response = this.http.put(endpoint + 'change-sku', body, this.getHTTPOptions()).pipe(map(this.extractData));
+    console.log("Response: " + response);
+    return response;
   }
 
   upload(files)
   {
+    var toreturn = [];
+    console.log(files);
     files.forEach(file => {
+      let fileReader = new FileReader();
+      fileReader.onload = (e) => {
+        var result = JSON.stringify(fileReader.result);
+        result = result.substring(1,result.length-1);
+        console.log("Result: " + result);
+
+        var splitbyquotes = result.split("\\\"");
+        var firsthalfsplit = splitbyquotes[0].split(",");
+        var secondhalfsplit = splitbyquotes[2].split(",");
+        console.log(splitbyquotes);
+        console.log(firsthalfsplit);
+        console.log(secondhalfsplit);
+        console.log(JSON.stringify(splitbyquotes));
+        toreturn.push(this.adminCreateSku(firsthalfsplit[0], firsthalfsplit[1], firsthalfsplit[2], firsthalfsplit[3], firsthalfsplit[4], firsthalfsplit[5], firsthalfsplit[6], splitbyquotes[1], secondhalfsplit[1], this.generateId()));
+      }
+      fileReader.readAsText(file);
+
+
       // create a new multipart-form for every file
-      const formData: FormData = new FormData();
-      formData.append("file", file, file.name);
-      return this.http.post(endpoint + 'my-file', {
-        name: file.name,
-        file: file
-      }, this.getHTTPOptions());
+      // const formData: FormData = new FormData();
+      // formData.append("file", file, file.name);
+      // return this.http.post(endpoint + 'my-file', {
+      //   name: file.name,
+      //   file: file
+      // }, this.getHTTPOptions());
     });
+    return toreturn
+  }
+
+  generateId() {
+    var id =  Math.floor((Math.random() * 1000000) + 1);
+    console.log("ID: " + id);
+    return id;
   }
 
   adminCreateIngredient(name, number, vendor_information, package_size, cost_per_package, comment): Observable<any> {
