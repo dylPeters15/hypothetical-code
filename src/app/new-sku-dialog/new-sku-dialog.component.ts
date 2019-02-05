@@ -40,6 +40,10 @@ export class NewSkuDialogComponent implements OnInit {
 
   createSku() {
     this.rest.adminCreateSku(this.name, this.sku_number, this.case_upc_number, this.unit_upc_number, this.unit_size, this.count_per_case, this.product_line, this.ingredients, this.comment).subscribe(response => {
+      let i;
+      for (i=0; i<this.ingredients.length-1; i = i+2) {
+        this.addIngredient(this.ingredients[i], this.name);
+      }
       if (response['success']) {
         this.snackBar.open("Successfully created sku " + this.name + ".", "close", {
           duration: 2000,
@@ -51,6 +55,18 @@ export class NewSkuDialogComponent implements OnInit {
       }
       this.closeDialog();
     });
+  }
+
+  addIngredient(ingredient, sku) {
+    let newSkus;
+    const ingredientNumber = Number(ingredient)
+    console.log(ingredient, Number(ingredient))
+    this.rest.getIngredientByNumber(ingredient).subscribe(response => {
+      console.log("Ingredient skus", response)
+      newSkus = response.skus;
+    });
+    newSkus.push(sku);
+    // this.rest.addIngredientSku(ingredient, newSkus);
   }
 
 }

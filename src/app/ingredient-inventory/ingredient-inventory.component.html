@@ -28,7 +28,7 @@
   <ng-container matColumnDef="vendorInformation">
     <mat-header-cell *matHeaderCellDef>Vendor Information</mat-header-cell>
     <mat-cell *matCellDef="let ingredient">
-      {{ingredient['venderInformation']}}
+      {{ingredient['vendorInformation']}}
     </mat-cell>
   </ng-container>
 
@@ -42,14 +42,14 @@
   <ng-container matColumnDef="costPerPackage">
     <mat-header-cell *matHeaderCellDef>Cost Per Package (USD)</mat-header-cell>
     <mat-cell *matCellDef="let ingredient">
-      {{ingredient['costPerPackage']}}
+      ${{ingredient['costPerPackage']}}
     </mat-cell>
   </ng-container>
 
       <ng-container matColumnDef="comment">
           <mat-header-cell *matHeaderCellDef>Comment</mat-header-cell>
           <mat-cell *matCellDef="let ingredient">
-            <button mat-raised-button (click)="seeInfo('Comment', ingredient['comment'])" style="color: white; background-color: red;"> See comment </button>
+            {{ingredient['comment']}}
           </mat-cell>
         </ng-container>
 
