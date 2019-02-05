@@ -20,6 +20,7 @@ export interface IngredientData {
   templateUrl: './ingredient-dependency-report.component.html',
 })
 export class IngredientDependencyComponent implements OnInit {
+  allReplacement = 54321;
   displayedColumns: string[] = ['ingredientName', 'ingredientNumber', 'numberSKUs', 'SKUs'];
   constructor(public rest:RestService, private snackBar: MatSnackBar, private dialog: MatDialog) { }
   data: IngredientData[] = [];
@@ -27,10 +28,15 @@ export class IngredientDependencyComponent implements OnInit {
   newDialogRef: MatDialogRef<NewIngredientDialogComponent>;
   dataSource =  new MatTableDataSource<IngredientData>(this.data);
 
+  @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
   ngOnInit() {
     this.refreshData();
+  }
+
+  getPageSizeOptions() {
+    return [5, 10, 20, this.allReplacement];
   }
 
   refreshData() {
@@ -39,7 +45,7 @@ export class IngredientDependencyComponent implements OnInit {
       console.log(this.data);
       this.dataSource.sort = this.sort;
       this.dataSource =  new MatTableDataSource<IngredientData>(this.data);
-    // this.dataSource.paginator = this.paginator;
+      this.dataSource.paginator = this.paginator;
     });
     
   }
