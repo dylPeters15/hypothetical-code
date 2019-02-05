@@ -50,6 +50,12 @@ MongoClient.connect('mongodb://localhost:27017', (err, database) => {
         }
     }
 
+    app.route('/api/v1/my-file').get((req,res) =>{
+        db.collection('files').find().toArray(function(err,results) {
+          res.send(results);
+        });
+      });
+
     app.route('/api/v1/manufacturing-goals').get((req,res) =>{
         let current_username = req.headers['username'];
       db.collection('goals').find({
@@ -116,7 +122,9 @@ MongoClient.connect('mongodb://localhost:27017', (err, database) => {
         });
       });
 
+      console.log("Creating sku inventory post.");
       app.route('/api/v1/sku-inventory').post((req, res) => {
+          console.log("sku inventory post being called.");
         const adminusername = req.headers['username'];
         const admintoken = req.headers['token'];
         verifiedForAdminOperations(adminusername, admintoken, verified => {
@@ -149,6 +157,7 @@ MongoClient.connect('mongodb://localhost:27017', (err, database) => {
                 comment: comment,
                 id: id,
             });
+            console.log("Sku object: " + sku);
             sku.save().then(
                 doc => {
                     res.send({
@@ -167,6 +176,48 @@ MongoClient.connect('mongodb://localhost:27017', (err, database) => {
                     return;
                 }
             );
+        });
+    });
+
+    app.route('/api/v1/find-sku-collision').get((req, res) => {
+        const username = req.headers['username'];
+        const token = req.headers['token'];
+        verifiedForAdminOperations(username, token, verified => {
+            if (!verified) {
+                res.send({
+                    errormessage: 'Not permitted to perform operation.'
+                });
+                return
+            }
+            const name = req.headers['name'];
+            const skuNumber = req.headers['skunumber'];
+            const caseUpcNumber = req.headers['caseupcnumber'];
+            const unitUpcNumber = req.headers['unitupcnumber'];
+            const id = req.headers['id'];
+            const filterSchema = {
+                $or:[
+                    {name:name},
+                    {skuNumber:skuNumber},
+                    {caseUpcNumber:caseUpcNumber},
+                    {unitUpcNumber:unitUpcNumber},
+                    {id:id}
+                ]
+            }
+            console.log(filterSchema);
+            console.log(req.headers);
+            db.collection('skus').findOne(filterSchema, (err,results) => {
+                if (err) {
+                    res.send({
+                        errmessage: "Error finding SKU."
+                    });
+                    return;
+                }
+                console.log(results);
+                res.send({
+                    results: results
+                });
+            })
+            
         });
     });
 
