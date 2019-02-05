@@ -91,6 +91,7 @@ export class DialogComponent implements OnInit {
             return;
           }
           var results = response['results'];
+          console.log(results);
 
           if (results.name == sku.name
             && results.skuNumber == sku.skuNumber
@@ -147,7 +148,7 @@ export class DialogComponent implements OnInit {
                 objectref.useNew = event.useNew;
                 if (event.useNew) {
                   console.log("use new");
-                  objectref.rest.modifySkuRequest(sku.name, sku.skuNumber, sku.caseUpcNumber, sku.unitUpcNumber, sku.unitSize, sku.countPerCase, sku.productLine, results.ingredientTuples.join(), sku.comment, results.id).subscribe(response => {
+                  objectref.rest.modifySkuRequest(sku.name, sku.skuNumber, sku.caseUpcNumber, sku.unitUpcNumber, sku.unitSize, sku.countPerCase, sku.productLine, results.ingredientTuples, sku.comment, results.id).subscribe(response => {
                     responses.push({
                       success: true
                     });
