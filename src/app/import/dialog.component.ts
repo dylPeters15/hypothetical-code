@@ -48,6 +48,7 @@ export class DialogComponent implements OnInit {
     fileReader.onload = (e) => {
       var result = JSON.stringify(fileReader.result)
       result = result.substring(1, result.length - 1);
+      console.log(result);
       callback(result, objectref);
     }
     fileReader.readAsText(this.fileObject);
@@ -56,7 +57,7 @@ export class DialogComponent implements OnInit {
 
   parseSKUs(text, objectref) {
     var responses = [];
-    var splitByLine = text.split("\\n");
+    var splitByLine = text.split("\\r\\n");
 
     var numNonEmptyLines = 0;
 
@@ -87,10 +88,11 @@ export class DialogComponent implements OnInit {
 
         objectref.rest.checkForSkuCollision(sku).subscribe(response => {
           if (response['errormessage']) {
-            this.snackBar.open("Error creating records. Please refresh and try again.", "close");
+            objectref.snackBar.open("Error creating records. Please refresh and try again.", "close");
             return;
           }
           var results = response['results'];
+          console.log(results);
 
           if (results.name == sku.name
             && results.skuNumber == sku.skuNumber
@@ -117,37 +119,15 @@ export class DialogComponent implements OnInit {
             console.log(results);
             console.log(sku);
 
-            if (objectref.applyToAll) {
-              if (objectref.useNew) {
-                console.log("use new");
-                objectref.rest.modifySkuRequest(sku.name, sku.skuNumber, sku.caseUpcNumber, sku.unitUpcNumber, sku.unitSize, sku.countPerCase, sku.productLine, results.ingredientTuples.join(), sku.comment, results.id).subscribe(response => {
-                  responses.push({
-                    success: true
-                  });
-                  if (responses.length == numNonEmptyLines) {
-                    objectref.parseResponses(responses);
-                  }
-                });
-
-              } else {
-                responses.push({
-                  success: true
-                });
-                if (responses.length == numNonEmptyLines) {
-                  objectref.parseResponses(responses);
-                }
-              }
-            } else {
-              const dialogConfig = new MatDialogConfig();
-              var compareDialog = objectref.dialog.open(RecordCompareDialogComponent, dialogConfig);
-              compareDialog.componentInstance.oldData = JSON.stringify(results, null, 2);
-              compareDialog.componentInstance.newData = JSON.stringify(sku, null, 2);
-              compareDialog.afterClosed().subscribe(event => {
-                objectref.applyToAll = event.applyToAll;
-                objectref.useNew = event.useNew;
-                if (event.useNew) {
+            const dialogConfig = new MatDialogConfig();
+            var compareDialog = objectref.dialog.open(RecordCompareDialogComponent, dialogConfig);
+            compareDialog.componentInstance.oldData = JSON.stringify(results, null, 2);
+            compareDialog.componentInstance.newData = JSON.stringify(sku, null, 2);
+            compareDialog.afterClosed().subscribe(event => {
+              if (event == undefined) {
+                if (objectref.useNew) {
                   console.log("use new");
-                  objectref.rest.modifySkuRequest(sku.name, sku.skuNumber, sku.caseUpcNumber, sku.unitUpcNumber, sku.unitSize, sku.countPerCase, sku.productLine, results.ingredientTuples.join(), sku.comment, results.id).subscribe(response => {
+                  objectref.rest.modifySkuRequest(sku.name, sku.skuNumber, sku.caseUpcNumber, sku.unitUpcNumber, sku.unitSize, sku.countPerCase, sku.productLine, results.ingredientTuples, sku.comment, results.id).subscribe(response => {
                     responses.push({
                       success: true
                     });
@@ -164,8 +144,36 @@ export class DialogComponent implements OnInit {
                     objectref.parseResponses(responses);
                   }
                 }
-              });
-            }
+              } else {
+                objectref.applyToAll = event.applyToAll;
+                if (event.applyToAll) {
+                  console.log("APPLY TO ALL!");
+                  objectref.dialog.closeAll();
+                }
+                objectref.useNew = event.useNew;
+                if (event.useNew) {
+                  console.log("use new");
+                  objectref.rest.modifySkuRequest(sku.name, sku.skuNumber, sku.caseUpcNumber, sku.unitUpcNumber, sku.unitSize, sku.countPerCase, sku.productLine, results.ingredientTuples, sku.comment, results.id).subscribe(response => {
+                    responses.push({
+                      success: true
+                    });
+                    if (responses.length == numNonEmptyLines) {
+                      objectref.parseResponses(responses);
+                    }
+                  });
+
+                } else {
+                  responses.push({
+                    success: true,
+                    message: "dialog said use old"
+                  });
+                  if (responses.length == numNonEmptyLines) {
+                    objectref.parseResponses(responses);
+                  }
+                }
+              }
+
+            });
 
           } else {
             console.log("New SKU.");

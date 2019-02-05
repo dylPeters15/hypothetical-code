@@ -82,7 +82,8 @@ export class RestService {
       id: id
     };
     var response = this.http.put(endpoint + 'change-sku', body, this.getHTTPOptions()).pipe(map(this.extractData));
-    console.log("Response: " + response);
+    console.log("Response: "); + response
+    console.log(response);
     return response;
   }
 
