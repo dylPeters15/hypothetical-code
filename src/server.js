@@ -167,6 +167,46 @@ MongoClient.connect('mongodb://localhost:27017', (err, database) => {
         });
     });
 
+    app.route('/api/v1/find-sku-collision').get((req, res) => {
+        const username = req.headers['username'];
+        const token = req.headers['token'];
+        verifiedForAdminOperations(username, token, verified => {
+            if (!verified) {
+                res.send({
+                    errormessage: 'Not permitted to perform operation.'
+                });
+                return
+            }
+            const name = req.body['name'];
+            const skuNumber = req.body['skuNumber'];
+            const caseUpcNumber = req.body['caseUpcNumber'];
+            const unitUpcNumber = req.body['unitUpcNumber'];
+            const id = req.body['id'];
+            const filterSchema = {
+                $or:[
+                    {name:name},
+                    {skuNumber:skuNumber},
+                    {caseUpcNumber:caseUpcNumber},
+                    {unitUpcNumber:unitUpcNumber},
+                    {id:id}
+                ]
+            }
+            console.log(filterSchema);
+            db.collection('skus').findOne(filterSchema, (err,results) => {
+                if (err) {
+                    res.send({
+                        errmessage: "Error finding SKU."
+                    });
+                    return;
+                }
+                res.send({
+                    results: results
+                });
+            })
+            
+        });
+    });
+
     app.route('/api/v1/manufacturing-goals').post((req,res) => {
         const username = req.headers['username'];
         let name = req.body['name'];
