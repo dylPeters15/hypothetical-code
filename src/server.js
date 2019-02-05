@@ -178,9 +178,9 @@ MongoClient.connect('mongodb://localhost:27017', (err, database) => {
                 return
             }
             const name = req.headers['name'];
-            const skuNumber = req.headers['skuNumber'];
-            const caseUpcNumber = req.headers['caseUpcNumber'];
-            const unitUpcNumber = req.headers['unitUpcNumber'];
+            const skuNumber = req.headers['skunumber'];
+            const caseUpcNumber = req.headers['caseupcnumber'];
+            const unitUpcNumber = req.headers['unitupcnumber'];
             const id = req.headers['id'];
             const filterSchema = {
                 $or:[
@@ -192,6 +192,7 @@ MongoClient.connect('mongodb://localhost:27017', (err, database) => {
                 ]
             }
             console.log(filterSchema);
+            console.log(req.headers);
             db.collection('skus').findOne(filterSchema, (err,results) => {
                 if (err) {
                     res.send({
@@ -199,6 +200,7 @@ MongoClient.connect('mongodb://localhost:27017', (err, database) => {
                     });
                     return;
                 }
+                console.log(results);
                 res.send({
                     results: results
                 });

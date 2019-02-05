@@ -63,24 +63,23 @@ export class DialogComponent implements OnInit {
 
     for (let line in splitByLine) {
       if (splitByLine[line] != "") {
-        var splitbyquotes = splitByLine[line].split("\\\"");
-        var firsthalfsplit = splitbyquotes[0].split(",");
-        var secondhalfsplit = splitbyquotes[2].split(",");
+        var splitByCommas = splitByLine[line].split(",");
 
         var sku = {
-          name: firsthalfsplit[0],
-          skuNumber: parseInt(firsthalfsplit[1]),
-          caseUpcNumber: firsthalfsplit[2],
-          unitUpcNumber: firsthalfsplit[3],
-          unitSize: firsthalfsplit[4], 
-          countPerCase: parseInt(firsthalfsplit[5]),
-          productLine: firsthalfsplit[6],
-          ingredientTuples: splitbyquotes[1],
-          comment: secondhalfsplit[1],
+          name: splitByCommas[1],
+          skuNumber: parseInt(splitByCommas[0]),
+          caseUpcNumber: splitByCommas[2],
+          unitUpcNumber: splitByCommas[3],
+          unitSize: splitByCommas[4], 
+          countPerCase: parseInt(splitByCommas[5]),
+          productLine: splitByCommas[6],
+          ingredientTuples: [],
+          comment: splitByCommas[7],
           id: objectref.rest.generateId()
         };
 
         objectref.rest.checkForSkuCollision(sku).subscribe(response => {
+          console.log(response);
           if (response['errormessage']) {
             this.snackBar.open("Error creating records. Please refresh and try again.", "close");
             return;
@@ -97,8 +96,7 @@ export class DialogComponent implements OnInit {
             && results.unitSize == sku.unitSize
             && results.countPerCase == sku.countPerCase
             && results.productLine == sku.productLine
-            && results.comment == sku.comment
-            && results.ingredientTuples.join() == sku.ingredientTuples) {
+            && results.comment == sku.comment) {
             console.log("match");
           } else if (results.name == sku.name 
             || results.skuNumber == sku.skuNumber 
