@@ -1,5 +1,5 @@
 <div>
-  <mat-card class="example">
+  <mat-card class="IngredientDependencyReport">
       <mat-card-header style="align-content: center; align-items: center; justify-content: center; display: grid;">
           <mat-card-title>Ingredient Dependency Report</mat-card-title>
       </mat-card-header>
@@ -8,11 +8,6 @@
           <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter">
         </mat-form-field>
         <table mat-table [dataSource]="dataSource" matSort (matSortChange)="sortData($event)" class="mat-elevation-z8">
-          <!-- Position Column
-          <ng-container matColumnDef="completion">
-            <th mat-header-cell *matHeaderCellDef> Completion Status </th>
-            <td mat-cell *matCellDef="let element"> {{element.completion}} </td>
-          </ng-container> -->
         
           <ng-container matColumnDef="ingredientName">
             <th mat-header-cell *matHeaderCellDef mat-sort-header> Ingredient Name </th>
@@ -37,6 +32,7 @@
           <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
           <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
         </table>
+        <mat-paginator id="elementsTablePaginator" [pageSizeOptions]="getPageSizeOptions()" showFirstLastButtons></mat-paginator>
       </mat-card-content>
   </mat-card>
 </div>

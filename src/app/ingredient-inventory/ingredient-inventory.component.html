@@ -1,66 +1,79 @@
-<button mat-raised-button (click)="selectAll()"> Select All </button>
-<button mat-raised-button (click)="deselectAll()"> Deselect All </button>
-<button mat-raised-button (click)="deleteSelected()" style="color: white; background-color: red;" [disabled]="dataSource.data.length==0"> Delete Selected </button>
-<button mat-raised-button (click)="newIngredient()"> New Ingredient </button>
+<div>
+  <mat-card class="IngredientInventory">
+      <mat-card-header style="align-content: center; align-items: center; justify-content: center; display: grid;">
+          <mat-card-title>Ingredient Inventory</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <button mat-raised-button *ngIf="admin" (click)="selectAll()"> Select All </button>
+        <button mat-raised-button *ngIf="admin" (click)="deselectAll()"> Deselect All </button>
+        <button mat-raised-button *ngIf="admin" (click)="deleteSelected()" style="color: white; background-color: red;" [disabled]="dataSource.data.length==0"> Delete Selected </button>
+        <button mat-raised-button *ngIf="admin" (click)="newIngredient()"> New Ingredient </button>      
+        <mat-form-field>
+          <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter">
+        </mat-form-field>
 
-<mat-table [dataSource]="dataSource" class="mat-elevation-z8">
-  <ng-container matColumnDef="checked">
-    <mat-header-cell *matHeaderCellDef>Selected</mat-header-cell>
-    <mat-cell *matCellDef="let ingredient">
-      <mat-checkbox [(ngModel)]="ingredient['checked']"></mat-checkbox>
-    </mat-cell>
-  </ng-container>
+        <mat-table [dataSource]="dataSource" matSort (matSortChange)="sortData($event)" class="mat-elevation-z8">
+          <ng-container matColumnDef="checked">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Selected</mat-header-cell>
+            <mat-cell *matCellDef="let ingredient">
+              <mat-checkbox [(ngModel)]="ingredient['checked']"></mat-checkbox>
+            </mat-cell>
+          </ng-container>
+        
+          <ng-container matColumnDef="name">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Name</mat-header-cell>
+            <mat-cell *matCellDef="let ingredient">
+              {{ingredient['name']}}
+            </mat-cell>
+          </ng-container>
+        
+          <ng-container matColumnDef="number">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Ingredient #</mat-header-cell>
+            <mat-cell *matCellDef="let ingredient">
+              {{ingredient['number']}}
+            </mat-cell>
+          </ng-container>
+        
+          <ng-container matColumnDef="vendorInformation">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Vendor Information</mat-header-cell>
+            <mat-cell *matCellDef="let ingredient">
+              {{ingredient['vendorInformation']}}
+            </mat-cell>
+          </ng-container>
+        
+          <ng-container matColumnDef="packageSize">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Package Size</mat-header-cell>
+            <mat-cell *matCellDef="let ingredient">
+              {{ingredient['packageSize']}}
+            </mat-cell>
+          </ng-container>
+        
+          <ng-container matColumnDef="costPerPackage">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Cost Per Package (USD)</mat-header-cell>
+            <mat-cell *matCellDef="let ingredient">
+              ${{ingredient['costPerPackage']}}
+            </mat-cell>
+          </ng-container>
+        
+          <ng-container matColumnDef="comment">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Comment</mat-header-cell>
+            <mat-cell *matCellDef="let ingredient">
+              {{ingredient['comment']}}
+            </mat-cell>
+          </ng-container>
+        
+          <ng-container matColumnDef="actions">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Actions</mat-header-cell>
+            <mat-cell *matCellDef="let ingredient">
+              <button mat-raised-button (click)="deleteIngredient(element['name'])" style="color: white; background-color: red;"> Delete ingredient </button>
+            </mat-cell>
+          </ng-container>
+        
+          <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+          <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+        </mat-table>
+        <mat-paginator id="elementsTablePaginator" [pageSizeOptions]="getPageSizeOptions()" showFirstLastButtons></mat-paginator>
+      </mat-card-content>
+  </mat-card>
+</div>
 
-  <ng-container matColumnDef="name">
-    <mat-header-cell *matHeaderCellDef>Name</mat-header-cell>
-    <mat-cell *matCellDef="let ingredient">
-      {{ingredient['name']}}
-    </mat-cell>
-  </ng-container>
-
-  <ng-container matColumnDef="number">
-    <mat-header-cell *matHeaderCellDef>Ingredient #</mat-header-cell>
-    <mat-cell *matCellDef="let ingredient">
-      {{ingredient['number']}}
-    </mat-cell>
-  </ng-container>
-
-  <ng-container matColumnDef="vendorInformation">
-    <mat-header-cell *matHeaderCellDef>Vendor Information</mat-header-cell>
-    <mat-cell *matCellDef="let ingredient">
-      {{ingredient['vendorInformation']}}
-    </mat-cell>
-  </ng-container>
-
-  <ng-container matColumnDef="packageSize">
-    <mat-header-cell *matHeaderCellDef>Package Size</mat-header-cell>
-    <mat-cell *matCellDef="let ingredient">
-      {{ingredient['packageSize']}}
-    </mat-cell>
-  </ng-container>
-
-  <ng-container matColumnDef="costPerPackage">
-    <mat-header-cell *matHeaderCellDef>Cost Per Package (USD)</mat-header-cell>
-    <mat-cell *matCellDef="let ingredient">
-      ${{ingredient['costPerPackage']}}
-    </mat-cell>
-  </ng-container>
-
-      <ng-container matColumnDef="comment">
-          <mat-header-cell *matHeaderCellDef>Comment</mat-header-cell>
-          <mat-cell *matCellDef="let ingredient">
-            {{ingredient['comment']}}
-          </mat-cell>
-        </ng-container>
-
-  <ng-container matColumnDef="actions">
-    <mat-header-cell *matHeaderCellDef>Actions</mat-header-cell>
-    <mat-cell *matCellDef="let ingredient">
-      <button mat-raised-button (click)="deleteIngredient(element['name'])" style="color: white; background-color: red;"> Delete ingredient </button>
-    </mat-cell>
-  </ng-container>
-
-  <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-  <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
-</mat-table>
-<mat-paginator id="elementsTablePaginator" [pageSizeOptions]="getPageSizeOptions()" showFirstLastButtons></mat-paginator>
