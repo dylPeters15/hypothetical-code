@@ -5,6 +5,7 @@ import { MatDialogRef, MatDialog, MatSort, MatDialogConfig, MatTableDataSource, 
 import { MoreInfoDialogComponent } from '../more-info-dialog/more-info-dialog.component';
 import { NewSkuDialogComponent } from '../new-sku-dialog/new-sku-dialog.component';
 import { AfterViewChecked } from '@angular/core';
+import { auth } from '../auth.service';
 
 export interface UserForTable {
   name: string;
@@ -29,10 +30,12 @@ export class SkuInventoryComponent  implements OnInit {
   dialogRef: MatDialogRef<MoreInfoDialogComponent>;
   newDialogRef: MatDialogRef<NewSkuDialogComponent>;
   dataSource =  new MatTableDataSource<UserForTable>(this.data);
+  admin: boolean = false;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
   ngOnInit() {
+    this.admin = auth.isAuthenticatedForAdminOperation();
     this.refreshData();
   }
 
