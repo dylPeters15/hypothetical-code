@@ -14,9 +14,9 @@
 <div [hidden]="!showDetails" >
 <h1> {{selectedValue}}</h1>
 <mat-table [dataSource]="dataSource" class="mat-elevation-z8">
-<ng-container matColumnDef="sku">
-  <mat-header-cell *matHeaderCellDef>SKU</mat-header-cell>
-  <mat-cell *matCellDef="let element">{{element.sku}}</mat-cell>
+<ng-container matColumnDef="ingredientName">
+  <mat-header-cell *matHeaderCellDef>Ingredient</mat-header-cell>
+  <mat-cell *matCellDef="let element">{{element.ingredientName}}</mat-cell>
 </ng-container>
 
 <ng-container matColumnDef="quantity">

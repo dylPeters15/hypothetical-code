@@ -93,6 +93,16 @@ export class RestService {
     return this.http.get(endpoint + 'get-ingredient-by-number', httpOptions).pipe(map(this.extractData));
   }
 
+  getSKUByNumber(skuNumber): Observable<any>{
+    let header:HttpHeaders = new HttpHeaders({
+      'skuNumber': skuNumber
+    });
+    let httpOptions = {
+      headers: header
+    }
+    return this.http.get(endpoint + 'get-sku-by-number', httpOptions).pipe(map(this.extractData));
+  }
+
   addIngredientSku(ingredient, skus): Observable<any> {
     var body = {
       ingredient: ingredient,
