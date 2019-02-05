@@ -13,15 +13,6 @@ export interface IngredientData {
   numberSKUs: number;
   SKUs: string;
 }
-
-// const INGREDIENT_DATA: IngredientData[] = [
-//   // {completion: false, ingredient: 'Chicken', numberSKUs: 2, SKUs: 'Chicken Noodle Soup; Chicken Tenders'},
-//   // {completion: false, ingredient: 'Salt', numberSKUs: 2, SKUs: 'Chicken Noodle Soup; Tortillas'},
-//   // {completion: false, ingredient: 'Flour', numberSKUs: 1, SKUs: 'Tortillas'}
-//   {ingredient: 'Chicken', numberSKUs: 2, SKUs: 'Chicken Noodle Soup; Chicken Tenders'},
-//   {ingredient: 'Salt', numberSKUs: 2, SKUs: 'Chicken Noodle Soup; Tortillas'},
-//   {ingredient: 'Flour', numberSKUs: 1, SKUs: 'Tortillas'}
-// ];
  
 @Component({
   selector: 'app-ingredient-dependency-report',
