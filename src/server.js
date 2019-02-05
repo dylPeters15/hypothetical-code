@@ -70,6 +70,7 @@ MongoClient.connect('mongodb://localhost:27017', (err, database) => {
     app.route('/api/v1/login').get((req, res) => {
         let entered_username = req.headers['username'];
         let entered_password = req.headers['password'];
+        console.log(req.headers)
         db.collection('users').find({
             username: entered_username
         }).toArray(function (err, results) {
@@ -161,7 +162,54 @@ MongoClient.connect('mongodb://localhost:27017', (err, database) => {
         });
       });
 
-      app.route('/api/v1/ingredient-inventory').post((req, res) => {
+    app.route('/api/v1/get-ingredient-by-number').get((req,res) => {
+        let ingredientNumber = req.headers['number'];
+        const filterschema = {
+            number: Number(ingredientNumber)
+        };
+        console.log(ingredientNumber)
+        console.log(req.headers)
+        db.collection('ingredients').findOne(filterschema, function(err,results) {
+            res.send(results);
+        });
+    });
+
+    app.route('/api/v1/add-ingredient-sku').put((req, rest) => {
+        const newPass = req.body['ingredient'];
+        const oldPass = req.body['skus'];
+        // if (verified) {
+        //     const filterschema = {
+        //         username: username,
+        //         token: token
+        //     };
+        //     db.collection('users').findOne(filterschema, function (dberr, dbres) {
+        //         const oldSaltedHash = crypto.pbkdf2Sync(oldPass, dbres.salt, 1000, 64, 'sha512').toString('hex');
+        //         if (oldSaltedHash == dbres.saltedHashedPassword) {
+        //             const newSaltedHash = crypto.pbkdf2Sync(newPass, dbres.salt, 1000, 64, 'sha512').toString('hex');
+        //             db.collection('users').updateOne(filterschema, {
+        //                 $set: {
+        //                     saltedHashedPassword: newSaltedHash
+        //                 }
+        //             }, function (innerdberr, innerdbres) {
+        //                 res.send({
+        //                     success: true
+        //                 });
+        //             });
+        //         } else {
+        //             res.send({
+        //                 errormessage: 'Incorrect password.'
+        //             });
+        //         }
+        //     });
+        // } else {
+        //     res.send({
+        //         errormessage: 'Not permitted to perform operation.'
+        //     });
+        // }
+    });
+
+
+    app.route('/api/v1/ingredient-inventory').post((req, res) => {
         const adminusername = req.headers['username'];
         const admintoken = req.headers['token'];
         verifiedForAdminOperations(adminusername, admintoken, verified => {
@@ -176,9 +224,8 @@ MongoClient.connect('mongodb://localhost:27017', (err, database) => {
             let venderInformation = req.body['venderInformation'];
             let packageSize = req.body['packageSize'];
             let costPerPackage = req.body['costPerPackage'];
-            let comment = req.body['comment'];
-
- 
+            let comment = req.body['comment']; 
+                
             let ingredient = database_library.ingredientModel({
                 name: name,
                 number: number,
@@ -207,11 +254,6 @@ MongoClient.connect('mongodb://localhost:27017', (err, database) => {
             );
         });
     });
-
-
-
-
-
 
     app.route('/api/v1/change-password').put((req, res) => {
         const username = req.headers['username'];
