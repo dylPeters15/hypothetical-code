@@ -165,14 +165,6 @@ export class DialogComponent implements OnInit {
               });
             }
 
-
-
-
-
-
-
-
-
           } else {
             console.log("New SKU.");
             objectref.rest.adminCreateSku(sku.name, sku.skuNumber, sku.caseUpcNumber, sku.unitUpcNumber, sku.unitSize, sku.countPerCase, sku.productLine, "", sku.comment, sku.id).subscribe(response => {
@@ -180,15 +172,13 @@ export class DialogComponent implements OnInit {
               if (responses.length == numNonEmptyLines) {
                 objectref.parseResponses(responses);
               }
-            })
+            });
           }
 
         });
       }
 
     }
-
-
   }
 
   parseIngredients(text, objectref) {
