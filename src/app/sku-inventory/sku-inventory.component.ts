@@ -125,33 +125,31 @@ export class SkuInventoryComponent  implements OnInit {
   }
 
    modifySelected() {
-        const dialogConfig = new MatDialogConfig();
-        let counter: number = 0;
-        this.data.forEach(user => {
-          if (user.checked) {
-            counter++;
-          }
-        });
-        if (counter == 0) 
-        {
-          this.snackBar.open("Please select a sku to modify", "close", {
-            duration: 2000,
-          });
+    const dialogConfig = new MatDialogConfig();
+    let counter: number = 0;
+    this.data.forEach(user => {
+      if (user.checked) {
+        counter++;
+      }
+    });
+    if (counter == 0) {
+      this.snackBar.open("Please select a sku to modify", "close", {
+        duration: 2000,
+      });
+    }
+    else if (counter != 1) {
+      this.snackBar.open("Please only select one sku to modify", "close", {
+        duration: 2000,
+      });
+    }
+    else{
+      this.data.forEach(user => {
+        if (user.checked) {
+          this.modifySkuConfirmed(user.name, user.skuNumber, user.caseUpcNumber, user.unitUpcNumber, user.unitSize, user.countPerCase, user.productLine, user.ingredientTuples, user.comment, user.id);
         }
-        else if (counter != 1) 
-        {
-          this.snackBar.open("Please only select one sku to modify", "close", {
-            duration: 2000,
-          });
-        }
-        else{
-            this.data.forEach(user => {
-              if (user.checked) {
-                this.modifySkuConfirmed(user.name, user.skuNumber, user.caseUpcNumber, user.unitUpcNumber, user.unitSize, user.countPerCase, user.productLine, user.ingredientTuples, user.comment, user.id);
-              }
-            });
-          }   
-        }
+      });
+    }   
+  }
 
   removeIngredient(ingredient, sku) {
     let newSkus;

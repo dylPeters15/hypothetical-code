@@ -231,6 +231,45 @@ MongoClient.connect('mongodb://localhost:27017', (err, database) => {
         });
     });
 
+    app.route('/api/v1/change-ingredient').put((req, res) => {
+        console.log("made it in here even though they said we couldn't");
+        const username = req.headers['username'];
+        const token = req.headers['token'];
+        verifiedForUserOperations(username, token, function (verified) {
+            let name = req.body['name'];
+            let number = req.body['number'];
+            let vendorInformation = req.body['vendorInformation'];
+            let packageSize = req.body['packageSize'];
+            let costPerPackage = req.body['costPerPackage'];
+            let comment = req.body['comment']; 
+            const id = req.body['id'];
+            if (verified) {
+                const filterschema = {
+                    id: id,
+                };
+                        db.collection('ingredients').updateOne(filterschema, {
+                            $set: {
+                                name: name,
+                                number: number,
+                                vendorInformation: vendorInformation,
+                                packageSize: packageSize,
+                                costPerPackage: costPerPackage,
+                                comment: comment,
+                                id: id
+                            }
+                        }, function (innerdberr, innerdbres) {
+                            res.send({
+                                success: true
+                            });
+                        });
+            } else {
+                res.send({
+                    errormessage: 'Not permitted to perform operation.'
+                });
+            }
+        });
+    });
+
     app.route('/api/v1/ingredient-inventory').post((req, res) => {
         const adminusername = req.headers['username'];
         const admintoken = req.headers['token'];
@@ -243,18 +282,20 @@ MongoClient.connect('mongodb://localhost:27017', (err, database) => {
             }
             let name = req.body['name'];
             let number = req.body['number'];
-            let venderInformation = req.body['venderInformation'];
+            let vendorInformation = req.body['vendorInformation'];
             let packageSize = req.body['packageSize'];
             let costPerPackage = req.body['costPerPackage'];
             let comment = req.body['comment']; 
+            let id = req.body['id'];
                 
             let ingredient = database_library.ingredientModel({
                 name: name,
                 number: number,
-                venderInformation: venderInformation,
+                vendorInformation: vendorInformation,
                 packageSize: packageSize,
                 costPerPackage: costPerPackage,
                 comment: comment,
+                id: id
             });
             ingredient.save().then(
                 doc => {

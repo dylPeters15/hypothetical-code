@@ -5,8 +5,9 @@ import { map, catchError, tap } from 'rxjs/operators';
 import { auth } from './auth.service'
 
 //const endpoint = 'https://vcm-8238.vm.duke.edu:8443/api/v1/';
-Noah: const endpoint = 'https://vcm-8405.vm.duke.edu:8443/api/v1/';
-// Faith/Dylan: const endpoint = 'https://localhost:8443/api/v1/';
+// Noah: const endpoint = 'https://vcm-8405.vm.duke.edu:8443/api/v1/';
+// Faith/Dylan: 
+const endpoint = 'https://localhost:8443/api/v1/';
 
 @Injectable({
   providedIn: 'root'
@@ -71,15 +72,30 @@ export class RestService {
     return this.http.put(endpoint + 'change-sku', body, this.getHTTPOptions()).pipe(map(this.extractData));
   }
 
-  adminCreateIngredient(name, number, vendor_information, package_size, cost_per_package, comment): Observable<any> {
+  adminCreateIngredient(name, number, vendorInformation, packageSize, costPerPackage, comment, id): Observable<any> {
     return this.http.post(endpoint + 'ingredient-inventory', {
       name: name,
       number: number,
-      venderInformation: vendor_information,
-      packageSize: package_size,
-      costPerPackage: cost_per_package,
+      vendorInformation: vendorInformation,
+      packageSize: packageSize,
+      costPerPackage: costPerPackage,
       comment: comment,
+      id: id,
     }, this.getHTTPOptions());
+  }
+
+  modifyIngredientRequest(name, number, vendorInformation, packageSize, costPerPackage, comment, id): Observable<any> {
+    //Use PUT because we are requesting to modify the user object in database
+    var body = {
+      name: name,
+      number: number,
+      vendorInformation: vendorInformation,
+      packageSize: packageSize,
+      costPerPackage: costPerPackage,
+      comment: comment,
+      id: id
+    };
+    return this.http.put(endpoint + 'change-ingredient', body, this.getHTTPOptions()).pipe(map(this.extractData));
   }
 
   createGoal(name, skus, quantities, date){
