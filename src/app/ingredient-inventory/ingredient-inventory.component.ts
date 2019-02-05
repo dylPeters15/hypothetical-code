@@ -109,6 +109,10 @@ export class IngredientInventoryComponent  implements OnInit {
     });
   }
 
+  applyFilter(filterValue: string) {
+    this.dataSource.filter = filterValue.trim().toLowerCase();
+  }
+  
   ngAfterViewChecked() {
     const matOptions = document.querySelectorAll('mat-option');
    
