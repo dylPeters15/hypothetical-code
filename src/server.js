@@ -201,23 +201,11 @@ MongoClient.connect('mongodb://localhost:27017', (err, database) => {
     app.route('/api/v1/get-ingredient-by-number').get((req,res) => {
         let ingredientNumber = req.headers['number'];
         const filterschema = {
-            number: ingredientNumber
+            number: Number(ingredientNumber)
         };
         console.log(ingredientNumber);
         console.log(req.headers);
         db.collection('ingredients').findOne(filterschema, function(err,results) {
-            res.send(results);
-        });
-    });
-
-    app.route('/api/v1/get-sku-by-number').get((req,res) => {
-        console.log(req.headers);
-        let skuNumber = req.headers['skuNumber'];
-        const filterschema = {
-            skuNumber: skuNumber
-        };
-        console.log(skuNumber);
-        db.collection('skus').findOne(filterschema, function(err,results) {
             res.send(results);
         });
     });

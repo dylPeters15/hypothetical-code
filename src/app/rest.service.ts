@@ -4,10 +4,10 @@ import { Observable, of } from 'rxjs';
 import { map, catchError, tap } from 'rxjs/operators';
 import { auth } from './auth.service'
 
-// const endpoint = 'https://vcm-8238.vm.duke.edu:8443/api/v1/';
+//Ben:
+ const endpoint = 'https://vcm-8238.vm.duke.edu:8443/api/v1/';
 // Noah: const endpoint = 'https://vcm-8405.vm.duke.edu:8443/api/v1/';
-// Faith/Dylan: 
-const endpoint = 'https://localhost:8443/api/v1/';
+// Faith/Dylan: const endpoint = 'https://localhost:8443/api/v1/';
 
 @Injectable({
   providedIn: 'root'
@@ -91,16 +91,6 @@ export class RestService {
     }
     console.log(ingredientNumber);
     return this.http.get(endpoint + 'get-ingredient-by-number', httpOptions).pipe(map(this.extractData));
-  }
-
-  getSKUByNumber(skuNumber): Observable<any>{
-    let header:HttpHeaders = new HttpHeaders({
-      'skuNumber': skuNumber
-    });
-    let httpOptions = {
-      headers: header
-    }
-    return this.http.get(endpoint + 'get-sku-by-number', httpOptions).pipe(map(this.extractData));
   }
 
   addIngredientSku(ingredient, skus): Observable<any> {
