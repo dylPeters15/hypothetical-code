@@ -107,6 +107,7 @@ export class DialogComponent implements OnInit {
     } else {
       this.snackBar.open("Error. File name must end with '.csv'.", "close");
     }
+    this.dialogRef.close();
   }
 
   parseResponses(responses: any): void {
