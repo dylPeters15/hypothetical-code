@@ -1,7 +1,8 @@
 <button mat-raised-button (click)="selectAll()"> Select All </button>
 <button mat-raised-button (click)="deselectAll()"> Deselect All </button>
 <button mat-raised-button (click)="deleteSelected()" style="color: white; background-color: red;" [disabled]="dataSource.data.length==0"> Delete Selected </button>
-<button mat-raised-button (click)="newSku()"> New Sku </button>
+<button mat-raised-button (click)="modifySelected()" style="color: white; background-color: red;" [disabled]="dataSource.data.length==0"> Modify Selected </button>
+<button mat-raised-button (click)="newSkuButton()"> New Sku </button>
 
 <mat-table [dataSource]="dataSource" class="mat-elevation-z8">
   <ng-container matColumnDef="checked">
@@ -73,13 +74,6 @@
             {{sku['comment']}}
           </mat-cell>
         </ng-container>
-
-  <ng-container matColumnDef="actions">
-    <mat-header-cell *matHeaderCellDef>Actions</mat-header-cell>
-    <mat-cell *matCellDef="let sku">
-      <button mat-raised-button (click)="deleteSku(element['name'])" style="color: white; background-color: red;"> Delete sku </button>
-    </mat-cell>
-  </ng-container>
 
   <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
   <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>

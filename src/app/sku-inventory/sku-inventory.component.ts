@@ -7,7 +7,15 @@ import { NewSkuDialogComponent } from '../new-sku-dialog/new-sku-dialog.componen
 import { AfterViewChecked } from '@angular/core';
 
 export interface UserForTable {
-  name: string;
+  name: String;
+  skuNumber: Number;
+  caseUpcNumber: String;
+  unitUpcNumber: String;
+  unitSize: String;
+  countPerCase: Number;
+  productLine: String;
+  ingredientTuples: [];
+  comment: String;
   checked: boolean;
 }
 
@@ -62,12 +70,19 @@ export class SkuInventoryComponent  implements OnInit {
     });
   }
 
-  newSku() {
+  // edit
+  newSku(edit, present_name, present_skuNumber, present_caseUpcNumber, present_unitUpcNumber, present_unitSize, present_countPerCase, present_productLine, present_ingredientTuples, present_comment) {
     const dialogConfig = new MatDialogConfig();
+    dialogConfig.data = {edit: edit, present_name: present_name, present_skuNumber: present_skuNumber, present_caseUpcNumber: present_caseUpcNumber, present_unitUpcNumber: present_unitUpcNumber, present_unitSize:present_unitSize, present_countPerCase:present_countPerCase, present_productLine:present_productLine,present_ingredientTuples:present_ingredientTuples, present_comment:present_comment};
     this.newDialogRef = this.dialog.open(NewSkuDialogComponent, dialogConfig);
     this.newDialogRef.afterClosed().subscribe(event => {
       this.refreshData();
     });
+  }
+
+  newSkuButton()
+  {
+    this.newSku(false, "", 0, "", "", "", 0, "", [], "");
   }
 
   sortData() {
@@ -88,6 +103,10 @@ export class SkuInventoryComponent  implements OnInit {
     });
   }
 
+  modifySkuConfirmed(present_name, present_skuNumber, present_caseUpcNumber, present_unitUpcNumber,present_unitSize,present_countPerCase,present_productLine,present_ingredientTuples, present_comment) {
+    this.newSku(true, present_name, present_skuNumber, present_caseUpcNumber, present_unitUpcNumber, present_unitSize, present_countPerCase, present_productLine, present_ingredientTuples, present_comment);
+  }
+
   deleteSelected() {
     const dialogConfig = new MatDialogConfig();
         this.data.forEach(user => {
@@ -96,6 +115,35 @@ export class SkuInventoryComponent  implements OnInit {
           }
         });
       }
+
+   modifySelected() {
+        const dialogConfig = new MatDialogConfig();
+        let counter: number = 0;
+        this.data.forEach(user => {
+          if (user.checked) {
+            counter++;
+          }
+        });
+        if (counter == 0) 
+        {
+          this.snackBar.open("Please select a sku to modify", "close", {
+            duration: 2000,
+          });
+        }
+        else if (counter != 1) 
+        {
+          this.snackBar.open("Please only select one sku to modify", "close", {
+            duration: 2000,
+          });
+        }
+        else{
+            this.data.forEach(user => {
+              if (user.checked) {
+                this.modifySkuConfirmed(user.name, user.skuNumber, user.caseUpcNumber, user.unitUpcNumber, user.unitSize, user.countPerCase, user.productLine, user.ingredientTuples, user.comment);
+              }
+            });
+          }   
+        }
 
   deselectAll() {
     this.data.forEach(user => {
