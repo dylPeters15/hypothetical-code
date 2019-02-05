@@ -52,8 +52,6 @@ export class RestService {
       comment: comment,
       id: id
     };
-    console.log(body);
-    console.log(JSON.stringify(body));
     var response = this.http.post(endpoint + 'sku-inventory', body, this.getHTTPOptions()).pipe(map(this.extractData));
     return response;
   }
@@ -79,7 +77,6 @@ export class RestService {
 
   generateId() {
     var id =  Math.floor((Math.random() * 1000000) + 1);
-    console.log("ID: " + id);
     return id;
   }
 

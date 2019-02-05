@@ -16,6 +16,5 @@ export class ImportComponent  implements OnInit {
   }
 
   ngOnInit() {
-    console.log("making moves");
   }
 }
