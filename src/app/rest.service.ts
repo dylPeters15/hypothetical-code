@@ -4,7 +4,7 @@ import { Observable, of } from 'rxjs';
 import { map, catchError, tap } from 'rxjs/operators';
 import { auth } from './auth.service'
 
-const endpoint = 'http://localhost:8000/api/v1/';
+const endpoint = 'https://localhost:8443/api/v1/';
 @Injectable({
   providedIn: 'root'
 })
@@ -27,6 +27,46 @@ export class RestService {
       headers: header
     };
     return httpOptions;
+  }
+
+  adminCreateNewUser(username, password): Observable<any> {
+    return this.http.post(endpoint + 'create-user', {
+      username: username,
+      password: password
+    }, this.getHTTPOptions());
+  }
+
+  adminCreateSku(name, sku_number, case_upc_number, unit_upc_number, unit_size, count_per_case, product_line,ingredients, comment): Observable<any> {
+    return this.http.post(endpoint + 'sku-inventory', {
+      name: name,
+      skuNumber: sku_number,
+      caseUpcNumber: case_upc_number,
+      unitUpcNumber: unit_upc_number,
+      unitSize: unit_size,
+      countPerCase: count_per_case,
+      productLine: product_line,
+      ingredientTuples: ingredients,
+      comment: comment
+    }, this.getHTTPOptions());
+  }
+
+  adminCreateIngredient(name, number, vendor_information, package_size, cost_per_package, comment): Observable<any> {
+    return this.http.post(endpoint + 'ingredient-inventory', {
+      name: name,
+      number: number,
+      venderInformation: vendor_information,
+      packageSize: package_size,
+      costPerPackage: cost_per_package,
+      comment: comment,
+    }, this.getHTTPOptions());
+  }
+
+  getSkus(): Observable<any> {
+    return this.http.get(endpoint + 'sku-inventory').pipe(map(this.extractData));
+  }
+
+  getIngredients(): Observable<any> {
+    return this.http.get(endpoint + 'ingredient-inventory').pipe(map(this.extractData));
   }
 
   sendLoginRequest(username, password): Observable<any> {
@@ -64,15 +104,72 @@ export class RestService {
     return this.http.delete(endpoint + 'delete-account', httpOptions).pipe(map(this.extractData));
   }
 
+  getGoals(): Observable<any> {
+    return this.http.get(endpoint + 'manufacturing-calculator')
+  }
+
+  getGoalByName(goalName): Observable<any>{
+    let header:HttpHeaders = new HttpHeaders({
+      'name': goalName
+    });
+    let httpOptions = {
+      headers: header
+    }
+    return this.http.get(endpoint + 'get-goal-by-name', httpOptions)
+  }
+  
+  sendUserListRequest(): Observable<any> {
+    return this.http.get(endpoint + 'user-list', this.getHTTPOptions()).pipe(map(this.extractData));
+  }
+
+  sendAdminDeleteUserRequest(usernameToDelete): Observable<any> {
+    let header:HttpHeaders = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'username': auth.getUsername(),
+      'token':auth.getToken(),
+      'usernametodelete': usernameToDelete
+    });
+    let httpOptions = {
+      headers: header
+    };
+    return this.http.delete(endpoint + 'admin-delete-user', httpOptions).pipe(map(this.extractData));
+  }
+
+  sendAdminDeleteSkuRequest(nameToDelete): Observable<any> {
+    let header:HttpHeaders = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'username': auth.getUsername(),
+      'token':auth.getToken(),
+      'nametodelete': nameToDelete
+    });
+    let httpOptions = {
+      headers: header
+    };
+    return this.http.delete(endpoint + 'admin-delete-sku', httpOptions).pipe(map(this.extractData));
+  }
+
+  sendAdminDeleteIngredientRequest(nameToDelete): Observable<any> {
+    let header:HttpHeaders = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'username': auth.getUsername(),
+      'token':auth.getToken(),
+      'nametodelete': nameToDelete
+    });
+    let httpOptions = {
+      headers: header
+    };
+    return this.http.delete(endpoint + 'admin-delete-ingredient', httpOptions).pipe(map(this.extractData));
+  }
+
   private handleError<T> (operation = 'operation', result?: T) {
     return (error: any): Observable<T> => {
-  
+
       // TODO: send the error to remote logging infrastructure
       console.error(error); // log to console instead
-  
+
       // TODO: better job of transforming error for user consumption
       console.log(`${operation} failed: ${error.message}`);
-  
+
       // Let the app keep running by returning an empty result.
       return of(result as T);
     };

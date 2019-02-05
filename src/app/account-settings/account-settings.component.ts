@@ -99,6 +99,14 @@ export class AccountSettingsComponent implements OnInit {
     }
   }
 
+  confirmDeleteErrorMatcher = {
+    isErrorState: (control: FormControl, form: FormGroupDirective): boolean => {
+      const controlInvalid = control.touched && control.invalid;
+      const formInvalid = control.touched && this.deleteForm.get('confirmDelete').touched && this.form.invalid;
+      return controlInvalid || formInvalid;
+    }
+  }
+
   getErrorMessage(controlName: string) {
     if (this.form.controls[controlName].hasError('minlength')) {
       return 'Must be at least 4 characters'

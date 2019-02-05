@@ -1,0 +1,30 @@
+<h1 mat-dialog-title>Add a new ingredient</h1>
+<div mat-dialog-content>
+  <p>Ingredient Name</p>
+  <mat-form-field>
+    <input matInput [(ngModel)]="data.name">
+  </mat-form-field>
+  <p> Quantity of this Ingredient</p>
+  <mat-form-field>
+    <input matInput [(ngModel)]="data.number">
+  </mat-form-field>
+  <p>Vendor</p>
+  <mat-form-field>
+    <input matInput [(ngModel)]="data.vendorInfo">
+  </mat-form-field>
+  <p>Package Size</p>
+  <mat-form-field>
+    <input matInput [(ngModel)]="data.packageSize">
+  </mat-form-field>
+  <p>Cost per Package</p>
+  <mat-form-field>
+    <input matInput [(ngModel)]="data.costPerPackage">
+  </mat-form-field>
+  <p>Enter any Comments</p>
+  <mat-form-field>
+    <input matInput [(ngModel)]="data.comment">
+  </mat-form-field>
+</div>
+<div mat-dialog-actions>
+  <button mat-button [mat-dialog-close]="data" cdkFocusInitial>Add</button>
+</div>

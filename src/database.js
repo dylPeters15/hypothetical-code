@@ -19,6 +19,116 @@ class Database {
     }
 }
 
+var manufacturingGoalsSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: true,
+    unique: true
+  },
+  skus: {
+    type: [Number],
+    required: true,
+    unique: false
+  },
+  quantities: {
+    type: [Number],
+    required: true,
+    unique: false
+  },
+  date: {
+    type: Date,
+    required: true,
+    unique: true
+  }
+})
+
+var goalsModel = mongoose.model('goal', manufacturingGoalsSchema);
+
+var ingredientSchema = new mongoose.Schema({
+    name: {
+      type: String,
+      required: true,
+      unique: true
+    },
+    number: {
+      type: Number,
+      required: true,
+      unique: true
+    },
+    vendorInformation: {
+      type: String,
+      required: false,
+      unique: false
+    },
+    packageSize: {
+      type: String,
+      required: true,
+      unique: false
+    },
+    costPerPackage: {
+        type: Number,
+        required: true,
+        unique: false
+      },
+    comment: {
+        type: String,
+        required: false,
+        unique: false
+      }
+  })
+
+  var ingredientModel = mongoose.model('ingredient', ingredientSchema);
+
+  var skuSchema = new mongoose.Schema({
+    name: {
+      type: String,
+      required: true,
+      unique: true
+    },
+    skuNumber: {
+      type: Number,
+      required: true,
+      unique: true
+    },
+    caseUpcNumber: {
+      type: String,
+      required: true,
+      unique: true
+    },
+    unitUpcNumber: {
+      type: String,
+      required: true,
+      unique: false
+    },
+    unitSize: {
+        type: String,
+        required: true,
+        unique: false
+      },
+    countPerCase: {
+        type: Number,
+        required: true,
+        unique: false
+      },
+    productLine: {
+        type: String,
+        required: true,
+        unique: false
+      },
+    ingredientTuples: {
+          type: Array,
+          required: true,
+          unique: false
+        },
+    comment: {
+          type: String,
+          required: false,
+          unique: false
+     }   
+  })
+
+  var skuModel = mongoose.model('sku', skuSchema);
+
 var userSchema = new mongoose.Schema({
     username: {
         type: String,
@@ -40,9 +150,10 @@ var userSchema = new mongoose.Schema({
 });
 var userModel = mongoose.model('user', userSchema);
 
-
-
 module.exports = {
     Database: new Database(),
-    userModel: userModel
+    userModel: userModel,
+    goalsModel: goalsModel,
+    ingredientModel: ingredientModel,
+    skuModel: skuModel
 };
