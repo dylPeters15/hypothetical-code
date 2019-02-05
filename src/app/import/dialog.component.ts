@@ -55,17 +55,19 @@ export class DialogComponent implements OnInit {
 
     var numNonEmptyLines = 0;
 
-    for (let line in splitByLine) {
-      if (splitByLine[line] != "") {
+    for (let myline in splitByLine) {
+      if (splitByLine[myline] != "") {
+        console.log(splitByLine[myline]);
         numNonEmptyLines = numNonEmptyLines + 1;
       }
     }
 
-    for (let line in splitByLine) {
-      if (splitByLine[line] != "") {
-        var splitByCommas = splitByLine[line].split(",");
+    for (var i = 0; i < splitByLine.length; i = i+1) {
+      if (splitByLine[i] != "") {
+        console.log(splitByLine[i]);
+        let splitByCommas = splitByLine[i].split(",");
 
-        var sku = {
+        let sku = {
           name: splitByCommas[1],
           skuNumber: parseInt(splitByCommas[0]),
           caseUpcNumber: splitByCommas[2],
@@ -97,15 +99,18 @@ export class DialogComponent implements OnInit {
             && results.countPerCase == sku.countPerCase
             && results.productLine == sku.productLine
             && results.comment == sku.comment) {
-            console.log("match");
+            console.log("SKU match. Do nothing.");
           } else if (results.name == sku.name 
             || results.skuNumber == sku.skuNumber 
             || results.caseUpcNumber == sku.caseUpcNumber
             || results.unitUpcNumber == sku.unitUpcNumber
             || results.id == sku.id) {
-            console.log("collision");
+            console.log("Collision. Prompt user.");
           } else {
-            console.log("new sku");
+            console.log("New SKU.");
+            objectref.rest.adminCreateSku(sku.name, sku.skuNumber, sku.caseUpcNumber, sku.unitUpcNumber, sku.unitSize, sku.countPerCase, sku.productLine, "", sku.comment, sku.id).subscribe(response => {
+              console.log("Sku create response: " + JSON.stringify(response));
+            })
           }
 
         });
