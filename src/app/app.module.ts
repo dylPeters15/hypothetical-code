@@ -38,6 +38,7 @@ import { ManufacturingGoalsComponent } from './manufacturing-goals/manufacturing
 import { NewGoalDialogComponent } from './new-goal-dialog/new-goal-dialog.component';
 import { ImportComponent } from './import/import.component';
 import { DialogComponent } from './import/dialog.component';
+import { RecordCompareDialogComponent } from './record-compare-dialog/record-compare-dialog.component';
 
 
 const appRoutes: Routes = [
@@ -84,7 +85,8 @@ const appRoutes: Routes = [
     TermsAndConditionsDialogComponent,
     ManufacturingGoalsComponent,
     NewGoalDialogComponent,
-    ImportComponent
+    ImportComponent,
+    RecordCompareDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -108,6 +110,6 @@ const appRoutes: Routes = [
   ],
   providers: [],
   bootstrap: [AppComponent],
-  entryComponents: [UserNotificationDialogComponent, NewUserDialogComponent, PasswordConfirmationDialogComponent, PrivacyPolicyDialogComponent, TermsAndConditionsDialogComponent, MoreInfoDialogComponent, NewSkuDialogComponent, NewIngredientDialogComponent, NewGoalDialogComponent, DialogComponent]
+  entryComponents: [UserNotificationDialogComponent, NewUserDialogComponent, PasswordConfirmationDialogComponent, PrivacyPolicyDialogComponent, TermsAndConditionsDialogComponent, MoreInfoDialogComponent, NewSkuDialogComponent, NewIngredientDialogComponent, NewGoalDialogComponent, DialogComponent, RecordCompareDialogComponent]
 })
 export class AppModule { }

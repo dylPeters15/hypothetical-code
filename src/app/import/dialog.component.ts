@@ -3,6 +3,9 @@ import { MatDialogRef } from '@angular/material';
 import { RestService } from '../rest.service';
 import { MatSnackBar } from '@angular/material';
 import { fillProperties } from '@angular/core/src/util/property';
+import { MatDialog, MatDialogConfig, MatTableDataSource, MatPaginator } from "@angular/material";
+import { RecordCompareDialogComponent } from '../record-compare-dialog/record-compare-dialog.component';
+
 
 @Component({
   selector: 'app-dialog',
@@ -13,8 +16,10 @@ export class DialogComponent implements OnInit {
   @ViewChild('fileSelector') fileSelector;
 
   public fileObject: File;
+  public applyToAll: boolean = false;
+  public useNew: boolean = false;
 
-  constructor(public dialogRef: MatDialogRef<DialogComponent>, public rest: RestService, private snackBar: MatSnackBar) { }
+  constructor(public dialogRef: MatDialogRef<DialogComponent>, public rest: RestService, public snackBar: MatSnackBar, public dialog: MatDialog) { }
 
   ngOnInit() { }
 
@@ -106,12 +111,47 @@ export class DialogComponent implements OnInit {
             || results.unitUpcNumber == sku.unitUpcNumber
             || results.id == sku.id) {
             console.log("Collision. Prompt user.");
-            responses.push({
-              success: true
-            });
-            if (responses.length == numNonEmptyLines) {
-              objectref.parseResponses(responses);
+            
+            if (objectref.applyToAll) {
+              if (objectref.useNew) {
+                console.log("use new");
+
+              } else {
+                responses.push({
+                  success: true
+                });
+                if (responses.length == numNonEmptyLines) {
+                  objectref.parseResponses(responses);
+                }
+              }
+            } else {
+              const dialogConfig = new MatDialogConfig();
+              objectref.dialog.open(RecordCompareDialogComponent, dialogConfig).afterClosed().subscribe(event => {
+                objectref.applyToAll = event.applyToAll;
+                objectref.useNew = event.useNew;
+                if (event.useNew) {
+                  console.log("use new");
+                  
+
+                } else {
+                  responses.push({
+                    success: true
+                  });
+                  if (responses.length == numNonEmptyLines) {
+                    objectref.parseResponses(responses);
+                  }
+                }
+              });
             }
+
+
+            
+
+            
+
+
+
+
           } else {
             console.log("New SKU.");
             objectref.rest.adminCreateSku(sku.name, sku.skuNumber, sku.caseUpcNumber, sku.unitUpcNumber, sku.unitSize, sku.countPerCase, sku.productLine, "", sku.comment, sku.id).subscribe(response => {
