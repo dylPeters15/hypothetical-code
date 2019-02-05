@@ -4,6 +4,7 @@ import { RestService } from '../rest.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NewGoalDialogComponent } from '../new-goal-dialog/new-goal-dialog.component'
 import { MatDialogRef, MatDialog, MatDialogConfig, MatTableDataSource,MatPaginator, MatSnackBar } from "@angular/material";
+import {ExportToCsv} from 'export-to-csv';
 
 export class ManufacturingGoal {
   skus: any = [];
@@ -20,6 +21,19 @@ export class ManufacturingGoal {
   }
 }
 
+export class ExportableGoal {
+  skus: String;
+  quantities: String;
+  name: String;
+  date: String;
+  constructor(skus, quantities, name, date){
+    this.name = name;
+    this.skus = skus;
+    this.quantities = quantities;
+    this.date = date;
+  }
+}
+
 @Component({
   selector: 'app-manufacturing-goals',
   templateUrl: './manufacturing-goals.component.html',
@@ -29,7 +43,7 @@ export class ManufacturingGoal {
 export class ManufacturingGoalsComponent implements OnInit {
   allReplacement = 54321;
   goals:any = [];
-  displayedColumns: string[] = ['checked', 'name', 'skus','quantities', 'date'];
+  displayedColumns: string[] = ['checked', 'name', 'skus','quantities', 'date', 'export'];
   data: ManufacturingGoal[] = [];
   dataSource = new MatTableDataSource<ManufacturingGoal>(this.data);
   @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -109,7 +123,27 @@ export class ManufacturingGoalsComponent implements OnInit {
     });
   }
 
-  applyFilter(filterValue: string) {
-    this.dataSource.filter = filterValue.trim().toLowerCase();
+  exportToCsv(goal) {
+    let toExport: ExportableGoal[] = [];
+    const options = { 
+      fieldSeparator: ',',
+      quoteStrings: '"',
+      decimalSeparator: '.',
+      showLabels: true, 
+      showTitle: true,
+      title: 'Manufacturing Goal',
+      useTextFile: false,
+      useBom: true,
+      headers: ["Name", "Skus", "Quantities", "Date"]
+    };
+    let skuString = goal.skus.toString();
+    let quantityString = goal.quantities.toString();
+    
+    let goalToExport = new ExportableGoal(skuString, quantityString, goal.name, goal.date);
+    console.log("Name: " + goalToExport.name + " SKUS: " + goalToExport.skus + " Quants: " + goalToExport.quantities + " Date: " + goalToExport.date);
+    toExport.push(goalToExport);
+    const csvExporter = new ExportToCsv(options);
+    csvExporter.generateCsv(toExport);
   }
+
 }

@@ -26,7 +26,7 @@ let testGoal = new database_library.goalsModel({
   name: 'Goal1',
   skus: [2],
   quantities: [3],
-  date: Date.now()
+  date: Date.parse("02/05/2019")
 });
 testGoal.save().then(
     doc => {

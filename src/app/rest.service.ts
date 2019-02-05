@@ -4,12 +4,8 @@ import { Observable, of } from 'rxjs';
 import { map, catchError, tap } from 'rxjs/operators';
 import { auth } from './auth.service'
 
-<<<<<<< HEAD
 //Ben:
  const endpoint = 'https://vcm-8238.vm.duke.edu:8443/api/v1/';
-=======
-//const endpoint = 'https://vcm-8238.vm.duke.edu:8443/api/v1/';
->>>>>>> 3038782d04fbc8bf616fc7a5e152ca5e990b7d26
 // Noah: const endpoint = 'https://vcm-8405.vm.duke.edu:8443/api/v1/';
 // Faith/Dylan: const endpoint = 'https://localhost:8443/api/v1/';
 

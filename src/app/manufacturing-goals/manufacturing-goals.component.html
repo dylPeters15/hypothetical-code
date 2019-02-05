@@ -38,10 +38,10 @@
         <mat-cell *matCellDef="let element">{{element.date}}</mat-cell>
       </ng-container>
     
-      <ng-container matColumnDef="details">
-        <mat-header-cell *matHeaderCellDef>Comment</mat-header-cell>
+      <ng-container matColumnDef="export">
+        <mat-header-cell *matHeaderCellDef>Export To CSV</mat-header-cell>
         <mat-cell *matCellDef="let element">
-          <button mat-raised-button (click)="showDetails(sku['name'])" style="color: white; background-color: red;"> Show Details </button>
+          <button mat-raised-button (click)="exportToCsv(element)" style="color: white; background-color: red;"> Export to CSV </button>
         </mat-cell>
       </ng-container>
       
