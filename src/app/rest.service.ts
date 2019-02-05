@@ -55,9 +55,6 @@ export class RestService {
     console.log(body);
     console.log(JSON.stringify(body));
     var response = this.http.post(endpoint + 'sku-inventory', body, this.getHTTPOptions()).pipe(map(this.extractData));
-    response.subscribe(response => {
-      console.log("subscribed response: " + JSON.stringify(response));
-    });
     return response;
   }
 

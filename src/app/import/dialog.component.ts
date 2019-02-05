@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatDialogRef } from '@angular/material';
 import { RestService } from '../rest.service';
+import {MatSnackBar} from '@angular/material';
 
 @Component({
   selector: 'app-dialog',
@@ -12,7 +13,7 @@ export class DialogComponent implements OnInit {
 
   public files: Set<File> = new Set();
 
-  constructor(public dialogRef: MatDialogRef<DialogComponent>, public rest:RestService) {}
+  constructor(public dialogRef: MatDialogRef<DialogComponent>, public rest:RestService, private snackBar: MatSnackBar) {}
 
   ngOnInit() {}
 
@@ -47,8 +48,8 @@ export class DialogComponent implements OnInit {
     this.uploading = true;
 
     // start the upload and save the progress map
-    this.progress = this.upload(this.files);
-    console.log("Progress: " + this.progress);
+    this.upload(this.files);
+    console.log("Uploading");
     // for (const key in this.progress) {
     //   this.progress[key].progress.subscribe(val => console.log(val));
     // }
@@ -74,7 +75,7 @@ export class DialogComponent implements OnInit {
 
   upload(files)
   {
-    var toreturn = [];
+    var responses = [];
     console.log(files);
     files.forEach(file => {
       let fileReader = new FileReader();
@@ -90,19 +91,30 @@ export class DialogComponent implements OnInit {
         console.log(firsthalfsplit);
         console.log(secondhalfsplit);
         console.log(JSON.stringify(splitbyquotes));
-        toreturn.push(this.rest.adminCreateSku(firsthalfsplit[0], firsthalfsplit[1], firsthalfsplit[2], firsthalfsplit[3], firsthalfsplit[4], firsthalfsplit[5], firsthalfsplit[6], splitbyquotes[1], secondhalfsplit[1], this.rest.generateId()));
+        this.rest.adminCreateSku(firsthalfsplit[0], firsthalfsplit[1], firsthalfsplit[2], firsthalfsplit[3], firsthalfsplit[4], firsthalfsplit[5], firsthalfsplit[6], splitbyquotes[1], secondhalfsplit[1], this.rest.generateId()).subscribe(response => {
+          responses.push(response);
+          if (responses.length == files.size) {
+            this.parseResponses(responses);
+          }
+        });
       }
       fileReader.readAsText(file);
-
-
-      // create a new multipart-form for every file
-      // const formData: FormData = new FormData();
-      // formData.append("file", file, file.name);
-      // return this.http.post(endpoint + 'my-file', {
-      //   name: file.name,
-      //   file: file
-      // }, this.getHTTPOptions());
     });
-    return toreturn
+  }
+
+  parseResponses(responses: any): void {
+    console.log("Responses: " + JSON.stringify(responses));
+    var allResponsesSuccess = true;
+    for (var i = 0; i < responses.length; i=i+1) {
+      var response = responses[i];
+      if (!response['success']) {
+        allResponsesSuccess = false;
+      }
+    }
+    if (allResponsesSuccess) {
+      this.snackBar.open("Successfully created " + responses.length + " records.", "close");
+    } else {
+      this.snackBar.open("Error creating records. Please refresh and try again.", "close");
+    }
   }
 }
