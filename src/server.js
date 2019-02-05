@@ -135,6 +135,7 @@ MongoClient.connect('mongodb://localhost:27017', (err, database) => {
             let productLine = req.body['productLine'];
             let ingredientTuples = req.body['ingredientTuples'];
             let comment = req.body['comment'];
+            let id = req.body['id'];
  
             let sku = database_library.skuModel({
                 name: name,
@@ -146,6 +147,7 @@ MongoClient.connect('mongodb://localhost:27017', (err, database) => {
                 productLine: productLine,
                 ingredientTuples: ingredientTuples,
                 comment: comment,
+                id: id,
             });
             sku.save().then(
                 doc => {
@@ -257,6 +259,45 @@ MongoClient.connect('mongodb://localhost:27017', (err, database) => {
         // }
     });
 
+    app.route('/api/v1/change-ingredient').put((req, res) => {
+        console.log("made it in here even though they said we couldn't");
+        const username = req.headers['username'];
+        const token = req.headers['token'];
+        verifiedForUserOperations(username, token, function (verified) {
+            let name = req.body['name'];
+            let number = req.body['number'];
+            let vendorInformation = req.body['vendorInformation'];
+            let packageSize = req.body['packageSize'];
+            let costPerPackage = req.body['costPerPackage'];
+            let comment = req.body['comment']; 
+            const id = req.body['id'];
+            if (verified) {
+                const filterschema = {
+                    id: id,
+                };
+                        db.collection('ingredients').updateOne(filterschema, {
+                            $set: {
+                                name: name,
+                                number: number,
+                                vendorInformation: vendorInformation,
+                                packageSize: packageSize,
+                                costPerPackage: costPerPackage,
+                                comment: comment,
+                                id: id
+                            }
+                        }, function (innerdberr, innerdbres) {
+                            res.send({
+                                success: true
+                            });
+                        });
+            } else {
+                res.send({
+                    errormessage: 'Not permitted to perform operation.'
+                });
+            }
+        });
+    });
+
     app.route('/api/v1/ingredient-inventory').post((req, res) => {
         const adminusername = req.headers['username'];
         const admintoken = req.headers['token'];
@@ -269,18 +310,20 @@ MongoClient.connect('mongodb://localhost:27017', (err, database) => {
             }
             let name = req.body['name'];
             let number = req.body['number'];
-            let venderInformation = req.body['venderInformation'];
+            let vendorInformation = req.body['vendorInformation'];
             let packageSize = req.body['packageSize'];
             let costPerPackage = req.body['costPerPackage'];
             let comment = req.body['comment']; 
+            let id = req.body['id'];
                 
             let ingredient = database_library.ingredientModel({
                 name: name,
                 number: number,
-                venderInformation: venderInformation,
+                vendorInformation: vendorInformation,
                 packageSize: packageSize,
                 costPerPackage: costPerPackage,
                 comment: comment,
+                id: id
             });
             ingredient.save().then(
                 doc => {
@@ -300,6 +343,52 @@ MongoClient.connect('mongodb://localhost:27017', (err, database) => {
                     return;
                 }
             );
+        });
+    });
+
+    app.route('/api/v1/change-sku').put((req, res) => {
+        console.log("made it in here even though they said we couldn't");
+        const username = req.headers['username'];
+        const token = req.headers['token'];
+        verifiedForUserOperations(username, token, function (verified) {
+            const name = req.body['name'];
+            const sku_number = req.body['sku_number'];
+            const case_upc_number = req.body['case_upc_number'];
+            const unit_upc_number = req.body['unit_upc_number'];
+            const unit_size = req.body['unit_size'];
+            const count_per_case = req.body['count_per_case'];
+            const product_line = req.body['product_line'];
+            const ingredients = req.body['ingredients'];
+            const comment = req.body['comment'];
+            const id = req.body['id'];
+            if (verified) {
+                const filterschema = {
+                    id: id,
+                };
+                        db.collection('skus').updateOne(filterschema, {
+                            $set: {
+                                name: name,
+                                skuNumber: sku_number,
+                                caseUpcNumber: case_upc_number,
+                                unitUpcNumber: unit_upc_number,
+                                unitSize: unit_size,
+                                countPerCase: count_per_case,
+                                productLine: product_line,
+                                ingredientTuples: ingredients,
+                                comment: comment
+                            }
+                        }, function (innerdberr, innerdbres) {
+                            res.send({
+                                success: true
+                            });
+                        });
+                    
+
+            } else {
+                res.send({
+                    errormessage: 'Not permitted to perform operation.'
+                });
+            }
         });
     });
 

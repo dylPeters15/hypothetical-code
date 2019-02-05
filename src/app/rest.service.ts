@@ -4,8 +4,12 @@ import { Observable, of } from 'rxjs';
 import { map, catchError, tap } from 'rxjs/operators';
 import { auth } from './auth.service'
 
+<<<<<<< HEAD
 //Ben:
  const endpoint = 'https://vcm-8238.vm.duke.edu:8443/api/v1/';
+=======
+//const endpoint = 'https://vcm-8238.vm.duke.edu:8443/api/v1/';
+>>>>>>> 3038782d04fbc8bf616fc7a5e152ca5e990b7d26
 // Noah: const endpoint = 'https://vcm-8405.vm.duke.edu:8443/api/v1/';
 // Faith/Dylan: const endpoint = 'https://localhost:8443/api/v1/';
 
@@ -40,7 +44,7 @@ export class RestService {
     }, this.getHTTPOptions());
   }
 
-  adminCreateSku(name, sku_number, case_upc_number, unit_upc_number, unit_size, count_per_case, product_line,ingredients, comment): Observable<any> {
+  adminCreateSku(name, sku_number, case_upc_number, unit_upc_number, unit_size, count_per_case, product_line,ingredients, comment, id): Observable<any> {
     return this.http.post(endpoint + 'sku-inventory', {
       name: name,
       skuNumber: sku_number,
@@ -50,19 +54,52 @@ export class RestService {
       countPerCase: count_per_case,
       productLine: product_line,
       ingredientTuples: ingredients.split(","),
-      comment: comment
+      comment: comment,
+      id: id
     }, this.getHTTPOptions());
   }
 
-  adminCreateIngredient(name, number, vendor_information, package_size, cost_per_package, comment): Observable<any> {
+  modifySkuRequest(name, sku_number, case_upc_number, unit_upc_number, unit_size, count_per_case, product_line, ingredients, comment, id): Observable<any> {
+    //Use PUT because we are requesting to modify the user object in database
+    var body = {
+      name: name,
+      sku_number: sku_number,
+      case_upc_number: case_upc_number,
+      unit_upc_number: unit_upc_number,
+      unit_size: unit_size,
+      count_per_case: count_per_case,
+      product_line: product_line,
+      ingredients: ingredients,
+      comment: comment,
+      id: id
+    };
+    return this.http.put(endpoint + 'change-sku', body, this.getHTTPOptions()).pipe(map(this.extractData));
+  }
+
+  adminCreateIngredient(name, number, vendorInformation, packageSize, costPerPackage, comment, id): Observable<any> {
     return this.http.post(endpoint + 'ingredient-inventory', {
       name: name,
       number: number,
-      venderInformation: vendor_information,
-      packageSize: package_size,
-      costPerPackage: cost_per_package,
+      vendorInformation: vendorInformation,
+      packageSize: packageSize,
+      costPerPackage: costPerPackage,
       comment: comment,
+      id: id,
     }, this.getHTTPOptions());
+  }
+
+  modifyIngredientRequest(name, number, vendorInformation, packageSize, costPerPackage, comment, id): Observable<any> {
+    //Use PUT because we are requesting to modify the user object in database
+    var body = {
+      name: name,
+      number: number,
+      vendorInformation: vendorInformation,
+      packageSize: packageSize,
+      costPerPackage: costPerPackage,
+      comment: comment,
+      id: id
+    };
+    return this.http.put(endpoint + 'change-ingredient', body, this.getHTTPOptions()).pipe(map(this.extractData));
   }
 
   createGoal(name, skus, quantities, date){

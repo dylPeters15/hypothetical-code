@@ -6,7 +6,7 @@ import { MoreInfoDialogComponent } from '../more-info-dialog/more-info-dialog.co
 import { NewIngredientDialogComponent } from '../new-ingredient-dialog/new-ingredient-dialog.component';
 import { AfterViewChecked } from '@angular/core';
 
-export interface IngredientData {
+export interface IngredientDependencyData {
   // completion: boolean;
   ingredientName: string;
   ingredientNumber: number;
@@ -23,10 +23,10 @@ export class IngredientDependencyComponent implements OnInit {
   allReplacement = 54321;
   displayedColumns: string[] = ['ingredientName', 'ingredientNumber', 'numberSKUs', 'SKUs'];
   constructor(public rest:RestService, private snackBar: MatSnackBar, private dialog: MatDialog) { }
-  data: IngredientData[] = [];
+  data: IngredientDependencyData[] = [];
   dialogRef: MatDialogRef<MoreInfoDialogComponent>;
   newDialogRef: MatDialogRef<NewIngredientDialogComponent>;
-  dataSource =  new MatTableDataSource<IngredientData>(this.data);
+  dataSource =  new MatTableDataSource<IngredientDependencyData>(this.data);
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
@@ -44,7 +44,7 @@ export class IngredientDependencyComponent implements OnInit {
       this.data = response;
       console.log(this.data);
       this.dataSource.sort = this.sort;
-      this.dataSource =  new MatTableDataSource<IngredientData>(this.data);
+      this.dataSource =  new MatTableDataSource<IngredientDependencyData>(this.data);
       this.dataSource.paginator = this.paginator;
     });
     

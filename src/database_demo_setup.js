@@ -46,8 +46,9 @@ let testSku = new database_library.skuModel({
     unitSize: '28oz',
     countPerCase: 10,
     productLine: 'Example product line',
-    ingredientTuples: ["1", 2, "2", 0.5],
-    comment: "Enjoy this lovely can of tomato soup!"
+    ingredientTuples: [5942948208, 2, 5942948209, 0.5],
+    comment: "Enjoy this lovely can of tomato soup!",
+    id: 5942948208
   });
   testSku.save().then(
       doc => {
@@ -66,7 +67,8 @@ let testSku = new database_library.skuModel({
     packageSize: '50 units',
     costPerPackage: 20,
     comment: 'This is a comment!',
-    skus: ['Tomato Soup']
+    skus: ['Tomato Soup'],
+    id: 5942948208
   });
   testIngredient1.save().then(
       doc => {
@@ -85,7 +87,8 @@ let testSku = new database_library.skuModel({
     packageSize: '20lbs',
     costPerPackage: 70,
     comment: '',
-    skus: ['Tomato Soup']
+    skus: ['Tomato Soup'],
+    id: 5942948209
   });
   testIngredient2.save().then(
       doc => {

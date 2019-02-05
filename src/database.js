@@ -84,6 +84,11 @@ var ingredientSchema = new mongoose.Schema({
         type: Array,
         required: false,
         unique: false
+    },
+    id: {
+      type: Number,
+      required: true,
+      unique: true
     }
   })
 
@@ -134,7 +139,12 @@ var ingredientSchema = new mongoose.Schema({
           type: String,
           required: false,
           unique: false
-     }   
+     },
+     id: {
+      type: Number,
+      required: true,
+      unique: true
+    }   
   })
 
   var skuModel = mongoose.model('sku', skuSchema);
