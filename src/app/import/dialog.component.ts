@@ -47,7 +47,7 @@ export class DialogComponent implements OnInit {
     this.uploading = true;
 
     // start the upload and save the progress map
-    this.progress = this.rest.upload(this.files);
+    this.progress = this.upload(this.files);
     console.log("Progress: " + this.progress);
     // for (const key in this.progress) {
     //   this.progress[key].progress.subscribe(val => console.log(val));
@@ -70,5 +70,39 @@ export class DialogComponent implements OnInit {
 
     // // Hide the cancel-button
     // this.showCancelButton = false;
+  }
+
+  upload(files)
+  {
+    var toreturn = [];
+    console.log(files);
+    files.forEach(file => {
+      let fileReader = new FileReader();
+      fileReader.onload = (e) => {
+        var result = JSON.stringify(fileReader.result);
+        result = result.substring(1,result.length-1);
+        console.log("Result: " + result);
+
+        var splitbyquotes = result.split("\\\"");
+        var firsthalfsplit = splitbyquotes[0].split(",");
+        var secondhalfsplit = splitbyquotes[2].split(",");
+        console.log(splitbyquotes);
+        console.log(firsthalfsplit);
+        console.log(secondhalfsplit);
+        console.log(JSON.stringify(splitbyquotes));
+        toreturn.push(this.rest.adminCreateSku(firsthalfsplit[0], firsthalfsplit[1], firsthalfsplit[2], firsthalfsplit[3], firsthalfsplit[4], firsthalfsplit[5], firsthalfsplit[6], splitbyquotes[1], secondhalfsplit[1], this.rest.generateId()));
+      }
+      fileReader.readAsText(file);
+
+
+      // create a new multipart-form for every file
+      // const formData: FormData = new FormData();
+      // formData.append("file", file, file.name);
+      // return this.http.post(endpoint + 'my-file', {
+      //   name: file.name,
+      //   file: file
+      // }, this.getHTTPOptions());
+    });
+    return toreturn
   }
 }
