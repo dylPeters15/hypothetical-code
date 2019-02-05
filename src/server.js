@@ -51,13 +51,25 @@ MongoClient.connect('mongodb://localhost:27017', (err, database) => {
     }
 
     app.route('/api/v1/manufacturing-goals').get((req,res) =>{
-      db.collection('goals').find().toArray(function(err,results) {
-        res.send(results);
+        let current_username = req.headers['username'];
+      db.collection('goals').find({
+          user: current_username
+      }).toArray(function(err,results) {
+          if(results.length > 0){
+            res.send(results);
+          }
+          else {
+              res.send({
+                message: "No goals found for user " + current_username
+              })
+          }
+        
       });
     });
 
     app.route('/api/v1/get-goal-by-name').get((req,res) => {
         let goalName = req.headers['name'];
+        let username = req.header['username'];
         const filterschema = {
             name: goalName
         };
@@ -166,6 +178,7 @@ MongoClient.connect('mongodb://localhost:27017', (err, database) => {
         let date = req.body['date'];
         let dateAsDate = Date.parse(date);
         let goal = database_library.goalsModel({
+            user: username,
             name: name,
             skus: skusArray,
             quantities: quantitiesArray,

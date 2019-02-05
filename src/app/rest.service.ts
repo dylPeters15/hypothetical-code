@@ -67,6 +67,7 @@ export class RestService {
 
   createGoal(name, skus, quantities, date){
     return this.http.post(endpoint + 'manufacturing-goals',{
+      user: auth.getUsername,
       name: name,
       skus: skus,
       quantities: quantities,
@@ -137,7 +138,13 @@ export class RestService {
   }
 
   getGoals(): Observable<any> {
-    return this.http.get(endpoint + 'manufacturing-goals').pipe(map(this.extractData));
+    let header:HttpHeaders = new HttpHeaders({
+      'username': auth.getUsername()
+    });
+    let httpOptions = {
+      headers: header
+    };
+    return this.http.get(endpoint + 'manufacturing-goals', httpOptions).pipe(map(this.extractData));
   }
 
   getGoalByName(goalName): Observable<any>{

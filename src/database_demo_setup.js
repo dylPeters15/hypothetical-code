@@ -22,6 +22,7 @@ for (i = 0; i < 10; i++) {
 }
 
 let testGoal = new database_library.goalsModel({
+    user: 'admin',
   name: 'Goal1',
   skus: [2],
   quantities: [3],

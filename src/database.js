@@ -20,6 +20,11 @@ class Database {
 }
 
 var manufacturingGoalsSchema = new mongoose.Schema({
+  user: {
+    type: String,
+    required: true,
+    unique: false
+  },
   name: {
     type: String,
     required: true,
