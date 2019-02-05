@@ -19,6 +19,7 @@ export class NewSkuDialogComponent implements OnInit {
   product_line: string = '';
   ingredients: any = [];
   comment: string = '';
+  // newSkus: any = [];
 
   constructor(private dialogRef: MatDialogRef<NewSkuDialogComponent>, public rest:RestService, private snackBar: MatSnackBar) { }
 
@@ -40,8 +41,7 @@ export class NewSkuDialogComponent implements OnInit {
 
   createSku() {
     this.rest.adminCreateSku(this.name, this.sku_number, this.case_upc_number, this.unit_upc_number, this.unit_size, this.count_per_case, this.product_line, this.ingredients, this.comment).subscribe(response => {
-      let i;
-      for (i=0; i<this.ingredients.length-1; i = i+2) {
+      for (var i=0; i<this.ingredients.length-1; i = i+2) {
         this.addIngredient(this.ingredients[i], this.name);
       }
       if (response['success']) {
@@ -62,11 +62,21 @@ export class NewSkuDialogComponent implements OnInit {
     const ingredientNumber = Number(ingredient)
     console.log(ingredient, Number(ingredient))
     this.rest.getIngredientByNumber(ingredient).subscribe(response => {
-      console.log("Ingredient skus", response)
-      newSkus = response.skus;
+      console.log("Ingredient skus", response.skus)
+      newSkus = response.skus
+      console.log("new skus", newSkus)
+      newSkus.push(sku);
+      console.log("new skus", newSkus)
+      this.rest.addIngredientSku(ingredient, newSkus).subscribe(response => {
+        console.log("New ingredient data", response)
+      });
     });
-    newSkus.push(sku);
-    // this.rest.addIngredientSku(ingredient, newSkus);
   }
+    // console.log("new skus", this.newSkus)
+  //   this.newSkus.push(sku);
+  //   console.log("new skus", this.newSkus)
+  //   this.rest.addIngredientSku(ingredient, this.newSkus).subscribe(response =>
+  //     console.log("New ingredient data", response));
+  // }
 
 }

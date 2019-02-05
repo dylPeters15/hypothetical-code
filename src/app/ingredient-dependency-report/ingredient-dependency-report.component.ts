@@ -45,11 +45,7 @@ export class IngredientDependencyComponent implements OnInit {
   refreshData() {
     this.rest.getIngredients().subscribe(response => {
       this.data = response;
-      // this.data.forEach(user => {
-      //   user['checked'] = false;
-      // });
       console.log(this.data);
-      // this.sortData();
       this.dataSource.sort = this.sort;
       this.dataSource =  new MatTableDataSource<IngredientData>(this.data);
     // this.dataSource.paginator = this.paginator;
