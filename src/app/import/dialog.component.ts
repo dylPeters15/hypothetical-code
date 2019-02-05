@@ -65,8 +65,10 @@ export class DialogComponent implements OnInit {
         numNonEmptyLines = numNonEmptyLines + 1;
       }
     }
+    numNonEmptyLines = numNonEmptyLines - 1; //for header
 
-    for (var i = 0; i < splitByLine.length; i = i + 1) {
+    //start at i=1 to account for header
+    for (var i = 1; i < splitByLine.length; i = i + 1) {
       if (splitByLine[i] != "") {
         let splitByCommas = splitByLine[i].split(",");
 
