@@ -17,8 +17,7 @@
         <mat-cell *matCellDef="let element">
           <mat-checkbox [(ngModel)]="element['checked']"></mat-checkbox>
         </mat-cell>
-      </ng-container>
-          
+      </ng-container> 
       <ng-container matColumnDef="name">
         <mat-header-cell *matHeaderCellDef>Name</mat-header-cell>
         <mat-cell *matCellDef="let element">{{element.name}}</mat-cell>
@@ -54,6 +53,4 @@
   </mat-card-content>
   </mat-card>
 </div>
-
-
 
