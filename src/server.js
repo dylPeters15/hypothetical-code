@@ -293,7 +293,8 @@ MongoClient.connect('mongodb://localhost:27017', (err, database) => {
         });
     });
 
-    app.route('/api/v1/modify-sku').put((req, res) => {
+    app.route('/api/v1/change-sku').put((req, res) => {
+        console.log("made it in here even though they said we couldn't");
         const username = req.headers['username'];
         const token = req.headers['token'];
         verifiedForUserOperations(username, token, function (verified) {
@@ -309,11 +310,8 @@ MongoClient.connect('mongodb://localhost:27017', (err, database) => {
             const id = req.body['id'];
             if (verified) {
                 const filterschema = {
-                    username: username,
-                    token: token
+                    id: id,
                 };
-                db.collection('skus').findOne(filterschema, function (dberr, dbres) {
-                    if (id == dbres.id) {
                         db.collection('skus').updateOne(filterschema, {
                             $set: {
                                 name: name,
@@ -331,8 +329,8 @@ MongoClient.connect('mongodb://localhost:27017', (err, database) => {
                                 success: true
                             });
                         });
-                    } 
-                });
+                    
+
             } else {
                 res.send({
                     errormessage: 'Not permitted to perform operation.'

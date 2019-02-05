@@ -16,6 +16,7 @@ export interface UserForTable {
   productLine: String;
   ingredientTuples: [];
   comment: String;
+  id: Number;
   checked: boolean;
 }
 
@@ -71,9 +72,9 @@ export class SkuInventoryComponent  implements OnInit {
   }
 
   // edit
-  newSku(edit, present_name, present_skuNumber, present_caseUpcNumber, present_unitUpcNumber, present_unitSize, present_countPerCase, present_productLine, present_ingredientTuples, present_comment) {
+  newSku(edit, present_name, present_skuNumber, present_caseUpcNumber, present_unitUpcNumber, present_unitSize, present_countPerCase, present_productLine, present_ingredientTuples, present_comment, present_id) {
     const dialogConfig = new MatDialogConfig();
-    dialogConfig.data = {edit: edit, present_name: present_name, present_skuNumber: present_skuNumber, present_caseUpcNumber: present_caseUpcNumber, present_unitUpcNumber: present_unitUpcNumber, present_unitSize:present_unitSize, present_countPerCase:present_countPerCase, present_productLine:present_productLine,present_ingredientTuples:present_ingredientTuples, present_comment:present_comment};
+    dialogConfig.data = {edit: edit, present_name: present_name, present_skuNumber: present_skuNumber, present_caseUpcNumber: present_caseUpcNumber, present_unitUpcNumber: present_unitUpcNumber, present_unitSize:present_unitSize, present_countPerCase:present_countPerCase, present_productLine:present_productLine,present_ingredientTuples:present_ingredientTuples, present_comment:present_comment, present_id:present_id};
     this.newDialogRef = this.dialog.open(NewSkuDialogComponent, dialogConfig);
     this.newDialogRef.afterClosed().subscribe(event => {
       this.refreshData();
@@ -82,7 +83,7 @@ export class SkuInventoryComponent  implements OnInit {
 
   newSkuButton()
   {
-    this.newSku(false, "", 0, "", "", "", 0, "", [], "");
+    this.newSku(false, "", 0, "", "", "", 0, "", [], "", 0);
   }
 
   sortData() {
@@ -103,8 +104,8 @@ export class SkuInventoryComponent  implements OnInit {
     });
   }
 
-  modifySkuConfirmed(present_name, present_skuNumber, present_caseUpcNumber, present_unitUpcNumber,present_unitSize,present_countPerCase,present_productLine,present_ingredientTuples, present_comment) {
-    this.newSku(true, present_name, present_skuNumber, present_caseUpcNumber, present_unitUpcNumber, present_unitSize, present_countPerCase, present_productLine, present_ingredientTuples, present_comment);
+  modifySkuConfirmed(present_name, present_skuNumber, present_caseUpcNumber, present_unitUpcNumber,present_unitSize,present_countPerCase,present_productLine,present_ingredientTuples, present_comment, present_id) {
+    this.newSku(true, present_name, present_skuNumber, present_caseUpcNumber, present_unitUpcNumber, present_unitSize, present_countPerCase, present_productLine, present_ingredientTuples, present_comment, present_id);
   }
 
   deleteSelected() {
@@ -139,7 +140,7 @@ export class SkuInventoryComponent  implements OnInit {
         else{
             this.data.forEach(user => {
               if (user.checked) {
-                this.modifySkuConfirmed(user.name, user.skuNumber, user.caseUpcNumber, user.unitUpcNumber, user.unitSize, user.countPerCase, user.productLine, user.ingredientTuples, user.comment);
+                this.modifySkuConfirmed(user.name, user.skuNumber, user.caseUpcNumber, user.unitUpcNumber, user.unitSize, user.countPerCase, user.productLine, user.ingredientTuples, user.comment, user.id);
               }
             });
           }   

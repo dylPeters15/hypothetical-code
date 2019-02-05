@@ -22,6 +22,7 @@ export class NewSkuDialogComponent implements OnInit {
   product_line: String = '';
   ingredients: Array<Number> = [];
   comment: String = '';
+  current_id: Number;
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: any, private dialogRef: MatDialogRef<NewSkuDialogComponent>, public rest:RestService, private snackBar: MatSnackBar) { }
 
@@ -37,6 +38,8 @@ export class NewSkuDialogComponent implements OnInit {
     this.product_line = this.data.present_productLine;
     this.ingredients = this.data.present_ingredientTuples;
     this.comment = this.data.present_comment;
+    this.current_id = this.data.present_id;
+
 
     // edit == true if sku is being modified, false if a new sku is being created
     if (this.edit == true)
@@ -58,6 +61,8 @@ export class NewSkuDialogComponent implements OnInit {
     this.product_line = this.data.present_productLine;
     this.ingredients = this.data.present_ingredientTuples;
     this.comment = this.data.present_comment;
+    this.current_id = this.data.present_id;
+
   }
 
   createSku() {
@@ -86,7 +91,7 @@ export class NewSkuDialogComponent implements OnInit {
     }
     else{
       console.log("We're modifying a sku");
-      this.rest.modifySkuRequest(this.name, this.sku_number, this.case_upc_number, this.unit_upc_number, this.unit_size, this.count_per_case, this.product_line, this.ingredients, this.comment, id).subscribe(response => {
+      this.rest.modifySkuRequest(this.name, this.sku_number, this.case_upc_number, this.unit_upc_number, this.unit_size, this.count_per_case, this.product_line, this.ingredients, this.comment, this.current_id).subscribe(response => {
         let i;
         for (i=0; i<this.ingredients.length-1; i = i+2) {
           this.addIngredient(this.ingredients[i], this.name);
