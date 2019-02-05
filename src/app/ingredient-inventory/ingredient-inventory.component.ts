@@ -45,7 +45,7 @@ export class IngredientInventoryComponent  implements OnInit {
       this.data.forEach(user => {
         user['checked'] = false;
       });
-      console.log("got here. data is: " + this.data);
+      console.log(this.data);
       this.sortData();
       this.dataSource =  new MatTableDataSource<UserForTable>(this.data);
     this.dataSource.paginator = this.paginator;

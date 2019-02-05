@@ -48,7 +48,7 @@ export class RestService {
       unitSize: unit_size,
       countPerCase: count_per_case,
       productLine: product_line,
-      ingredientTuples: ingredients,
+      ingredientTuples: ingredients.split(","),
       comment: comment
     }, this.getHTTPOptions());
   }
@@ -80,6 +80,25 @@ export class RestService {
 
   getIngredients(): Observable<any> {
     return this.http.get(endpoint + 'ingredient-inventory').pipe(map(this.extractData));
+  }
+
+  getIngredientByNumber(ingredientNumber): Observable<any>{
+    let header:HttpHeaders = new HttpHeaders({
+      'number': ingredientNumber
+    });
+    let httpOptions = {
+      headers: header
+    }
+    console.log(ingredientNumber)
+    return this.http.get(endpoint + 'get-ingredient-by-number', httpOptions).pipe(map(this.extractData));
+  }
+
+  addIngredientSku(ingredient, skus): Observable<any> {
+    var body = {
+      ingredient: ingredient,
+      skus: skus
+    }
+    return this.http.put(endpoint + 'add-ingredient-sku', body, this.getHTTPOptions()).pipe(map(this.extractData));
   }
 
   sendLoginRequest(username, password): Observable<any> {
