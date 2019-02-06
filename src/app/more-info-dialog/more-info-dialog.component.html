@@ -2,7 +2,11 @@
 <mat-dialog-content align="center">
   <mat-card>
     <mat-card-content style="display: grid; width: 100%; justify-items: center;">
-          <p> {{ information_content }} </p>
+      <ul>
+        <li *ngFor="let info of information_content">
+          {{ info }}
+        </li>
+      </ul>
     </mat-card-content>
   </mat-card>
 </mat-dialog-content>

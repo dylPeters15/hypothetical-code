@@ -86,7 +86,7 @@ var ingredientSchema = new mongoose.Schema({
         unique: false
     },
     id: {
-      type: Number,
+      type: String,
       required: true,
       unique: true
     }
@@ -141,13 +141,13 @@ var ingredientSchema = new mongoose.Schema({
           unique: false
      },
      id: {
-      type: Number,
+      type: String,
       required: true,
       unique: true
     }   
   })
 
-  var skuModel = mongoose.model('sku', skuSchema);
+var skuModel = mongoose.model('sku', skuSchema);
 
 var userSchema = new mongoose.Schema({
     username: {
@@ -170,20 +170,23 @@ var userSchema = new mongoose.Schema({
 });
 var userModel = mongoose.model('user', userSchema);
 
-var fileSchema = new mongoose.Schema({
+var productLineSchema = new mongoose.Schema({
   name: {
       type: String,
       required: true,
-      unique: false
+      unique: true
   },
-  file: {
-      type: String,
-      required: true,
-      unique: false
+  skus: {
+      type: Array,
+      required: true
   },
+  id: {
+    type: String,
+    required: true,
+    unique: true
+  }   
 });
-var fileModel = mongoose.model('file', fileSchema);
-
+var productLineModel = mongoose.model('product_line', productLineSchema);
 
 module.exports = {
     Database: new Database(),
@@ -191,5 +194,5 @@ module.exports = {
     goalsModel: goalsModel,
     ingredientModel: ingredientModel,
     skuModel: skuModel,
-    fileModel: fileModel
+    productLineModel: productLineModel
 };

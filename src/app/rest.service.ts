@@ -39,6 +39,24 @@ export class RestService {
     }, this.getHTTPOptions());
   }
 
+  adminCreateProductLine(name, skus, id): Observable<any> {
+    console.log("Adding a new product line haha");
+    return this.http.post(endpoint + 'product-line', {
+      name: name,
+      skus: skus,
+      id: id
+    }, this.getHTTPOptions());
+  }
+
+  modifyProductLineRequest(name, skus, id): Observable<any> {
+    //Use PUT because we are requesting to modify the user object in database
+    var body = {
+      name: name,
+      skus: skus,
+      id: id
+    };
+    return this.http.put(endpoint + 'change-product-line', body, this.getHTTPOptions()).pipe(map(this.extractData));
+  }
   checkForSkuCollision(sku): Observable<any> {
     sku['username'] = auth.getUsername();
     sku['token'] = auth.getToken();
@@ -92,14 +110,15 @@ export class RestService {
     return id;
   }
 
-  adminCreateIngredient(name, number, vendorInformation, packageSize, costPerPackage, comment, id): Observable<any> {
+  adminCreateIngredient(name, number, vendor_information, package_size, cost_per_package, comment, skus, id): Observable<any> {
     return this.http.post(endpoint + 'ingredient-inventory', {
       name: name,
       number: number,
-      vendorInformation: vendorInformation,
-      packageSize: packageSize,
-      costPerPackage: costPerPackage,
+      vendorInformation: vendor_information,
+      packageSize: package_size,
+      costPerPackage: cost_per_package,
       comment: comment,
+      skus: skus,
       id: id,
     }, this.getHTTPOptions());
   }
@@ -132,6 +151,10 @@ export class RestService {
     return this.http.get(endpoint + 'sku-inventory').pipe(map(this.extractData));
   }
 
+  getProductLines(): Observable<any> {
+    return this.http.get(endpoint + 'product-line').pipe(map(this.extractData));
+  }
+
   getIngredients(): Observable<any> {
     return this.http.get(endpoint + 'ingredient-inventory').pipe(map(this.extractData));
   }
@@ -147,7 +170,46 @@ export class RestService {
     return this.http.get(endpoint + 'get-ingredient-by-number', httpOptions).pipe(map(this.extractData));
   }
 
+  getSkuIdFromName(input_name): Observable<any>{
+    let header:HttpHeaders = new HttpHeaders({
+      'name': input_name
+    });
+    let httpOptions = {
+      headers: header
+    }
+    return this.http.get(endpoint + 'get-skuid-by-name', httpOptions).pipe(map(this.extractData));
+  }
+
+  getSkuInfoFromId(input_id): Observable<any>{
+    let header:HttpHeaders = new HttpHeaders({
+      'id': input_id
+    });
+    let httpOptions = {
+      headers: header
+    }
+    console.log("at this stage, is is " + input_id);
+    return this.http.get(endpoint + 'get-skuinfo-by-id', httpOptions).pipe(map(this.extractData));
+  }
+
+  getIngredientIdFromName(input_name): Observable<any>{
+    let header:HttpHeaders = new HttpHeaders({
+      'name': input_name
+    });
+    let httpOptions = {
+      headers: header
+    }
+    return this.http.get(endpoint + 'get-ingredientid-by-name', httpOptions).pipe(map(this.extractData));
+  }
+
   addIngredientSku(ingredient, skus): Observable<any> {
+    var body = {
+      ingredient: ingredient,
+      skus: skus
+    }
+    return this.http.put(endpoint + 'add-ingredient-sku', body, this.getHTTPOptions()).pipe(map(this.extractData));
+  }
+
+  addProductLine(ingredient, skus): Observable<any> {
     var body = {
       ingredient: ingredient,
       skus: skus
@@ -238,6 +300,19 @@ export class RestService {
       headers: header
     };
     return this.http.delete(endpoint + 'admin-delete-sku', httpOptions).pipe(map(this.extractData));
+  }
+
+  sendAdminDeleteProductLineRequest(nameToDelete): Observable<any> {
+    let header:HttpHeaders = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'username': auth.getUsername(),
+      'token':auth.getToken(),
+      'nametodelete': nameToDelete
+    });
+    let httpOptions = {
+      headers: header
+    };
+    return this.http.delete(endpoint + 'admin-delete-product-line', httpOptions).pipe(map(this.extractData));
   }
 
   sendAdminDeleteIngredientRequest(nameToDelete): Observable<any> {
