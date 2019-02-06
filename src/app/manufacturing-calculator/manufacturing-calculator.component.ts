@@ -65,7 +65,7 @@ export class ManufacturingCalculatorComponent implements OnInit {
   calculateIngredientsAndQuantities(SKU, goalQuantity) {
     console.log("SKU: " + SKU  + " Quantity: " + goalQuantity);
     this.rest.getSkus().subscribe(data => {
-      console.log(data);
+      console.log("SKUS: " + data);
       let skus = data;
       for(i = 0; i< skus.length; i++){
         let currentSKU = skus[i];
@@ -73,7 +73,7 @@ export class ManufacturingCalculatorComponent implements OnInit {
           let ingredientsFromDatabase = currentSKU['ingredientTuples'];
           var i;
           for(i = 0; i<ingredientsFromDatabase.length-1; i +=2){
-            this.addToDataSource(ingredientsFromDatabase[i], ingredientsFromDatabase[i+1], goalQuantity);
+            this.addToDataSource(ingredientsFromDatabase[i].toString(), ingredientsFromDatabase[i+1], goalQuantity);
           }
         }
       }
@@ -81,13 +81,11 @@ export class ManufacturingCalculatorComponent implements OnInit {
     });
   }
 
-  addToDataSource(ingredientNumber, ingredientQuantity, goalQuantity){
-    this.rest.getIngredientByNumber(ingredientNumber).subscribe(data => {
+  addToDataSource(ingredientId, ingredientQuantity, goalQuantity){
+    this.rest.getIngredientById(ingredientId).subscribe(data => {
       let ingredient = data;
-      console.log(ingredient);
       let name = ingredient.name;
       let actualQuantity = ingredientQuantity * goalQuantity;
-      console.log("Name:" + name);
       // if(this.ingredients.contains(name)){
       //   this.updateIngredient(name, actualQuantity);
       // }
