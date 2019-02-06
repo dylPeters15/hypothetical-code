@@ -50,14 +50,32 @@ MongoClient.connect('mongodb://localhost:27017', (err, database) => {
         }
     }
 
+    app.route('/api/v1/my-file').get((req,res) =>{
+        db.collection('files').find().toArray(function(err,results) {
+          res.send(results);
+        });
+      });
+
     app.route('/api/v1/manufacturing-goals').get((req,res) =>{
-      db.collection('goals').find().toArray(function(err,results) {
-        res.send(results);
+        let current_username = req.headers['username'];
+      db.collection('goals').find({
+          user: current_username
+      }).toArray(function(err,results) {
+          if(results.length > 0){
+            res.send(results);
+          }
+          else {
+              res.send({
+                message: "No goals found for user " + current_username
+              })
+          }
+        
       });
     });
 
     app.route('/api/v1/get-goal-by-name').get((req,res) => {
         let goalName = req.headers['name'];
+        let username = req.header['username'];
         const filterschema = {
             name: goalName
         };
@@ -157,7 +175,9 @@ MongoClient.connect('mongodb://localhost:27017', (err, database) => {
         });
       });
 
+      console.log("Creating sku inventory post.");
       app.route('/api/v1/sku-inventory').post((req, res) => {
+          console.log("sku inventory post being called.");
         const adminusername = req.headers['username'];
         const admintoken = req.headers['token'];
         verifiedForAdminOperations(adminusername, admintoken, verified => {
@@ -190,6 +210,7 @@ MongoClient.connect('mongodb://localhost:27017', (err, database) => {
                 comment: comment,
                 id: id,
             });
+            console.log("Sku object: " + sku);
             sku.save().then(
                 doc => {
                     res.send({
@@ -211,6 +232,48 @@ MongoClient.connect('mongodb://localhost:27017', (err, database) => {
         });
     });
 
+    app.route('/api/v1/find-sku-collision').get((req, res) => {
+        const username = req.headers['username'];
+        const token = req.headers['token'];
+        verifiedForAdminOperations(username, token, verified => {
+            if (!verified) {
+                res.send({
+                    errormessage: 'Not permitted to perform operation.'
+                });
+                return
+            }
+            const name = req.headers['name'];
+            const skuNumber = req.headers['skunumber'];
+            const caseUpcNumber = req.headers['caseupcnumber'];
+            const unitUpcNumber = req.headers['unitupcnumber'];
+            const id = req.headers['id'];
+            const filterSchema = {
+                $or:[
+                    {name:name},
+                    {skuNumber:skuNumber},
+                    {caseUpcNumber:caseUpcNumber},
+                    {unitUpcNumber:unitUpcNumber},
+                    {id:id}
+                ]
+            }
+            console.log(filterSchema);
+            console.log(req.headers);
+            db.collection('skus').findOne(filterSchema, (err,results) => {
+                if (err) {
+                    res.send({
+                        errmessage: "Error finding SKU."
+                    });
+                    return;
+                }
+                console.log(results);
+                res.send({
+                    results: results
+                });
+            })
+            
+        });
+    });
+
     app.route('/api/v1/manufacturing-goals').post((req,res) => {
         const username = req.headers['username'];
         let name = req.body['name'];
@@ -221,6 +284,7 @@ MongoClient.connect('mongodb://localhost:27017', (err, database) => {
         let date = req.body['date'];
         let dateAsDate = Date.parse(date);
         let goal = database_library.goalsModel({
+            user: username,
             name: name,
             skus: skusArray,
             quantities: quantitiesArray,
@@ -258,8 +322,8 @@ MongoClient.connect('mongodb://localhost:27017', (err, database) => {
         const filterschema = {
             number: Number(ingredientNumber)
         };
-        console.log(ingredientNumber)
-        console.log(req.headers)
+        console.log(ingredientNumber);
+        console.log(req.headers);
         db.collection('ingredients').findOne(filterschema, function(err,results) {
             res.send(results);
         });
@@ -314,10 +378,43 @@ MongoClient.connect('mongodb://localhost:27017', (err, database) => {
                     skus: skus
                 }
             }, function (innerdberr, innerdbres) {
+
+    app.route('/api/v1/change-ingredient').put((req, res) => {
+        console.log("made it in here even though they said we couldn't");
+        const username = req.headers['username'];
+        const token = req.headers['token'];
+        verifiedForUserOperations(username, token, function (verified) {
+            let name = req.body['name'];
+            let number = req.body['number'];
+            let vendorInformation = req.body['vendorInformation'];
+            let packageSize = req.body['packageSize'];
+            let costPerPackage = req.body['costPerPackage'];
+            let comment = req.body['comment']; 
+            const id = req.body['id'];
+            if (verified) {
+                const filterschema = {
+                    id: id,
+                };
+                        db.collection('ingredients').updateOne(filterschema, {
+                            $set: {
+                                name: name,
+                                number: number,
+                                vendorInformation: vendorInformation,
+                                packageSize: packageSize,
+                                costPerPackage: costPerPackage,
+                                comment: comment,
+                                id: id
+                            }
+                        }, function (innerdberr, innerdbres) {
+                            res.send({
+                                success: true
+                            });
+                        });
+            } else {
                 res.send({
-                    success: true
+                    errormessage: 'Not permitted to perform operation.'
                 });
-            });
+            }
         });
     });
 
@@ -333,7 +430,7 @@ MongoClient.connect('mongodb://localhost:27017', (err, database) => {
             }
             let name = req.body['name'];
             let number = req.body['number'];
-            let venderInformation = req.body['venderInformation'];
+            let vendorInformation = req.body['vendorInformation'];
             let packageSize = req.body['packageSize'];
             let costPerPackage = req.body['costPerPackage'];
             let comment = req.body['comment']; 
@@ -342,7 +439,7 @@ MongoClient.connect('mongodb://localhost:27017', (err, database) => {
             let ingredient = database_library.ingredientModel({
                 name: name,
                 number: number,
-                venderInformation: venderInformation,
+                vendorInformation: vendorInformation,
                 packageSize: packageSize,
                 costPerPackage: costPerPackage,
                 comment: comment,
@@ -406,6 +503,7 @@ MongoClient.connect('mongodb://localhost:27017', (err, database) => {
         const username = req.headers['username'];
         const token = req.headers['token'];
         verifiedForUserOperations(username, token, function (verified) {
+            console.log(req.body);
             const name = req.body['name'];
             const sku_number = req.body['sku_number'];
             const case_upc_number = req.body['case_upc_number'];
@@ -433,6 +531,8 @@ MongoClient.connect('mongodb://localhost:27017', (err, database) => {
                                 comment: comment
                             }
                         }, function (innerdberr, innerdbres) {
+                            console.log(innerdberr);
+                            console.log(innerdbres);
                             res.send({
                                 success: true
                             });

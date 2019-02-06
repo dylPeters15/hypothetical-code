@@ -6,6 +6,7 @@ import { MoreInfoDialogComponent } from '../more-info-dialog/more-info-dialog.co
 import { NewSkuDialogComponent } from '../new-sku-dialog/new-sku-dialog.component';
 import { AfterViewChecked } from '@angular/core';
 import { auth } from '../auth.service';
+import {ExportToCsv} from 'export-to-csv';
 
 export interface UserForTable {
   name: String;
@@ -19,6 +20,27 @@ export interface UserForTable {
   comment: String;
   id: Number;
   checked: boolean;
+}
+
+export class ExportableSKU {
+  skuNumber: Number;
+  name: String;
+  caseUpcNumber: String;
+  unitUpcNumber: String;
+  unitSize: String;
+  countPerCase: Number;
+  productLine: String;
+  comment: String;
+  constructor(userForTable){
+    this.skuNumber = userForTable.skuNumber;
+    this.name = userForTable.name;
+    this.caseUpcNumber = userForTable.caseUpcNumber;
+    this.unitUpcNumber = userForTable.unitUpcNumber;
+    this.unitSize = userForTable.unitSize;
+    this.countPerCase = userForTable.countPerCase;
+    this.productLine = userForTable.productLine;
+    this.comment = userForTable.comment;
+  }
 }
 
 
@@ -124,34 +146,56 @@ export class SkuInventoryComponent  implements OnInit {
     });
   }
 
+  exportSelected(){
+    let exportData: ExportableSKU[] = [];
+    this.data.forEach(sku => {
+      if(sku.checked) {
+        let skuToExport = new ExportableSKU(sku);
+        exportData.push(skuToExport);
+      }
+    });
+      const options = { 
+        fieldSeparator: ',',
+        filename: 'skus',
+        quoteStrings: '',
+        decimalSeparator: '.',
+        showLabels: true, 
+        showTitle: false,
+        title: 'SKUs',
+        useTextFile: false,
+        useBom: true,
+        headers: ["SKU#","Name","Case UPC", "Unit UPC", "Unit Size", "Count per case", "Product Line Name", "Comment"]
+      };
+      const csvExporter = new ExportToCsv(options);
+      csvExporter.generateCsv(exportData);
+  }
+
    modifySelected() {
-        const dialogConfig = new MatDialogConfig();
-        let counter: number = 0;
-        this.data.forEach(user => {
-          if (user.checked) {
-            counter++;
-          }
-        });
-        if (counter == 0) 
-        {
-          this.snackBar.open("Please select a sku to modify", "close", {
-            duration: 2000,
-          });
+    const dialogConfig = new MatDialogConfig();
+    let counter: number = 0;
+    this.data.forEach(user => {
+      if (user.checked) {
+        counter++;
+      }
+    });
+    if (counter == 0) {
+      this.snackBar.open("Please select a sku to modify", "close", {
+        duration: 2000,
+      });
+    }
+    else if (counter != 1) {
+      this.snackBar.open("Please only select one sku to modify", "close", {
+        duration: 2000,
+      });
+    }
+    else{
+      this.data.forEach(user => {
+        if (user.checked) {
+          this.modifySkuConfirmed(user.name, user.skuNumber, user.caseUpcNumber, user.unitUpcNumber, user.unitSize, user.countPerCase, user.productLine, user.ingredientTuples, user.comment, user.id);
         }
-        else if (counter != 1) 
-        {
-          this.snackBar.open("Please only select one sku to modify", "close", {
-            duration: 2000,
-          });
-        }
-        else{
-            this.data.forEach(user => {
-              if (user.checked) {
-                this.modifySkuConfirmed(user.name, user.skuNumber, user.caseUpcNumber, user.unitUpcNumber, user.unitSize, user.countPerCase, user.productLine, user.ingredientTuples, user.comment, user.id);
-              }
-            });
-          }   
-        }
+      });
+    }   
+  }
 
   removeIngredient(ingredient, sku) {
     let newSkus;

@@ -38,6 +38,13 @@ import { PrivacyPolicyDialogComponent } from './privacy-policy-dialog/privacy-po
 import { TermsAndConditionsDialogComponent } from './terms-and-conditions-dialog/terms-and-conditions-dialog.component'; 
 import { ManufacturingGoalsComponent } from './manufacturing-goals/manufacturing-goals.component';
 import { NewGoalDialogComponent } from './new-goal-dialog/new-goal-dialog.component';
+<<<<<<< HEAD
+=======
+import { ImportComponent } from './import/import.component';
+import { DialogComponent } from './import/dialog.component';
+import { RecordCompareDialogComponent } from './record-compare-dialog/record-compare-dialog.component';
+
+>>>>>>> master
 
 const appRoutes: Routes = [
   { path: 'login', component: LoginComponent, data: { title: 'Log In' }, canActivate: [AlreadyLoggedInRouteGuardService] },
@@ -51,8 +58,13 @@ const appRoutes: Routes = [
   { path: 'manufacturing-goal', component: ManufacturingGoalsComponent, data: { title: 'Manufacturing Goals' }, canActivate: [UserRouteGuardService] },
   { path: 'ingredient-inventory', component: IngredientInventoryComponent, data: { title: 'Ingredient Inventory' }, canActivate: [UserRouteGuardService] },
   { path: 'sku-inventory', component: SkuInventoryComponent, data: { title: 'SKU Inventory' }, canActivate: [UserRouteGuardService] },
+<<<<<<< HEAD
   { path: 'product-line-inventory', component: ProductLineInventoryComponent, data: { title: 'Product Line Inventory' }, canActivate: [UserRouteGuardService] },
   { path: 'import-export', component: HomeComponent, data: { title: 'Import Export' }, canActivate: [AdminRouteGuardService] },
+=======
+  { path: 'product-line-inventory', component: HomeComponent, data: { title: 'Product Line Inventory' }, canActivate: [UserRouteGuardService] },
+  { path: 'import', component: ImportComponent, data: { title: 'Import' }, canActivate: [AdminRouteGuardService] },
+>>>>>>> master
   { path: 'logout', component: LogoutComponent, data: { title: "Logout" }, canActivate: [UserRouteGuardService] },
   { path: '**', redirectTo: 'home' }
 ];
@@ -78,11 +90,14 @@ const appRoutes: Routes = [
     IngredientDependencyComponent,
     UserManagementComponent,
     NewUserDialogComponent,
+    DialogComponent,
     PasswordConfirmationDialogComponent,
     PrivacyPolicyDialogComponent,
     TermsAndConditionsDialogComponent,
     ManufacturingGoalsComponent,
-    NewGoalDialogComponent
+    NewGoalDialogComponent,
+    ImportComponent,
+    RecordCompareDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -106,6 +121,10 @@ const appRoutes: Routes = [
   ],
   providers: [],
   bootstrap: [AppComponent],
+<<<<<<< HEAD
   entryComponents: [UserNotificationDialogComponent, NewUserDialogComponent, PasswordConfirmationDialogComponent, PrivacyPolicyDialogComponent, TermsAndConditionsDialogComponent, MoreInfoDialogComponent, NewSkuDialogComponent, NewIngredientDialogComponent, NewGoalDialogComponent, NewProductLineDialogComponent]
+=======
+  entryComponents: [UserNotificationDialogComponent, NewUserDialogComponent, PasswordConfirmationDialogComponent, PrivacyPolicyDialogComponent, TermsAndConditionsDialogComponent, MoreInfoDialogComponent, NewSkuDialogComponent, NewIngredientDialogComponent, NewGoalDialogComponent, DialogComponent, RecordCompareDialogComponent]
+>>>>>>> master
 })
 export class AppModule { }
