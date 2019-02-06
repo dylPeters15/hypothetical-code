@@ -390,18 +390,25 @@ MongoClient.connect('mongodb://localhost:27017', (err, database) => {
         });
     });
 
-    // app.route('/api/v1/add-ingredient-sku').put((req, res) => {
-    //     const ingredient = req.body['ingredient'];
-    //     const skus = req.body['skus'];
-    //     const filterschema = {
-    //         number: Number(ingredient)
-    //     };
-    //     db.collection('ingredients').findOne(filterschema, function (dberr, dbres) {
-    //         db.collection('ingredients').updateOne(filterschema, {
-    //             $set: {
-    //                 skus: skus
-    //             }
-    //         }, function (innerdberr, innerdbres) {
+    app.route('/api/v1/add-ingredient-sku').put((req, res) => {
+        const ingredient = req.body['ingredient'];
+        const skus = req.body['skus'];
+        const filterschema = {
+            number: Number(ingredient)
+        };
+        db.collection('ingredients').findOne(filterschema, function (dberr, dbres) {
+            db.collection('ingredients').updateOne(filterschema, {
+                $set: {
+                    skus: skus
+                }
+            }, function (innerdberr, innerdbres) {
+                res.send({
+                    success: true
+                });
+            });
+        });
+    });
+
 
     app.route('/api/v1/change-ingredient').put((req, res) => {
         console.log("made it in here even though they said we couldn't");
@@ -459,8 +466,7 @@ MongoClient.connect('mongodb://localhost:27017', (err, database) => {
             let costPerPackage = req.body['costPerPackage'];
             let comment = req.body['comment']; 
             let id = req.body['id']; 
-                
-            let ingredient = database_library.ingredientModel({
+            let ingredientBody = {
                 name: name,
                 number: number,
                 vendorInformation: vendorInformation,
@@ -468,7 +474,8 @@ MongoClient.connect('mongodb://localhost:27017', (err, database) => {
                 costPerPackage: costPerPackage,
                 comment: comment,
                 id: id,
-            });
+            };
+            let ingredient = database_library.ingredientModel(ingredientBody);
             ingredient.save().then(
                 doc => {
                     res.send({
