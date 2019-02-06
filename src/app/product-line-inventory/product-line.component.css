@@ -11,6 +11,6 @@ button {
 }
 
 .mat-cell, .mat-footer-cell, .mat-header-cell {
-  min-width: 100px;
+  min-width: 110px;
   
 }

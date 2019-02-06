@@ -2,14 +2,14 @@ import { Component, OnInit,ViewChild } from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import { RestService } from '../rest.service';
 import { ActivatedRoute, Router } from '@angular/router';
-//import {ExportToCsv} from 'export-to-csv';
+import {ExportToCsv} from 'export-to-csv';
 import { MatDialogRef, MatDialog, MatDialogConfig, MatTableDataSource, MatPaginator } from "@angular/material";
 
 export class SkuQuantityTable{
-  sku: any;
+  ingredientName: any;
   quantity: any;
-  constructor(sku,quantity){
-    this.sku = sku;
+  constructor(ingredientName,quantity){
+    this.ingredientName = ingredientName;
     this.quantity = quantity;
   }
 }
@@ -24,8 +24,9 @@ export class ManufacturingCalculatorComponent implements OnInit {
   allReplacement = 54321;
   goals: any = [];
   selectedGoal: any;
-  displayedColumns: string[] = ['sku', 'quantity'];
+  displayedColumns: string[] = ['ingredientName', 'quantity'];
   data: SkuQuantityTable[] = [];
+  ingredients: string[] = [];
   dataSource = new MatTableDataSource<SkuQuantityTable>(this.data);
   showDetails:boolean = false;
   @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -46,6 +47,7 @@ export class ManufacturingCalculatorComponent implements OnInit {
   getGoalByName(name) {
     this.showDetails = true;
     this.data = [];
+    this.ingredients = [];
     this.dataSource = new MatTableDataSource<SkuQuantityTable>(this.data);
     this.rest.getGoalByName(name).subscribe(data => {
       this.selectedGoal = data;
@@ -54,13 +56,62 @@ export class ManufacturingCalculatorComponent implements OnInit {
       var i;
       for(i = 0; i< skus.length; i++){
         let currentSKU = skus[i];
-        let currentQuantity = quantities[i]; //TODO: connect this to ingredients
-        let currentEntry = new SkuQuantityTable(currentSKU, currentQuantity);
-        this.data.push(currentEntry);
+        let currentQuantity = quantities[i];
+        this.calculateIngredientsAndQuantities(currentSKU, currentQuantity);
       }
+    });
+  }
+
+  calculateIngredientsAndQuantities(SKU, goalQuantity) {
+    console.log("SKU: " + SKU  + " Quantity: " + goalQuantity);
+    this.rest.getSkus().subscribe(data => {
+      console.log(data);
+      let skus = data;
+      for(i = 0; i< skus.length; i++){
+        let currentSKU = skus[i];
+        if(currentSKU['skuNumber'] == SKU){
+          let ingredientsFromDatabase = currentSKU['ingredientTuples'];
+          var i;
+          for(i = 0; i<ingredientsFromDatabase.length-1; i +=2){
+            this.addToDataSource(ingredientsFromDatabase[i], ingredientsFromDatabase[i+1], goalQuantity);
+          }
+        }
+      }
+      
+    });
+  }
+
+  addToDataSource(ingredientNumber, ingredientQuantity, goalQuantity){
+    this.rest.getIngredientByNumber(ingredientNumber).subscribe(data => {
+      let ingredient = data;
+      console.log(ingredient);
+      let name = ingredient.name;
+      let actualQuantity = ingredientQuantity * goalQuantity;
+      console.log("Name:" + name);
+      // if(this.ingredients.contains(name)){
+      //   this.updateIngredient(name, actualQuantity);
+      // }
+      // else {
+        this.ingredients.push(name);
+        let newIngredientPair = new SkuQuantityTable(name, actualQuantity);
+        this.data.push(newIngredientPair);
       this.dataSource = new MatTableDataSource<SkuQuantityTable>(this.data);
       this.dataSource.paginator = this.paginator;
+      // }
     });
+  }
+
+  updateIngredient(ingredientName, additionalQuantity){
+    var i;
+    for(i = 0; i<this.data.length; i++){
+      if(this.data[i].ingredientName == ingredientName){
+        let oldQuantity = this.data[i].quantity;
+        this.data.splice(i,i);
+        let newQuantity = oldQuantity + additionalQuantity;
+        let newPair = new SkuQuantityTable(name, newQuantity);
+        this.data.push(newPair);
+      }
+    }
   }
 
   exportToCsv() {
@@ -73,10 +124,10 @@ export class ManufacturingCalculatorComponent implements OnInit {
       title: 'Calculation Result',
       useTextFile: false,
       useBom: true,
-      useKeysAsHeaders: true,
+      headers: ["Ingredient", "Quantity (Packages)"]
     };
-    //const csvExporter = new ExportToCsv(options);
-    //csvExporter.generateCsv(this.data);
+    const csvExporter = new ExportToCsv(options);
+    csvExporter.generateCsv(this.data);
   }
 
 }

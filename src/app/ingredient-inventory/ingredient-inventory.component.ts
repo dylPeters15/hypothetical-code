@@ -5,6 +5,7 @@ import { MatDialogRef, MatDialog, MatSort, MatDialogConfig, MatTableDataSource, 
 import { MoreInfoDialogComponent } from '../more-info-dialog/more-info-dialog.component';
 import { NewIngredientDialogComponent } from '../new-ingredient-dialog/new-ingredient-dialog.component';
 import { auth } from '../auth.service';
+import {ExportToCsv} from 'export-to-csv';
 
 export interface IngredientForTable {
   name: string;
@@ -15,6 +16,24 @@ export interface IngredientForTable {
   comment: string;
   id: number;
   checked: boolean;
+}
+
+export class ExportableIngredient {
+  number: Number;
+  name: String;
+  vendorInfo: String;
+  size: String;
+  cost: String;
+  comment: String;
+  constructor(ingredientForTable){
+    this.number = ingredientForTable.number;
+    this.name = ingredientForTable.name;
+    this.vendorInfo = ingredientForTable.vendorInformation;
+    this.size = ingredientForTable.packageSize;
+    this.cost = ingredientForTable.costPerPackage;
+    this.comment = ingredientForTable.comment;
+  }
+
 }
 
 
@@ -182,6 +201,30 @@ export class IngredientInventoryComponent  implements OnInit {
         }
       }
     }
+  }
+
+  exportSelected(){
+    let exportData: ExportableIngredient[] = [];
+    this.data.forEach(sku => {
+      if(sku.checked) {
+        let skuToExport = new ExportableIngredient(sku);
+        exportData.push(skuToExport);
+      }
+    });
+      const options = { 
+        fieldSeparator: ',',
+        filename: 'ingredients',
+        quoteStrings: '"',
+        decimalSeparator: '.',
+        showLabels: true, 
+        showTitle: true,
+        title: 'SKUs',
+        useTextFile: false,
+        useBom: true,
+        headers: ["Ingr#","Name","Vendor Info", "Size", "Cost", "Comment"]
+      };
+      const csvExporter = new ExportToCsv(options);
+      csvExporter.generateCsv(exportData);
   }
 
 }

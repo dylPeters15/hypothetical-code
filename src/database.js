@@ -20,6 +20,11 @@ class Database {
 }
 
 var manufacturingGoalsSchema = new mongoose.Schema({
+  user: {
+    type: String,
+    required: true,
+    unique: false
+  },
   name: {
     type: String,
     required: true,
@@ -81,7 +86,7 @@ var ingredientSchema = new mongoose.Schema({
         unique: false
     },
     id: {
-      type: Number,
+      type: String,
       required: true,
       unique: true
     }
@@ -96,7 +101,7 @@ var ingredientSchema = new mongoose.Schema({
       unique: true
     },
     skuNumber: {
-      type: Number,
+      type: String,
       required: true,
       unique: true
     },
@@ -136,13 +141,13 @@ var ingredientSchema = new mongoose.Schema({
           unique: false
      },
      id: {
-      type: Number,
+      type: String,
       required: true,
       unique: true
     }   
   })
 
-  var skuModel = mongoose.model('sku', skuSchema);
+var skuModel = mongoose.model('sku', skuSchema);
 
 var userSchema = new mongoose.Schema({
     username: {
@@ -165,10 +170,29 @@ var userSchema = new mongoose.Schema({
 });
 var userModel = mongoose.model('user', userSchema);
 
+var productLineSchema = new mongoose.Schema({
+  name: {
+      type: String,
+      required: true,
+      unique: true
+  },
+  skus: {
+      type: Array,
+      required: true
+  },
+  id: {
+    type: String,
+    required: true,
+    unique: true
+  }   
+});
+var productLineModel = mongoose.model('product_line', productLineSchema);
+
 module.exports = {
     Database: new Database(),
     userModel: userModel,
     goalsModel: goalsModel,
     ingredientModel: ingredientModel,
-    skuModel: skuModel
+    skuModel: skuModel,
+    productLineModel: productLineModel
 };

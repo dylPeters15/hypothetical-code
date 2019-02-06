@@ -6,7 +6,6 @@ import { auth } from './auth.service'
 
 //const endpoint = 'https://vcm-8238.vm.duke.edu:8443/api/v1/';
 // Noah: const endpoint = 'https://vcm-8405.vm.duke.edu:8443/api/v1/';
-// Faith/Dylan: 
 const endpoint = 'https://localhost:8443/api/v1/';
 
 @Injectable({
@@ -40,8 +39,37 @@ export class RestService {
     }, this.getHTTPOptions());
   }
 
+  adminCreateProductLine(name, skus, id): Observable<any> {
+    console.log("Adding a new product line haha");
+    return this.http.post(endpoint + 'product-line', {
+      name: name,
+      skus: skus,
+      id: id
+    }, this.getHTTPOptions());
+  }
+
+  modifyProductLineRequest(name, skus, id): Observable<any> {
+    //Use PUT because we are requesting to modify the user object in database
+    var body = {
+      name: name,
+      skus: skus,
+      id: id
+    };
+    return this.http.put(endpoint + 'change-product-line', body, this.getHTTPOptions()).pipe(map(this.extractData));
+  }
+  checkForSkuCollision(sku): Observable<any> {
+    sku['username'] = auth.getUsername();
+    sku['token'] = auth.getToken();
+    sku['Content-Type'] = 'application/json';
+    let header:HttpHeaders = new HttpHeaders(sku);
+    let httpOptions = {
+      headers: header
+    };
+    return this.http.get(endpoint + "find-sku-collision", httpOptions).pipe(map(this.extractData));
+  }
+
   adminCreateSku(name, sku_number, case_upc_number, unit_upc_number, unit_size, count_per_case, product_line,ingredients, comment, id): Observable<any> {
-    return this.http.post(endpoint + 'sku-inventory', {
+    var body = {
       name: name,
       skuNumber: sku_number,
       caseUpcNumber: case_upc_number,
@@ -49,10 +77,12 @@ export class RestService {
       unitSize: unit_size,
       countPerCase: count_per_case,
       productLine: product_line,
-      ingredientTuples: ingredients.split(","),
+      ingredientTuples: ingredients,
       comment: comment,
       id: id
-    }, this.getHTTPOptions());
+    };
+    var response = this.http.post(endpoint + 'sku-inventory', body, this.getHTTPOptions()).pipe(map(this.extractData));
+    return response;
   }
 
   modifySkuRequest(name, sku_number, case_upc_number, unit_upc_number, unit_size, count_per_case, product_line, ingredients, comment, id): Observable<any> {
@@ -69,17 +99,26 @@ export class RestService {
       comment: comment,
       id: id
     };
-    return this.http.put(endpoint + 'change-sku', body, this.getHTTPOptions()).pipe(map(this.extractData));
+    var response = this.http.put(endpoint + 'change-sku', body, this.getHTTPOptions()).pipe(map(this.extractData));
+    console.log("Response: "); + response
+    console.log(response);
+    return response;
   }
 
-  adminCreateIngredient(name, number, vendorInformation, packageSize, costPerPackage, comment, id): Observable<any> {
+  generateId() {
+    var id =  Math.floor((Math.random() * 1000000) + 1);
+    return id;
+  }
+
+  adminCreateIngredient(name, number, vendor_information, package_size, cost_per_package, comment, skus, id): Observable<any> {
     return this.http.post(endpoint + 'ingredient-inventory', {
       name: name,
       number: number,
-      vendorInformation: vendorInformation,
-      packageSize: packageSize,
-      costPerPackage: costPerPackage,
+      vendorInformation: vendor_information,
+      packageSize: package_size,
+      costPerPackage: cost_per_package,
       comment: comment,
+      skus: skus,
       id: id,
     }, this.getHTTPOptions());
   }
@@ -99,8 +138,8 @@ export class RestService {
   }
 
   createGoal(name, skus, quantities, date){
-    console.log("Name: " + name + " SKUS: " + skus + " Quants: " + quantities + " Date: " +date);
     return this.http.post(endpoint + 'manufacturing-goals',{
+      user: auth.getUsername,
       name: name,
       skus: skus,
       quantities: quantities,
@@ -110,6 +149,10 @@ export class RestService {
 
   getSkus(): Observable<any> {
     return this.http.get(endpoint + 'sku-inventory').pipe(map(this.extractData));
+  }
+
+  getProductLines(): Observable<any> {
+    return this.http.get(endpoint + 'product-line').pipe(map(this.extractData));
   }
 
   getIngredients(): Observable<any> {
@@ -123,11 +166,50 @@ export class RestService {
     let httpOptions = {
       headers: header
     }
-    console.log(ingredientNumber)
+    console.log(ingredientNumber);
     return this.http.get(endpoint + 'get-ingredient-by-number', httpOptions).pipe(map(this.extractData));
   }
 
+  getSkuIdFromName(input_name): Observable<any>{
+    let header:HttpHeaders = new HttpHeaders({
+      'name': input_name
+    });
+    let httpOptions = {
+      headers: header
+    }
+    return this.http.get(endpoint + 'get-skuid-by-name', httpOptions).pipe(map(this.extractData));
+  }
+
+  getSkuInfoFromId(input_id): Observable<any>{
+    let header:HttpHeaders = new HttpHeaders({
+      'id': input_id
+    });
+    let httpOptions = {
+      headers: header
+    }
+    console.log("at this stage, is is " + input_id);
+    return this.http.get(endpoint + 'get-skuinfo-by-id', httpOptions).pipe(map(this.extractData));
+  }
+
+  getIngredientIdFromName(input_name): Observable<any>{
+    let header:HttpHeaders = new HttpHeaders({
+      'name': input_name
+    });
+    let httpOptions = {
+      headers: header
+    }
+    return this.http.get(endpoint + 'get-ingredientid-by-name', httpOptions).pipe(map(this.extractData));
+  }
+
   addIngredientSku(ingredient, skus): Observable<any> {
+    var body = {
+      ingredient: ingredient,
+      skus: skus
+    }
+    return this.http.put(endpoint + 'add-ingredient-sku', body, this.getHTTPOptions()).pipe(map(this.extractData));
+  }
+
+  addProductLine(ingredient, skus): Observable<any> {
     var body = {
       ingredient: ingredient,
       skus: skus
@@ -171,7 +253,13 @@ export class RestService {
   }
 
   getGoals(): Observable<any> {
-    return this.http.get(endpoint + 'manufacturing-goals').pipe(map(this.extractData));
+    let header:HttpHeaders = new HttpHeaders({
+      'username': auth.getUsername()
+    });
+    let httpOptions = {
+      headers: header
+    };
+    return this.http.get(endpoint + 'manufacturing-goals', httpOptions).pipe(map(this.extractData));
   }
 
   getGoalByName(goalName): Observable<any>{
@@ -212,6 +300,19 @@ export class RestService {
       headers: header
     };
     return this.http.delete(endpoint + 'admin-delete-sku', httpOptions).pipe(map(this.extractData));
+  }
+
+  sendAdminDeleteProductLineRequest(nameToDelete): Observable<any> {
+    let header:HttpHeaders = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'username': auth.getUsername(),
+      'token':auth.getToken(),
+      'nametodelete': nameToDelete
+    });
+    let httpOptions = {
+      headers: header
+    };
+    return this.http.delete(endpoint + 'admin-delete-product-line', httpOptions).pipe(map(this.extractData));
   }
 
   sendAdminDeleteIngredientRequest(nameToDelete): Observable<any> {
