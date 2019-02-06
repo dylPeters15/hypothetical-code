@@ -214,11 +214,11 @@ export class IngredientInventoryComponent  implements OnInit {
       const options = { 
         fieldSeparator: ',',
         filename: 'ingredients',
-        quoteStrings: '"',
+        quoteStrings: '',
         decimalSeparator: '.',
         showLabels: true, 
-        showTitle: true,
-        title: 'SKUs',
+        showTitle: false,
+        title: 'Ingredients',
         useTextFile: false,
         useBom: true,
         headers: ["Ingr#","Name","Vendor Info", "Size", "Cost", "Comment"]
