@@ -81,7 +81,7 @@ var ingredientSchema = new mongoose.Schema({
         unique: false
     },
     id: {
-      type: Number,
+      type: String,
       required: true,
       unique: true
     }
@@ -136,13 +136,13 @@ var ingredientSchema = new mongoose.Schema({
           unique: false
      },
      id: {
-      type: Number,
+      type: String,
       required: true,
       unique: true
     }   
   })
 
-  var skuModel = mongoose.model('sku', skuSchema);
+var skuModel = mongoose.model('sku', skuSchema);
 
 var userSchema = new mongoose.Schema({
     username: {
@@ -176,12 +176,12 @@ var productLineSchema = new mongoose.Schema({
       required: true
   },
   id: {
-    type: Number,
+    type: String,
     required: true,
     unique: true
   }   
 });
-var productLineModel = mongoose.model('product-line', productLineSchema);
+var productLineModel = mongoose.model('product_line', productLineSchema);
 
 module.exports = {
     Database: new Database(),

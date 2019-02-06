@@ -15,15 +15,13 @@ export class MoreInfoDialogComponent implements OnInit {
   password: string = 'password';
   hidePassword: boolean = false;
   passed_data: string = '';
-  information_content: string = '';
-  information_type: string = '';
+  information_content: Array<Number>;
 
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: any, private dialogRef: MatDialogRef<MoreInfoDialogComponent>, public rest:RestService, private snackBar: MatSnackBar) { }
 
   ngOnInit() {
     this.information_content = this.data.information_content;
-    this.information_type = this.data.information_type;
   }
 
   closeDialog() {

@@ -98,6 +98,59 @@ MongoClient.connect('mongodb://localhost:27017', (err, database) => {
         });
     });
 
+    app.route('/api/v1/product-line').get((req,res) =>{
+        db.collection('product_lines').find().toArray(function(err,results) {
+          res.send(results);
+        });
+      });
+
+
+      app.route('/api/v1/product-line').post((req, res) => {
+        console.log("about to save skuz");
+        const adminusername = req.headers['username'];
+        const admintoken = req.headers['token'];
+        verifiedForAdminOperations(adminusername, admintoken, verified => {
+            if (!verified) {
+                res.send({
+                    errormessage: 'Not permitted to perform operation.'
+                });
+                return
+            }
+            let name = req.body['name'];
+            let skus = req.body['skus'];
+            let id = req.body['id'];
+ 
+            let product_line = database_library.productLineModel({
+                name: name,
+                skus: skus,
+                id: id,
+            });
+            product_line.save().then(
+                doc => {
+                    res.send({
+                        success: true,
+                        doc: doc
+                    });
+                    console.log(doc);
+                    return;
+                }
+            ).catch(
+                err => {
+                    res.send({
+                        errormessage: "Unable to save product line."
+                    });
+                    console.log(err);
+                    return;
+                }
+            );
+        });
+    });
+
+
+
+
+
+
     app.route('/api/v1/sku-inventory').get((req,res) =>{
         db.collection('skus').find().toArray(function(err,results) {
           res.send(results);
@@ -212,6 +265,43 @@ MongoClient.connect('mongodb://localhost:27017', (err, database) => {
         });
     });
 
+    app.route('/api/v1/get-skuid-by-name').get((req,res) => {
+        let input_name = req.headers['name'];
+        console.log("input name is here: " + input_name);
+        const filterschema = {
+            name: String(input_name)
+        };
+        console.log("ha: " + input_name)
+        console.log("haha: " + req.headers)
+        db.collection('skus').findOne(filterschema, function(err,results) {
+            res.send(results);
+        });
+    });
+
+    app.route('/api/v1/get-skuinfo-by-id').get((req,res) => {
+        let input_id = req.headers['id'];
+        console.log("ahoy! value is now " + input_id);
+        const filterschema = {
+            id: String(input_id)
+        };
+        db.collection('skus').findOne(filterschema, function(err,results) {
+            res.send(results);
+        });
+    });
+
+    app.route('/api/v1/get-ingredientid-by-name').get((req,res) => {
+        let input_name = req.headers['name'];
+        console.log("input name is here: " + input_name);
+        const filterschema = {
+            name: String(input_name)
+        };
+        console.log("ha: " + input_name)
+        console.log("haha: " + req.headers)
+        db.collection('ingredients').findOne(filterschema, function(err,results) {
+            res.send(results);
+        });
+    });
+
     app.route('/api/v1/add-ingredient-sku').put((req, res) => {
         const ingredient = req.body['ingredient'];
         const skus = req.body['skus'];
@@ -247,6 +337,7 @@ MongoClient.connect('mongodb://localhost:27017', (err, database) => {
             let packageSize = req.body['packageSize'];
             let costPerPackage = req.body['costPerPackage'];
             let comment = req.body['comment']; 
+            let id = req.body['id']; 
                 
             let ingredient = database_library.ingredientModel({
                 name: name,
@@ -255,6 +346,7 @@ MongoClient.connect('mongodb://localhost:27017', (err, database) => {
                 packageSize: packageSize,
                 costPerPackage: costPerPackage,
                 comment: comment,
+                id: id,
             });
             ingredient.save().then(
                 doc => {
@@ -274,6 +366,38 @@ MongoClient.connect('mongodb://localhost:27017', (err, database) => {
                     return;
                 }
             );
+        });
+    });
+
+    app.route('/api/v1/change-product-line').put((req, res) => {
+        console.log("made it in here even though they said we couldn't");
+        const username = req.headers['username'];
+        const token = req.headers['token'];
+        verifiedForUserOperations(username, token, function (verified) {
+            const name = req.body['name'];
+            const skus = req.body['skus'];
+            const id = req.body['id'];
+            if (verified) {
+                const filterschema = {
+                    id: id,
+                };
+                        db.collection('product-lines').updateOne(filterschema, {
+                            $set: {
+                                name: name,
+                                skus: skus,
+                            }
+                        }, function (innerdberr, innerdbres) {
+                            res.send({
+                                success: true
+                            });
+                        });
+                    
+
+            } else {
+                res.send({
+                    errormessage: 'Not permitted to perform operation.'
+                });
+            }
         });
     });
 

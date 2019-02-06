@@ -1,0 +1,20 @@
+<h2 mat-dialog-title align="center">{{ dialog_title }}</h2>
+<mat-dialog-content align="center">
+  <mat-card>
+    <mat-card-content style="display: grid; width: 100%; justify-items: center;">
+      <mat-form-field>
+        <input matInput [(ngModel)]="name" placeholder="Name" required>
+      </mat-form-field>
+
+      <mat-form-field>
+        <input matInput [(ngModel)]="sku" placeholder="Skus">
+        <mat-hint>Optional</mat-hint>
+      </mat-form-field>
+
+    </mat-card-content>
+  </mat-card>
+</mat-dialog-content>
+<mat-dialog-actions align="center">
+  <button class="mat-raised-button" (click)="closeDialog()">Cancel</button>
+  <button class="mat-raised-button" (click)="createProductLine()" [disabled]="username==''" color="primary">Create</button>
+</mat-dialog-actions>

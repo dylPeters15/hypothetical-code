@@ -16,6 +16,7 @@ export class NewIngredientDialogComponent implements OnInit {
   package_size: string = '';
   cost_per_package: any = '';
   comment: string = '';
+  skus: Array<String>;
 
   constructor(private dialogRef: MatDialogRef<NewIngredientDialogComponent>, public rest:RestService, private snackBar: MatSnackBar) { }
 
@@ -30,11 +31,13 @@ export class NewIngredientDialogComponent implements OnInit {
     this.package_size = '';
     this.cost_per_package = '';
     this.comment = '';
+    this.skus = [];
   }
 
   createIngredient() {
     console.log("well we got here...");
-    this.rest.adminCreateIngredient(this.name, this.number, this.vendor_information, this.package_size, this.cost_per_package, this.comment).subscribe(response => {
+    var id = Math.floor(Math.random() * 1000000000);
+    this.rest.adminCreateIngredient(this.name, this.number, this.vendor_information, this.package_size, this.cost_per_package, this.comment, this.skus, id).subscribe(response => {
       if (response['success']) {
         this.snackBar.open("Successfully created ingredient " + this.name + ".", "close", {
           duration: 2000,

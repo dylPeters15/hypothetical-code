@@ -39,6 +39,25 @@ export class RestService {
     }, this.getHTTPOptions());
   }
 
+  adminCreateProductLine(name, skus, id): Observable<any> {
+    console.log("Adding a new product line haha");
+    return this.http.post(endpoint + 'product-line', {
+      name: name,
+      skus: skus,
+      id: id
+    }, this.getHTTPOptions());
+  }
+
+  modifyProductLineRequest(name, skus, id): Observable<any> {
+    //Use PUT because we are requesting to modify the user object in database
+    var body = {
+      name: name,
+      skus: skus,
+      id: id
+    };
+    return this.http.put(endpoint + 'change-product-line', body, this.getHTTPOptions()).pipe(map(this.extractData));
+  }
+
   adminCreateSku(name, sku_number, case_upc_number, unit_upc_number, unit_size, count_per_case, product_line,ingredients, comment, id): Observable<any> {
     return this.http.post(endpoint + 'sku-inventory', {
       name: name,
@@ -71,7 +90,7 @@ export class RestService {
     return this.http.put(endpoint + 'change-sku', body, this.getHTTPOptions()).pipe(map(this.extractData));
   }
 
-  adminCreateIngredient(name, number, vendor_information, package_size, cost_per_package, comment): Observable<any> {
+  adminCreateIngredient(name, number, vendor_information, package_size, cost_per_package, comment, skus, id): Observable<any> {
     return this.http.post(endpoint + 'ingredient-inventory', {
       name: name,
       number: number,
@@ -79,6 +98,8 @@ export class RestService {
       packageSize: package_size,
       costPerPackage: cost_per_package,
       comment: comment,
+      skus: skus,
+      id: id,
     }, this.getHTTPOptions());
   }
 
@@ -115,7 +136,46 @@ export class RestService {
     return this.http.get(endpoint + 'get-ingredient-by-number', httpOptions).pipe(map(this.extractData));
   }
 
+  getSkuIdFromName(input_name): Observable<any>{
+    let header:HttpHeaders = new HttpHeaders({
+      'name': input_name
+    });
+    let httpOptions = {
+      headers: header
+    }
+    return this.http.get(endpoint + 'get-skuid-by-name', httpOptions).pipe(map(this.extractData));
+  }
+
+  getSkuInfoFromId(input_id): Observable<any>{
+    let header:HttpHeaders = new HttpHeaders({
+      'id': input_id
+    });
+    let httpOptions = {
+      headers: header
+    }
+    console.log("at this stage, is is " + input_id);
+    return this.http.get(endpoint + 'get-skuinfo-by-id', httpOptions).pipe(map(this.extractData));
+  }
+
+  getIngredientIdFromName(input_name): Observable<any>{
+    let header:HttpHeaders = new HttpHeaders({
+      'name': input_name
+    });
+    let httpOptions = {
+      headers: header
+    }
+    return this.http.get(endpoint + 'get-ingredientid-by-name', httpOptions).pipe(map(this.extractData));
+  }
+
   addIngredientSku(ingredient, skus): Observable<any> {
+    var body = {
+      ingredient: ingredient,
+      skus: skus
+    }
+    return this.http.put(endpoint + 'add-ingredient-sku', body, this.getHTTPOptions()).pipe(map(this.extractData));
+  }
+
+  addProductLine(ingredient, skus): Observable<any> {
     var body = {
       ingredient: ingredient,
       skus: skus
