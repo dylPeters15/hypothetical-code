@@ -85,6 +85,7 @@ export class DialogComponent implements OnInit {
           comment: splitByCommas[7],
           id: objectref.rest.generateId()
         };
+        console.log(sku);
 
         objectref.rest.checkForSkuCollision(sku).subscribe(response => {
           if (response['errormessage']) {
@@ -92,9 +93,12 @@ export class DialogComponent implements OnInit {
             return;
           }
           var results = response['results'];
+
+          console.log(sku);
           console.log(results);
 
-          if (results.name == sku.name
+          if (results != null 
+            && results.name == sku.name
             && results.skuNumber == sku.skuNumber
             && results.caseUpcNumber == sku.caseUpcNumber
             && results.unitUpcNumber == sku.unitUpcNumber
@@ -109,11 +113,12 @@ export class DialogComponent implements OnInit {
             if (responses.length == numNonEmptyLines) {
               objectref.parseResponses(responses);
             }
-          } else if (results.name == sku.name
+          } else if (results != null
+            && (results.name == sku.name
             || results.skuNumber == sku.skuNumber
             || results.caseUpcNumber == sku.caseUpcNumber
             || results.unitUpcNumber == sku.unitUpcNumber
-            || results.id == sku.id) {
+            || results.id == sku.id)) {
             console.log("Collision. Prompt user.");
 
             console.log(results);
@@ -177,7 +182,7 @@ export class DialogComponent implements OnInit {
 
           } else {
             console.log("New SKU.");
-            objectref.rest.adminCreateSku(sku.name, sku.skuNumber, sku.caseUpcNumber, sku.unitUpcNumber, sku.unitSize, sku.countPerCase, sku.productLine, "", sku.comment, sku.id).subscribe(response => {
+            objectref.rest.adminCreateSku(sku.name, sku.skuNumber, sku.caseUpcNumber, sku.unitUpcNumber, sku.unitSize, sku.countPerCase, sku.productLine, [], sku.comment, sku.id).subscribe(response => {
               responses.push(response);
               if (responses.length == numNonEmptyLines) {
                 objectref.parseResponses(responses);
@@ -200,7 +205,132 @@ export class DialogComponent implements OnInit {
   }
 
   parseFormulas(text, objectref) {
+    var responses = [];
+    var splitByLine = text.split("\\r\\n");
 
+    var numNonEmptyLines = 0;
+
+    for (let myline in splitByLine) {
+      if (splitByLine[myline] != "") {
+        numNonEmptyLines = numNonEmptyLines + 1;
+      }
+    }
+    numNonEmptyLines = numNonEmptyLines - 1; //for header
+
+    //start at i=1 to account for header
+    // for (var i = 1; i < splitByLine.length; i = i + 1) {
+    //   if (splitByLine[i] != "") {
+    //     let splitByCommas = splitByLine[i].split(",");
+
+    //     let formula = {
+    //       skuNumber: parseInt(splitByCommas[0]),
+    //       ingredient: splitByCommas[1],
+    //       quantity: splitByCommas[2]
+    //     };
+
+    //     objectref.rest.checkForSkuCollision(sku).subscribe(response => {
+    //       if (response['errormessage']) {
+    //         objectref.snackBar.open("Error creating records. Please refresh and try again.", "close");
+    //         return;
+    //       }
+    //       var results = response['results'];
+    //       console.log(results);
+
+    //       if (results.name == sku.name
+    //         && results.skuNumber == sku.skuNumber
+    //         && results.caseUpcNumber == sku.caseUpcNumber
+    //         && results.unitUpcNumber == sku.unitUpcNumber
+    //         && results.unitSize == sku.unitSize
+    //         && results.countPerCase == sku.countPerCase
+    //         && results.productLine == sku.productLine
+    //         && results.comment == sku.comment) {
+    //         console.log("SKU match. Do nothing.");
+    //         responses.push({
+    //           success: true
+    //         });
+    //         if (responses.length == numNonEmptyLines) {
+    //           objectref.parseResponses(responses);
+    //         }
+    //       } else if (results.name == sku.name
+    //         || results.skuNumber == sku.skuNumber
+    //         || results.caseUpcNumber == sku.caseUpcNumber
+    //         || results.unitUpcNumber == sku.unitUpcNumber
+    //         || results.id == sku.id) {
+    //         console.log("Collision. Prompt user.");
+
+    //         console.log(results);
+    //         console.log(sku);
+
+    //         const dialogConfig = new MatDialogConfig();
+    //         var compareDialog = objectref.dialog.open(RecordCompareDialogComponent, dialogConfig);
+    //         compareDialog.componentInstance.oldData = JSON.stringify(results, null, 2);
+    //         compareDialog.componentInstance.newData = JSON.stringify(sku, null, 2);
+    //         compareDialog.afterClosed().subscribe(event => {
+    //           if (event == undefined) {
+    //             if (objectref.useNew) {
+    //               console.log("use new");
+    //               objectref.rest.modifySkuRequest(sku.name, sku.skuNumber, sku.caseUpcNumber, sku.unitUpcNumber, sku.unitSize, sku.countPerCase, sku.productLine, results.ingredientTuples, sku.comment, results.id).subscribe(response => {
+    //                 responses.push({
+    //                   success: true
+    //                 });
+    //                 if (responses.length == numNonEmptyLines) {
+    //                   objectref.parseResponses(responses);
+    //                 }
+    //               });
+
+    //             } else {
+    //               responses.push({
+    //                 success: true
+    //               });
+    //               if (responses.length == numNonEmptyLines) {
+    //                 objectref.parseResponses(responses);
+    //               }
+    //             }
+    //           } else {
+    //             objectref.applyToAll = event.applyToAll;
+    //             if (event.applyToAll) {
+    //               console.log("APPLY TO ALL!");
+    //               objectref.dialog.closeAll();
+    //             }
+    //             objectref.useNew = event.useNew;
+    //             if (event.useNew) {
+    //               console.log("use new");
+    //               objectref.rest.modifySkuRequest(sku.name, sku.skuNumber, sku.caseUpcNumber, sku.unitUpcNumber, sku.unitSize, sku.countPerCase, sku.productLine, results.ingredientTuples, sku.comment, results.id).subscribe(response => {
+    //                 responses.push({
+    //                   success: true
+    //                 });
+    //                 if (responses.length == numNonEmptyLines) {
+    //                   objectref.parseResponses(responses);
+    //                 }
+    //               });
+
+    //             } else {
+    //               responses.push({
+    //                 success: true,
+    //                 message: "dialog said use old"
+    //               });
+    //               if (responses.length == numNonEmptyLines) {
+    //                 objectref.parseResponses(responses);
+    //               }
+    //             }
+    //           }
+
+    //         });
+
+    //       } else {
+    //         console.log("New SKU.");
+    //         objectref.rest.adminCreateSku(sku.name, sku.skuNumber, sku.caseUpcNumber, sku.unitUpcNumber, sku.unitSize, sku.countPerCase, sku.productLine, "", sku.comment, sku.id).subscribe(response => {
+    //           responses.push(response);
+    //           if (responses.length == numNonEmptyLines) {
+    //             objectref.parseResponses(responses);
+    //           }
+    //         });
+    //       }
+
+    //     });
+    //   }
+
+    // }
   }
 
   upload() {

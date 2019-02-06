@@ -59,7 +59,7 @@ export class RestService {
       unitSize: unit_size,
       countPerCase: count_per_case,
       productLine: product_line,
-      ingredientTuples: ingredients.split(","),
+      ingredientTuples: ingredients,
       comment: comment,
       id: id
     };
