@@ -317,6 +317,30 @@ MongoClient.connect('mongodb://localhost:27017', (err, database) => {
         });
       });
 
+    app.route('/api/v1/get-ingredient-by-id').get((req,res) => {
+        console.log(req.headers);
+        let ingredientId = req.headers['ingredientid'];
+        console.log(ingredientId);
+        const filterschema = {
+            id: Number(ingredientId)
+        };
+        db.collection('ingredients').findOne(filterschema, function(err,results) {
+            if(err) {
+                console.log(err);
+            }
+            console.log(results)
+            if(results != null){
+                res.send(results);
+            }
+            else{
+                res.send({
+                    errormessage: 'Nothing found for id ' + ingredientId
+                });
+            }
+            
+        });
+    });
+
     app.route('/api/v1/get-ingredient-by-number').get((req,res) => {
         let ingredientNumber = req.headers['number'];
         const filterschema = {
