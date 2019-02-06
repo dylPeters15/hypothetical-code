@@ -435,8 +435,7 @@ MongoClient.connect('mongodb://localhost:27017', (err, database) => {
             let costPerPackage = req.body['costPerPackage'];
             let comment = req.body['comment']; 
             let id = req.body['id']; 
-                
-            let ingredient = database_library.ingredientModel({
+            let ingredientBody = {
                 name: name,
                 number: number,
                 vendorInformation: vendorInformation,
@@ -444,7 +443,8 @@ MongoClient.connect('mongodb://localhost:27017', (err, database) => {
                 costPerPackage: costPerPackage,
                 comment: comment,
                 id: id,
-            });
+            };
+            let ingredient = database_library.ingredientModel(ingredientBody);
             ingredient.save().then(
                 doc => {
                     res.send({
