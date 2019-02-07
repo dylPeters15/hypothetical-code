@@ -16,7 +16,7 @@ function generateToken() {
 }
 
 function getUsers(searchCriteria) {
-    console.log("get users");
+    
 }
 
 function createUser(username, password) {
@@ -28,15 +28,11 @@ function createUser(username, password) {
             saltedHashedPassword: saltAndHash.hash,
             token: generateToken()
         });
-        user.save().then(
-            doc => {
-                resolve(doc);
-            }
-        ).catch(
-            err => {
-                reject(Error(err));
-            }
-        );
+        user.save().then(response => {
+            resolve(response);
+        }).catch(err => {
+            reject(Error(err));
+        });
     });
 }
 
