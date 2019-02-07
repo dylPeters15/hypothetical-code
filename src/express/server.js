@@ -19,9 +19,7 @@ app.use(cors(corsOptions));
 app.use(headerParser);
 app.use(bodyParser.json());
 
-function saltAndHash(password, salt) {
-    return crypto.pbkdf2Sync(password, salt, 1000, 64, 'sha512').toString('hex');
-}
+
 let server = https.createServer({
     key: fs.readFileSync('./ssl/privkey.pem'),
     cert: fs.readFileSync('./ssl/fullchain.pem')

@@ -3,23 +3,24 @@ var Schema = mongoose.Schema,
     ObjectId = Schema.ObjectId;
 const validator = require('validator');
 
-const server = '127.0.0.1:27017'; // REPLACE WITH YOUR DB SERVER
-const database = 'my-test-db';      // REPLACE WITH YOUR DB NAME
+const server = '127.0.0.1:27017';
+const database = 'my-test-db';
+const connectionString = `mongodb://${server}/${database}`;
 
-class Database {
-  constructor() {
-    this._connect();
-  }
-  _connect() {
-    mongoose.connect(`mongodb://${server}/${database}`)
-      .then(() => {
-        console.log('Database connection successful');
-      })
-      .catch(err => {
-        console.error('Database connection error');
-      });
-  }
-}
+// class Database {
+//   constructor() {
+//     this._connect();
+//   }
+//   _connect() {
+//     mongoose.connect(connectionString)
+//       .then(() => {
+//         console.log('Database connection successful');
+//       })
+//       .catch(err => {
+//         console.error('Database connection error');
+//       });
+//   }
+// }
 
 var userSchema = new mongoose.Schema({
   username: {
@@ -191,7 +192,9 @@ var formulaSchema = new mongoose.Schema({
 var formulaModel = mongoose.model('formula', formulaSchema);
 
 module.exports = {
-  Database: new Database(),
+  server: server,
+  database: database,
+  connectionString: connectionString,
   userModel: userModel,
   goalsModel: goalsModel,
   ingredientModel: ingredientModel,
