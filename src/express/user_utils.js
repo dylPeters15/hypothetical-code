@@ -15,7 +15,7 @@ function generateToken() {
     return crypto.randomBytes(16).toString('hex');
 }
 
-function getUsers(searchCriteria) {
+function getUsers(searchCriteria, limit) {
     
 }
 

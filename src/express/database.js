@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 var Schema = mongoose.Schema,
-    ObjectId = Schema.ObjectId;
+  ObjectId = Schema.ObjectId;
 const validator = require('validator');
 
 const server = '127.0.0.1:27017';
@@ -22,8 +22,12 @@ const connectionString = `mongodb://${server}/${database}`;
 //   }
 // }
 
+/**
+ * Valid search criteria:
+ * userName - match/regex
+ */
 var userSchema = new mongoose.Schema({
-  username: {
+  userName: {
     type: String,
     required: true,
     unique: true
@@ -46,13 +50,18 @@ var userSchema = new mongoose.Schema({
 });
 var userModel = mongoose.model('user', userSchema);
 
+/**
+ * Valid search criteria:
+ * name - match/regex
+ * number - match
+ */
 var ingredientSchema = new mongoose.Schema({
-  name: {
+  ingredientName: {
     type: String,
     required: true,
     unique: true
   },
-  number: {
+  ingredientNumber: {
     type: Number,
     required: true,
     unique: true
@@ -81,8 +90,15 @@ var ingredientSchema = new mongoose.Schema({
 
 var ingredientModel = mongoose.model('ingredient', ingredientSchema);
 
+/**
+ * Valid search criteria:
+ * name - match/regex
+ * skuNumber - match
+ * caseUpcNumber - match
+ * unitUpcNumber - match
+ */
 var skuSchema = new mongoose.Schema({
-  name: {
+  skuName: {
     type: String,
     required: true,
     unique: true
@@ -100,7 +116,7 @@ var skuSchema = new mongoose.Schema({
   unitUpcNumber: {
     type: Number,
     required: true,
-    unique: false
+    unique: true
   },
   unitSize: {
     type: String,
@@ -121,57 +137,69 @@ var skuSchema = new mongoose.Schema({
 
 var skuModel = mongoose.model('sku', skuSchema);
 
+/**
+ * Valid search criteria:
+ * productLineName - match/regex
+ * sku - match
+ */
 var productLineSchema = new mongoose.Schema({
-  name: {
+  productLineName: {
     type: String,
-    required: true,
-    unique: true
+    required: true
   },
-  skus: [
-    {
-      type: ObjectId,
-      ref: 'sku'
-    }
-  ]
+  sku: {
+    type: ObjectId,
+    ref: 'sku'
+  }
 });
+
+productLineSchema.index({ name: 1, sku: 1 }, { unique: true }); //the combination of name and sku should be unique
 
 var productLineModel = mongoose.model('product_line', productLineSchema);
 
+/**
+ * Valid search criteria:
+ * goalName - match/regex
+ * sku - match,
+ * date - match,
+ * owner - match
+ */
 var manufacturingGoalsSchema = new mongoose.Schema({
-  owner: {
-    type: ObjectId,
-    ref: 'user',
-    required: true
-  },
-  name: {
+  goalName: {
     type: String,
     required: true,
-    unique: true
+    unique: false
   },
-  skusAndQuantities: [
-    {
-      sku: {
-        type: ObjectId,
-        ref: 'sku',
-        required: true
-      },
-      quantity: {
-        type: Number,
-        required: true
-      }
-    }
-  ],
+  sku: {
+    type: ObjectId,
+    ref: 'sku',
+    required: true
+  },
+  quantity: {
+    type: Number,
+    required: true
+  },
   date: {
     type: Date,
     required: true,
     unique: false
+  },
+  owner: {
+    type: ObjectId,
+    ref: 'user',
+    required: true
   }
 });
 
-manufacturingGoalsSchema.index({ owner: 1, name: 1}, { unique: true }); //the combination of owner and goal name should be unique
+manufacturingGoalsSchema.index({ owner: 1, name: 1 }, { unique: true }); //the combination of owner and goal name should be unique
 
 var goalsModel = mongoose.model('goal', manufacturingGoalsSchema);
 
+/**
+ * Valid search criteria:
+ * sku - match,
+ * ingredient - match
+ */
 var formulaSchema = new mongoose.Schema({
   sku: {
     type: ObjectId,
@@ -188,6 +216,8 @@ var formulaSchema = new mongoose.Schema({
     required: true
   }
 });
+
+formulaSchema.index({ sku: 1, ingredient: 1 }, { unique: true }); //the combination of sku and ingredient should be unique
 
 var formulaModel = mongoose.model('formula', formulaSchema);
 
