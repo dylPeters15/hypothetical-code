@@ -199,5 +199,6 @@ module.exports = {
   goalsModel: goalsModel,
   ingredientModel: ingredientModel,
   skuModel: skuModel,
-  productLineModel: productLineModel
+  productLineModel: productLineModel,
+  formulaModel: formulaModel
 };
