@@ -6,6 +6,7 @@ const validator = require('validator');
 const server = '127.0.0.1:27017';
 const database = 'my-test-db';
 const connectionString = `mongodb://${server}/${database}`;
+const defaultSearchLimit = 20;
 
 // class Database {
 //   constructor() {
@@ -225,6 +226,7 @@ module.exports = {
   server: server,
   database: database,
   connectionString: connectionString,
+  defaultSearchLimit: defaultSearchLimit,
   userModel: userModel,
   goalsModel: goalsModel,
   ingredientModel: ingredientModel,

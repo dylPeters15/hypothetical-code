@@ -8,7 +8,6 @@ const database_library = require('./database.js');
 var fs = require('fs');
 var https = require('https');
 
-
 const app = express();
 var corsOptions = {
     origin: '*',

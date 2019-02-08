@@ -16,14 +16,14 @@ function generateToken() {
 }
 
 function getUsers(searchCriteria, limit) {
-    
+    console.log(limit || database.defaultSearchLimit);
 }
 
-function createUser(username, password) {
+function createUser(username, passwords) {
     return new Promise(function (resolve, reject) {
         let saltAndHash = generateSaltAndHash(password);
         let user = new database.userModel({
-            username: username,
+            userName: username,
             salt: saltAndHash.salt,
             saltedHashedPassword: saltAndHash.hash,
             token: generateToken()
