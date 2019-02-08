@@ -1,24 +1,28 @@
-process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 const assert = require('assert');
-const mongoose = require('mongoose');
 const user_utils = require('./user_utils.js');
 
 describe('loading express', function () {
     var database;
-    beforeEach(function (done) {
+    before(function (done) {
         database = require('./database.js');
+        done();
+    });
+    beforeEach(function (done) {
         database.dropDatabase().then(response => {
             console.log("Database dropped: ", response);
             done();
         });
     });
-    after(function (done) {
+    afterEach(function (done) {
         database.dropDatabase().then(response => {
             console.log("Database dropped: ", response);
-            mongoose.connection.close().then(() => {
-                console.log("Closed connection.");
-                done();
-            });
+            done();
+        });
+    });
+    afterEach(function (done) {
+        database.dropDatabase().then(response => {
+            console.log("Database dropped: ", response);
+            done();
         });
     });
 

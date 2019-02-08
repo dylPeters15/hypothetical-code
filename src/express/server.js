@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 const fs = require('fs');
 const https = require('https');
 const user_utils = require('./user_utils.js');
+const formula_utils = require('./formula_utils.js');
 
 const app = express();
 const corsOptions = {
@@ -29,8 +30,10 @@ const api_prefix = '/api/v1/';
 app.route(api_prefix + 'login').get((req, res) => {
 });
 
+///////////////////// users /////////////////////
+
 app.route(api_prefix + 'users').get((req, res) => {
-    user_utils.getUsers(req.headers['userName'], req.headers['userNameRegex']).then(users => {
+    user_utils.getUsers(req.headers['userName'], req.headers['userNameRegex'], req.headers['limit']).then(users => {
         var usersToSend = [];
         for (var i = 0; i < users.length; i=i+1) {
             usersToSend.push({
@@ -46,7 +49,7 @@ app.route(api_prefix + 'users').get((req, res) => {
 });
 
 app.route(api_prefix + 'users').put((req, res) => {
-    user_utils.createUser(req.headers['userName'], req.headers['password']).then(response => {
+    user_utils.createUser(req.body['userName'], req.body['password']).then(response => {
         res.send(response);
     }).catch(err => {
         res.send({
@@ -56,7 +59,7 @@ app.route(api_prefix + 'users').put((req, res) => {
 });
 
 app.route(api_prefix + 'users').post((req, res) => {
-    user_utils.modifyUser(req.headers['userName'], req.body).then(response => {
+    user_utils.modifyUser(req.headers['userName'], req.body['password']).then(response => {
         res.send(response);
     }).catch(err => {
         res.send({
@@ -67,6 +70,48 @@ app.route(api_prefix + 'users').post((req, res) => {
 
 app.route(api_prefix + 'users').delete((req, res) => {
     user_utils.deleteUser(req.headers['userName']).then(response => {
+        res.send(response);
+    }).catch(err => {
+        res.send({
+            err:err
+        });
+    });
+});
+
+///////////////////// formulas /////////////////////
+
+app.route(api_prefix + 'formulas').get((req, res) => {
+    formula_utils.getFormulas(req.headers['sku'], req.headers['ingredient'], req.headers['limit']).then(formulas => {
+        res.send(formulas);
+    }).catch(err => {
+        res.send({
+            err:err
+        });
+    });
+});
+
+app.route(api_prefix + 'formulas').put((req, res) => {
+    formula_utils.createFormula(req.body).then(response => {
+        res.send(response);
+    }).catch(err => {
+        res.send({
+            err:err
+        });
+    });
+});
+
+app.route(api_prefix + 'formulas').post((req, res) => {
+    formula_utils.modifyFormula(req.headers['sku'], req.headers['ingredient'], req.body).then(response => {
+        res.send(response);
+    }).catch(err => {
+        res.send({
+            err:err
+        });
+    });
+});
+
+app.route(api_prefix + 'formulas').delete((req, res) => {
+    formula_utils.deleteFormula(req.headers['sku'], req.headers['ingredient']).then(response => {
         res.send(response);
     }).catch(err => {
         res.send({

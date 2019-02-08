@@ -76,12 +76,19 @@ function createUser(username, password) {
     });
 }
 
-function modifyUser(userName, newUserObject) {
+function modifyUser(userName, newPassword) {
     return new Promise((resolve, reject) => {
         var filterSchema = {
             userName: userName
         }
-        database.userModel.updateOne(filterSchema, newUserObject, (err, response) => {
+        var saltAndHash = generateSaltAndHash(newPassword);
+        var updateObject = {
+            $set: {
+                salt: saltAndHash.salt,
+                saltedHashedPassword: saltAndHash.hash
+            }
+        }
+        database.userModel.updateOne(filterSchema, updateObject, (err, response) => {
             if (err) {
                 reject(Error(err));
                 return
