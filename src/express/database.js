@@ -3,34 +3,19 @@ var Schema = mongoose.Schema,
   ObjectId = Schema.ObjectId;
 const validator = require('validator');
 
-const server = '127.0.0.1:27017';
-const productiondatabase = 'prod-db';
-const testdb = 'test-db';
-const testconnectionString = `mongodb://${server}/${testdb}`;
-const prodconnectionString = `mongodb://${server}/${productiondatabase}`;
+const serverName = '127.0.0.1:27017';
+const dbName = 'hypothetical-code-db';
+const connectionString = `mongodb://${serverName}/${dbName}`;
 const defaultSearchLimit = 20;
 
-// class Database {
-//   constructor() {
-//     this._connect();
-//   }
-//   _connect() {
-//     mongoose.connect(connectionString)
-//       .then(() => {
-//         console.log('Database connection successful');
-//       })
-//       .catch(err => {
-//         console.error('Database connection error');
-//       });
-//   }
-// }
+mongoose.connect(connectionString);
+mongoose.Promise = global.Promise;
+var db = mongoose.connection;
+db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
-MongoClient.connect(testconnectionString, (err, database) => {
-  let testdb = database.db(testdb);
-});
-MongoClient.connect(prodconnectionString, (err, database) => {
-  let proddb = database.db(proddb);
-});
+function dropDatabase() {
+  return db.dropDatabase();
+}
 
 /**
  * Valid search criteria:
@@ -232,16 +217,12 @@ formulaSchema.index({ sku: 1, ingredient: 1 }, { unique: true }); //the combinat
 var formulaModel = mongoose.model('formula', formulaSchema);
 
 module.exports = {
-  testdb: testdb,
-  proddb: proddb,
-  server: server,
-  database: database,
-  connectionString: connectionString,
   defaultSearchLimit: defaultSearchLimit,
   userModel: userModel,
   goalsModel: goalsModel,
   ingredientModel: ingredientModel,
   skuModel: skuModel,
   productLineModel: productLineModel,
-  formulaModel: formulaModel
+  formulaModel: formulaModel,
+  dropDatabase: dropDatabase
 };

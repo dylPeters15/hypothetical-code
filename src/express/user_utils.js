@@ -16,10 +16,18 @@ function generateToken() {
 }
 
 function getUsers(userName, userNameRegex, limit) {
-    console.log(limit || database.defaultSearchLimit);
+    return new Promise(function (resolve, reject) {
+        database.userModel.findOne({userName:userName}, (err, user) => {
+            if (err) {
+                reject(Error(err));
+            } else {
+                resolve(user);
+            }
+        });
+    });
 }
 
-function createUser(username, passwords) {
+function createUser(username, password) {
     return new Promise(function (resolve, reject) {
         let saltAndHash = generateSaltAndHash(password);
         let user = new database.userModel({
