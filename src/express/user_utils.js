@@ -91,7 +91,7 @@ function modifyUser(userName, newUserObject) {
     });
 }
 
-function deleteUser(searchCriteria) {
+function deleteUser(userName) {
     return new Promise((resolve, reject) => {
         var filterSchema = {
             userName: userName
@@ -99,6 +99,7 @@ function deleteUser(searchCriteria) {
         database.userModel.deleteOne(filterSchema, (err, response) => {
             if (err) {
                 reject(Error(err));
+                return
             }
             resolve(response);
         });
