@@ -120,8 +120,8 @@ app.route('/formulas').delete((req, res) => {
 });
 
 ///////////////////// Manufacturing Goals /////////////////////
-app.route(api_prefix + 'manufacturing-goals').get((req, res) => {
-    goals_utils.getGoals(req.headers['sku'], req.headers['ingredient'], req.headers['limit']).then(formulas => {
+app.route('/manufacturing-goals').get((req, res) => {
+    goals_utils.getGoals(req.headers['username'],req.headers['goalname'],req.headers['goalnameregex'], req.headers['limit']).then(formulas => {
         res.send(formulas);
     }).catch(err => {
         res.send({
@@ -130,8 +130,8 @@ app.route(api_prefix + 'manufacturing-goals').get((req, res) => {
     });
 });
 
-app.route(api_prefix + 'formulas').put((req, res) => {
-    formula_utils.createFormula(req.body).then(response => {
+app.route('/manufacturing-goals').put((req, res) => {
+    goals_utils.createGoal(req.body).then(response => {
         res.send(response);
     }).catch(err => {
         res.send({
@@ -140,8 +140,8 @@ app.route(api_prefix + 'formulas').put((req, res) => {
     });
 });
 
-app.route(api_prefix + 'formulas').post((req, res) => {
-    formula_utils.modifyFormula(req.headers['sku'], req.headers['ingredient'], req.body).then(response => {
+app.route('/manufacturing-goals').post((req, res) => {
+    goals_utils.modifyGoal(req.headers['owner'], req.headers['goalname'],req.headers['sku'],req.headers['quantity'],req.headers['date'], req.body).then(response => {
         res.send(response);
     }).catch(err => {
         res.send({
@@ -150,8 +150,8 @@ app.route(api_prefix + 'formulas').post((req, res) => {
     });
 });
 
-app.route(api_prefix + 'formulas').delete((req, res) => {
-    formula_utils.deleteFormula(req.headers['sku'], req.headers['ingredient']).then(response => {
+app.route('/manufacturing-goals').delete((req, res) => {
+    formula_utils.deleteFormula(req.headers['goalname'], req.headers['sku'],req.headers['quantity'],req.headers['date']).then(response => {
         res.send(response);
     }).catch(err => {
         res.send({

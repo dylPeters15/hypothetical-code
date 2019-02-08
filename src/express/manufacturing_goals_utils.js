@@ -4,14 +4,14 @@ const database = require('./database.js');
 function getGoals(username, goalname, goalnameregex, limit) {
     username = username || "";
     goalname = goalname || "";
-    goalNameRegex = goalNameRegex || "";
+    goalnameregex = goalnameregex || "";
     limit = limit || database.defaultSearchLimit;
     return new Promise((resolve, reject) => {
         var filterSchema = {
             owner: username,
             $or: [
                 {goalname: goalname},
-                {goalname: {$regex: goalNameRegex}}
+                {goalname: {$regex: goalnameregex}}
             ]
         }
         database.goalsModel.find(filterSchema).limit(limit).toArray(function(err,results) {
@@ -57,10 +57,13 @@ function modifyGoal(owner, name, sku, quantity, date, newGoalObject) {
     });
 }
 
-function deleteGoal(goalname) {
+function deleteGoal(goalname,sku,quantity,date) {
     return new Promise((resolve, reject) => {
         var filterSchema = {
-            goalname: goalname
+            goalname: goalname,
+            sku: sku,
+            quantity: quantity,
+            date: date
         }
         database.userModel.deleteOne(filterSchema, (err, response) => {
             if (err) {
