@@ -33,16 +33,16 @@ function generateToken() {
     });
 }
 
-function getUsers(userName, userNameRegex, limit) {
-    userName = userName || "";
-    userNameRegex = userNameRegex || "$a";
+function getUsers(username, usernameregex, limit) {
+    username = username || "";
+    usernameregex = usernameregex || "$a";
     limit = limit || database.defaultSearchLimit;
 
     return new Promise((resolve, reject) => {
         var filterSchema = {
             $or: [
-                { userName: userName },
-                { userName: { $regex: userNameRegex } }
+                { username: username },
+                { username: { $regex: usernameregex } }
             ]
         }
         database.userModel.find(filterSchema).limit(limit).exec((err, users) => {
@@ -60,9 +60,9 @@ function createUser(username, password) {
         let saltAndHash = generateSaltAndHash(password);
         generateToken().then(token => {
             let user = new database.userModel({
-                userName: username,
+                username: username,
                 salt: saltAndHash.salt,
-                saltedHashedPassword: saltAndHash.hash,
+                saltedhashedpassword: saltAndHash.hash,
                 token: token
             });
             user.save().then(response => {
@@ -76,16 +76,16 @@ function createUser(username, password) {
     });
 }
 
-function modifyUser(userName, newPassword) {
+function modifyUser(username, newPassword) {
     return new Promise((resolve, reject) => {
         var filterSchema = {
-            userName: userName
+            username: username
         }
         var saltAndHash = generateSaltAndHash(newPassword);
         var updateObject = {
             $set: {
                 salt: saltAndHash.salt,
-                saltedHashedPassword: saltAndHash.hash
+                saltedhashedpassword: saltAndHash.hash
             }
         }
         database.userModel.updateOne(filterSchema, updateObject, (err, response) => {
@@ -98,10 +98,10 @@ function modifyUser(userName, newPassword) {
     });
 }
 
-function deleteUser(userName) {
+function deleteUser(username) {
     return new Promise((resolve, reject) => {
         var filterSchema = {
-            userName: userName
+            username: username
         }
         database.userModel.deleteOne(filterSchema, (err, response) => {
             if (err) {

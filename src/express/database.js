@@ -22,7 +22,7 @@ function dropDatabase() {
  * userName - match/regex
  */
 var userSchema = new mongoose.Schema({
-  userName: {
+  username: {
     type: String,
     required: true,
     unique: true
@@ -32,7 +32,7 @@ var userSchema = new mongoose.Schema({
     required: true,
     unique: false
   },
-  saltedHashedPassword: {
+  saltedhashedpassword: {
     type: String,
     required: true,
     unique: false
@@ -52,27 +52,27 @@ var userModel = mongoose.model('user', userSchema);
  * number - match
  */
 var ingredientSchema = new mongoose.Schema({
-  ingredientName: {
+  ingredientname: {
     type: String,
     required: true,
     unique: true
   },
-  ingredientNumber: {
+  ingredientnumber: {
     type: Number,
     required: true,
     unique: true
   },
-  vendorInformation: {
+  vendorinformation: {
     type: String,
     required: false,
     unique: false
   },
-  packageSize: {
+  packagesize: {
     type: String,
     required: true,
     unique: false
   },
-  costPerPackage: {
+  costperpackage: {
     type: Number,
     required: true,
     unique: false
@@ -94,32 +94,32 @@ var ingredientModel = mongoose.model('ingredient', ingredientSchema);
  * unitUpcNumber - match
  */
 var skuSchema = new mongoose.Schema({
-  skuName: {
+  skuname: {
     type: String,
     required: true,
     unique: true
   },
-  skuNumber: {
+  skunumber: {
     type: Number,
     required: true,
     unique: true
   },
-  caseUpcNumber: {
+  caseupcnumber: {
     type: Number,
     required: true,
     unique: true
   },
-  unitUpcNumber: {
+  unitupcnumber: {
     type: Number,
     required: true,
     unique: true
   },
-  unitSize: {
+  unitsize: {
     type: String,
     required: true,
     unique: false
   },
-  countPerCase: {
+  countpercase: {
     type: Number,
     required: true,
     unique: false
@@ -139,7 +139,7 @@ var skuModel = mongoose.model('sku', skuSchema);
  * sku - match
  */
 var productLineSchema = new mongoose.Schema({
-  productLineName: {
+  productlinename: {
     type: String,
     required: true
   },
@@ -149,9 +149,9 @@ var productLineSchema = new mongoose.Schema({
   }
 });
 productLineSchema.plugin(uniqueValidator);
-productLineSchema.index({ name: 1, sku: 1 }, { unique: true }); //the combination of name and sku should be unique
+productLineSchema.index({ productlinename: 1, sku: 1 }, { unique: true }); //the combination of name and sku should be unique
 
-var productLineModel = mongoose.model('product_line', productLineSchema);
+var productLineModel = mongoose.model('productline', productLineSchema);
 
 /**
  * Valid search criteria:
@@ -187,7 +187,7 @@ var manufacturingGoalsSchema = new mongoose.Schema({
   }
 });
 manufacturingGoalsSchema.plugin(uniqueValidator);
-manufacturingGoalsSchema.index({ owner: 1, name: 1 }, { unique: true }); //the combination of owner and goal name should be unique
+manufacturingGoalsSchema.index({ owner: 1, goalname: 1 }, { unique: true }); //the combination of owner and goal name should be unique
 
 var goalsModel = mongoose.model('goal', manufacturingGoalsSchema);
 
