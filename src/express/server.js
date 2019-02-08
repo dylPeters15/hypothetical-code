@@ -272,39 +272,46 @@ MongoClient.connect('mongodb://localhost:27017', (err, database) => {
     });
 
     app.route('/api/v1/manufacturing-goals').post((req,res) => {
+        // const username = req.headers['username'];
+        // let name = req.body['name'];
+        // let skus = req.body['skus'];
+        // let skusArray = skus.split(",");
+        // let quantities = req.body['quantities'];
+        // let quantitiesArray = quantities.split(",");
+        // let date = req.body['date'];
+        // let dateAsDate = Date.parse(date);
+        // let goal = database_library.goalsModel({
+        //     user: username,
+        //     name: name,
+        //     skus: skusArray,
+        //     quantities: quantitiesArray,
+        //     date: dateAsDate
+        // });
+        // goal.save().then(
+        //     doc => {
+        //         res.send({
+        //             success: true,
+        //             doc: doc
+        //         });
+        //         console.log(doc);
+        //         return;
+        //     }
+        // ).catch(
+        //     err => {
+        //         res.send({
+        //             errormessage: "Unable to save goal."
+        //         });
+        //         console.log(err);
+        //         return;
+        //     }
+        // )
         const username = req.headers['username'];
         let name = req.body['name'];
-        let skus = req.body['skus'];
-        let skusArray = skus.split(",");
-        let quantities = req.body['quantities'];
-        let quantitiesArray = quantities.split(",");
+        let sku = req.body['skus'];
+        let quantity = req.body['quantities'];
         let date = req.body['date'];
-        let dateAsDate = Date.parse(date);
-        let goal = database_library.goalsModel({
-            user: username,
-            name: name,
-            skus: skusArray,
-            quantities: quantitiesArray,
-            date: dateAsDate
-        });
-        goal.save().then(
-            doc => {
-                res.send({
-                    success: true,
-                    doc: doc
-                });
-                console.log(doc);
-                return;
-            }
-        ).catch(
-            err => {
-                res.send({
-                    errormessage: "Unable to save goal."
-                });
-                console.log(err);
-                return;
-            }
-        )
+        createGoal(name, sku, quantity, date);
+
         
     })
 

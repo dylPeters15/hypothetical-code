@@ -137,12 +137,12 @@ export class RestService {
     return this.http.put(endpoint + 'change-ingredient', body, this.getHTTPOptions()).pipe(map(this.extractData));
   }
 
-  createGoal(name, skus, quantities, date){
+  createGoal(name, sku, quantity, date){
     return this.http.post(endpoint + 'manufacturing-goals',{
       user: auth.getUsername,
       name: name,
-      skus: skus,
-      quantities: quantities,
+      sku: sku,
+      quantity: quantity,
       date: date
     }, this.getHTTPOptions());
   }
