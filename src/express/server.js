@@ -31,12 +31,11 @@ app.route('login').get((req, res) => {
 ///////////////////// users /////////////////////
 
 app.route('/users').get((req, res) => {
-    console.log("Headers: ",req.headers);
     user_utils.getUsers(req.headers['username'], req.headers['usernameregex'], req.headers['limit']).then(users => {
         var usersToSend = [];
         for (var i = 0; i < users.length; i=i+1) {
             usersToSend.push({
-                userName: users[i].userName
+                username: users[i].username
             });
         }
         res.send(usersToSend);
@@ -48,7 +47,7 @@ app.route('/users').get((req, res) => {
 });
 
 app.route('/users').put((req, res) => {
-    user_utils.createUser(req.body['userName'], req.body['password']).then(response => {
+    user_utils.createUser(req.body['username'], req.body['password']).then(response => {
         res.send(response);
     }).catch(err => {
         res.send({
@@ -58,7 +57,7 @@ app.route('/users').put((req, res) => {
 });
 
 app.route('/users').post((req, res) => {
-    user_utils.modifyUser(req.headers['userName'], req.body['password']).then(response => {
+    user_utils.modifyUser(req.headers['username'], req.body['password']).then(response => {
         res.send(response);
     }).catch(err => {
         res.send({
@@ -68,7 +67,7 @@ app.route('/users').post((req, res) => {
 });
 
 app.route('/users').delete((req, res) => {
-    user_utils.deleteUser(req.headers['userName']).then(response => {
+    user_utils.deleteUser(req.headers['username']).then(response => {
         res.send(response);
     }).catch(err => {
         res.send({

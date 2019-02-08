@@ -10,6 +10,7 @@ const server = require('./server.js');
 const database = require('./database.js');
 let should = chai.should();
 const user_utils = require('./user_utils.js');
+const assert = require('assert');
 
 chai.use(chaiHttp);
 //Our parent block
@@ -39,12 +40,13 @@ describe('testing REST API calls', function () {
     it('it should get user', function (done) {
         chai.request(server)
             .get('/users')
-            .set('userName', 'admin')
+            .set('username', 'admin')
             .end((err, res) => {
                 // console.log("The err is: ",err);
                 // console.log("The res is: ",res);
                   res.body.should.be.a('array');
                   res.body.length.should.be.eql(1);
+                  console.log("BODY: ",res.body);
                   done();
             });
       });
