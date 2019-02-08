@@ -4,8 +4,10 @@ var Schema = mongoose.Schema,
 const validator = require('validator');
 
 const server = '127.0.0.1:27017';
-const database = 'my-test-db';
-const connectionString = `mongodb://${server}/${database}`;
+const productiondatabase = 'prod-db';
+const testdb = 'test-db';
+const testconnectionString = `mongodb://${server}/${testdb}`;
+const prodconnectionString = `mongodb://${server}/${productiondatabase}`;
 const defaultSearchLimit = 20;
 
 // class Database {
@@ -22,6 +24,13 @@ const defaultSearchLimit = 20;
 //       });
 //   }
 // }
+
+MongoClient.connect(testconnectionString, (err, database) => {
+  let testdb = database.db(testdb);
+});
+MongoClient.connect(prodconnectionString, (err, database) => {
+  let proddb = database.db(proddb);
+});
 
 /**
  * Valid search criteria:
@@ -223,6 +232,8 @@ formulaSchema.index({ sku: 1, ingredient: 1 }, { unique: true }); //the combinat
 var formulaModel = mongoose.model('formula', formulaSchema);
 
 module.exports = {
+  testdb: testdb,
+  proddb: proddb,
   server: server,
   database: database,
   connectionString: connectionString,
