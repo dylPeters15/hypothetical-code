@@ -1,12 +1,20 @@
 const database = require('./database.js');
 
    
-function getGoals(username, goalName, limit) {
-    return new Promise(function(resolve, reject) {
-        database.testdb.collection('goals').find({
-            user: current_username,
-            goalName: goalName
-        }).toArray(function(err,results) {
+function getGoals(username, goalname, goalnameregex, limit) {
+    username = username || "";
+    goalname = goalname || "";
+    goalNameRegex = goalNameRegex || "";
+    limit = limit || database.defaultSearchLimit;
+    return new Promise((resolve, reject) => {
+        var filterSchema = {
+            owner: username,
+            $or: [
+                {goalname: goalname},
+                {goalname: {$regex: goalNameRegex}}
+            ]
+        }
+        database.goalsModel.find(filterSchema).limit(limit).toArray(function(err,results) {
             if(results.length > 0){
               resolve(results);
             }
@@ -19,14 +27,9 @@ function getGoals(username, goalName, limit) {
     
 }
 
-function createGoal(name, sku, quantity, date) {
-    return new Promise(function (resolve, reject) {
-        let goal = new database.goalsModel({
-            goalName: name,
-            sku: sku,
-            quantity: quantity,
-            date: Date.parse(date)
-        });
+function createGoal(goalObject) {
+    return new Promise((resolve, reject) => {
+        let goal = new database.goalsModel(goalObject);
         goal.save().then(response => {
             resolve(response);
         }).catch(err => {
@@ -35,12 +38,38 @@ function createGoal(name, sku, quantity, date) {
     });
 }
 
-function modifyGoal(searchCriteria, username, password) {
-    //pretty much same as 
+function modifyGoal(owner, name, sku, quantity, date, newGoalObject) {
+    return new Promise((resolve, reject) => {
+        var filterSchema = {
+            goalname: name,
+            owner: owner,
+            sku: sku,
+            quantity: quantity,
+            date: date
+        }
+        database.formulaModel.updateOne(filterSchema, newGoalObject, (err, response) => {
+            if (err) {
+                reject(Error(err));
+                return
+            }
+            resolve(response);
+        });
+    });
 }
 
-function deleteGoal(searchCriteria) {
-
+function deleteGoal(goalname) {
+    return new Promise((resolve, reject) => {
+        var filterSchema = {
+            goalname: goalname
+        }
+        database.userModel.deleteOne(filterSchema, (err, response) => {
+            if (err) {
+                reject(Error(err));
+                return
+            }
+            resolve(response);
+        });
+    });
 }
 
 module.exports = {

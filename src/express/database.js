@@ -1,12 +1,7 @@
 const mongoose = require('mongoose');
 var Schema = mongoose.Schema,
   ObjectId = Schema.ObjectId;
-<<<<<<< HEAD
-const validator = require('validator');
-const MongoClient = require('mongodb').MongoClient
-=======
 const uniqueValidator = require('mongoose-unique-validator');
->>>>>>> 7f6c51799bebfe78fd4fa8fa86129f5ea5dc2ef0
 
 const serverName = '127.0.0.1:27017';
 const dbName = 'hypothetical-code-db';
@@ -18,18 +13,9 @@ mongoose.Promise = global.Promise;
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
-<<<<<<< HEAD
-MongoClient.connect(testconnectionString, (err, database) => {
-  let testdb = database.db(testdb);
-});
-// MongoClient.connect(prodconnectionString, (err, database) => {
-//   let proddb = database.db(proddb);
-// });
-=======
 function dropDatabase() {
   return db.dropDatabase();
 }
->>>>>>> 7f6c51799bebfe78fd4fa8fa86129f5ea5dc2ef0
 
 /**
  * Valid search criteria:
@@ -175,7 +161,7 @@ var productLineModel = mongoose.model('product_line', productLineSchema);
  * owner - match
  */
 var manufacturingGoalsSchema = new mongoose.Schema({
-  goalName: {
+  goalname: {
     type: String,
     required: true,
     unique: false
@@ -232,14 +218,6 @@ formulaSchema.index({ sku: 1, ingredient: 1 }, { unique: true }); //the combinat
 var formulaModel = mongoose.model('formula', formulaSchema);
 
 module.exports = {
-<<<<<<< HEAD
-  testdb: testdb,
-  // proddb: proddb,
-  server: server,
-  database: database,
-  connectionString: connectionString,
-=======
->>>>>>> 7f6c51799bebfe78fd4fa8fa86129f5ea5dc2ef0
   defaultSearchLimit: defaultSearchLimit,
   userModel: userModel,
   goalsModel: goalsModel,

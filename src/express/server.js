@@ -6,6 +6,7 @@ const fs = require('fs');
 const https = require('https');
 const user_utils = require('./user_utils.js');
 const formula_utils = require('./formula_utils.js');
+const goals_utils = require('./manufacturing_goals_utils.js')
 
 const app = express();
 const corsOptions = {
@@ -119,6 +120,48 @@ app.route(api_prefix + 'formulas').delete((req, res) => {
         });
     });
 });
+
+///////////////////// Manufacturing Goals /////////////////////
+app.route(api_prefix + 'manufacturing-goals').get((req, res) => {
+    goals_utils.getGoals(req.headers['sku'], req.headers['ingredient'], req.headers['limit']).then(formulas => {
+        res.send(formulas);
+    }).catch(err => {
+        res.send({
+            err:err
+        });
+    });
+});
+
+app.route(api_prefix + 'formulas').put((req, res) => {
+    formula_utils.createFormula(req.body).then(response => {
+        res.send(response);
+    }).catch(err => {
+        res.send({
+            err:err
+        });
+    });
+});
+
+app.route(api_prefix + 'formulas').post((req, res) => {
+    formula_utils.modifyFormula(req.headers['sku'], req.headers['ingredient'], req.body).then(response => {
+        res.send(response);
+    }).catch(err => {
+        res.send({
+            err:err
+        });
+    });
+});
+
+app.route(api_prefix + 'formulas').delete((req, res) => {
+    formula_utils.deleteFormula(req.headers['sku'], req.headers['ingredient']).then(response => {
+        res.send(response);
+    }).catch(err => {
+        res.send({
+            err:err
+        });
+    });
+});
+
 
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
