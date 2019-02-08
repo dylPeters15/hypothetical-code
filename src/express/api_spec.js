@@ -42,96 +42,11 @@ describe('testing REST API calls', function () {
             .get('/users')
             .set('username', 'admin')
             .end((err, res) => {
-                // console.log("The err is: ",err);
-                // console.log("The res is: ",res);
                   res.body.should.be.a('array');
                   res.body.length.should.be.eql(1);
-                  console.log("BODY: ",res.body);
+                  assert.equal(res.body[0].username, "admin");
                   done();
             });
       });
 
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0"; 
-// var request = require('supertest');
-// describe('loading express', function () {
-//   var server;
-//   beforeEach(function () {
-//     server = require('./server.js');
-//     console.log(server);
-//   });
-//   afterEach(function () {
-//     server.close();
-//   });
-//   it('responds to /api/v1/login', function(done) {
-//     request(server).get('/api/v1/login')
-//     .expect(403, done);
-//   });
-// //   it('404 everything else', function testPath(done) {
-// //     require(server)
-// //       .get('/foo/bar')
-// //       .expect(404, done);
-// //   });
-// });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// const assert = require('assert');
-// const server = require('./server.js');
-
-// describe('loading express', function () {
-//     var server;
-//     before(function (done) {
-//         database = require('./database.js');
-//         done();
-//     });
-//     beforeEach(function (done) {
-//         database.dropDatabase().then(response => {
-//             console.log("Database dropped: ", response);
-//             done();
-//         });
-//     });
-//     afterEach(function (done) {
-//         database.dropDatabase().then(response => {
-//             console.log("Database dropped: ", response);
-//             done();
-//         });
-//     });
-//     afterEach(function (done) {
-//         database.dropDatabase().then(response => {
-//             console.log("Database dropped: ", response);
-//             done();
-//         });
-//     });
-
-//     it('creates a formula', function (done) {
-//         done();
-//     });
-
-// });
