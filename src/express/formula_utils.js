@@ -20,13 +20,9 @@ function getFormulas(sku, ingredient, limit) {
     });
 }
 
-function createFormula(sku, ingredient, quantity) {
+function createFormula(newFormulaObject) {
     return new Promise((resolve, reject) => {
-        let formula = new database.formulaModel({
-            sku: sku,
-            ingredient: ingredient,
-            quantity: quantity
-        });
+        let formula = new database.formulaModel(newFormulaObject);
         formula.save().then(response => {
             resolve(response);
         }).catch(err => {
