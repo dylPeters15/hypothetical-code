@@ -2,7 +2,6 @@ const express = require('express');
 const cors = require('cors');
 var headerParser = require('header-parser');
 const bodyParser = require('body-parser');
-const MongoClient = require('mongodb').MongoClient
 const crypto = require('crypto');
 const database_library = require('./database.js');
 var fs = require('fs');
@@ -55,19 +54,8 @@ MongoClient.connect('mongodb://localhost:27017', (err, database) => {
 
     app.route('/api/v1/manufacturing-goals').get((req,res) =>{
         let current_username = req.headers['username'];
-      db.collection('goals').find({
-          user: current_username
-      }).toArray(function(err,results) {
-          if(results.length > 0){
-            res.send(results);
-          }
-          else {
-              res.send({
-                message: "No goals found for user " + current_username
-              })
-          }
-        
-      });
+        let goalName = req.headers['goalName'];
+        getGoals(current_username, goalName, 1);
     });
 
     app.route('/api/v1/get-goal-by-name').get((req,res) => {

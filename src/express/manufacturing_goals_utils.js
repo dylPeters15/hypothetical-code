@@ -2,19 +2,20 @@ const database = require('./database.js');
 
    
 function getGoals(username, goalName, limit) {
-    let current_username = req.headers['username'];
-      db.collection('goals').find({
-          user: current_username
-      }).toArray(function(err,results) {
-          if(results.length > 0){
-            res.send(results);
-          }
-          else {
-              res.send({
-                message: "No goals found for user " + current_username
-              })
-          }  
-      });
+    return new Promise(function(resolve, reject) {
+        database.testdb.collection('goals').find({
+            user: current_username,
+            goalName: goalName
+        }).toArray(function(err,results) {
+            if(results.length > 0){
+              resolve(results);
+            }
+            else {
+                reject(Error(err));
+            }  
+        });
+    })
+     
     
 }
 

@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 var Schema = mongoose.Schema,
   ObjectId = Schema.ObjectId;
 const validator = require('validator');
+const MongoClient = require('mongodb').MongoClient
 
 const server = '127.0.0.1:27017';
 const productiondatabase = 'prod-db';
@@ -28,9 +29,9 @@ const defaultSearchLimit = 20;
 MongoClient.connect(testconnectionString, (err, database) => {
   let testdb = database.db(testdb);
 });
-MongoClient.connect(prodconnectionString, (err, database) => {
-  let proddb = database.db(proddb);
-});
+// MongoClient.connect(prodconnectionString, (err, database) => {
+//   let proddb = database.db(proddb);
+// });
 
 /**
  * Valid search criteria:
@@ -233,7 +234,7 @@ var formulaModel = mongoose.model('formula', formulaSchema);
 
 module.exports = {
   testdb: testdb,
-  proddb: proddb,
+  // proddb: proddb,
   server: server,
   database: database,
   connectionString: connectionString,
