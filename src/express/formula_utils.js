@@ -1,87 +1,47 @@
 const database = require('./database.js');
-const crypto = require('crypto');
 
-function generateSaltAndHash(password) {
-    var salt = crypto.randomBytes(16).toString('hex');
-    var hash = crypto.pbkdf2Sync(password, salt, 1000, 64, 'sha512').toString('hex');
-    return {
-        salt: salt,
-        hash: hash
-    };
-}
-
-//need to ensure that token is unique
-function generateToken() {
-    return new Promise((resolve, reject) => {
-        database.userModel.find({}).select('token -_id').exec((err, tokens) => {
-            if (err) {
-                reject(Error(err));
-                return
-            }
-            var token = crypto.randomBytes(16).toString('hex');
-            var maxIterations = 10000;
-            var iterations = 0;
-            while (tokens.includes(token)) {
-                token = crypto.randomBytes(16).toString('hex');
-                iterations = iterations + 1;
-                if (iterations >= maxIterations) {
-                    reject(Error("Could not generate token."));
-                }
-            }
-            resolve(token);
-        });
-    });
-}
-
-function getUsers(userName, userNameRegex, limit) {
-    userName = userName || "";
-    userNameRegex = userNameRegex || "$a";
+function getFormulas(sku, ingredient, limit) {
     limit = limit || database.defaultSearchLimit;
 
     return new Promise((resolve, reject) => {
         var filterSchema = {
             $or: [
-                { userName: userName },
-                { userName: { $regex: userNameRegex } }
+                { sku: sku },
+                { ingredient: ingredient }
             ]
         }
-        database.userModel.find(filterSchema).limit(limit).exec((err, users) => {
+        database.formulaModel.find(filterSchema).limit(limit).populate('sku ingredient').exec((err, formulas) => {
             if (err) {
                 reject(Error(err));
                 return;
             }
-            resolve(users);
+            resolve(formulas);
         });
     });
 }
 
-function createUser(username, password) {
+function createFormula(sku, ingredient, quantity) {
     return new Promise((resolve, reject) => {
-        let saltAndHash = generateSaltAndHash(password);
-        generateToken().then(token => {
-            let user = new database.userModel({
-                userName: username,
-                salt: saltAndHash.salt,
-                saltedHashedPassword: saltAndHash.hash,
-                token: token
-            });
-            user.save().then(response => {
-                resolve(response);
-            }).catch(err => {
-                reject(Error(err));
-            });
+        let formula = new database.formulaModel({
+            sku: sku,
+            ingredient: ingredient,
+            quantity: quantity
+        });
+        formula.save().then(response => {
+            resolve(response);
         }).catch(err => {
             reject(Error(err));
         });
     });
 }
 
-function modifyUser(userName, newUserObject) {
+function modifyFormula(sku, ingredient, newFormulaObject) {
     return new Promise((resolve, reject) => {
         var filterSchema = {
-            userName: userName
+            sku: sku,
+            ingredient: ingredient
         }
-        database.userModel.updateOne(filterSchema, newUserObject, (err, response) => {
+        database.formulaModel.updateOne(filterSchema, newFormulaObject, (err, response) => {
             if (err) {
                 reject(Error(err));
                 return
@@ -91,12 +51,13 @@ function modifyUser(userName, newUserObject) {
     });
 }
 
-function deleteUser(userName) {
+function deleteFormula(sku, ingredient) {
     return new Promise((resolve, reject) => {
         var filterSchema = {
-            userName: userName
+            sku: sku,
+            ingredient: ingredient
         }
-        database.userModel.deleteOne(filterSchema, (err, response) => {
+        database.formulaModel.deleteOne(filterSchema, (err, response) => {
             if (err) {
                 reject(Error(err));
                 return
@@ -107,8 +68,8 @@ function deleteUser(userName) {
 }
 
 module.exports = {
-    getUsers: getUsers,
-    createUser: createUser,
-    modifyUser: modifyUser,
-    deleteUser: deleteUser
+    getFormulas: getFormulas,
+    createFormula: createFormula,
+    modifyFormula: modifyFormula,
+    deleteFormula: deleteFormula
 };
