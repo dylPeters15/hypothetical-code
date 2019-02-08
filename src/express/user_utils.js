@@ -46,6 +46,8 @@ function getUsers(userName, userNameRegex, limit) {
             ]
         }
         database.userModel.find(filterSchema).limit(limit).exec((err, users) => {
+            console.log("Filter schema: ", filterSchema);
+            console.log("Users: ",users);
             if (err) {
                 reject(Error(err));
                 return;
