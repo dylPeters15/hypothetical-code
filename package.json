@@ -21,7 +21,7 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "testserver": "./node_modules/.bin/mocha -R spec src/spec.js"
+    "testserver": "./node_modules/.bin/mocha -R spec src/express/*spec.js"
   },
   "private": true,
   "dependencies": {
