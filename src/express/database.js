@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 var Schema = mongoose.Schema,
   ObjectId = Schema.ObjectId;
-const validator = require('validator');
+const uniqueValidator = require('mongoose-unique-validator');
 
 const serverName = '127.0.0.1:27017';
 const dbName = 'hypothetical-code-db';
@@ -43,6 +43,7 @@ var userSchema = new mongoose.Schema({
     unique: true
   }
 });
+userSchema.plugin(uniqueValidator);
 var userModel = mongoose.model('user', userSchema);
 
 /**
@@ -82,7 +83,7 @@ var ingredientSchema = new mongoose.Schema({
     unique: false
   }
 });
-
+ingredientSchema.plugin(uniqueValidator);
 var ingredientModel = mongoose.model('ingredient', ingredientSchema);
 
 /**
@@ -129,7 +130,7 @@ var skuSchema = new mongoose.Schema({
     unique: false
   }
 });
-
+skuSchema.plugin(uniqueValidator);
 var skuModel = mongoose.model('sku', skuSchema);
 
 /**
@@ -147,7 +148,7 @@ var productLineSchema = new mongoose.Schema({
     ref: 'sku'
   }
 });
-
+productLineSchema.plugin(uniqueValidator);
 productLineSchema.index({ name: 1, sku: 1 }, { unique: true }); //the combination of name and sku should be unique
 
 var productLineModel = mongoose.model('product_line', productLineSchema);
@@ -185,7 +186,7 @@ var manufacturingGoalsSchema = new mongoose.Schema({
     required: true
   }
 });
-
+manufacturingGoalsSchema.plugin(uniqueValidator);
 manufacturingGoalsSchema.index({ owner: 1, name: 1 }, { unique: true }); //the combination of owner and goal name should be unique
 
 var goalsModel = mongoose.model('goal', manufacturingGoalsSchema);
@@ -211,7 +212,7 @@ var formulaSchema = new mongoose.Schema({
     required: true
   }
 });
-
+formulaSchema.plugin(uniqueValidator);
 formulaSchema.index({ sku: 1, ingredient: 1 }, { unique: true }); //the combination of sku and ingredient should be unique
 
 var formulaModel = mongoose.model('formula', formulaSchema);
