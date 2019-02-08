@@ -24,7 +24,7 @@ describe('loading express', function () {
 
     it('creates admin user', function (done) {
         user_utils.createUser("admin", "password").then(response => {
-            assert.equal(response['userName'], "admin");
+            assert.equal(response['username'], "admin");
             done();
         }).catch(err => {
             assert.fail(err);
@@ -33,7 +33,7 @@ describe('loading express', function () {
 
     it('Throws error when creating user with existing username', function (done) {
         user_utils.createUser("admin", "password").then(response => {
-            assert.equal(response['userName'], "admin");
+            assert.equal(response['username'], "admin");
             user_utils.createUser("admin", "password2").then(innerresponse => {
                 assert.fail(Error("Should not have responded: ", innerresponse));
             }).catch(err => {
