@@ -15,7 +15,7 @@ function generateToken() {
     return crypto.randomBytes(16).toString('hex');
 }
 
-function getUsers(searchCriteria, limit) {
+function getUsers(userName, userNameRegex, limit) {
     console.log(limit || database.defaultSearchLimit);
 }
 
