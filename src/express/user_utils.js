@@ -14,6 +14,10 @@ function generateSaltAndHash(password) {
 function generateToken() {
     return new Promise((resolve, reject) => {
         database.userModel.find({}).select('token -_id').exec((err, tokens) => {
+            if (err) {
+                reject(Error(err));
+                return
+            }
             var token = crypto.randomBytes(16).toString('hex');
             var maxIterations = 10000;
             var iterations = 0;
@@ -21,7 +25,7 @@ function generateToken() {
                 token = crypto.randomBytes(16).toString('hex');
                 iterations = iterations + 1;
                 if (iterations >= maxIterations) {
-                    reject("Could not generate token.");
+                    reject(Error("Could not generate token."));
                 }
             }
             resolve(token);
@@ -44,9 +48,9 @@ function getUsers(userName, userNameRegex, limit) {
         database.userModel.find(filterSchema).limit(limit).exec((err, users) => {
             if (err) {
                 reject(Error(err));
-            } else {
-                resolve(users);
+                return;
             }
+            resolve(users);
         });
     });
 }
@@ -80,9 +84,9 @@ function modifyUser(userName, newUserObject) {
         database.userModel.updateOne(filterSchema, newUserObject, (err, response) => {
             if (err) {
                 reject(Error(err));
-            } else {
-                resolve(response);
+                return
             }
+            resolve(response);
         });
     });
 }
@@ -95,9 +99,8 @@ function deleteUser(searchCriteria) {
         database.userModel.deleteOne(filterSchema, (err, response) => {
             if (err) {
                 reject(Error(err));
-            } else {
-                resolve(response);
             }
+            resolve(response);
         });
     });
 }
