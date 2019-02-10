@@ -49,4 +49,26 @@ describe('testing REST API calls', function () {
             });
       });
 
+      it('it should login user', function (done) {
+        chai.request(server)
+                .get('/login')
+                .set('username', 'admin')
+                .set('password', 'password')
+                .end((err, res) => {
+                  assert.equal(res.body.token.length, 32);
+                  done();
+                });
+      });
+
+      it('it should not login user', function (done) {
+        chai.request(server)
+                .get('/login')
+                .set('username', 'admin')
+                .set('password', 'asdf')
+                .end((err, res) => {
+                  assert.equal(res.body.err, "Incorrect username or password");
+                  done();
+                });
+      });
+
 });
