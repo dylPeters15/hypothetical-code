@@ -1,9 +1,43 @@
 const database = require('./database.js');
 const crypto = require('crypto');
 
+function usernamePasswordCorrect(username, password) {
+    return new Promise((resolve, reject) => {
+        getUsers(username).then(users => {
+            if (users.length != 1) {
+                reject(Error("Could not find username"));
+                return;
+            }
+            var user = users[0];
+            resolve(generateHash(password, user.salt) == user.saltedhashedpassword);
+        }).catch(err => {
+            reject(Error(err));
+        })
+    });
+}
+
+function getUserToken(username) {
+    return new Promise((resolve, reject) => {
+        getUsers(username).then(users => {
+            if (users.length != 1) {
+                reject(Error("Could not find username"));
+                return;
+            }
+            var user = users[0];
+            resolve(user.token);
+        }).catch(err => {
+            reject(Error(err));
+        })
+    });
+}
+
+function generateHash(password, salt) {
+    return crypto.pbkdf2Sync(password, salt, 1000, 64, 'sha512').toString('hex');
+}
+
 function generateSaltAndHash(password) {
     var salt = crypto.randomBytes(16).toString('hex');
-    var hash = crypto.pbkdf2Sync(password, salt, 1000, 64, 'sha512').toString('hex');
+    var hash = generateHash(password, salt);
     return {
         salt: salt,
         hash: hash
@@ -117,5 +151,7 @@ module.exports = {
     getUsers: getUsers,
     createUser: createUser,
     modifyUser: modifyUser,
-    deleteUser: deleteUser
+    deleteUser: deleteUser,
+    usernamePasswordCorrect: usernamePasswordCorrect,
+    getUserToken: getUserToken
 };

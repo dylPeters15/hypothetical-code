@@ -25,7 +25,28 @@ const server = https.createServer({
 });
 module.exports = server;
 
-app.route('login').get((req, res) => {
+app.route('/login').get((req, res) => {
+    user_utils.usernamePasswordCorrect(req.headers['username'], req.headers['password']).then(correct => {
+        if (correct) {
+            user_utils.getUserToken(req.headers['username']).then(token => {
+                res.send({
+                    token: token
+                });
+            }).catch(err => {
+                res.send({
+                    err:err
+                });
+            });
+        } else {
+            res.send({
+                err: "Incorrect username or password"
+            });
+        }
+    }).catch(err => {
+        res.send({
+            err:err
+        });
+    });
 });
 
 ///////////////////// users /////////////////////
@@ -44,9 +65,7 @@ app.route('/users').get((req, res) => {
             err:err
         });
     });
-});
-
-app.route('/users').put((req, res) => {
+}).put((req, res) => {
     user_utils.createUser(req.body['username'], req.body['password']).then(response => {
         res.send(response);
     }).catch(err => {
@@ -54,9 +73,7 @@ app.route('/users').put((req, res) => {
             err:err
         });
     });
-});
-
-app.route('/users').post((req, res) => {
+}).post((req, res) => {
     user_utils.modifyUser(req.headers['username'], req.body['password']).then(response => {
         res.send(response);
     }).catch(err => {
@@ -64,9 +81,7 @@ app.route('/users').post((req, res) => {
             err:err
         });
     });
-});
-
-app.route('/users').delete((req, res) => {
+}).delete((req, res) => {
     user_utils.deleteUser(req.headers['username']).then(response => {
         res.send(response);
     }).catch(err => {
@@ -86,9 +101,7 @@ app.route('/formulas').get((req, res) => {
             err:err
         });
     });
-});
-
-app.route('/formulas').put((req, res) => {
+}).put((req, res) => {
     formula_utils.createFormula(req.body).then(response => {
         res.send(response);
     }).catch(err => {
@@ -96,9 +109,7 @@ app.route('/formulas').put((req, res) => {
             err:err
         });
     });
-});
-
-app.route('/formulas').post((req, res) => {
+}).post((req, res) => {
     formula_utils.modifyFormula(req.headers['sku'], req.headers['ingredient'], req.body).then(response => {
         res.send(response);
     }).catch(err => {
@@ -106,9 +117,7 @@ app.route('/formulas').post((req, res) => {
             err:err
         });
     });
-});
-
-app.route('/formulas').delete((req, res) => {
+}).delete((req, res) => {
     formula_utils.deleteFormula(req.headers['sku'], req.headers['ingredient']).then(response => {
         res.send(response);
     }).catch(err => {
