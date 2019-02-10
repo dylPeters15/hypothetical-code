@@ -16,7 +16,7 @@
     "starthttpredirectnoah": "sudo ng serve --host vcm-8205.vm.duke.edu --port 80 --disable-host-check",
     "starthttpredirectben": "sudo ng serve --host vcm-8205.vm.duke.edu --port 80 --disable-host-check",
     "starthttpredirectlocal": "sudo ng serve --port 80 --disable-host-check",
-    "startapi": "node src/server.js",
+    "startapi": "node src/express/server.js",
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
