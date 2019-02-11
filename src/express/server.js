@@ -130,7 +130,8 @@ app.route('/formulas').get((req, res) => {
 
 ///////////////////// ingredients /////////////////////
 app.route('/ingredients').get((req, res) => {
-    ingredient_utils.getIngredients(req.headers['ingredientname'], req.headers['ingredientnumber'], req.headers['limit']).then(ingredients => {
+    ingredient_utils.getIngredients(req.headers['ingredientname'], req.headers['ingredientnameregex'],
+    req.headers['ingredientnumber'], req.headers['limit']).then(ingredients => {
         res.send(ingredients);
     }).catch(err => {
         res.send({
@@ -148,7 +149,7 @@ app.route('/ingredients').get((req, res) => {
         });
     });
 }).post((req, res) => {
-    ingredient_utils.modifyIngredeint(req.headers['ingredientname'], req.body['ingredeintname'],
+    ingredient_utils.modifyIngredient(req.headers['ingredientname'], req.body['ingredientname'],
     req.body['ingredientnumber'], req.body['vendorinformation'], req.body['packagesize'],
     req.body['costperpackage'], req.body['comment']).then(response => {
         res.send(response);

@@ -1,13 +1,18 @@
 const database = require('./database.js');
 
-function getIngredients(ingredientname, ingredientnumber,limit){
+function getIngredients(ingredientname, ingredientnameregex, ingredientnumber,limit){
+
+    ingredientname = ingredientname || "";
+    ingredientnameregex = ingredientnameregex || "$a";
+    ingredientnumber = ingredientnumber || 1;
+    limit = limit || database.defaultSearchLimit;
 
     return new Promise(function (resolve, reject) {
         const filterSchema = {
             $or:[
-                {ingredientname:ingredientname},
-                {ingredientnumber:ingredientnumber},
-                {ingredientname: { $regex: /ingredientname/ }}
+                {ingredientname: ingredientname},
+                {ingredientnumber: ingredientnumber},
+                {ingredientname: { $regex: ingredientnameregex }}
             ]
         }
         database.ingredientModel.find(filterSchema).limit(limit).exec((err, ingredients) => {
@@ -15,6 +20,7 @@ function getIngredients(ingredientname, ingredientnumber,limit){
                 reject(Error(err));
                 return;
             }
+            console.log(ingredients)
             resolve(ingredients);
         });
     });
@@ -34,10 +40,6 @@ function createIngredient(ingredientname, ingredientnumber,
             else {
                 newingredientnumber = ingredientnumber
             }
-            // newingredientnumber = ingredientnumber || Number(response);
-            
-
-
             console.log(newingredientnumber)
             let ingredient = new database.ingredientModel({
                 ingredientname: ingredientname,
@@ -53,10 +55,6 @@ function createIngredient(ingredientname, ingredientnumber,
             }).catch(err => {
                 reject(Error(err));
             });
-
-
-
-
         }).catch(err => {
             throw(Error(err));
         });
@@ -71,10 +69,10 @@ function modifyIngredient(oldingredientname, newingredientname, ingredientnumber
 
     return new Promise(function (resolve, reject) {
         const filterschema = {
-            oldingredientname,
+            ingredientname: oldingredientname,
     
         };
-        database.ingredientModel.updateOne(filterschema, {
+        var updateObject = {
             $set: {
                 ingredientname: newingredientname,
                 ingredientnumber: ingredientnumber,
@@ -83,11 +81,13 @@ function modifyIngredient(oldingredientname, newingredientname, ingredientnumber
                 costperpackage: costperpackage,
                 comment: comment
             }
-        }, (err, response) => {
+        }
+        database.ingredientModel.updateOne(filterschema, updateObject , (err, response) => {
             if (err) {
                 reject(Error(err));
                 return
             }
+            console.log("utils",response)
             resolve(response);
         });
     });

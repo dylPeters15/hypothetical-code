@@ -32,7 +32,6 @@ describe('loading express', function () {
 
     it('creates ingredient with no user specified number', function (done) {
         ingredient_utils.createIngredient("salt2", null, "farms", "12oz", 20, "comment!").then(response => {
-            console.log('test')
             assert.equal(response['ingredientname'], "salt2");
             assert.notEqual(response['ingredientnumber'], null);
             assert.equal(response['vendorinformation'], "farms");
@@ -45,26 +44,50 @@ describe('loading express', function () {
         });
     });
 
-    // it('Throws error when creating user with existing username', function (done) {
-    //     user_utils.createUser("admin", "password").then(response => {
-    //         assert.equal(response['username'], "admin");
-    //         user_utils.createUser("admin", "password2").then(innerresponse => {
-    //             assert.fail(Error("Should not have responded: ", innerresponse));
-    //         }).catch(err => {
-    //             assert.notEqual(err, null);
+    // it('modifies and then fetches an ingredient', function (done) {
+    //     ingredient_utils.modifyIngredient("salt2", "corn", 345, "corn farm", "12oz", 20, "N/A").then(response => {
+    //         console.log("modify response", response)
+    //         ingredient_utils.getIngredients("corn", null, null, 1).then(ingredients => {
+    
+    //             console.log("ingredients",ingredients)
+    //             assert.equal(ingredients['ingredientname'], "corn");
+    //             assert.equal(ingredients['ingredientnumber'], 61554316);
+    //             assert.equal(ingredients['vendorinformation'], "corn farm");
+    //             assert.equal(ingredients['packagesize'], "12oz");
+    //             assert.equal(ingredients['costperpackage'], 20);
+    //             assert.equal(ingredients['comment'], "N/A");
     //             done();
-    //         });
+    //         }).catch(err => {
+    //             assert.fail(Error(err));
+    //         })
     //     }).catch(err => {
-    //         assert.fail(Error(err))
+    //         assert.fail(Error(err));
     //     });
     // });
 
-    // it('is empty', function (done) {
-    //     user_utils.getUsers().then(users => {
-    //         assert.equal(users.length, 0);
-    //         done();
+    // it('deletes an ingredient', function (done) {
+    //     ingredient_utils.deleteIngredient("corn").then(response => {
+    //         console.log(response)
+    //         ingredient_utils.getIngredients("", null, null, null).then(ingredients => {
+
+    //             assert.equal(ingredients.length, 0);
+    //             done();
+    //         }).catch(err => {
+    //             assert.fail(err);
+    //             done
+    //         });
     //     }).catch(err => {
     //         assert.fail(err);
     //     });
+        
+    //     // ingredient_utils.getIngredients("", null, null, null).then(ingredients => {
+
+    //     //     assert.equal(ingredients.length, 0);
+    //     //     done();
+    //     // }).catch(err => {
+    //     //     assert.fail(err);
+    //     //     done
+    //     // });
     // });
+
 });
