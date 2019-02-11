@@ -6,6 +6,7 @@ const fs = require('fs');
 const https = require('https');
 const user_utils = require('./user_utils.js');
 const formula_utils = require('./formula_utils.js');
+const ingredient_utils = require('./ingredient_utils.js');
 
 const app = express();
 const corsOptions = {
@@ -119,6 +120,45 @@ app.route('/formulas').get((req, res) => {
     });
 }).delete((req, res) => {
     formula_utils.deleteFormula(req.headers['sku'], req.headers['ingredient']).then(response => {
+        res.send(response);
+    }).catch(err => {
+        res.send({
+            err:err
+        });
+    });
+});
+
+///////////////////// ingredients /////////////////////
+app.route('/ingredients').get((req, res) => {
+    ingredient_utils.getIngredients(req.headers['ingredientname'], req.headers['ingredientnumber'], req.headers['limit']).then(ingredients => {
+        res.send(ingredients);
+    }).catch(err => {
+        res.send({
+            err:err
+        });
+    });
+}).put((req, res) => {
+    ingredient_utils.createIngredient(req.body['ingredientname'], req.body['ingredientnumber'],
+    req.body['vendorinformation'], req.body['packagesize'],
+    req.body['costperpackage'], req.body['comment']).then(response => {
+        res.send(response);
+    }).catch(err => {
+        res.send({
+            err:err
+        });
+    });
+}).post((req, res) => {
+    ingredient_utils.modifyIngredeint(req.headers['ingredientname'], req.body['ingredeintname'],
+    req.body['ingredientnumber'], req.body['vendorinformation'], req.body['packagesize'],
+    req.body['costperpackage'], req.body['comment']).then(response => {
+        res.send(response);
+    }).catch(err => {
+        res.send({
+            err:err
+        });
+    });
+}).delete((req, res) => {
+    formula_utils.deleteIngredients(req.headers['ingredientname']).then(response => {
         res.send(response);
     }).catch(err => {
         res.send({

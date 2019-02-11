@@ -1,45 +1,38 @@
 const database = require('./database.js');
 
-function getIngredients(ingredientName, ingredientNumber){
+function getIngredients(ingredientname, ingredientnumber,limit){
 
     return new Promise(function (resolve, reject) {
         const filterSchema = {
             $or:[
-                {ingredientName:ingredientName},
-                {ingredientNumber:ingredientNumber},
-                {ingredientName: { $regex: /ingredientName/ }}
+                {ingredientname:ingredientname},
+                {ingredientnumber:ingredientnumber},
+                {ingredientname: { $regex: /ingredientname/ }}
             ]
         }
-        db.collection('ingredients').findOne(filterschema, function(err,results) {
-            if(err) {
-                console.log(err);
+        database.ingredientModel.find(filterSchema).limit(limit).exec((err, ingredients) => {
+            if (err) {
+                reject(Error(err));
+                return;
             }
-            console.log(results)
-            if(results != null){
-                res.send(results);
-            }
-            else{
-                res.send({
-                    errormessage: 'No ingredient with name  ' + ingredientName +  
-                    ' and no ingredient with number ' + ingredientNumber
-                });
-            }
-            
+            resolve(ingredients);
         });
     });
     
 }
 
-function createIngredient(ingredientName, ingredientNumber = createUniqueIngredientNumber(), 
-    vendorInformation, packageSize, costPerPackage, comment) {
+function createIngredient(ingredientname, ingredientnumber, 
+    vendorinformation, packagesize, costperpackage, comment) {
+        
+    ingredientnumber = ingredientnumber|| createUniqueIngredientNumber();
 
     return new Promise(function (resolve, reject) {
         let ingredient = new database.ingredientModel({
-            ingridentName: ingredientName,
-            ingredientNumber: ingredientNumber,
-            vendorInformation: vendorInformation,
-            packageSize: packageSize,
-            costPerPackage: costPerPackage,
+            ingridentname: ingredientname,
+            ingredientnumber: ingredientnumber,
+            vendorinformation: vendorinformation,
+            packagesize: packagesize,
+            costperpackage: costperpackage,
             comment: comment
         });
         ingredient.save().then(response => {
@@ -50,60 +43,65 @@ function createIngredient(ingredientName, ingredientNumber = createUniqueIngredi
     });
 }
 
-function modifyIngredient(oldIngredientName, newIngredientName, ingredientNumber, vendorInformation, packageSize,
-    costPerPackage, comment) {
+function modifyIngredient(oldingredientname, newingredientname, ingredientnumber, vendorinformation, packagesize,
+    costperpackage, comment) {
 
     return new Promise(function (resolve, reject) {
         const filterschema = {
-            oldIngredientName,
+            oldingredientname,
     
         };
-        db.collection('ingredients').updateOne(filterschema, {
+        database.ingredientModel.updateOne(filterschema, {
             $set: {
-                ingredientName: newIngredientName,
-                ingredientNumber: ingredientNumber,
-                vendorInformation: vendorInformation,
-                packageSize: packageSize,
-                costPerPackage: costPerPackage,
+                ingredientname: newingredientname,
+                ingredientnumber: ingredientnumber,
+                vendorinformation: vendorinformation,
+                packagesize: packagesize,
+                costperpackage: costperpackage,
                 comment: comment
             }
-        }, function (innerdberr, innerdbres) {
-            res.send({
-                success: true
-            });
+        }, (err, response) => {
+            if (err) {
+                reject(Error(err));
+                return
+            }
+            resolve(response);
         });
     });
     
 }
 
-function deleteIngredient(ingredientName) {
+function deleteIngredient(ingredientname) {
     
     return new Promise(function (resolve, reject) {
         const filterschema = {
-            name: ingredientName
+            name: ingredientname
         };
-        db.collection('ingredients').deleteOne(filterschema, (dberr, dbres) => {
-            if (dberr) {
-                res.send({
-                    errormessage: 'Unable to delete ingredient with name ' + ingredientName
-                });
+        database.ingredientModel.deleteOne(filterschema, (err, response) => {
+            if (err) {
+                reject(Error(err));
                 return
             }
-            res.send({
-                success: true
-            });
+            resolve(response);
         });
     });    
 }
 
 function createUniqueIngredientNumber() {
-    db.collection('ingredients').find({ ingredientNumber }, {ingredientNumber:1}, function(err,results) {
+    database.collection('ingredients').find({ ingredientnumber }, {ingredientnumber:1}, function(err,results) {
         if (results != null) {
-            var newIngredientNumber;
-            while (newIngredientNumber == null || !results.contains(newIngredientNumber)) {
-                newIngredientNumber = Math.random() * 100000000;
+            var newingredientnumber;
+            while (newingredientnumber == null || !results.contains(newingredientnumber)) {
+                newingredientnumber = Math.random() * 100000000;
             }
-            return newIngredientNumber;
+            return newingredientnumber;
         }
     });
 }
+
+module.exports = {
+    getIngredients: getIngredients,
+    createIngredient: createIngredient,
+    modifyIngredient: modifyIngredient,
+    deleteIngredient: deleteIngredient
+};
