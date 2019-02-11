@@ -58,23 +58,6 @@ export class ParseCsvService {
     });
   }
 
-  /**
-  * Return value:
-  * {
-  *    <filename1> : [
-  *        {object from line 1},
-  *        {object from line 2},
-  *        ...
-  *    ],
-  *    <filename1> : [
-  *        {object from line 1},
-  *        {object from line 2},
-  *        ...
-  *    ],
-  *    ...
-  * }
-  * @param filesAsArray 
-  */
   parseFilesWithNames(filesWithNames: { [fileName: string]: string }): Promise<any> {
     return new Promise((resolve, reject) => {
       //check filenames
@@ -100,34 +83,18 @@ export class ParseCsvService {
 
         this.papa.parse(filesWithNames[fileName],
           {
-            header: true,
+            // header: true,
             skipEmptyLines: true,
             dynamicTyping: true,
             complete: (result) => {
-              console.log(result);
               if (result.errors.length != 0) {
                 reject(result.errors[0]);
               }
-              let objectArray = result.data;
-              // if (fileName.endsWith(".csv")) {
-              //   if (fileName.startsWith("skus")) {
-              //     objectArray = this.parseSKUs(result);
-              //   } else if (fileName.startsWith("ingredients")) {
-              //     objectArray = this.parseIngredients(result);
-              //   } else if (fileName.startsWith("product_lines")) {
-              //     objectArray = this.parseProductLines(result);
-              //   } else if (fileName.startsWith("formulas")) {
-              //     objectArray = this.parseFormulas(result);
-              //   } else {
-              //     throw Error("Error. File name must start with 'skus', 'ingredients', 'product_lines', or 'formulas'.");
-              //   }
-              // } else {
-              //   throw Error("Error. File name must end with '.csv'.");
-              // }
+              let objectArray: any[] = result.data;
+              objectArray.shift(); //remove header
               objectToReturn[fileName] = objectArray;
               numParsed = numParsed + 1;
               if (numParsed == numFiles) {
-                console.log(objectToReturn);
                 resolve(objectToReturn);
               }
             }
@@ -136,48 +103,4 @@ export class ParseCsvService {
     });
   }
 
-  // private parseSKUs(result): any[] {
-
-  // }
-
-  // private parseIngredients(result): any[] {
-
-  // }
-
-  // private parseFormulas(result): any[] {
-
-  // }
-
-  // private parseProductLines(result): any[] {
-
-  // }
-
-
-  // private parseFiles(filesAsArray: File[]) {
-  //   var parsedFiles = {};
-  //   for (var i = 0; i < filesAsArray.length; i = i + 1) {
-  //     var file: File = filesAsArray[i];
-  //     parsedFiles[file.name] = this.parseFile(file);
-  //   }
-  //   return parsedFiles;
-  // }
-
-  // private parseFile(file) {
-  //   console.log(file);
-  //   if (file.name.endsWith(".csv")) {
-  //     if (file.name.startsWith("skus")) {
-
-  //     } else if (file.name.startsWith("ingredients")) {
-
-  //     } else if (file.name.startsWith("product_lines")) {
-
-  //     } else if (file.name.startsWith("formulas")) {
-
-  //     } else {
-  //       throw Error("Error. File name must start with 'skus', 'ingredients', 'product_lines', or 'formulas'.");
-  //     }
-  //   } else {
-  //     throw Error("Error. File name must end with '.csv'.");
-  //   }
-  // }
 }
