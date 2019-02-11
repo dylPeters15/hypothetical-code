@@ -1,33 +1,28 @@
 const mongoose = require('mongoose');
 var Schema = mongoose.Schema,
   ObjectId = Schema.ObjectId;
-const validator = require('validator');
+const uniqueValidator = require('mongoose-unique-validator');
 
-const server = '127.0.0.1:27017';
-const database = 'my-test-db';
-const connectionString = `mongodb://${server}/${database}`;
+const serverName = '127.0.0.1:27017';
+const dbName = 'hypothetical-code-db';
+const connectionString = `mongodb://${serverName}/${dbName}`;
+const defaultSearchLimit = 20;
 
-// class Database {
-//   constructor() {
-//     this._connect();
-//   }
-//   _connect() {
-//     mongoose.connect(connectionString)
-//       .then(() => {
-//         console.log('Database connection successful');
-//       })
-//       .catch(err => {
-//         console.error('Database connection error');
-//       });
-//   }
-// }
+mongoose.connect(connectionString);
+mongoose.Promise = global.Promise;
+var db = mongoose.connection;
+db.on('error', console.error.bind(console, 'MongoDB connection error:'));
+
+function dropDatabase() {
+  return db.dropDatabase();
+}
 
 /**
  * Valid search criteria:
  * userName - match/regex
  */
 var userSchema = new mongoose.Schema({
-  userName: {
+  username: {
     type: String,
     required: true,
     unique: true
@@ -37,7 +32,7 @@ var userSchema = new mongoose.Schema({
     required: true,
     unique: false
   },
-  saltedHashedPassword: {
+  saltedhashedpassword: {
     type: String,
     required: true,
     unique: false
@@ -48,6 +43,7 @@ var userSchema = new mongoose.Schema({
     unique: true
   }
 });
+userSchema.plugin(uniqueValidator);
 var userModel = mongoose.model('user', userSchema);
 
 /**
@@ -56,27 +52,27 @@ var userModel = mongoose.model('user', userSchema);
  * number - match
  */
 var ingredientSchema = new mongoose.Schema({
-  ingredientName: {
+  ingredientname: {
     type: String,
     required: true,
     unique: true
   },
-  ingredientNumber: {
+  ingredientnumber: {
     type: Number,
     required: true,
     unique: true
   },
-  vendorInformation: {
+  vendorinformation: {
     type: String,
     required: false,
     unique: false
   },
-  packageSize: {
+  packagesize: {
     type: String,
     required: true,
     unique: false
   },
-  costPerPackage: {
+  costperpackage: {
     type: Number,
     required: true,
     unique: false
@@ -87,7 +83,7 @@ var ingredientSchema = new mongoose.Schema({
     unique: false
   }
 });
-
+ingredientSchema.plugin(uniqueValidator);
 var ingredientModel = mongoose.model('ingredient', ingredientSchema);
 
 /**
@@ -98,32 +94,32 @@ var ingredientModel = mongoose.model('ingredient', ingredientSchema);
  * unitUpcNumber - match
  */
 var skuSchema = new mongoose.Schema({
-  skuName: {
+  skuname: {
     type: String,
     required: true,
     unique: true
   },
-  skuNumber: {
+  skunumber: {
     type: Number,
     required: true,
     unique: true
   },
-  caseUpcNumber: {
+  caseupcnumber: {
     type: Number,
     required: true,
     unique: true
   },
-  unitUpcNumber: {
+  unitupcnumber: {
     type: Number,
     required: true,
     unique: true
   },
-  unitSize: {
+  unitsize: {
     type: String,
     required: true,
     unique: false
   },
-  countPerCase: {
+  countpercase: {
     type: Number,
     required: true,
     unique: false
@@ -134,7 +130,7 @@ var skuSchema = new mongoose.Schema({
     unique: false
   }
 });
-
+skuSchema.plugin(uniqueValidator);
 var skuModel = mongoose.model('sku', skuSchema);
 
 /**
@@ -143,7 +139,7 @@ var skuModel = mongoose.model('sku', skuSchema);
  * sku - match
  */
 var productLineSchema = new mongoose.Schema({
-  productLineName: {
+  productlinename: {
     type: String,
     required: true
   },
@@ -152,10 +148,10 @@ var productLineSchema = new mongoose.Schema({
     ref: 'sku'
   }
 });
+productLineSchema.plugin(uniqueValidator);
+productLineSchema.index({ productlinename: 1, sku: 1 }, { unique: true }); //the combination of name and sku should be unique
 
-productLineSchema.index({ name: 1, sku: 1 }, { unique: true }); //the combination of name and sku should be unique
-
-var productLineModel = mongoose.model('product_line', productLineSchema);
+var productLineModel = mongoose.model('productline', productLineSchema);
 
 /**
  * Valid search criteria:
@@ -165,7 +161,7 @@ var productLineModel = mongoose.model('product_line', productLineSchema);
  * owner - match
  */
 var manufacturingGoalsSchema = new mongoose.Schema({
-  goalName: {
+  goalname: {
     type: String,
     required: true,
     unique: false
@@ -190,8 +186,8 @@ var manufacturingGoalsSchema = new mongoose.Schema({
     required: true
   }
 });
-
-manufacturingGoalsSchema.index({ owner: 1, name: 1 }, { unique: true }); //the combination of owner and goal name should be unique
+manufacturingGoalsSchema.plugin(uniqueValidator);
+manufacturingGoalsSchema.index({ owner: 1, goalname: 1 }, { unique: true }); //the combination of owner and goal name should be unique
 
 var goalsModel = mongoose.model('goal', manufacturingGoalsSchema);
 
@@ -216,19 +212,18 @@ var formulaSchema = new mongoose.Schema({
     required: true
   }
 });
-
+formulaSchema.plugin(uniqueValidator);
 formulaSchema.index({ sku: 1, ingredient: 1 }, { unique: true }); //the combination of sku and ingredient should be unique
 
 var formulaModel = mongoose.model('formula', formulaSchema);
 
 module.exports = {
-  server: server,
-  database: database,
-  connectionString: connectionString,
+  defaultSearchLimit: defaultSearchLimit,
   userModel: userModel,
   goalsModel: goalsModel,
   ingredientModel: ingredientModel,
   skuModel: skuModel,
   productLineModel: productLineModel,
-  formulaModel: formulaModel
+  formulaModel: formulaModel,
+  dropDatabase: dropDatabase
 };

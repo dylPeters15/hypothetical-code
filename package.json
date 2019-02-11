@@ -21,7 +21,7 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "testserver": "./node_modules/.bin/mocha -R spec src/spec.js"
+    "testserver": "./node_modules/.bin/mocha -R spec src/express/*spec.js"
   },
   "private": true,
   "dependencies": {
@@ -36,6 +36,8 @@
     "@angular/platform-browser-dynamic": "~7.2.0",
     "@angular/router": "~7.2.0",
     "body-parser": "^1.18.3",
+    "chai": "^4.2.0",
+    "chai-http": "^4.2.1",
     "commander": "^2.19.0",
     "core-js": "^2.5.4",
     "cors": "^2.8.5",
@@ -47,6 +49,7 @@
     "mocha": "^5.2.0",
     "mongodb": "^3.1.12",
     "mongoose": "^5.4.6",
+    "mongoose-unique-validator": "^2.0.2",
     "rxjs": "~6.3.3",
     "sails": "^1.1.0",
     "supertest": "^3.4.2",
