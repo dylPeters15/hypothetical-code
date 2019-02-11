@@ -1,5 +1,5 @@
 const assert = require('assert');
-const user_utils = require('./ingredient_utils.js');
+const ingredient_utils = require('./ingredient_utils.js');
 const database = require('./database.js');
 
 describe('loading express', function () {
@@ -17,9 +17,24 @@ describe('loading express', function () {
     });
 
     it('creates ingredient with all fields', function (done) {
-        user_utils.createIngredient("salt", 123, "farms", "12oz", 20, "comment!").then(response => {
+        ingredient_utils.createIngredient("salt", 123, "farms", "12oz", 20, "comment!").then(response => {
             assert.equal(response['ingredientname'], "salt");
             assert.equal(response['ingredientnumber'], 123);
+            assert.equal(response['vendorinformation'], "farms");
+            assert.equal(response['packagesize'], "12oz");
+            assert.equal(response['costperpackage'], 20);
+            assert.equal(response['comment'], "comment!");
+            done();
+        }).catch(err => {
+            assert.fail(err);
+        });
+    });
+
+    it('creates ingredient with no user specified number', function (done) {
+        ingredient_utils.createIngredient("salt2", null, "farms", "12oz", 20, "comment!").then(response => {
+            console.log('test')
+            assert.equal(response['ingredientname'], "salt2");
+            assert.notEqual(response['ingredientnumber'], null);
             assert.equal(response['vendorinformation'], "farms");
             assert.equal(response['packagesize'], "12oz");
             assert.equal(response['costperpackage'], 20);

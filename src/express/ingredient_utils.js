@@ -23,24 +23,47 @@ function getIngredients(ingredientname, ingredientnumber,limit){
 
 function createIngredient(ingredientname, ingredientnumber, 
     vendorinformation, packagesize, costperpackage, comment) {
-        
-    ingredientnumber = ingredientnumber|| createUniqueIngredientNumber();
-
+    
     return new Promise(function (resolve, reject) {
-        let ingredient = new database.ingredientModel({
-            ingridentname: ingredientname,
-            ingredientnumber: ingredientnumber,
-            vendorinformation: vendorinformation,
-            packagesize: packagesize,
-            costperpackage: costperpackage,
-            comment: comment
-        });
-        ingredient.save().then(response => {
-            resolve(response);
+        createUniqueIngredientNumber().then(response => {
+            var newingredientnumber;  
+
+            if (ingredientnumber == null) {
+                newingredientnumber = Number(response)
+            }
+            else {
+                newingredientnumber = ingredientnumber
+            }
+            // newingredientnumber = ingredientnumber || Number(response);
+            
+
+
+            console.log(newingredientnumber)
+            let ingredient = new database.ingredientModel({
+                ingredientname: ingredientname,
+                ingredientnumber: newingredientnumber,
+                vendorinformation: vendorinformation,
+                packagesize: packagesize,
+                costperpackage: costperpackage,
+                comment: comment
+            });
+            ingredient.save().then(result => {
+                console.log(result)
+                resolve(result);
+            }).catch(err => {
+                reject(Error(err));
+            });
+
+
+
+
         }).catch(err => {
-            reject(Error(err));
+            throw(Error(err));
         });
+        
     });
+
+    
 }
 
 function modifyIngredient(oldingredientname, newingredientname, ingredientnumber, vendorinformation, packagesize,
@@ -88,15 +111,28 @@ function deleteIngredient(ingredientname) {
 }
 
 function createUniqueIngredientNumber() {
-    database.collection('ingredients').find({ ingredientnumber }, {ingredientnumber:1}, function(err,results) {
-        if (results != null) {
-            var newingredientnumber;
-            while (newingredientnumber == null || !results.contains(newingredientnumber)) {
-                newingredientnumber = Math.random() * 100000000;
-            }
-            return newingredientnumber;
-        }
-    });
+    var newingredientnumber;
+    var numFound = false;
+    while (!numFound) {
+        newingredientnumber = Math.round(Math.random() * 100000000);
+        return new Promise(function (resolve, reject) {
+            database.ingredientModel.find({ 'ingredientnumber':newingredientnumber }, 'ingredientnumber').exec((err,result)=> {
+                if (result == null) {
+                }
+                if (err) {
+                    reject(Error(err));
+                }
+                if (result != null) {
+                    numFound = true;
+                }
+             
+                 
+            });
+            resolve(newingredientnumber);  
+        });
+    }
+    
+    
 }
 
 module.exports = {
