@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
-import * as _ from 'csv-parse';
+import { Papa } from 'ngx-papaparse';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ParseCsvService {
 
-  constructor() { }
+  constructor(private papa: Papa) { }
 
   parseCSVFile(files: { [key: string]: File }): Promise<any> {
     return new Promise((resolve, reject) => {
@@ -54,6 +54,17 @@ export class ParseCsvService {
    */
   parseFilesWithNames(filesWithNames: { [fileName: string]: string }): any {
     console.log(filesWithNames);
+    for (let fileName in filesWithNames) {
+      console.log("Filename: ", fileName);
+      console.log(filesWithNames[fileName]);
+      // _.parse(filesWithNames[fileName],{});
+      // console.log(csvparse(filesWithNames[fileName]));
+      this.papa.parse(filesWithNames[fileName],{
+        complete: (result) => {
+            console.log('Parsed: ', result);
+        }
+    });
+    }
   }
 
  
