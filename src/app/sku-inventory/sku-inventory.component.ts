@@ -75,16 +75,16 @@ export class SkuInventoryComponent  implements OnInit {
   }
 
   refreshData() {
-    this.rest.getSkus().subscribe(response => {
-      this.data = response;
-      this.data.forEach(user => {
-        user['checked'] = false;
-      });
-      console.log(this.data);
-      this.dataSource =  new MatTableDataSource<UserForTable>(this.data);
-      this.dataSource.sort = this.sort;
-    this.dataSource.paginator = this.paginator;
-    });
+    // this.rest.getSkus().subscribe(response => {
+    //   this.data = response;
+    //   this.data.forEach(user => {
+    //     user['checked'] = false;
+    //   });
+    //   console.log(this.data);
+    //   this.dataSource =  new MatTableDataSource<UserForTable>(this.data);
+    //   this.dataSource.sort = this.sort;
+    // this.dataSource.paginator = this.paginator;
+    // });
     
   }
 
@@ -120,18 +120,18 @@ export class SkuInventoryComponent  implements OnInit {
   }
 
   deleteSkuConfirmed(sku) {
-    this.rest.sendAdminDeleteSkuRequest(sku.name).subscribe(response => {
-      for (var i=0; i<sku.ingredientTuples.length-1; i = i+2) {
-        this.removeIngredient(sku.ingredientTuples[i], sku.name);
-      }
-      this.snackBar.open("Sku " + name + " deleted successfully.", "close", {
-        duration: 2000,
-      });
-      this.data = this.data.filter((value, index, arr) => {
-        return value.name != name;
-      });
-      this.refreshData();
-    });
+    // this.rest.sendAdminDeleteSkuRequest(sku.name).subscribe(response => {
+    //   for (var i=0; i<sku.ingredientTuples.length-1; i = i+2) {
+    //     this.removeIngredient(sku.ingredientTuples[i], sku.name);
+    //   }
+    //   this.snackBar.open("Sku " + name + " deleted successfully.", "close", {
+    //     duration: 2000,
+    //   });
+    //   this.data = this.data.filter((value, index, arr) => {
+    //     return value.name != name;
+    //   });
+    //   this.refreshData();
+    // });
   }
 
   modifySkuConfirmed(present_name, present_skuNumber, present_caseUpcNumber, present_unitUpcNumber,present_unitSize,present_countPerCase,present_productLine,present_ingredientTuples, present_comment, present_id) {
@@ -200,16 +200,16 @@ export class SkuInventoryComponent  implements OnInit {
 
   removeIngredient(ingredient, sku) {
     let newSkus;
-    this.rest.getIngredientByNumber(ingredient).subscribe(response => {
-      newSkus = response.skus
-      console.log("new skus", newSkus)
-      newSkus.push(sku);
-      newSkus = newSkus.filter(function(e) { return e !== sku })
-      console.log("new skus", newSkus)
-      this.rest.addIngredientSku(ingredient, newSkus).subscribe(response => {
-        console.log("New ingredient data", response)
-      });
-    });
+    // this.rest.getIngredientByNumber(ingredient).subscribe(response => {
+    //   newSkus = response.skus
+    //   console.log("new skus", newSkus)
+    //   newSkus.push(sku);
+    //   newSkus = newSkus.filter(function(e) { return e !== sku })
+    //   console.log("new skus", newSkus)
+    //   this.rest.addIngredientSku(ingredient, newSkus).subscribe(response => {
+    //     console.log("New ingredient data", response)
+    //   });
+    // });
   }
   
   deselectAll() {

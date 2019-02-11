@@ -25,20 +25,20 @@ export class LoginComponent implements OnInit {
     }
 
   login() : void {
-    this.rest.sendLoginRequest(this.myusername, this.mypassword).subscribe(
-      (data: {}) => {
-        if (data['token']) {
-          //logged in successfully
-          this.failedLogin = false;
-          auth.storeLogin(this.myusername, data['token']);
-          this.router.navigateByUrl('/home');
-        } else {
-          //incorrect login
-          this.failedLogin = true;
-          auth.clearLogin();
-        }
-      }
-    );
+    // this.rest.sendLoginRequest(this.myusername, this.mypassword).subscribe(
+    //   (data: {}) => {
+    //     if (data['token']) {
+    //       //logged in successfully
+    //       this.failedLogin = false;
+    //       auth.storeLogin(this.myusername, data['token']);
+    //       this.router.navigateByUrl('/home');
+    //     } else {
+    //       //incorrect login
+    //       this.failedLogin = true;
+    //       auth.clearLogin();
+    //     }
+    //   }
+    // );
 }
 
 }

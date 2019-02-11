@@ -46,16 +46,16 @@ export class ProductLineInventoryComponent  implements OnInit {
   }
 
   refreshData() {
-    this.rest.getProductLines().subscribe(response => {
-      this.data = response;
-      this.data.forEach(user => {
-        user['checked'] = false;
-      });
-      console.log(this.data);
-      this.dataSource =  new MatTableDataSource<UserForTable>(this.data);
-      this.dataSource.sort = this.sort;
-    this.dataSource.paginator = this.paginator;
-    });
+    // this.rest.getProductLines().subscribe(response => {
+    //   this.data = response;
+    //   this.data.forEach(user => {
+    //     user['checked'] = false;
+    //   });
+    //   console.log(this.data);
+    //   this.dataSource =  new MatTableDataSource<UserForTable>(this.data);
+    //   this.dataSource.sort = this.sort;
+    // this.dataSource.paginator = this.paginator;
+    // });
     
   }
 /**    var sku_array_text;
@@ -73,25 +73,25 @@ export class ProductLineInventoryComponent  implements OnInit {
     const dialogConfig = new MatDialogConfig();
     for (var index = 0; index < content.length; index++) { 
       console.log("right now content is " + content[index]);
-      this.rest.getSkuInfoFromId(content[index]).subscribe(response => {
-        console.log("response nowww " + response + ", " + response.id);
+      // this.rest.getSkuInfoFromId(content[index]).subscribe(response => {
+      //   console.log("response nowww " + response + ", " + response.id);
 
-        var sku_name = response.name;
-        var sku_size = response.unitSize;
-        var sku_case_count = response.countPerCase;
-        if(response.name != undefined)
-        {
-          sku_array_text.push(sku_name + ": " + sku_size + " * " + sku_case_count);
-          if(sku_array_text.length == content.length)
-          {
-            dialogConfig.data = {information_content: sku_array_text};
-            this.dialogRef = this.dialog.open(MoreInfoDialogComponent, dialogConfig);
-            this.dialogRef.afterClosed().subscribe(event => {
-              this.refreshData();
-            });
-          }
-        }
-        });
+      //   var sku_name = response.name;
+      //   var sku_size = response.unitSize;
+      //   var sku_case_count = response.countPerCase;
+      //   if(response.name != undefined)
+      //   {
+      //     sku_array_text.push(sku_name + ": " + sku_size + " * " + sku_case_count);
+      //     if(sku_array_text.length == content.length)
+      //     {
+      //       dialogConfig.data = {information_content: sku_array_text};
+      //       this.dialogRef = this.dialog.open(MoreInfoDialogComponent, dialogConfig);
+      //       this.dialogRef.afterClosed().subscribe(event => {
+      //         this.refreshData();
+      //       });
+      //     }
+      //   }
+      //   });
       }
 
   }
@@ -118,15 +118,15 @@ export class ProductLineInventoryComponent  implements OnInit {
   }
 
   deleteProductLineConfirmed(product_line) {
-    this.rest.sendAdminDeleteProductLineRequest(product_line.name).subscribe(response => {
-      this.snackBar.open("Sku " + name + " deleted successfully.", "close", {
-        duration: 2000,
-      });
-      this.data = this.data.filter((value, index, arr) => {
-        return value.name != name;
-      });
-      this.refreshData();
-    });
+    // this.rest.sendAdminDeleteProductLineRequest(product_line.name).subscribe(response => {
+    //   this.snackBar.open("Sku " + name + " deleted successfully.", "close", {
+    //     duration: 2000,
+    //   });
+    //   this.data = this.data.filter((value, index, arr) => {
+    //     return value.name != name;
+    //   });
+    //   this.refreshData();
+    // });
   }
 
   modifyProductLineConfirmed(present_name, present_skus, present_id) {
@@ -173,16 +173,16 @@ export class ProductLineInventoryComponent  implements OnInit {
 
   removeIngredient(ingredient, sku) {
     let newSkus;
-    this.rest.getIngredientByNumber(ingredient).subscribe(response => {
-      newSkus = response.skus
-      console.log("new skus", newSkus)
-      newSkus.push(sku);
-      newSkus = newSkus.filter(function(e) { return e !== sku })
-      console.log("new skus", newSkus)
-      this.rest.addIngredientSku(ingredient, newSkus).subscribe(response => {
-        console.log("New ingredient data", response)
-      });
-    });
+    // this.rest.getIngredientByNumber(ingredient).subscribe(response => {
+    //   newSkus = response.skus
+    //   console.log("new skus", newSkus)
+    //   newSkus.push(sku);
+    //   newSkus = newSkus.filter(function(e) { return e !== sku })
+    //   console.log("new skus", newSkus)
+    //   this.rest.addIngredientSku(ingredient, newSkus).subscribe(response => {
+    //     console.log("New ingredient data", response)
+    //   });
+    // });
   }
   
   deselectAll() {

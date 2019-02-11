@@ -69,16 +69,16 @@ export class IngredientInventoryComponent  implements OnInit {
   }
 
   refreshData() {
-    this.rest.getIngredients().subscribe(response => {
-      this.data = response;
-      this.data.forEach(user => {
-        user['checked'] = false;
-      });
-      console.log(this.data);
-      this.dataSource =  new MatTableDataSource<IngredientForTable>(this.data);
-      this.dataSource.sort = this.sort;
-    this.dataSource.paginator = this.paginator;
-    });
+    // this.rest.getIngredients().subscribe(response => {
+    //   this.data = response;
+    //   this.data.forEach(user => {
+    //     user['checked'] = false;
+    //   });
+    //   console.log(this.data);
+    //   this.dataSource =  new MatTableDataSource<IngredientForTable>(this.data);
+    //   this.dataSource.sort = this.sort;
+    // this.dataSource.paginator = this.paginator;
+    // });
     
   }
 
@@ -144,15 +144,15 @@ export class IngredientInventoryComponent  implements OnInit {
   }
 
   deleteIngredientConfirmed(name) {
-    this.rest.sendAdminDeleteIngredientRequest(name).subscribe(response => {
-      this.snackBar.open("Ingredient " + name + " deleted successfully.", "close", {
-        duration: 2000,
-      });
-      this.data = this.data.filter((value, index, arr) => {
-        return value.name != name;
-      });
-      this.refreshData();
-    });
+    // this.rest.sendAdminDeleteIngredientRequest(name).subscribe(response => {
+    //   this.snackBar.open("Ingredient " + name + " deleted successfully.", "close", {
+    //     duration: 2000,
+    //   });
+    //   this.data = this.data.filter((value, index, arr) => {
+    //     return value.name != name;
+    //   });
+    //   this.refreshData();
+    // });
   }
 
   deleteSelected() {

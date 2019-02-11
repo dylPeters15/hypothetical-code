@@ -40,17 +40,17 @@ export class UserManagementComponent implements OnInit {
   }
 
   refreshData() {
-    this.rest.sendUserListRequest().subscribe(response => {
-      this.data = response['userlist'].filter((value, index, arr) => {
-        return value.username != 'admin';
-      });
-      this.data.forEach(user => {
-        user['checked'] = false;
-      });
-      this.sortData();
-      this.dataSource =  new MatTableDataSource<UserForTable>(this.data);
-    this.dataSource.paginator = this.paginator;
-    });
+    // this.rest.sendUserListRequest().subscribe(response => {
+    //   this.data = response['userlist'].filter((value, index, arr) => {
+    //     return value.username != 'admin';
+    //   });
+    //   this.data.forEach(user => {
+    //     user['checked'] = false;
+    //   });
+    //   this.sortData();
+    //   this.dataSource =  new MatTableDataSource<UserForTable>(this.data);
+    // this.dataSource.paginator = this.paginator;
+    // });
     
   }
 
@@ -69,15 +69,15 @@ export class UserManagementComponent implements OnInit {
   }
 
   deleteUserConfirmed(username) {
-    this.rest.sendAdminDeleteUserRequest(username).subscribe(response => {
-      this.snackBar.open("User " + username + " deleted successfully.", "close", {
-        duration: 2000,
-      });
-      this.data = this.data.filter((value, index, arr) => {
-        return value.username != username;
-      });
-      this.refreshData();
-    });
+    // this.rest.sendAdminDeleteUserRequest(username).subscribe(response => {
+    //   this.snackBar.open("User " + username + " deleted successfully.", "close", {
+    //     duration: 2000,
+    //   });
+    //   this.data = this.data.filter((value, index, arr) => {
+    //     return value.username != username;
+    //   });
+    //   this.refreshData();
+    // });
   }
 
   deleteUser(username) {

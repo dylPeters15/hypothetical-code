@@ -37,13 +37,13 @@ export class AccountSettingsComponent implements OnInit {
     if (this.passwordsValid()) {
       const oldPass = this.form.get('currentPass').value;
       const newPass = this.form.get('password').value;
-      this.rest.sendChangePasswordRequest(oldPass, newPass).subscribe(response => {
-        if (response['success']) {
-          this.openDialog("Success!", "Password successfully updated!");
-        } else {
-          this.openDialog("Error", "There was an error updating your password. Check that you entered your current password correctly and try again.");
-        }
-      });
+      // this.rest.sendChangePasswordRequest(oldPass, newPass).subscribe(response => {
+      //   if (response['success']) {
+      //     this.openDialog("Success!", "Password successfully updated!");
+      //   } else {
+      //     this.openDialog("Error", "There was an error updating your password. Check that you entered your current password correctly and try again.");
+      //   }
+      // });
     } else {
       this.openDialog("Error", "There was an error updating your password. Check that you entered your current password correctly and try again.");
     }
@@ -51,15 +51,15 @@ export class AccountSettingsComponent implements OnInit {
 
   deleteAccount() {
     const pass = this.deleteForm.get('confirmDelete').value
-    this.rest.sendDeleteAccountRequest(pass).subscribe(response => {
-      if (response['success']) {
-        this.openDialog("Success", "Account deleted successfully. You will be redirected to the login page.");
-        auth.clearLogin();
-        this.router.navigate(['login']);
-      } else {
-        this.openDialog("Error", "There was an error updating your password. Check that you entered your current password correctly and try again.");
-      }
-    });
+    // this.rest.sendDeleteAccountRequest(pass).subscribe(response => {
+    //   if (response['success']) {
+    //     this.openDialog("Success", "Account deleted successfully. You will be redirected to the login page.");
+    //     auth.clearLogin();
+    //     this.router.navigate(['login']);
+    //   } else {
+    //     this.openDialog("Error", "There was an error updating your password. Check that you entered your current password correctly and try again.");
+    //   }
+    // });
   }
 
   form = new FormGroup(
