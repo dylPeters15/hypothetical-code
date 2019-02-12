@@ -83,7 +83,7 @@ MongoClient.connect('mongodb://localhost:27017', (err, database) => {
 
 
     app.route('/api/v1/login').get((req, res) => {
-        let entered_username = req.headers['username'];
+        let entered_username = req.headers['username'];  
         let entered_password = req.headers['password'];
         console.log(req.headers)
         db.collection('users').find({
