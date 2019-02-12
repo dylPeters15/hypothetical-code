@@ -30,6 +30,6 @@
   </mat-card>
 </mat-dialog-content>
 <mat-dialog-actions align="center">
-  <button class="mat-raised-button" (click)="closeDialog()">Cancel</button>
-  <button class="mat-raised-button" (click)="createUser()" [disabled]="form.get('username').value==''||form.get('password').value==''||form.get('password').value!=form.get('confirm').value||usernameExists" color="primary">Create</button>
+  <button mat-raised-button (click)="closeDialog()">Cancel</button>
+  <button mat-raised-button (click)="createUser()" [disabled]="form.get('username').value==''||form.get('password').value==''||form.get('password').value!=form.get('confirm').value||usernameExists" color="primary">Create</button>
 </mat-dialog-actions>
