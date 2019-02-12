@@ -167,6 +167,45 @@ app.route('/ingredients').get((req, res) => {
     });
 });
 
+///////////////////// skus /////////////////////
+app.route('/skus').get((req, res) => {
+    sku_utils.getSkus(req.headers['skuName'], req.headers['skuNumber'], req.headers['limit']).then(skus => {
+        res.send(skus);
+    }).catch(err => {
+        res.send({
+            err:err
+        });
+    });
+}).put((req, res) => {
+    sku_utils.createSku(req.body['skuName'], req.body['skuNumber'],
+    req.body['caseUpcNumber'], req.body['unitUpcNumber'],
+    req.body['unitSize'], req.body['countPerCase'], req.body['comment']).then(response => {
+        res.send(response);
+    }).catch(err => {
+        res.send({
+            err:err
+        });
+    });
+}).post((req, res) => {
+    sku_utils.modifySku(req.headers['skuName'], req.body['skuName'],
+    req.body['skuNumber'], req.body['caseUpcNumber'], req.body['unitUpcNumber'],
+    req.body['unitSize'], req.body['countPerCase'], req.body['comment']).then(response => {
+        res.send(response);
+    }).catch(err => {
+        res.send({
+            err:err
+        });
+    });
+}).delete((req, res) => {
+    sku_utils.deleteSku(req.headers['skuName']).then(response => {
+        res.send(response);
+    }).catch(err => {
+        res.send({
+            err:err
+        });
+    });
+});
+
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
