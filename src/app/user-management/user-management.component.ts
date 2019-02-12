@@ -31,6 +31,7 @@ export class UserManagementComponent implements OnInit {
   dialogRef: MatDialogRef<NewUserDialogComponent>;
   passwordDialogRef: MatDialogRef<PasswordConfirmationDialogComponent>;
   @ViewChild(MatPaginator) paginator: MatPaginator;
+  filterQuery: string = "";
 
   ngOnInit() {
     this.paginator.pageSize = 20;
@@ -44,15 +45,18 @@ export class UserManagementComponent implements OnInit {
     return [5, 10, 20, this.allReplacement];
   }
 
-  refreshData() {
-    this.rest.getUsers("", ".*", this.paginator.pageSize).subscribe(response => {
+  refreshData(filterQueryData?) {
+    // filterQueryData = filterQueryData ? "^"+filterQueryData+".*" : "^"+this.filterQuery+".*"; //this returns things that start with the pattern
+    filterQueryData = filterQueryData ? ".*"+filterQueryData+".*" : ".*"+this.filterQuery+".*"; //this returns things that have the pattern anywhere in the string
+    console.log(filterQueryData);
+    this.rest.getUsers("", filterQueryData, this.paginator.pageSize).subscribe(response => {
+      console.log(response);
       this.data = response;
       this.deselectAll();
       this.sortData();
       this.dataSource = new MatTableDataSource<UserForTable>(this.data);
       this.dataSource.paginator = this.paginator;
     });
-
   }
 
   openDialog() {
