@@ -35,7 +35,7 @@ app.route('/login').get((req, res) => {
                 });
             }).catch(err => {
                 res.send({
-                    err:err
+                    err:""+err
                 });
             });
         } else {
@@ -45,7 +45,7 @@ app.route('/login').get((req, res) => {
         }
     }).catch(err => {
         res.send({
-            err:err
+            err:""+err
         });
     });
 });
@@ -63,15 +63,16 @@ app.route('/users').get((req, res) => {
         res.send(usersToSend);
     }).catch(err => {
         res.send({
-            err:err
+            err:""+err
         });
     });
 }).put((req, res) => {
     user_utils.createUser(req.body['username'], req.body['password']).then(response => {
         res.send(response);
     }).catch(err => {
+        console.log(err);
         res.send({
-            err:err
+            err:""+err
         });
     });
 }).post((req, res) => {
@@ -79,7 +80,7 @@ app.route('/users').get((req, res) => {
         res.send(response);
     }).catch(err => {
         res.send({
-            err:err
+            err:""+err
         });
     });
 }).delete((req, res) => {
@@ -87,7 +88,7 @@ app.route('/users').get((req, res) => {
         res.send(response);
     }).catch(err => {
         res.send({
-            err:err
+            err:""+err
         });
     });
 });
@@ -99,7 +100,7 @@ app.route('/formulas').get((req, res) => {
         res.send(formulas);
     }).catch(err => {
         res.send({
-            err:err
+            err:""+err
         });
     });
 }).put((req, res) => {
@@ -107,7 +108,7 @@ app.route('/formulas').get((req, res) => {
         res.send(response);
     }).catch(err => {
         res.send({
-            err:err
+            err:""+err
         });
     });
 }).post((req, res) => {
@@ -115,7 +116,7 @@ app.route('/formulas').get((req, res) => {
         res.send(response);
     }).catch(err => {
         res.send({
-            err:err
+            err:""+err
         });
     });
 }).delete((req, res) => {
@@ -123,7 +124,7 @@ app.route('/formulas').get((req, res) => {
         res.send(response);
     }).catch(err => {
         res.send({
-            err:err
+            err:""+err
         });
     });
 });
@@ -134,7 +135,7 @@ app.route('/ingredients').get((req, res) => {
         res.send(ingredients);
     }).catch(err => {
         res.send({
-            err:err
+            err:""+err
         });
     });
 }).put((req, res) => {
@@ -144,7 +145,7 @@ app.route('/ingredients').get((req, res) => {
         res.send(response);
     }).catch(err => {
         res.send({
-            err:err
+            err:""+err
         });
     });
 }).post((req, res) => {
@@ -154,7 +155,7 @@ app.route('/ingredients').get((req, res) => {
         res.send(response);
     }).catch(err => {
         res.send({
-            err:err
+            err:""+err
         });
     });
 }).delete((req, res) => {
@@ -162,7 +163,7 @@ app.route('/ingredients').get((req, res) => {
         res.send(response);
     }).catch(err => {
         res.send({
-            err:err
+            err:""+err
         });
     });
 });

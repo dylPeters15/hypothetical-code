@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { MatDialogRef} from "@angular/material";
 import { RestService } from '../rest.service';
 import {MatSnackBar} from '@angular/material';
+import { FormGroup, FormControl, Validators, FormGroupDirective } from '@angular/forms';
 
 @Component({
   selector: 'app-new-user-dialog',
@@ -12,7 +13,9 @@ export class NewUserDialogComponent implements OnInit {
 
   username: string = '';
   password: string = 'password';
-  hidePassword: boolean = false;
+  confirmPassword: string = 'password';
+  hidePassword1: boolean = true;
+  hidePassword2: boolean = true;
 
   constructor(private dialogRef: MatDialogRef<NewUserDialogComponent>, public rest:RestService, private snackBar: MatSnackBar) { }
 
@@ -26,7 +29,7 @@ export class NewUserDialogComponent implements OnInit {
   }
 
   createUser() {
-    this.rest.createUser(this.username, this.password, false).subscribe(response => {
+    this.rest.createUser(this.form.get('username').value, this.form.get('password').value, false).subscribe(response => {
       console.log(response);
       if (response['token']) {
         this.snackBar.open("Successfully created user " + this.username + ".", "close", {
@@ -39,4 +42,27 @@ export class NewUserDialogComponent implements OnInit {
     });
   }
 
+  form = new FormGroup(
+    {
+      username: new FormControl(''),
+      password: new FormControl('password', [Validators.minLength(4)]),
+      confirm: new FormControl('password', Validators.minLength(4)),
+    },
+    passwordMatchValidator
+  );
+
+  passwordErrorMatcher = {
+    isErrorState: (control: FormControl, form: FormGroupDirective): boolean => {
+      const controlInvalid = control.touched && control.invalid;
+      const formInvalid = control.touched && this.form.get('confirm').touched && this.form.invalid;
+      return controlInvalid || formInvalid || !!passwordMatchValidator(this.form);
+    }
+  }
+
+}
+
+function passwordMatchValidator(g: FormGroup) {
+  const password = g.get('password').value;
+  const confirm = g.get('confirm').value
+  return password === confirm ? null : { mismatch: true };
 }
