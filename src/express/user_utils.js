@@ -12,22 +12,7 @@ function usernamePasswordCorrect(username, password) {
             resolve(generateHash(password, user.salt) == user.saltedhashedpassword);
         }).catch(err => {
             reject(Error(err));
-        })
-    });
-}
-
-function getUserToken(username) {
-    return new Promise((resolve, reject) => {
-        getUsers(username).then(users => {
-            if (users.length != 1) {
-                reject(Error("Could not find username"));
-                return;
-            }
-            var user = users[0];
-            resolve(user.token);
-        }).catch(err => {
-            reject(Error(err));
-        })
+        });
     });
 }
 
@@ -67,7 +52,7 @@ function generateToken() {
     });
 }
 
-function getUsers(username, usernameregex, limit) {
+function getUsers(username, usernameregex, admin, limit) {
     username = username || "";
     usernameregex = usernameregex || "$a";
     limit = limit || database.defaultSearchLimit;
@@ -79,6 +64,9 @@ function getUsers(username, usernameregex, limit) {
                 { username: { $regex: usernameregex } }
             ]
         }
+        if (admin != null && admin != undefined) {
+            filterSchema['admin'] = admin;
+        }
         database.userModel.find(filterSchema).limit(limit).exec((err, users) => {
             if (err) {
                 reject(Error(err));
@@ -89,7 +77,7 @@ function getUsers(username, usernameregex, limit) {
     });
 }
 
-function createUser(username, password) {
+function createUser(username, password, admin) {
     return new Promise((resolve, reject) => {
         let saltAndHash = generateSaltAndHash(password);
         generateToken().then(token => {
@@ -97,7 +85,8 @@ function createUser(username, password) {
                 username: username,
                 salt: saltAndHash.salt,
                 saltedhashedpassword: saltAndHash.hash,
-                token: token
+                token: token,
+                admin: admin
             });
             user.save().then(response => {
                 resolve(response);
@@ -110,7 +99,7 @@ function createUser(username, password) {
     });
 }
 
-function modifyUser(username, newPassword) {
+function modifyUser(username, newPassword, newAdmin) {
     return new Promise((resolve, reject) => {
         var filterSchema = {
             username: username
@@ -119,7 +108,8 @@ function modifyUser(username, newPassword) {
         var updateObject = {
             $set: {
                 salt: saltAndHash.salt,
-                saltedhashedpassword: saltAndHash.hash
+                saltedhashedpassword: saltAndHash.hash,
+                admin: newAdmin
             }
         }
         database.userModel.updateOne(filterSchema, updateObject, (err, response) => {
@@ -152,6 +142,5 @@ module.exports = {
     createUser: createUser,
     modifyUser: modifyUser,
     deleteUser: deleteUser,
-    usernamePasswordCorrect: usernamePasswordCorrect,
-    getUserToken: getUserToken
+    usernamePasswordCorrect: usernamePasswordCorrect
 };
