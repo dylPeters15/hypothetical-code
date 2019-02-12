@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators, FormGroupDirective } from '@angular/forms';
 import { RestService } from '../rest.service';
-import {MatDialog, MatDialogConfig, MatDialogRef} from "@angular/material";
+import { MatDialog, MatDialogConfig, MatDialogRef } from "@angular/material";
 import { UserNotificationDialogComponent } from '../user-notification-dialog/user-notification-dialog.component';
 import { Router } from '@angular/router';
 import { auth } from '../auth.service';
@@ -31,35 +31,59 @@ export class AccountSettingsComponent implements OnInit {
     this.dialogRef = this.dialog.open(UserNotificationDialogComponent, dialogConfig);
     this.dialogRef.componentInstance.title = title;
     this.dialogRef.componentInstance.message = message;
-}
+  }
 
   changePassword() {
     if (this.passwordsValid()) {
       const oldPass = this.form.get('currentPass').value;
       const newPass = this.form.get('password').value;
-      this.rest.sendChangePasswordRequest(oldPass, newPass).subscribe(response => {
-        if (response['success']) {
-          this.openDialog("Success!", "Password successfully updated!");
+      this.rest.loginRequest(auth.getUsername(), oldPass).subscribe(loginresponse => {
+        if (loginresponse['token']) {
+          this.rest.modifyUser(auth.getUsername(), auth.getUsername(), newPass, false).subscribe(response => {
+            if (response['nModified'] == 1 && response['ok'] == 1) {
+              this.openDialog("Success!", "Password changed successfully.");
+              this.form.get('currentPass').setValue('');
+              this.form.get('password').setValue('');
+              this.form.get('confirm').setValue('');
+            } else {
+              this.openDialog("Unkown Error", "Unable to perform operation.");
+            }
+          });
         } else {
-          this.openDialog("Error", "There was an error updating your password. Check that you entered your current password correctly and try again.");
+          this.openDialog("Incorrect password", "Please ensure that you have entered your current password correctly and try again.");
         }
       });
     } else {
-      this.openDialog("Error", "There was an error updating your password. Check that you entered your current password correctly and try again.");
+      this.openDialog("Incorrect password", "Please ensure that you have entered your current password correctly and try again.");
     }
   }
 
   deleteAccount() {
     const pass = this.deleteForm.get('confirmDelete').value
-    this.rest.sendDeleteAccountRequest(pass).subscribe(response => {
-      if (response['success']) {
-        this.openDialog("Success", "Account deleted successfully. You will be redirected to the login page.");
-        auth.clearLogin();
-        this.router.navigate(['login']);
+    this.rest.loginRequest(auth.getUsername(), pass).subscribe(loginresponse => {
+      if (loginresponse['token']) {
+        this.rest.deleteUser(auth.getUsername()).subscribe(response => {
+          if (response['deletedCount'] == 1 && response['ok'] == 1) {
+            this.openDialog("Success", "Account deleted successfully. You will be redirected to the login page.");
+            auth.clearLogin();
+            this.router.navigate(['login']);
+          } else {
+            this.openDialog("Unkown Error", "Unable to perform operation.");
+          }
+        });
       } else {
-        this.openDialog("Error", "There was an error updating your password. Check that you entered your current password correctly and try again.");
+        this.openDialog("Incorrect password", "Please ensure that you have entered your password correctly and try again.");
       }
-    });
+    })
+    // this.rest.sendDeleteAccountRequest(pass).subscribe(response => {
+    //   if (response['success']) {
+    //     this.openDialog("Success", "Account deleted successfully. You will be redirected to the login page.");
+    //     auth.clearLogin();
+    //     this.router.navigate(['login']);
+    //   } else {
+    //     this.openDialog("Error", "There was an error updating your password. Check that you entered your current password correctly and try again.");
+    //   }
+    // });
   }
 
   form = new FormGroup(

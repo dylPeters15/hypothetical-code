@@ -24,7 +24,7 @@ export class PasswordConfirmationDialogComponent implements OnInit {
   }
 
   submit() {
-    this.rest.sendLoginRequest(auth.getUsername(), this.password).subscribe(response => {
+    this.rest.loginRequest(auth.getUsername(), this.password).subscribe(response => {
       if (response['token']) {
         this.dialogRef.close({validated:true});
       } else {

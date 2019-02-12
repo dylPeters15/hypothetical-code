@@ -25,7 +25,7 @@ export class LoginComponent implements OnInit {
     }
 
   login() : void {
-    this.rest.sendLoginRequest(this.myusername, this.mypassword).subscribe(
+    this.rest.loginRequest(this.myusername, this.mypassword).subscribe(
       (data: {}) => {
         if (data['token']) {
           //logged in successfully

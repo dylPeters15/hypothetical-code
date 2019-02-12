@@ -70,24 +70,24 @@ export class ManufacturingGoalsComponent implements OnInit {
 
   refreshData() {
     this.data = [];
-    this.rest.getGoals().subscribe(data => {
-        this.goals = data;
-        var i;
-        this.dataSource = new MatTableDataSource<ManufacturingGoal>(this.data);
-        for(i = 0; i<this.goals.length; i++){
-          let name = this.goals[i]['name'];
-          let skus = this.goals[i]['skus'];
-          let quantities = this.goals[i]['quantities'];
-          let date = this.goals[i]['date'];
-          let currentGoal = new ManufacturingGoal(name, skus, quantities, date, false);
-          this.data.push(currentGoal);
-        }
-        this.data.forEach(element => {
-          element['checked'] = false;
-        });
-        this.dataSource = new MatTableDataSource<ManufacturingGoal>(this.data);
-        this.dataSource.paginator = this.paginator;
-    })
+    // this.rest.getGoals().subscribe(data => {
+    //     this.goals = data;
+    //     var i;
+    //     this.dataSource = new MatTableDataSource<ManufacturingGoal>(this.data);
+    //     for(i = 0; i<this.goals.length; i++){
+    //       let name = this.goals[i]['name'];
+    //       let skus = this.goals[i]['skus'];
+    //       let quantities = this.goals[i]['quantities'];
+    //       let date = this.goals[i]['date'];
+    //       let currentGoal = new ManufacturingGoal(name, skus, quantities, date, false);
+    //       this.data.push(currentGoal);
+    //     }
+    //     this.data.forEach(element => {
+    //       element['checked'] = false;
+    //     });
+    //     this.dataSource = new MatTableDataSource<ManufacturingGoal>(this.data);
+    //     this.dataSource.paginator = this.paginator;
+    // })
   }
 
   deleteSelected() {
@@ -100,15 +100,15 @@ export class ManufacturingGoalsComponent implements OnInit {
   }
 
   deleteGoalConfirmed(name) {
-    this.rest.sendDeleteGoalRequest(name).subscribe(response => {
-      this.snackBar.open("Goal: " + name + " deleted successfully.", "close", {
-        duration: 2000,
-      });
-      this.data = this.data.filter((value, index, arr) => {
-        return value.name != name;
-      });
-      this.refreshData();
-    });
+    // this.rest.sendDeleteGoalRequest(name).subscribe(response => {
+    //   this.snackBar.open("Goal: " + name + " deleted successfully.", "close", {
+    //     duration: 2000,
+    //   });
+    //   this.data = this.data.filter((value, index, arr) => {
+    //     return value.name != name;
+    //   });
+    //   this.refreshData();
+    // });
   }
 
   deselectAll() {

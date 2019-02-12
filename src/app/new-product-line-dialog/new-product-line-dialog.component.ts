@@ -45,30 +45,30 @@ export class NewProductLineDialogComponent implements OnInit {
   {
       let sku_array_text: Number[] = [];
       for (var index = 0; index < input_array.length; index++) { 
-        this.rest.getSkuIdFromName(input_array[index]).subscribe(response => {
-          sku_array_text.push(response.id);
-          if (sku_array_text.length == input_array.length){
-            // generate ID
-            var id = Math.floor(Math.random() * 1000000000);
-            this.rest.adminCreateProductLine(this.name, sku_array_text, id).subscribe(response => {
-              //let i;
-              //for (i=0; i<this.sku.length-1; i = i++) {
-              //  this.sku[i]
-              //  this.addIngredient(this.ingredients[i], this.name);
-             // }
-              if (response['success']) {
-                this.snackBar.open("Successfully created product line " + this.name + ".", "close", {
-                  duration: 2000,
-                });
-              } else {
-                this.snackBar.open("Error creating product line " + this.name + ". Please refresh and try again.", "close", {
-                  duration: 2000,
-                });
-              }
-              this.closeDialog();
-            });
-          }
-          });
+        // this.rest.getSkuIdFromName(input_array[index]).subscribe(response => {
+        //   sku_array_text.push(response.id);
+        //   if (sku_array_text.length == input_array.length){
+        //     // generate ID
+        //     var id = Math.floor(Math.random() * 1000000000);
+        //     this.rest.adminCreateProductLine(this.name, sku_array_text, id).subscribe(response => {
+        //       //let i;
+        //       //for (i=0; i<this.sku.length-1; i = i++) {
+        //       //  this.sku[i]
+        //       //  this.addIngredient(this.ingredients[i], this.name);
+        //      // }
+        //       if (response['success']) {
+        //         this.snackBar.open("Successfully created product line " + this.name + ".", "close", {
+        //           duration: 2000,
+        //         });
+        //       } else {
+        //         this.snackBar.open("Error creating product line " + this.name + ". Please refresh and try again.", "close", {
+        //           duration: 2000,
+        //         });
+        //       }
+        //       this.closeDialog();
+        //     });
+        //   }
+        //   });
           }
       }
   
@@ -83,22 +83,22 @@ export class NewProductLineDialogComponent implements OnInit {
       
     else{
       console.log("We're modifying a product line");
-      this.rest.modifyProductLineRequest(this.name, this.sku, this.current_id).subscribe(response => {
-       // let i;
-       // for (i=0; i<this.ingredients.length-1; i = i+2) {
-       //   this.addIngredient(this.ingredients[i], this.name);
-       // }
-        if (response['success']) {
-          this.snackBar.open("Successfully modifyed product line " + this.name + ".", "close", {
-            duration: 2000,
-          });
-        } else {
-          this.snackBar.open("Error modifying product line " + this.name + ". Please refresh and try again.", "close", {
-            duration: 2000,
-          });
-        }
-        this.closeDialog();
-      });
+      // this.rest.modifyProductLineRequest(this.name, this.sku, this.current_id).subscribe(response => {
+      //  // let i;
+      //  // for (i=0; i<this.ingredients.length-1; i = i+2) {
+      //  //   this.addIngredient(this.ingredients[i], this.name);
+      //  // }
+      //   if (response['success']) {
+      //     this.snackBar.open("Successfully modifyed product line " + this.name + ".", "close", {
+      //       duration: 2000,
+      //     });
+      //   } else {
+      //     this.snackBar.open("Error modifying product line " + this.name + ". Please refresh and try again.", "close", {
+      //       duration: 2000,
+      //     });
+      //   }
+      //   this.closeDialog();
+      // });
     }
   }
 

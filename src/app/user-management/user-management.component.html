@@ -1,12 +1,15 @@
 <button mat-raised-button (click)="selectAll()"> Select All </button>
 <button mat-raised-button (click)="deselectAll()"> Deselect All </button>
-<button mat-raised-button (click)="deleteSelected()" style="color: white; background-color: red;" [disabled]="dataSource.data.length==0"> Delete Selected </button>
-<button mat-raised-button (click)="newUser()"> New User </button>
+<button mat-raised-button (click)="deleteSelected()" color="warn" [disabled]="noneSelected()"> Delete Selected </button>
+<button mat-raised-button (click)="newUser()" color="primary"> New User </button>
+<mat-form-field>
+  <input matInput placeholder="Filter" [(ngModel)]="filterQuery" (ngModelChange)="refreshData($event)">
+</mat-form-field>
 
 <mat-table [dataSource]="dataSource" class="mat-elevation-z8">
   <ng-container matColumnDef="checked">
-    <mat-header-cell *matHeaderCellDef>Selected</mat-header-cell>
-    <mat-cell *matCellDef="let element">
+    <mat-header-cell *matHeaderCellDef style="flex: 0 0 100px !important;">Selected</mat-header-cell>
+    <mat-cell *matCellDef="let element" style="flex: 0 0 100px !important;">
       <mat-checkbox [(ngModel)]="element['checked']"></mat-checkbox>
     </mat-cell>
   </ng-container>
@@ -21,11 +24,11 @@
   <ng-container matColumnDef="actions">
     <mat-header-cell *matHeaderCellDef>Actions</mat-header-cell>
     <mat-cell *matCellDef="let element">
-      <button mat-raised-button (click)="deleteUser(element['username'])" style="color: white; background-color: red;"> Delete User </button>
+      <button mat-raised-button (click)="deleteUser(element['username'])" color="warn"> Delete User </button>
     </mat-cell>
   </ng-container>
 
   <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
   <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
 </mat-table>
-<mat-paginator id="elementsTablePaginator" [pageSizeOptions]="getPageSizeOptions()" showFirstLastButtons></mat-paginator>
+<mat-paginator id="elementsTablePaginator" [pageSizeOptions]="getPageSizeOptions()" [pageSize]="20" showFirstLastButtons></mat-paginator>

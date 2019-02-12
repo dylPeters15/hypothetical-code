@@ -81,19 +81,19 @@ export class NewSkuDialogComponent implements OnInit {
       for (var i=0; i<this.ingredients.length-1; i = i+2) {
         this.addIngredient(this.ingredients[i], this.name);
       }
-      this.rest.adminCreateSku(this.name, this.sku_number, this.case_upc_number, this.unit_upc_number, this.unit_size, this.count_per_case, this.product_line, this.ingredients_by_id, this.comment, id).subscribe(response => {
+      // this.rest.adminCreateSku(this.name, this.sku_number, this.case_upc_number, this.unit_upc_number, this.unit_size, this.count_per_case, this.product_line, this.ingredients_by_id, this.comment, id).subscribe(response => {
         
-        if (response['success']) {
-          this.snackBar.open("Successfully created sku " + this.name + ".", "close", {
-            duration: 2000,
-          });
-        } else {
-          this.snackBar.open("Error creating user " + this.name + ". Please refresh and try again.", "close", {
-            duration: 2000,
-          });
-        }
-        this.closeDialog();
-      });
+      //   if (response['success']) {
+      //     this.snackBar.open("Successfully created sku " + this.name + ".", "close", {
+      //       duration: 2000,
+      //     });
+      //   } else {
+      //     this.snackBar.open("Error creating user " + this.name + ". Please refresh and try again.", "close", {
+      //       duration: 2000,
+      //     });
+      //   }
+      //   this.closeDialog();
+      // });
     }
     else{
       console.log("We're modifying a sku", this.ingredients);
@@ -103,19 +103,19 @@ export class NewSkuDialogComponent implements OnInit {
         this.ingredients_by_id.push(this.ingredients[i+1]);
         console.log('ingredient array new', this.ingredients_by_id);
       }
-      this.rest.modifySkuRequest(this.name, this.sku_number, this.case_upc_number, this.unit_upc_number, this.unit_size, this.count_per_case, this.product_line, this.ingredients_by_id, this.comment, this.current_id).subscribe(response => {
+      // this.rest.modifySkuRequest(this.name, this.sku_number, this.case_upc_number, this.unit_upc_number, this.unit_size, this.count_per_case, this.product_line, this.ingredients_by_id, this.comment, this.current_id).subscribe(response => {
         
-        if (response['success']) {
-          this.snackBar.open("Successfully modifyed sku " + this.name + ".", "close", {
-            duration: 2000,
-          });
-        } else {
-          this.snackBar.open("Error modifying sku " + this.name + ". Please refresh and try again.", "close", {
-            duration: 2000,
-          });
-        }
-        this.closeDialog();
-      });
+      //   if (response['success']) {
+      //     this.snackBar.open("Successfully modifyed sku " + this.name + ".", "close", {
+      //       duration: 2000,
+      //     });
+      //   } else {
+      //     this.snackBar.open("Error modifying sku " + this.name + ". Please refresh and try again.", "close", {
+      //       duration: 2000,
+      //     });
+      //   }
+      //   this.closeDialog();
+      // });
     }
   }
 
@@ -123,17 +123,17 @@ export class NewSkuDialogComponent implements OnInit {
     let newSkus;
     const ingredientNumber = Number(ingredient)
     console.log(ingredient, Number(ingredient))
-    this.rest.getIngredientByNumber(ingredient).subscribe(response => {
-      console.log("Ingredient skus", response.skus)
-      newSkus = response.skus
-      console.log("new skus", newSkus)
-      newSkus.push(sku);
-      console.log("new skus", newSkus)
-      this.rest.addIngredientSku(ingredient, newSkus).subscribe(response => {
-        console.log("New ingredient data", response)
-      });
+    // this.rest.getIngredientByNumber(ingredient).subscribe(response => {
+    //   console.log("Ingredient skus", response.skus)
+    //   newSkus = response.skus
+    //   console.log("new skus", newSkus)
+    //   newSkus.push(sku);
+    //   console.log("new skus", newSkus)
+    //   this.rest.addIngredientSku(ingredient, newSkus).subscribe(response => {
+    //     console.log("New ingredient data", response)
+    //   });
 
-      this.ingredients_by_id.push(response.id);
-    });
+    //   this.ingredients_by_id.push(response.id);
+    // });
   }
 }
