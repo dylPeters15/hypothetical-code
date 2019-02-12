@@ -26,18 +26,17 @@ export class NewUserDialogComponent implements OnInit {
   }
 
   createUser() {
-    // this.rest.adminCreateNewUser(this.username, this.password).subscribe(response => {
-    //   if (response['success']) {
-    //     this.snackBar.open("Successfully created user " + this.username + ".", "close", {
-    //       duration: 2000,
-    //     });
-    //   } else {
-    //     this.snackBar.open("Error creating user " + this.username + ". Please refresh and try again.", "close", {
-    //       duration: 2000,
-    //     });
-    //   }
-    //   this.closeDialog();
-    // });
+    this.rest.createUser(this.username, this.password, false).subscribe(response => {
+      console.log(response);
+      if (response['token']) {
+        this.snackBar.open("Successfully created user " + this.username + ".", "close", {
+          duration: 2000,
+        });
+        this.closeDialog();
+      } else {
+        this.snackBar.open("Error creating user " + this.username + ". Please refresh and try again.", "close", {});
+      }
+    });
   }
 
 }

@@ -53,7 +53,7 @@ app.route('/login').get((req, res) => {
 ///////////////////// users /////////////////////
 
 app.route('/users').get((req, res) => {
-    user_utils.getUsers(req.headers['username'], req.headers['usernameregex'], req.headers['limit']).then(users => {
+    user_utils.getUsers(req.headers['username'], req.headers['usernameregex'], Number(req.headers['limit'])).then(users => {
         var usersToSend = [];
         for (var i = 0; i < users.length; i=i+1) {
             usersToSend.push({

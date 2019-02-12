@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { auth } from './auth.service'
+import { Observable } from 'rxjs';
 
 // const endpoint = 'https://vcm-8238.vm.duke.edu:8443/'; // Ben
 // const endpoint = 'https://vcm-8405.vm.duke.edu:8443/'; // Noah
@@ -22,7 +23,7 @@ export class RestService {
     };
   }
 
-  loginRequest(username, password) {
+  loginRequest(username, password): Observable<any> {
     return this.http.get(endpoint + 'login', {
       headers: new HttpHeaders({
         username: username,
@@ -32,14 +33,15 @@ export class RestService {
   }
 
   ///////////////////// users /////////////////////
-  getUsers(username: string, usernameregex: string) {
+  getUsers(username: string, usernameregex: string, limit: number): Observable<any> {
     return this.http.get(endpoint + 'users', this.generateHeader({
       username: username,
-      usernameregex: usernameregex
+      usernameregex: usernameregex,
+      limit: ""+limit
     }));
   }
 
-  createUser(username: string, password: string, admin: boolean) {
+  createUser(username: string, password: string, admin: boolean): Observable<any> {
     return this.http.put(endpoint + 'users', {
       username: username,
       password: password,
@@ -48,7 +50,7 @@ export class RestService {
       this.generateHeader());
   }
 
-  modifyUser(username: string, newusername: string, newpassword: string, newadmin: boolean) {
+  modifyUser(username: string, newusername: string, newpassword: string, newadmin: boolean): Observable<any> {
     return this.http.post(endpoint + 'users', {
       username: newusername,
       password: newpassword,
@@ -59,21 +61,22 @@ export class RestService {
       }));
   }
 
-  deleteUser(username: string) {
+  deleteUser(username: string): Observable<any> {
     return this.http.delete(endpoint + 'users', this.generateHeader({
       username: username
     }));
   }
 
   ///////////////////// formulas /////////////////////
-  getFormulas(sku: number, ingredient: number) {
+  getFormulas(sku: number, ingredient: number, limit: number): Observable<any> {
     return this.http.get(endpoint + "formulas", this.generateHeader({
       sku: sku,
-      ingredient: ingredient
+      ingredient: ingredient,
+      limit: limit
     }));
   }
 
-  createFormula(sku: number, ingredient: number, quantity: number) {
+  createFormula(sku: number, ingredient: number, quantity: number): Observable<any> {
     return this.http.put(endpoint + "formulas", {
       sku: sku,
       ingredient: ingredient,
@@ -82,7 +85,7 @@ export class RestService {
     this.generateHeader());
   }
 
-  modifyFormula(sku: number, ingredient: number, newQuantity: number) {
+  modifyFormula(sku: number, ingredient: number, newQuantity: number): Observable<any> {
     return this.http.post(endpoint + "formulas", {
       sku: sku,
       ingredient: ingredient,
@@ -94,7 +97,7 @@ export class RestService {
     }));
   }
 
-  deleteFormula(sku: number, ingredient: number) {
+  deleteFormula(sku: number, ingredient: number): Observable<any> {
     return this.http.delete(endpoint + "formulas", this.generateHeader({
       sku: sku,
       ingredient: ingredient
