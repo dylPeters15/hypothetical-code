@@ -41,7 +41,7 @@ import { NewGoalDialogComponent } from './new-goal-dialog/new-goal-dialog.compon
 import { ImportComponent } from './import/import.component';
 import { DialogComponent } from './import/dialog.component';
 import { RecordCompareDialogComponent } from './record-compare-dialog/record-compare-dialog.component';
-
+import { PapaParseModule } from 'ngx-papaparse';
 
 const appRoutes: Routes = [
   { path: 'login', component: LoginComponent, data: { title: 'Log In' }, canActivate: [AlreadyLoggedInRouteGuardService] },
@@ -109,7 +109,8 @@ const appRoutes: Routes = [
     ReactiveFormsModule,
     MatCheckboxModule,
     MatSnackBarModule,
-    MatPaginatorModule
+    MatPaginatorModule,
+    PapaParseModule
   ],
   providers: [],
   bootstrap: [AppComponent],

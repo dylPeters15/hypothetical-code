@@ -5,6 +5,7 @@ import { MatSnackBar } from '@angular/material';
 import { fillProperties } from '@angular/core/src/util/property';
 import { MatDialog, MatDialogConfig, MatTableDataSource, MatPaginator } from "@angular/material";
 import { RecordCompareDialogComponent } from '../record-compare-dialog/record-compare-dialog.component';
+import { ParseCsvService } from '../parse-csv.service';
 
 
 @Component({
@@ -19,13 +20,14 @@ export class DialogComponent implements OnInit {
   public applyToAll: boolean = false;
   public useNew: boolean = false;
 
-  constructor(public dialogRef: MatDialogRef<DialogComponent>, public rest: RestService, public snackBar: MatSnackBar, public dialog: MatDialog) { }
+  constructor(public dialogRef: MatDialogRef<DialogComponent>, public rest: RestService, public snackBar: MatSnackBar, public dialog: MatDialog, public parser: ParseCsvService) { }
 
   ngOnInit() { }
 
   progress;
 
   onFilesAdded() {
+    this.parser.parseCSVFile(this.fileSelector.nativeElement.files);
     const files: { [key: string]: File } = this.fileSelector.nativeElement.files;
     for (let key in files) {
       if (!isNaN(parseInt(key))) {
