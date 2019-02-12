@@ -54,6 +54,7 @@ app.route('/login').get((req, res) => {
 ///////////////////// users /////////////////////
 
 app.route('/users').get((req, res) => {
+    console.log(req.headers);
     user_utils.getUsers(req.headers['username'], req.headers['usernameregex'], req.headers['admin'], Number(req.headers['limit'])).then(users => {
         var usersToSend = [];
         for (var i = 0; i < users.length; i=i+1) {

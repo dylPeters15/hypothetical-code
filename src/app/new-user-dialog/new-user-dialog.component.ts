@@ -25,8 +25,9 @@ export class NewUserDialogComponent implements OnInit {
   }
 
   createUser() {
+    console.log(this.form.get('admin').value);
     if (this.form.get('username').value && this.form.get('username').value != "" && !this.usernameExists) {
-      this.rest.createUser(this.form.get('username').value, this.form.get('password').value, false).subscribe(response => {
+      this.rest.createUser(this.form.get('username').value, this.form.get('password').value, this.form.get('admin').value).subscribe(response => {
         if (response['token']) {
           this.snackBar.open("Successfully created user " + this.form.get('username').value + ".", "close", {
             duration: 2000,
@@ -44,6 +45,7 @@ export class NewUserDialogComponent implements OnInit {
       username: new FormControl(''),
       password: new FormControl('password', [Validators.minLength(4)]),
       confirm: new FormControl('password', Validators.minLength(4)),
+      admin: new FormControl(false)
     },
     passwordMatchValidator
   );
@@ -65,7 +67,7 @@ export class NewUserDialogComponent implements OnInit {
   }
 
   usernameChanged() {
-    this.rest.getUsers(this.form.get('username').value, "", 1).subscribe(result => {
+    this.rest.getUsers(this.form.get('username').value, "", null, 1).subscribe(result => {
       this.usernameExists = result.length == 1;
     });
   }

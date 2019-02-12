@@ -33,10 +33,11 @@ export class RestService {
   }
 
   ///////////////////// users /////////////////////
-  getUsers(username: string, usernameregex: string, limit: number): Observable<any> {
+  getUsers(username: string, usernameregex: string, admin: boolean, limit: number): Observable<any> {
     return this.http.get(endpoint + 'users', this.generateHeader({
       username: username,
       usernameregex: usernameregex,
+      admin: admin||"",
       limit: ""+limit
     }));
   }
