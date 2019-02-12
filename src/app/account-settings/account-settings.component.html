@@ -37,7 +37,7 @@
     </form>
   </mat-card-content>
   <mat-card-actions>
-    <button mat-raised-button (click)="changePassword()" color="primary">Change Password</button>
+    <button mat-raised-button (click)="changePassword()" color="warn" [disabled]="this.form.get('currentPass').value==''||this.form.get('password').value==''||this.form.get('confirm').value==''">Change Password</button>
   </mat-card-actions>
 
   <br>
@@ -59,7 +59,7 @@
     </form>
   </mat-card-content>
   <mat-card-actions>
-    <button mat-raised-button (click)="deleteAccount()" style="color: white; background-color: red;">Delete Account</button>
+    <button mat-raised-button (click)="deleteAccount()" color="warn" [disabled]="this.deleteForm.get('confirmDelete').value==''">Delete Account</button>
   </mat-card-actions>
 
 </mat-card>
