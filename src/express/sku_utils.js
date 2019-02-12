@@ -58,8 +58,8 @@ function createSku(name, number, case_upc, unit_upc, unit_size, count, comment) 
                     // newingredientnumber = ingredientnumber || Number(response);
 
                     let sku = new database.skusModel({
-                        skuName: newSkuNumber,
-                        skuNumber: number,
+                        skuName: name,
+                        skuNumber: newSkuNumber,
                         caseUpcNumber: newCaseUpcNumber,
                         unitUpcNumber: newUnitUpcNumber,
                         unitSize: unit_size,
