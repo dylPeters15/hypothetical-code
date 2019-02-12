@@ -4,9 +4,9 @@ import { Observable, of } from 'rxjs';
 import { map, catchError, tap } from 'rxjs/operators';
 import { auth } from './auth.service'
 
-const endpoint = 'https://vcm-8238.vm.duke.edu:8443/api/v1/';
+// const endpoint = 'https://vcm-8238.vm.duke.edu:8443/api/v1/';
 // Noah: const endpoint = 'https://vcm-8405.vm.duke.edu:8443/api/v1/';
-// const endpoint = 'https://localhost:8443/api/v1/';
+const endpoint = 'https://localhost:8443/api/v1/';
 
 @Injectable({
   providedIn: 'root'
@@ -178,7 +178,7 @@ export class RestService {
       headers: header
     }
     console.log(httpOptions.headers);
-    console.log("ID: " + ingredientId);
+    console.log("ID: ", ingredientId);
     return this.http.get(endpoint + 'get-ingredient-by-id', httpOptions).pipe(map(this.extractData));
   }
 
@@ -204,6 +204,7 @@ export class RestService {
   }
 
   getIngredientIdFromName(input_name): Observable<any>{
+    console.log("rest", input_name)
     let header:HttpHeaders = new HttpHeaders({
       'name': input_name
     });
