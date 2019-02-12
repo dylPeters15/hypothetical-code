@@ -113,8 +113,6 @@ function modifyUser(username, newPassword, newAdmin) {
         if (newAdmin !== null && newAdmin !== undefined && newAdmin !== "") {
             toSet['admin'] = newAdmin;
         }
-        console.log(newAdmin !== "");
-        console.log(toSet);
         var updateObject = {
             $set: toSet
         }

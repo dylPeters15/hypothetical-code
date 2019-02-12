@@ -25,7 +25,6 @@ export class NewUserDialogComponent implements OnInit {
   }
 
   createUser() {
-    console.log(this.form.get('admin').value);
     if (this.form.get('username').value && this.form.get('username').value != "" && !this.usernameExists) {
       this.rest.createUser(this.form.get('username').value, this.form.get('password').value, this.form.get('admin').value).subscribe(response => {
         if (response['token']) {

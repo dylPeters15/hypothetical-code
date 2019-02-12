@@ -55,8 +55,6 @@ app.route('/login').get((req, res) => {
 
 app.route('/users').get((req, res) => {
     var admin = req.headers['admin']===""||req.headers['admin']==="null"?null:req.headers['admin']==="true";
-    console.log(req.headers['admin']);
-    console.log(admin);
     user_utils.getUsers(req.headers['username'], req.headers['usernameregex'], admin, Number(req.headers['limit'])).then(users => {
         var usersToSend = [];
         for (var i = 0; i < users.length; i=i+1) {
@@ -80,7 +78,6 @@ app.route('/users').get((req, res) => {
         });
     });
 }).post((req, res) => {
-    console.log(req.body);
     user_utils.modifyUser(req.headers['username'], req.body['password'], req.body['admin']).then(response => {
         res.send(response);
     }).catch(err => {
