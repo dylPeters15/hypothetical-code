@@ -8,8 +8,8 @@
 
 <mat-table [dataSource]="dataSource" class="mat-elevation-z8">
   <ng-container matColumnDef="checked">
-    <mat-header-cell *matHeaderCellDef>Selected</mat-header-cell>
-    <mat-cell *matCellDef="let element">
+    <mat-header-cell *matHeaderCellDef style="flex: 0 0 100px !important;">Selected</mat-header-cell>
+    <mat-cell *matCellDef="let element" style="flex: 0 0 100px !important;">
       <mat-checkbox [(ngModel)]="element['checked']"></mat-checkbox>
     </mat-cell>
   </ng-container>
