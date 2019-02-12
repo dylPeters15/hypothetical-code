@@ -32,6 +32,7 @@ export class UserManagementComponent implements OnInit {
   passwordDialogRef: MatDialogRef<PasswordConfirmationDialogComponent>;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   filterQuery: string = "";
+  displayAdmins: string = "all";
 
   ngOnInit() {
     this.paginator.pageSize = 20;
@@ -42,13 +43,14 @@ export class UserManagementComponent implements OnInit {
   }
 
   getPageSizeOptions() {
-    return [5, 10, 20, this.allReplacement];
+    return [20, 50, 100, this.allReplacement];
   }
 
   refreshData(filterQueryData?) {
+    console.log(this.displayAdmins);
     // filterQueryData = filterQueryData ? "^"+filterQueryData+".*" : "^"+this.filterQuery+".*"; //this returns things that start with the pattern
     filterQueryData = filterQueryData ? ".*"+filterQueryData+".*" : ".*"+this.filterQuery+".*"; //this returns things that have the pattern anywhere in the string
-    this.rest.getUsers("", filterQueryData, null, this.paginator.pageSize*10).subscribe(response => {
+    this.rest.getUsers("", filterQueryData, this.displayAdmins=="all"?null:this.displayAdmins=="adminsonly", this.paginator.pageSize*10).subscribe(response => {
       console.log(response);
       this.data = response;
       this.deselectAll();

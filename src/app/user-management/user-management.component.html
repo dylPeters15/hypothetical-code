@@ -5,6 +5,13 @@
 <mat-form-field>
   <input matInput placeholder="Filter" [(ngModel)]="filterQuery" (ngModelChange)="refreshData($event)">
 </mat-form-field>
+<mat-radio-group [(ngModel)]="displayAdmins" (ngModelChange)="refreshData()">
+  <mat-radio-button value="all">All Users</mat-radio-button>
+  <mat-radio-button value="adminsonly">Admins Only</mat-radio-button>
+  <mat-radio-button value="nonadminsonly">Non-Admins Only</mat-radio-button>
+</mat-radio-group>
+
+
 
 <mat-table [dataSource]="dataSource" class="mat-elevation-z8">
   <ng-container matColumnDef="checked">

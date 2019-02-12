@@ -37,7 +37,7 @@ export class RestService {
     return this.http.get(endpoint + 'users', this.generateHeader({
       username: username,
       usernameregex: usernameregex,
-      admin: admin||"",
+      admin: admin==null?"":""+admin,
       limit: ""+limit
     }));
   }

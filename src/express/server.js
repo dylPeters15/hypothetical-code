@@ -54,7 +54,10 @@ app.route('/login').get((req, res) => {
 ///////////////////// users /////////////////////
 
 app.route('/users').get((req, res) => {
-    user_utils.getUsers(req.headers['username'], req.headers['usernameregex'], req.headers['admin'], Number(req.headers['limit'])).then(users => {
+    var admin = req.headers['admin']===""||req.headers['admin']==="null"?null:req.headers['admin']==="true";
+    console.log(req.headers['admin']);
+    console.log(admin);
+    user_utils.getUsers(req.headers['username'], req.headers['usernameregex'], admin, Number(req.headers['limit'])).then(users => {
         var usersToSend = [];
         for (var i = 0; i < users.length; i=i+1) {
             usersToSend.push({

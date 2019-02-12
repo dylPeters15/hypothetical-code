@@ -67,7 +67,6 @@ function getUsers(username, usernameregex, admin, limit) {
         if (admin !== null && admin !== undefined && admin !== "") {
             filterSchema['admin'] = admin;
         }
-        console.log(filterSchema);
         database.userModel.find(filterSchema).limit(limit).exec((err, users) => {
             if (err) {
                 reject(Error(err));
