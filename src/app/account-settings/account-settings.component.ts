@@ -40,7 +40,6 @@ export class AccountSettingsComponent implements OnInit {
       this.rest.loginRequest(auth.getUsername(), oldPass).subscribe(loginresponse => {
         if (loginresponse['token']) {
           this.rest.modifyUser(auth.getUsername(), auth.getUsername(), newPass, false).subscribe(response => {
-            console.log(response);
             if (response['nModified'] == 1 && response['ok'] == 1) {
               this.openDialog("Success!", "Password changed successfully.");
               this.form.get('currentPass').setValue('');
@@ -64,7 +63,6 @@ export class AccountSettingsComponent implements OnInit {
     this.rest.loginRequest(auth.getUsername(), pass).subscribe(loginresponse => {
       if (loginresponse['token']) {
         this.rest.deleteUser(auth.getUsername()).subscribe(response => {
-          console.log(response);
           if (response['deletedCount'] == 1 && response['ok'] == 1) {
             this.openDialog("Success", "Account deleted successfully. You will be redirected to the login page.");
             auth.clearLogin();

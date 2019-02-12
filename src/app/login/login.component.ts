@@ -27,7 +27,6 @@ export class LoginComponent implements OnInit {
   login() : void {
     this.rest.loginRequest(this.myusername, this.mypassword).subscribe(
       (data: {}) => {
-        console.log(data);
         if (data['token']) {
           //logged in successfully
           this.failedLogin = false;

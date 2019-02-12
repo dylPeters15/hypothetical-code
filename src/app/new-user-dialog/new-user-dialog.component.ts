@@ -11,11 +11,9 @@ import { FormGroup, FormControl, Validators, FormGroupDirective } from '@angular
 })
 export class NewUserDialogComponent implements OnInit {
 
-  username: string = '';
-  password: string = 'password';
-  confirmPassword: string = 'password';
   hidePassword1: boolean = true;
   hidePassword2: boolean = true;
+  usernameExists: boolean = false;
 
   constructor(private dialogRef: MatDialogRef<NewUserDialogComponent>, public rest:RestService, private snackBar: MatSnackBar) { }
 
@@ -24,22 +22,21 @@ export class NewUserDialogComponent implements OnInit {
 
   closeDialog() {
     this.dialogRef.close();
-    this.username = '';
-    this.password = 'password';
   }
 
   createUser() {
-    this.rest.createUser(this.form.get('username').value, this.form.get('password').value, false).subscribe(response => {
-      console.log(response);
-      if (response['token']) {
-        this.snackBar.open("Successfully created user " + this.username + ".", "close", {
-          duration: 2000,
-        });
-        this.closeDialog();
-      } else {
-        this.snackBar.open("Error creating user " + this.username + ". Please refresh and try again.", "close", {});
-      }
-    });
+    if (this.form.get('username').value && this.form.get('username').value != "" && !this.usernameExists) {
+      this.rest.createUser(this.form.get('username').value, this.form.get('password').value, false).subscribe(response => {
+        if (response['token']) {
+          this.snackBar.open("Successfully created user " + this.form.get('username').value + ".", "close", {
+            duration: 2000,
+          });
+          this.closeDialog();
+        } else {
+          this.snackBar.open("Error creating user " + this.form.get('username').value + ". Please refresh and try again.", "close", {});
+        }
+      });
+    }
   }
 
   form = new FormGroup(
@@ -57,6 +54,20 @@ export class NewUserDialogComponent implements OnInit {
       const formInvalid = control.touched && this.form.get('confirm').touched && this.form.invalid;
       return controlInvalid || formInvalid || !!passwordMatchValidator(this.form);
     }
+  }
+
+  userErrorMatcher = {
+    isErrorState: (control: FormControl, form: FormGroupDirective): boolean => {
+      const controlInvalid = control.touched && control.invalid;
+      const formInvalid = control.touched && this.form.get('username').touched && this.form.invalid;
+      return controlInvalid || formInvalid || this.usernameExists;
+    }
+  }
+
+  usernameChanged() {
+    this.rest.getUsers(this.form.get('username').value, "", 1).subscribe(result => {
+      this.usernameExists = result.length == 1;
+    });
   }
 
 }
