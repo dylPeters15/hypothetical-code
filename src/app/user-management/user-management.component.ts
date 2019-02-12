@@ -34,6 +34,9 @@ export class UserManagementComponent implements OnInit {
 
   ngOnInit() {
     this.paginator.pageSize = 20;
+    this.paginator.page.subscribe(event => {
+      this.deselectAll();
+    });
     this.refreshData();
   }
 
@@ -44,9 +47,7 @@ export class UserManagementComponent implements OnInit {
   refreshData() {
     this.rest.getUsers("", ".*", this.paginator.pageSize).subscribe(response => {
       this.data = response;
-      this.data.forEach(user => {
-        user['checked'] = false;
-      });
+      this.deselectAll();
       this.sortData();
       this.dataSource = new MatTableDataSource<UserForTable>(this.data);
       this.dataSource.paginator = this.paginator;
@@ -115,15 +116,19 @@ export class UserManagementComponent implements OnInit {
   }
 
   selectAll() {
-    this.data.forEach(user => {
-      user.checked = true;
-    });
+    var lowerIndex = this.paginator.pageSize * this.paginator.pageIndex;
+    var upperIndex = this.paginator.pageSize * (this.paginator.pageIndex+1);
+    if (this.data.length < upperIndex) {
+      upperIndex = this.data.length;
+    }
+    this.deselectAll();
+    for (var i = lowerIndex; i < upperIndex; i=i+1) {
+      this.data[i].checked = true;
+    }
   }
 
   ngAfterViewChecked() {
     const matOptions = document.querySelectorAll('mat-option');
-
-
     // If the replacement element was found...
     if (matOptions) {
       const matOptionsLen = matOptions.length;
