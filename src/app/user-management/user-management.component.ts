@@ -25,7 +25,7 @@ export class UserManagementComponent implements OnInit {
 
   constructor(public rest: RestService, private snackBar: MatSnackBar, private dialog: MatDialog) { }
   allReplacement = 54321;
-  displayedColumns: string[] = ['checked', 'username', 'actions'];
+  displayedColumns: string[] = ['checked', 'username', 'admin', 'actions'];
   data: UserForTable[] = [];
   dataSource = new MatTableDataSource<UserForTable>(this.data);
   dialogRef: MatDialogRef<NewUserDialogComponent>;
@@ -158,6 +158,15 @@ export class UserManagementComponent implements OnInit {
       }
     }
     return true;
+  }
+
+  changeAdminPriviledge(username, newPriviledge) {
+    this.rest.modifyUser(username, null, newPriviledge).subscribe(response => {
+      if (response['ok'] != 1) {
+        this.snackBar.open("Unable to change user privilege. Please try again later.", "close");
+        this.refreshData();
+      }
+    });
   }
 
 }

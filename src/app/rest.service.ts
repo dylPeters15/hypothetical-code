@@ -51,11 +51,10 @@ export class RestService {
       this.generateHeader());
   }
 
-  modifyUser(username: string, newusername: string, newpassword: string, newadmin: boolean): Observable<any> {
+  modifyUser(username: string, newpassword: string, newadmin: boolean): Observable<any> {
     return this.http.post(endpoint + 'users', {
-      username: newusername,
-      password: newpassword,
-      admin: newadmin
+      password: newpassword||"",
+      admin: newadmin==null?"":newadmin
     },
       this.generateHeader({
         username: username

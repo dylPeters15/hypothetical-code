@@ -64,7 +64,7 @@ function getUsers(username, usernameregex, admin, limit) {
                 { username: { $regex: usernameregex } }
             ]
         }
-        if (admin != null && admin != undefined && admin != "") {
+        if (admin !== null && admin !== undefined && admin !== "") {
             filterSchema['admin'] = admin;
         }
         console.log(filterSchema);
@@ -105,13 +105,19 @@ function modifyUser(username, newPassword, newAdmin) {
         var filterSchema = {
             username: username
         }
-        var saltAndHash = generateSaltAndHash(newPassword);
+        var toSet = {};
+        if (newPassword !== null && newPassword !== undefined && newPassword !== "") {
+            var saltAndHash = generateSaltAndHash(newPassword);
+            toSet['salt'] = saltAndHash.salt;
+            toSet['saltedhashedpassword'] = saltAndHash.hash;
+        }
+        if (newAdmin !== null && newAdmin !== undefined && newAdmin !== "") {
+            toSet['admin'] = newAdmin;
+        }
+        console.log(newAdmin !== "");
+        console.log(toSet);
         var updateObject = {
-            $set: {
-                salt: saltAndHash.salt,
-                saltedhashedpassword: saltAndHash.hash,
-                admin: newAdmin
-            }
+            $set: toSet
         }
         database.userModel.updateOne(filterSchema, updateObject, (err, response) => {
             if (err) {
