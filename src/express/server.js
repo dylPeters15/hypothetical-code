@@ -29,9 +29,10 @@ module.exports = server;
 app.route('/login').get((req, res) => {
     user_utils.usernamePasswordCorrect(req.headers['username'], req.headers['password']).then(correct => {
         if (correct) {
-            user_utils.getUserToken(req.headers['username']).then(token => {
+            user_utils.getUsers(req.headers['username']).then(response => {
                 res.send({
-                    token: token
+                    token: response[0].token,
+                    admin: response[0].admin
                 });
             }).catch(err => {
                 res.send({
@@ -53,11 +54,13 @@ app.route('/login').get((req, res) => {
 ///////////////////// users /////////////////////
 
 app.route('/users').get((req, res) => {
-    user_utils.getUsers(req.headers['username'], req.headers['usernameregex'], Number(req.headers['limit'])).then(users => {
+    var admin = req.headers['admin']===""||req.headers['admin']==="null"?null:req.headers['admin']==="true";
+    user_utils.getUsers(req.headers['username'], req.headers['usernameregex'], admin, Number(req.headers['limit'])).then(users => {
         var usersToSend = [];
         for (var i = 0; i < users.length; i=i+1) {
             usersToSend.push({
-                username: users[i].username
+                username: users[i].username,
+                admin: users[i].admin
             });
         }
         res.send(usersToSend);
@@ -67,7 +70,7 @@ app.route('/users').get((req, res) => {
         });
     });
 }).put((req, res) => {
-    user_utils.createUser(req.body['username'], req.body['password']).then(response => {
+    user_utils.createUser(req.body['username'], req.body['password'], req.body['admin']).then(response => {
         res.send(response);
     }).catch(err => {
         res.send({
@@ -75,7 +78,7 @@ app.route('/users').get((req, res) => {
         });
     });
 }).post((req, res) => {
-    user_utils.modifyUser(req.headers['username'], req.body['password']).then(response => {
+    user_utils.modifyUser(req.headers['username'], req.body['password'], req.body['admin']).then(response => {
         res.send(response);
     }).catch(err => {
         res.send({

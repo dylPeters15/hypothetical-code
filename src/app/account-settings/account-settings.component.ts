@@ -39,7 +39,7 @@ export class AccountSettingsComponent implements OnInit {
       const newPass = this.form.get('password').value;
       this.rest.loginRequest(auth.getUsername(), oldPass).subscribe(loginresponse => {
         if (loginresponse['token']) {
-          this.rest.modifyUser(auth.getUsername(), auth.getUsername(), newPass, false).subscribe(response => {
+          this.rest.modifyUser(auth.getUsername(), newPass, false).subscribe(response => {
             if (response['nModified'] == 1 && response['ok'] == 1) {
               this.openDialog("Success!", "Password changed successfully.");
               this.form.get('currentPass').setValue('');

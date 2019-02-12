@@ -30,7 +30,7 @@ export class LoginComponent implements OnInit {
         if (data['token']) {
           //logged in successfully
           this.failedLogin = false;
-          auth.storeLogin(this.myusername, data['token']);
+          auth.storeLogin(this.myusername, data['token'], data['admin']);
           this.router.navigateByUrl('/home');
         } else {
           //incorrect login

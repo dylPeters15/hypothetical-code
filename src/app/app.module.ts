@@ -42,6 +42,7 @@ import { ImportComponent } from './import/import.component';
 import { DialogComponent } from './import/dialog.component';
 import { RecordCompareDialogComponent } from './record-compare-dialog/record-compare-dialog.component';
 import { PapaParseModule } from 'ngx-papaparse';
+import { MatRadioModule } from '@angular/material/radio';
 
 const appRoutes: Routes = [
   { path: 'login', component: LoginComponent, data: { title: 'Log In' }, canActivate: [AlreadyLoggedInRouteGuardService] },
@@ -110,7 +111,8 @@ const appRoutes: Routes = [
     MatCheckboxModule,
     MatSnackBarModule,
     MatPaginatorModule,
-    PapaParseModule
+    PapaParseModule,
+    MatRadioModule
   ],
   providers: [],
   bootstrap: [AppComponent],

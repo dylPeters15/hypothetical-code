@@ -18,7 +18,7 @@ describe('testing REST API calls', function () {
     beforeEach(function (done) {
         database.dropDatabase().then(response => {
             console.log("Database dropped: ", response);
-            user_utils.createUser("admin","password").then(innerResponse => {
+            user_utils.createUser("admin","password", true).then(innerResponse => {
                 console.log("Created admin user: ", innerResponse);
                 done();
             });

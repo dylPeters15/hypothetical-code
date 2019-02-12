@@ -33,10 +33,11 @@ export class RestService {
   }
 
   ///////////////////// users /////////////////////
-  getUsers(username: string, usernameregex: string, limit: number): Observable<any> {
+  getUsers(username: string, usernameregex: string, admin: boolean, limit: number): Observable<any> {
     return this.http.get(endpoint + 'users', this.generateHeader({
       username: username,
       usernameregex: usernameregex,
+      admin: admin==null?"":""+admin,
       limit: ""+limit
     }));
   }
@@ -50,11 +51,10 @@ export class RestService {
       this.generateHeader());
   }
 
-  modifyUser(username: string, newusername: string, newpassword: string, newadmin: boolean): Observable<any> {
+  modifyUser(username: string, newpassword: string, newadmin: boolean): Observable<any> {
     return this.http.post(endpoint + 'users', {
-      username: newusername,
-      password: newpassword,
-      admin: newadmin
+      password: newpassword||"",
+      admin: newadmin==null?"":newadmin
     },
       this.generateHeader({
         username: username

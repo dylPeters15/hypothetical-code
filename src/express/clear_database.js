@@ -3,7 +3,7 @@ const database = require('./database.js');
 const user_utils = require('./user_utils.js');
 database.dropDatabase().then(response => {
     console.log("Database cleared: ", response);
-    user_utils.createUser("admin", "hypocode123").then(value => {
+    user_utils.createUser("admin", "hypocode123", true).then(value => {
         console.log("Admin user created.");
         mongoose.connection.close();
     }).catch(err => {

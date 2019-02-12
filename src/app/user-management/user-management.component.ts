@@ -25,13 +25,14 @@ export class UserManagementComponent implements OnInit {
 
   constructor(public rest: RestService, private snackBar: MatSnackBar, private dialog: MatDialog) { }
   allReplacement = 54321;
-  displayedColumns: string[] = ['checked', 'username', 'actions'];
+  displayedColumns: string[] = ['checked', 'username', 'admin', 'actions'];
   data: UserForTable[] = [];
   dataSource = new MatTableDataSource<UserForTable>(this.data);
   dialogRef: MatDialogRef<NewUserDialogComponent>;
   passwordDialogRef: MatDialogRef<PasswordConfirmationDialogComponent>;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   filterQuery: string = "";
+  displayAdmins: string = "all";
 
   ngOnInit() {
     this.paginator.pageSize = 20;
@@ -42,13 +43,13 @@ export class UserManagementComponent implements OnInit {
   }
 
   getPageSizeOptions() {
-    return [5, 10, 20, this.allReplacement];
+    return [20, 50, 100, this.allReplacement];
   }
 
   refreshData(filterQueryData?) {
     // filterQueryData = filterQueryData ? "^"+filterQueryData+".*" : "^"+this.filterQuery+".*"; //this returns things that start with the pattern
     filterQueryData = filterQueryData ? ".*"+filterQueryData+".*" : ".*"+this.filterQuery+".*"; //this returns things that have the pattern anywhere in the string
-    this.rest.getUsers("", filterQueryData, this.paginator.pageSize*10).subscribe(response => {
+    this.rest.getUsers("", filterQueryData, this.displayAdmins=="all"?null:this.displayAdmins=="adminsonly", this.paginator.pageSize*10).subscribe(response => {
       this.data = response;
       this.deselectAll();
       this.sortData();
@@ -157,6 +158,15 @@ export class UserManagementComponent implements OnInit {
       }
     }
     return true;
+  }
+
+  changeAdminPriviledge(username, newPriviledge) {
+    this.rest.modifyUser(username, null, newPriviledge).subscribe(response => {
+      if (response['ok'] != 1) {
+        this.snackBar.open("Unable to change user privilege. Please try again later.", "close");
+        this.refreshData();
+      }
+    });
   }
 
 }
