@@ -17,6 +17,9 @@ function dropDatabase() {
   return db.dropDatabase();
 }
 
+var localUserRequired = function() {
+  return this.localuser;
+}
 /**
  * Valid search criteria:
  * userName - match/regex
@@ -25,25 +28,37 @@ var userSchema = new mongoose.Schema({
   username: {
     type: String,
     required: true,
-    unique: true
+    unique: false
   },
   salt: {
     type: String,
-    required: true,
+    required: localUserRequired,
     unique: false
   },
   saltedhashedpassword: {
     type: String,
-    required: true,
+    required: localUserRequired,
     unique: false
   },
   token: {
     type: String,
     required: true,
     unique: true
+  },
+  admin: {
+    type: Boolean,
+    required: true,
+    unique: false
+  },
+  localuser: {
+    type: Boolean,
+    required: true,
+    unique: false
   }
 });
+userSchema.index({ username: 1, localuser: 1 }, { unique: true }); //the combination of username and localuser should be unique
 userSchema.plugin(uniqueValidator);
+
 var userModel = mongoose.model('user', userSchema);
 
 /**
@@ -67,8 +82,13 @@ var ingredientSchema = new mongoose.Schema({
     required: false,
     unique: false
   },
-  packagesize: {
+  unitofmeasure: {
     type: String,
+    required: true,
+    unique: false
+  },
+  amount: {
+    type: Number,
     required: true,
     unique: false
   },
@@ -124,6 +144,22 @@ var skuSchema = new mongoose.Schema({
     required: true,
     unique: false
   },
+  formula: {
+    type: ObjectId,
+    ref: 'formula',
+    required: true,
+    unique: false
+  },
+  formulascalingfactor: {
+    type: Number,
+    required: true,
+    unique: false
+  },
+  manufacturingrate: {
+    type: Number,
+    required: true,
+    unique: false
+  },
   comment: {
     type: String,
     required: false,
@@ -143,13 +179,16 @@ var productLineSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  sku: {
-    type: ObjectId,
-    ref: 'sku'
-  }
+  skus: [{
+    sku: {
+      type: ObjectId,
+      ref: 'sku'
+    }
+  }]
+  
 });
-productLineSchema.plugin(uniqueValidator);
 productLineSchema.index({ productlinename: 1, sku: 1 }, { unique: true }); //the combination of name and sku should be unique
+productLineSchema.plugin(uniqueValidator);
 
 var productLineModel = mongoose.model('productline', productLineSchema);
 
@@ -166,15 +205,10 @@ var manufacturingGoalsSchema = new mongoose.Schema({
     required: true,
     unique: false
   },
-  sku: {
+  activities: [{
     type: ObjectId,
-    ref: 'sku',
-    required: true
-  },
-  quantity: {
-    type: Number,
-    required: true
-  },
+    ref: 'activity'
+  }],
   date: {
     type: Date,
     required: true,
@@ -186,8 +220,8 @@ var manufacturingGoalsSchema = new mongoose.Schema({
     required: true
   }
 });
-manufacturingGoalsSchema.plugin(uniqueValidator);
 manufacturingGoalsSchema.index({ owner: 1, goalname: 1 }, { unique: true }); //the combination of owner and goal name should be unique
+manufacturingGoalsSchema.plugin(uniqueValidator);
 
 var goalsModel = mongoose.model('goal', manufacturingGoalsSchema);
 
@@ -197,25 +231,110 @@ var goalsModel = mongoose.model('goal', manufacturingGoalsSchema);
  * ingredient - match
  */
 var formulaSchema = new mongoose.Schema({
+  formulaname: {
+    type: String,
+    required: true,
+    unique: true
+  },
+  formulanumber: {
+    type: String,
+    required: true,
+    unique: true
+  },
+  ingredientsandquantities: [{
+    ingredient: {
+      type: ObjectId,
+      ref: 'ingredient',
+      required: true
+    },
+    quantity: {
+      type: Number,
+      required: true
+    }
+  }],
+  comment: {
+    type: String,
+    required: false,
+    unique: false
+  }
+});
+formulaSchema.index({ sku: 1, ingredient: 1 }, { unique: true }); //the combination of sku and ingredient should be unique
+formulaSchema.plugin(uniqueValidator);
+
+var formulaModel = mongoose.model('formula', formulaSchema);
+
+/**
+ * Valid search criteria:
+ * linename - match, regex,
+ * shortname - match, regex
+ */
+var manufacturingLineSchema = new mongoose.Schema({
+  linename: {
+    type: String,
+    required: true,
+    unique: true
+  },
+  shortname: {
+    type: String,
+    required: true,
+    unique: true
+  },
+  skus: [{
+    sku: {
+      type: ObjectId,
+      ref: 'sku'
+    }
+  }],
+  comment: {
+    type: String,
+    required: false,
+    unique: false
+  }
+});
+manufacturingLineSchema.plugin(uniqueValidator);
+
+var manufacturingLineModel = mongoose.model('line', manufacturingLineSchema);
+
+/**
+ * Valid search criteria:
+ * linename - match, regex,
+ * shortname - match, regex
+ */
+var manufacturingActivitySchema = new mongoose.Schema({
   sku: {
     type: ObjectId,
     ref: 'sku',
-    required: true
+    required: true,
+    unique: false
   },
-  ingredient: {
-    type: ObjectId,
-    ref: 'ingredient',
-    required: true
-  },
-  quantity: {
+  numcases: {
     type: Number,
-    required: true
+    required: true,
+    unique: false
+  },
+  calculatedhours: {
+    type: Number,
+    required: true,
+    unique: false
+  },
+  sethours: {
+    type: Number,
+    required: false,
+    unique: false
+  },
+  startdate: {
+    type: Date,
+    required: false,
+    unique: false
+  },
+  line: {
+    type: ObjectId,
+    ref: 'line'
   }
 });
-formulaSchema.plugin(uniqueValidator);
-formulaSchema.index({ sku: 1, ingredient: 1 }, { unique: true }); //the combination of sku and ingredient should be unique
+manufacturingActivitySchema.plugin(uniqueValidator);
 
-var formulaModel = mongoose.model('formula', formulaSchema);
+var manufacturingActivityModel = mongoose.model('activity', manufacturingActivitySchema);
 
 module.exports = {
   defaultSearchLimit: defaultSearchLimit,
@@ -225,5 +344,7 @@ module.exports = {
   skuModel: skuModel,
   productLineModel: productLineModel,
   formulaModel: formulaModel,
+  manufacturingLineModel: manufacturingLineModel,
+  manufacturingActivityModel: manufacturingActivityModel,
   dropDatabase: dropDatabase
 };

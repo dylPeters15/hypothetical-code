@@ -29,17 +29,17 @@ export class NewGoalDialogComponent implements OnInit {
   }
 
   createGoal() {
-    this.rest.createGoal(this.name, this.skus, this.quantities, this.date).subscribe(response => {
-      if (response['success']) {
-        this.snackBar.open("Successfully created Goal: " + this.name + ".", "close", {
-          duration: 2000,
-        });
-      } else {
-        this.snackBar.open("Error creating Goal: " + this.name + ". Please refresh and try again.", "close", {
-          duration: 2000,
-        });
-      }
-      this.closeDialog();
-    });
+    // this.rest.createGoal(this.name, this.skus, this.quantities, this.date).subscribe(response => {
+    //   if (response['success']) {
+    //     this.snackBar.open("Successfully created Goal: " + this.name + ".", "close", {
+    //       duration: 2000,
+    //     });
+    //   } else {
+    //     this.snackBar.open("Error creating Goal: " + this.name + ". Please refresh and try again.", "close", {
+    //       duration: 2000,
+    //     });
+    //   }
+    //   this.closeDialog();
+    // });
   }
 }

@@ -1,12 +1,31 @@
 <button mat-raised-button (click)="selectAll()"> Select All </button>
 <button mat-raised-button (click)="deselectAll()"> Deselect All </button>
-<button mat-raised-button (click)="deleteSelected()" style="color: white; background-color: red;" [disabled]="dataSource.data.length==0"> Delete Selected </button>
-<button mat-raised-button (click)="newUser()"> New User </button>
+<button mat-raised-button (click)="deleteSelected()" color="warn" [disabled]="noneSelected()"> Delete Selected </button>
+<button mat-raised-button (click)="newUser()" color="primary"> New User </button>
+<mat-form-field>
+  <input matInput placeholder="Filter" [(ngModel)]="filterQuery" (ngModelChange)="refreshData($event)">
+</mat-form-field>
+<mat-radio-group [(ngModel)]="displayAdmins" (ngModelChange)="refreshData()">
+  <div>
+      <mat-radio-button value="all">All Users</mat-radio-button>
+      <mat-radio-button value="adminsonly">Admins Only</mat-radio-button>
+      <mat-radio-button value="nonadminsonly">Non-Admins Only</mat-radio-button>
+  </div>
+</mat-radio-group>
+<mat-radio-group [(ngModel)]="displayLocal" (ngModelChange)="refreshData()">
+    <div>
+        <mat-radio-button value="all">All Users</mat-radio-button>
+        <mat-radio-button value="localonly">Local Only</mat-radio-button>
+        <mat-radio-button value="federatedonly">Federated Only</mat-radio-button>
+    </div>
+  </mat-radio-group>
+
+
 
 <mat-table [dataSource]="dataSource" class="mat-elevation-z8">
   <ng-container matColumnDef="checked">
-    <mat-header-cell *matHeaderCellDef>Selected</mat-header-cell>
-    <mat-cell *matCellDef="let element">
+    <mat-header-cell *matHeaderCellDef style="flex: 0 0 100px !important;">Selected</mat-header-cell>
+    <mat-cell *matCellDef="let element" style="flex: 0 0 100px !important;">
       <mat-checkbox [(ngModel)]="element['checked']"></mat-checkbox>
     </mat-cell>
   </ng-container>
@@ -18,14 +37,28 @@
     </mat-cell>
   </ng-container>
 
+  <ng-container matColumnDef="admin">
+    <mat-header-cell *matHeaderCellDef>Administrator</mat-header-cell>
+    <mat-cell *matCellDef="let element">
+      <mat-checkbox [(ngModel)]="element['admin']" (ngModelChange)="changeAdminPriviledge(element['username'], element['localuser'], $event)"></mat-checkbox>
+    </mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="loginType">
+    <mat-header-cell *matHeaderCellDef>Login Type</mat-header-cell>
+    <mat-cell *matCellDef="let element">
+      <p>{{element['localuser']?"Local":"Federated"}}</p>
+    </mat-cell>
+  </ng-container>
+
   <ng-container matColumnDef="actions">
     <mat-header-cell *matHeaderCellDef>Actions</mat-header-cell>
     <mat-cell *matCellDef="let element">
-      <button mat-raised-button (click)="deleteUser(element['username'])" style="color: white; background-color: red;"> Delete User </button>
+      <button mat-raised-button (click)="deleteUser(element['username'], element['localuser'])" color="warn"> Delete User </button>
     </mat-cell>
   </ng-container>
 
   <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
   <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
 </mat-table>
-<mat-paginator id="elementsTablePaginator" [pageSizeOptions]="getPageSizeOptions()" showFirstLastButtons></mat-paginator>
+<mat-paginator id="elementsTablePaginator" [pageSizeOptions]="getPageSizeOptions()" [pageSize]="20" showFirstLastButtons></mat-paginator>

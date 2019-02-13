@@ -3,7 +3,7 @@ import { TestBed } from '@angular/core/testing';
 import { RestService } from './rest.service';
 import { AppModule } from './app.module';
 
-describe('RestService', () => {
+fdescribe('RestService', () => {
   beforeEach(() => TestBed.configureTestingModule({
     imports: [
       AppModule

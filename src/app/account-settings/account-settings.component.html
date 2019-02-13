@@ -5,6 +5,7 @@
   <mat-divider></mat-divider>
   <br>
 
+  <div *ngIf="localuser">
   <mat-card-header>
     <mat-card-title>Change Password</mat-card-title>
   </mat-card-header>
@@ -13,15 +14,15 @@
 
         <mat-form-field>
             <input matInput placeholder="Current Password" [type]="hidePassword0 ? 'password' : 'text'"
-              formControlName="currentPass">
+              formControlName="currentPass" (keydown.enter)="changePassword()">
             <mat-icon matSuffix (click)="hidePassword0 = !hidePassword0">{{hidePassword0 ? 'visibility_off' :
               'visibility'}}</mat-icon>
           </mat-form-field>
 
 
       <mat-form-field>
-        <input matInput placeholder="Password" [type]="hidePassword1 ? 'password' : 'text'" formControlName="password"
-          [errorStateMatcher]="passwordErrorMatcher">
+        <input matInput placeholder="New Password" [type]="hidePassword1 ? 'password' : 'text'" formControlName="password"
+          [errorStateMatcher]="passwordErrorMatcher" (keydown.enter)="changePassword()">
         <mat-icon matSuffix (click)="hidePassword1 = !hidePassword1">{{hidePassword1 ? 'visibility_off' :
           'visibility'}}</mat-icon>
         <mat-error>Error: {{ getErrorMessage('password') }}</mat-error>
@@ -29,7 +30,7 @@
 
       <mat-form-field>
         <input matInput placeholder="Confirm" [type]="hidePassword2 ? 'password' : 'text'" formControlName="confirm"
-          [errorStateMatcher]="confirmErrorMatcher">
+          [errorStateMatcher]="confirmErrorMatcher" (keydown.enter)="changePassword()">
         <mat-icon matSuffix (click)="hidePassword2 = !hidePassword2">{{hidePassword2 ? 'visibility_off' :
           'visibility'}}</mat-icon>
         <mat-error>Error: {{ getErrorMessage('confirm') }}</mat-error>
@@ -37,21 +38,22 @@
     </form>
   </mat-card-content>
   <mat-card-actions>
-    <button mat-raised-button (click)="changePassword()" color="primary">Change Password</button>
+    <button mat-raised-button (click)="changePassword()" color="warn" [disabled]="this.form.get('currentPass').value==''||this.form.get('password').value==''||this.form.get('confirm').value==''">Change Password</button>
   </mat-card-actions>
 
   <br>
   <mat-divider></mat-divider>
   <br>
+</div>
 
   <mat-card-header>
     <mat-card-title>Delete Account</mat-card-title>
   </mat-card-header>
-  <mat-card-content style="display: grid; width: 100%; justify-items: center;">
+  <mat-card-content style="display: grid; width: 100%; justify-items: center;" *ngIf="localuser">
     <form [formGroup]="deleteForm" style="display: grid; width: 75%; text-align: center;">
       <mat-form-field>
         <input matInput placeholder="Enter password to confirm delete" [type]="hidePassword3 ? 'password' : 'text'"
-          formControlName="confirmDelete" [errorStateMatcher]="confirmDeleteErrorMatcher">
+          formControlName="confirmDelete" [errorStateMatcher]="confirmDeleteErrorMatcher" (keydown.enter)="deleteAccount()">
         <mat-icon matSuffix (click)="hidePassword3 = !hidePassword3">{{hidePassword3 ? 'visibility_off' :
           'visibility'}}</mat-icon>
         <mat-error>Incorrect Password</mat-error>
@@ -59,7 +61,7 @@
     </form>
   </mat-card-content>
   <mat-card-actions>
-    <button mat-raised-button (click)="deleteAccount()" style="color: white; background-color: red;">Delete Account</button>
+    <button mat-raised-button (click)="deleteAccount()" color="warn" [disabled]="this.deleteForm.get('confirmDelete').value==''&&localuser">Delete Account</button>
   </mat-card-actions>
 
 </mat-card>

@@ -1,9 +1,29 @@
 const database = require('./database.js');
 const crypto = require('crypto');
+const axios = require('axios');
+
+function usernamePasswordCorrect(username, password) {
+    return new Promise((resolve, reject) => {
+        getUsers(username).then(users => {
+            if (users.length != 1) {
+                reject(Error("Could not find username"));
+                return;
+            }
+            var user = users[0];
+            resolve(generateHash(password, user.salt) == user.saltedhashedpassword);
+        }).catch(err => {
+            reject(Error(err));
+        });
+    });
+}
+
+function generateHash(password, salt) {
+    return crypto.pbkdf2Sync(password, salt, 1000, 64, 'sha512').toString('hex');
+}
 
 function generateSaltAndHash(password) {
     var salt = crypto.randomBytes(16).toString('hex');
-    var hash = crypto.pbkdf2Sync(password, salt, 1000, 64, 'sha512').toString('hex');
+    var hash = generateHash(password, salt);
     return {
         salt: salt,
         hash: hash
@@ -33,7 +53,7 @@ function generateToken() {
     });
 }
 
-function getUsers(username, usernameregex, limit) {
+function getUsers(username, usernameregex, admin, localuser, limit) {
     username = username || "";
     usernameregex = usernameregex || "$a";
     limit = limit || database.defaultSearchLimit;
@@ -45,6 +65,12 @@ function getUsers(username, usernameregex, limit) {
                 { username: { $regex: usernameregex } }
             ]
         }
+        if (admin !== null && admin !== undefined && admin !== "") {
+            filterSchema['admin'] = admin;
+        }
+        if (localuser !== null && localuser !== undefined && localuser !== "") {
+            filterSchema['localuser'] = localuser;
+        }
         database.userModel.find(filterSchema).limit(limit).exec((err, users) => {
             if (err) {
                 reject(Error(err));
@@ -55,16 +81,22 @@ function getUsers(username, usernameregex, limit) {
     });
 }
 
-function createUser(username, password) {
+function createUser(username, password, admin, localuser) {
     return new Promise((resolve, reject) => {
-        let saltAndHash = generateSaltAndHash(password);
         generateToken().then(token => {
-            let user = new database.userModel({
+            var userObject = {
                 username: username,
-                salt: saltAndHash.salt,
-                saltedhashedpassword: saltAndHash.hash,
-                token: token
-            });
+                token: token,
+                admin: admin,
+                localuser: localuser
+            };
+            if (localuser) {
+                console.log("Creating hash.");
+                let saltAndHash = generateSaltAndHash(password);
+                userObject['salt'] = saltAndHash.salt;
+                userObject['saltedhashedpassword'] = saltAndHash.hash;
+            }
+            let user = new database.userModel(userObject);
             user.save().then(response => {
                 resolve(response);
             }).catch(err => {
@@ -76,17 +108,23 @@ function createUser(username, password) {
     });
 }
 
-function modifyUser(username, newPassword) {
+function modifyUser(username, localuser, newPassword, newAdmin) {
     return new Promise((resolve, reject) => {
         var filterSchema = {
-            username: username
+            username: username,
+            localuser: localuser
         }
-        var saltAndHash = generateSaltAndHash(newPassword);
+        var toSet = {};
+        if (localuser && newPassword !== null && newPassword !== undefined && newPassword !== "") {
+            var saltAndHash = generateSaltAndHash(newPassword);
+            toSet['salt'] = saltAndHash.salt;
+            toSet['saltedhashedpassword'] = saltAndHash.hash;
+        }
+        if (newAdmin !== null && newAdmin !== undefined && newAdmin !== "") {
+            toSet['admin'] = newAdmin;
+        }
         var updateObject = {
-            $set: {
-                salt: saltAndHash.salt,
-                saltedhashedpassword: saltAndHash.hash
-            }
+            $set: toSet
         }
         database.userModel.updateOne(filterSchema, updateObject, (err, response) => {
             if (err) {
@@ -98,10 +136,11 @@ function modifyUser(username, newPassword) {
     });
 }
 
-function deleteUser(username) {
+function deleteUser(username, localuser) {
     return new Promise((resolve, reject) => {
         var filterSchema = {
-            username: username
+            username: username,
+            localuser: localuser
         }
         database.userModel.deleteOne(filterSchema, (err, response) => {
             if (err) {
@@ -113,9 +152,74 @@ function deleteUser(username) {
     });
 }
 
+function createFederatedUser(netidtoken, clientid) {
+    console.log("Create federated user.");
+    return new Promise((resolve, reject) => {
+        axios.get('https://api.colab.duke.edu/identity/v1/', {
+            headers: {
+                'x-api-key': clientid,
+                'Authorization': 'Bearer ' + netidtoken
+            }
+        }).then(response => {
+            var netid = response.data.netid;
+            createUser(netid, null, false, false).then(response => {
+                resolve(response);
+            }).catch(err => {
+                reject(Error(err));
+            });
+        }).catch(err => {
+            reject(Error(err));
+        });
+    });
+}
+
+function getLoginInfoForFederatedUser(netidtoken, clientid) {
+    return new Promise((resolve, reject) => {
+        axios.get('https://api.colab.duke.edu/identity/v1/', {
+            headers: {
+                'x-api-key': clientid,
+                'Authorization': 'Bearer ' + netidtoken
+            }
+        }).then(response => {
+            var netid = response.data.netid;
+            getUsers(netid, null, null, false, 1).then(users => {
+                console.log(users);
+                if (users.length == 1) {
+                    resolve(users[0]);
+                } else if (users.length == 0) {
+                    //user does not exist. create it
+                    createFederatedUser(netidtoken, clientid).then(createResponse => {
+                        console.log("Create response: ", createResponse);
+                        getUsers(netid, null, null, false, 1).then(users => {
+                            console.log(users);
+                            if (users.length == 1) {
+                                resolve(users[0]);
+                            } else {
+                                reject(Error("Error finding user."));
+                            }
+                        }).catch(err => {
+                            reject(Error(err));
+                        })
+                    }).catch(err => {
+                        reject(Error(err));
+                    });
+                } else {
+                    reject(Error("Error finding user."));
+                }
+            }).catch(err => {
+                reject(Error(err));
+            });
+        }).catch(err => {
+            reject(Error(err));
+        });
+    });
+}
+
 module.exports = {
     getUsers: getUsers,
     createUser: createUser,
     modifyUser: modifyUser,
-    deleteUser: deleteUser
+    deleteUser: deleteUser,
+    usernamePasswordCorrect: usernamePasswordCorrect,
+    getLoginInfoForFederatedUser: getLoginInfoForFederatedUser
 };

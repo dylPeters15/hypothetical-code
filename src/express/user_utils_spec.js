@@ -23,8 +23,9 @@ describe('loading express', function () {
     });
 
     it('creates admin user', function (done) {
-        user_utils.createUser("admin", "password").then(response => {
+        user_utils.createUser("admin", "password", true, true).then(response => {
             assert.equal(response['username'], "admin");
+            assert.equal(response['admin'], true);
             done();
         }).catch(err => {
             assert.fail(err);
@@ -32,10 +33,11 @@ describe('loading express', function () {
     });
 
     it('Throws error when creating user with existing username', function (done) {
-        user_utils.createUser("admin", "password").then(response => {
+        user_utils.createUser("admin", "password", true, true).then(response => {
             assert.equal(response['username'], "admin");
-            user_utils.createUser("admin", "password2").then(innerresponse => {
-                assert.fail(Error("Should not have responded: ", innerresponse));
+            user_utils.createUser("admin", "password2", true, true).then(innerresponse => {
+                console.log(response);
+                console.log(innerresponse);
             }).catch(err => {
                 assert.notEqual(err, null);
                 done();
@@ -51,6 +53,22 @@ describe('loading express', function () {
             done();
         }).catch(err => {
             assert.fail(err);
+        });
+    });
+
+    it('Can create local and federated user with same username', function (done) {
+        user_utils.createUser("admin", "password", true, true).then(response => {
+            assert.equal(response['username'], "admin");
+            assert.equal(response['localuser'], true);
+            user_utils.createUser("admin", "password2", true, false).then(innerresponse => {
+                assert.equal(innerresponse['username'], "admin");
+                assert.equal(innerresponse['localuser'], false);
+                done();
+            }).catch(err => {
+                assert.fail(Error(err));
+            });
+        }).catch(err => {
+            assert.fail(Error(err))
         });
     });
 });

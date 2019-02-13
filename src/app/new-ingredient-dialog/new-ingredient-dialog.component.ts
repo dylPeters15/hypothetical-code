@@ -37,20 +37,20 @@ export class NewIngredientDialogComponent implements OnInit {
   createIngredient() {
     console.log("well we got here...");
     var id = Math.floor(Math.random() * 1000000000);
-    this.rest.adminCreateIngredient(this.name, this.number, this.vendor_information, this.package_size, this.cost_per_package, this.comment, this.skus, id).subscribe(response => {
-      if (response['success']) {
-        this.snackBar.open("Successfully created ingredient " + this.name + ".", "close", {
-          duration: 2000,
-        });
-        console.log('success')
-      } else {
-        this.snackBar.open("Error creating ingredient " + this.name + ". Please refresh and try again.", "close", {
-          duration: 2000,
-        });
-        console.log('failure')
-      }
-      this.closeDialog();
-    });
+    // this.rest.adminCreateIngredient(this.name, this.number, this.vendor_information, this.package_size, this.cost_per_package, this.comment, this.skus, id).subscribe(response => {
+    //   if (response['success']) {
+    //     this.snackBar.open("Successfully created ingredient " + this.name + ".", "close", {
+    //       duration: 2000,
+    //     });
+    //     console.log('success')
+    //   } else {
+    //     this.snackBar.open("Error creating ingredient " + this.name + ". Please refresh and try again.", "close", {
+    //       duration: 2000,
+    //     });
+    //     console.log('failure')
+    //   }
+    //   this.closeDialog();
+    // });
   }
 
 }

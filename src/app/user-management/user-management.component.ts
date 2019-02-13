@@ -1,14 +1,19 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { RestService } from '../rest.service';
-import {MatSnackBar} from '@angular/material';
+import { MatSnackBar } from '@angular/material';
 import { MatDialogRef, MatDialog, MatDialogConfig, MatTableDataSource, MatPaginator } from "@angular/material";
 import { NewUserDialogComponent } from '../new-user-dialog/new-user-dialog.component';
 import { AfterViewChecked } from '@angular/core';
 import { PasswordConfirmationDialogComponent } from '../password-confirmation-dialog/password-confirmation-dialog.component';
+import { auth } from '../auth.service';
+import { ConfirmActionDialogComponent } from '../confirm-action-dialog/confirm-action-dialog.component';
+import { UserNotificationDialogComponent } from '../user-notification-dialog/user-notification-dialog.component';
+import { Router } from '@angular/router';
 
 export interface UserForTable {
   username: string;
   checked: boolean;
+  localuser: boolean;
 }
 
 
@@ -16,42 +21,48 @@ export interface UserForTable {
  * @title Table dynamically changing the columns displayed
  */
 @Component({
-    selector: 'app-user-management',
-    templateUrl: './user-management.component.html',
-    styleUrls: ['./user-management.component.css']
-  })
+  selector: 'app-user-management',
+  templateUrl: './user-management.component.html',
+  styleUrls: ['./user-management.component.css']
+})
 export class UserManagementComponent implements OnInit {
 
-  constructor(public rest:RestService, private snackBar: MatSnackBar, private dialog: MatDialog) { }
+  constructor(public rest: RestService, private snackBar: MatSnackBar, private dialog: MatDialog, public router: Router) { }
   allReplacement = 54321;
-  displayedColumns: string[] = ['checked', 'username', 'actions'];
+  displayedColumns: string[] = ['checked', 'username', 'admin', 'loginType', 'actions'];
   data: UserForTable[] = [];
-  dataSource =  new MatTableDataSource<UserForTable>(this.data);
+  dataSource = new MatTableDataSource<UserForTable>(this.data);
   dialogRef: MatDialogRef<NewUserDialogComponent>;
   passwordDialogRef: MatDialogRef<PasswordConfirmationDialogComponent>;
+  confirmDialogRef: MatDialogRef<ConfirmActionDialogComponent>;
+  notificationDialogRef: MatDialogRef<UserNotificationDialogComponent>;
   @ViewChild(MatPaginator) paginator: MatPaginator;
+  filterQuery: string = "";
+  displayAdmins: string = "all";
+  displayLocal: string = "all";
 
   ngOnInit() {
+    this.paginator.pageSize = 20;
+    this.paginator.page.subscribe(event => {
+      this.deselectAll();
+    });
     this.refreshData();
   }
 
   getPageSizeOptions() {
-    return [5, 10, 20, this.allReplacement];
+    return [20, 50, 100, this.allReplacement];
   }
 
-  refreshData() {
-    this.rest.sendUserListRequest().subscribe(response => {
-      this.data = response['userlist'].filter((value, index, arr) => {
-        return value.username != 'admin';
-      });
-      this.data.forEach(user => {
-        user['checked'] = false;
-      });
+  refreshData(filterQueryData?) {
+    // filterQueryData = filterQueryData ? "^"+filterQueryData+".*" : "^"+this.filterQuery+".*"; //this returns things that start with the pattern
+    filterQueryData = filterQueryData ? ".*"+filterQueryData+".*" : ".*"+this.filterQuery+".*"; //this returns things that have the pattern anywhere in the string
+    this.rest.getUsers("", filterQueryData, this.displayAdmins=="all"?null:this.displayAdmins=="adminsonly", this.displayLocal=="all"?null:this.displayLocal=="localonly", this.paginator.pageSize*10).subscribe(response => {
+      this.data = response;
+      this.deselectAll();
       this.sortData();
-      this.dataSource =  new MatTableDataSource<UserForTable>(this.data);
-    this.dataSource.paginator = this.paginator;
+      this.dataSource = new MatTableDataSource<UserForTable>(this.data);
+      this.dataSource.paginator = this.paginator;
     });
-    
   }
 
   openDialog() {
@@ -63,16 +74,27 @@ export class UserManagementComponent implements OnInit {
   }
 
   sortData() {
-    this.data.sort((a,b) => {
+    this.data.sort((a, b) => {
       return a.username > b.username ? 1 : -1;
     });
   }
 
-  deleteUserConfirmed(username) {
-    this.rest.sendAdminDeleteUserRequest(username).subscribe(response => {
+  notifyUser(title, message) {
+    const dialogConfig = new MatDialogConfig();
+    this.notificationDialogRef = this.dialog.open(UserNotificationDialogComponent, dialogConfig);
+    this.notificationDialogRef.componentInstance.title = title;
+    this.notificationDialogRef.componentInstance.message = message;
+  }
+
+  deleteUserConfirmed(username, localuser) {
+    this.rest.deleteUser(username, localuser).subscribe(response => {
       this.snackBar.open("User " + username + " deleted successfully.", "close", {
         duration: 2000,
       });
+      if (username == auth.getUsername()) {
+        this.notifyUser("Logging Out", "Your account was deleted and you will be redirected to the login page.");
+        this.router.navigate(['logout']);
+      }
       this.data = this.data.filter((value, index, arr) => {
         return value.username != username;
       });
@@ -80,14 +102,24 @@ export class UserManagementComponent implements OnInit {
     });
   }
 
-  deleteUser(username) {
-    const dialogConfig = new MatDialogConfig();
-    this.passwordDialogRef = this.dialog.open(PasswordConfirmationDialogComponent, dialogConfig);
-    this.passwordDialogRef.afterClosed().subscribe(event => {
-      if (event.validated) {
-        this.deleteUserConfirmed(username);
-      }
-    });
+  deleteUser(username, localuser) {
+    if (auth.getLocal()) {
+      const dialogConfig = new MatDialogConfig();
+      this.passwordDialogRef = this.dialog.open(PasswordConfirmationDialogComponent, dialogConfig);
+      this.passwordDialogRef.afterClosed().subscribe(event => {
+        if ((event && event.validated)) {
+          this.deleteUserConfirmed(username, localuser);
+        }
+      });
+    } else {
+      const dialogConfig = new MatDialogConfig();
+      this.confirmDialogRef = this.dialog.open(ConfirmActionDialogComponent, dialogConfig);
+      this.confirmDialogRef.afterClosed().subscribe(event => {
+        if ((event && event['confirmed'])) {
+          this.deleteUserConfirmed(username, localuser);
+        }
+      });
+    }
   }
 
   newUser() {
@@ -95,17 +127,31 @@ export class UserManagementComponent implements OnInit {
   }
 
   deleteSelected() {
-    const dialogConfig = new MatDialogConfig();
-    this.passwordDialogRef = this.dialog.open(PasswordConfirmationDialogComponent, dialogConfig);
-    this.passwordDialogRef.afterClosed().subscribe(event => {
-      if (event.validated) {
-        this.data.forEach(user => {
-          if (user.checked) {
-            this.deleteUserConfirmed(user.username);
-          }
-        });
-      }
-    });
+    if (auth.getLocal()) {
+      const dialogConfig = new MatDialogConfig();
+      this.passwordDialogRef = this.dialog.open(PasswordConfirmationDialogComponent, dialogConfig);
+      this.passwordDialogRef.afterClosed().subscribe(event => {
+        if ((event && event.validated)) {
+          this.data.forEach(user => {
+            if (user.checked) {
+              this.deleteUserConfirmed(user.username, user.localuser);
+            }
+          });
+        }
+      });
+    } else {
+      const dialogConfig = new MatDialogConfig();
+      this.confirmDialogRef = this.dialog.open(ConfirmActionDialogComponent, dialogConfig);
+      this.confirmDialogRef.afterClosed().subscribe(event => {
+        if ((event && event['confirmed'])) {
+          this.data.forEach(user => {
+            if (user.checked) {
+              this.deleteUserConfirmed(user.username, user.localuser);
+            }
+          });
+        }
+      });
+    }
   }
 
   deselectAll() {
@@ -115,22 +161,26 @@ export class UserManagementComponent implements OnInit {
   }
 
   selectAll() {
-    this.data.forEach(user => {
-      user.checked = true;
-    });
+    var lowerIndex = this.paginator.pageSize * this.paginator.pageIndex;
+    var upperIndex = this.paginator.pageSize * (this.paginator.pageIndex+1);
+    if (this.data.length < upperIndex) {
+      upperIndex = this.data.length;
+    }
+    this.deselectAll();
+    for (var i = lowerIndex; i < upperIndex; i=i+1) {
+      this.data[i].checked = true;
+    }
   }
 
   ngAfterViewChecked() {
     const matOptions = document.querySelectorAll('mat-option');
-   
-   
     // If the replacement element was found...
     if (matOptions) {
       const matOptionsLen = matOptions.length;
       // We'll iterate the array backwards since the allReplacement should be at the end of the array
       for (let i = matOptionsLen - 1; i >= 0; i--) {
         const matOption = matOptions[i];
-   
+
         // Store the span in a variable for re-use
         const span = matOption.querySelector('span.mat-option-text');
         // If the spans innerHTML string value is the same as the allReplacement variables string value...
@@ -141,6 +191,29 @@ export class UserManagementComponent implements OnInit {
         }
       }
     }
+  }
+
+  noneSelected(): boolean {
+    for (var i = 0; i < this.data.length; i++) {
+      if (this.data[i].checked) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  changeAdminPriviledge(username, localuser, newPriviledge) {
+    this.rest.modifyUser(username, localuser, null, newPriviledge).subscribe(response => {
+      if (response['ok'] != 1) {
+        this.snackBar.open("Unable to change user privilege. Please try again later.", "close");
+        this.refreshData();
+      } else if (username == auth.getUsername()) {
+        this.notifyUser("Logging Out", "Your account permission was changed and you will be redirected to the login page.");
+        this.router.navigate(['logout']);
+      } else if (this.displayAdmins != "all") {
+        this.refreshData();
+      }
+    });
   }
 
 }
