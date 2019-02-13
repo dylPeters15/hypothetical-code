@@ -61,22 +61,33 @@ export class AccountSettingsComponent implements OnInit {
   }
 
   deleteAccount() {
-    // const pass = this.deleteForm.get('confirmDelete').value
-    // this.rest.loginRequest(auth.getUsername(), pass).subscribe(loginresponse => {
-    //   if (loginresponse['token']) {
-    //     this.rest.deleteUser(auth.getUsername()).subscribe(response => {
-    //       if (response['deletedCount'] == 1 && response['ok'] == 1) {
-    //         this.openDialog("Success", "Account deleted successfully. You will be redirected to the login page.");
-    //         auth.clearLogin();
-    //         this.router.navigate(['login']);
-    //       } else {
-    //         this.openDialog("Unkown Error", "Unable to perform operation.");
-    //       }
-    //     });
-    //   } else {
-    //     this.openDialog("Incorrect password", "Please ensure that you have entered your password correctly and try again.");
-    //   }
-    // })
+    if (auth.getLocal()) {
+      const pass = this.deleteForm.get('confirmDelete').value
+      this.rest.loginRequest(auth.getUsername(), pass).subscribe(loginresponse => {
+        if (loginresponse['token']) {
+          this.deleteAccountConfirmed();
+        } else {
+          this.openDialog("Incorrect password", "Please ensure that you have entered your password correctly and try again.");
+        }
+      });
+    } else {
+      this.deleteAccountConfirmed();
+    }
+  }
+
+  deleteAccountConfirmed() {
+    console.log(auth.getUsername());
+    console.log(auth.getLocal());
+    this.rest.deleteUser(auth.getUsername(), auth.getLocal()).subscribe(response => {
+      console.log(response);
+      if (response['deletedCount'] == 1 && response['ok'] == 1) {
+        this.openDialog("Success", "Account deleted successfully. You will be redirected to the login page.");
+        auth.clearLogin();
+        this.router.navigate(['login']);
+      } else {
+        this.openDialog("Unkown Error", "Unable to perform operation.");
+      }
+    });
   }
 
   form = new FormGroup(

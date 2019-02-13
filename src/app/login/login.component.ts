@@ -29,10 +29,9 @@ export class LoginComponent implements OnInit {
           var username = response['username'];
           var token = response['token'];
           var admin = response['admin'];
-          var local = response['localuser'];
           if (username && token && admin!==null) {
             this.failedLogin = false;
-            auth.storeLogin(this.myusername, token, admin, false);
+            auth.storeLogin(username, token, admin, false);
             this.router.navigateByUrl('/home');
           } else {
             //incorrect login

@@ -26,6 +26,13 @@ const server = https.createServer({
 });
 module.exports = server;
 
+function resolveError(err, res) {
+    console.log(err);
+    res.send({
+        err:""+err
+    });
+}
+
 app.route('/login').get((req, res) => {
     if (req.headers['netidtoken']) {
         user_utils.getLoginInfoForFederatedUser(req.headers['netidtoken']).then(user => {
@@ -36,9 +43,7 @@ app.route('/login').get((req, res) => {
                 localuser: false
             });
         }).catch(err => {
-            res.send({
-                err:""+err
-            });
+            resolveError(err, res);
         });
     } else {
         user_utils.usernamePasswordCorrect(req.headers['username'], req.headers['password']).then(correct => {
@@ -50,9 +55,7 @@ app.route('/login').get((req, res) => {
                         localuser: true
                     });
                 }).catch(err => {
-                    res.send({
-                        err:""+err
-                    });
+                    resolveError(err, res);
                 });
             } else {
                 res.send({
@@ -60,9 +63,7 @@ app.route('/login').get((req, res) => {
                 });
             }
         }).catch(err => {
-            res.send({
-                err:""+err
-            });
+            resolveError(err, res);
         });
     }
 });
@@ -83,33 +84,26 @@ app.route('/users').get((req, res) => {
         }
         res.send(usersToSend);
     }).catch(err => {
-        res.send({
-            err:""+err
-        });
+        resolveError(err, res);
     });
 }).put((req, res) => {
     user_utils.createUser(req.body['username'], req.body['password'], req.body['admin'], req.body['localuser']).then(response => {
         res.send(response);
     }).catch(err => {
-        res.send({
-            err:""+err
-        });
+        resolveError(err, res);
     });
 }).post((req, res) => {
     user_utils.modifyUser(req.headers['username'], req.headers['localuser'], req.body['password'], req.body['admin']).then(response => {
         res.send(response);
     }).catch(err => {
-        res.send({
-            err:""+err
-        });
+        resolveError(err, res);
     });
 }).delete((req, res) => {
+    console.log(req.headers);
     user_utils.deleteUser(req.headers['username'], req.headers['localuser']).then(response => {
         res.send(response);
     }).catch(err => {
-        res.send({
-            err:""+err
-        });
+        resolveError(err, res);
     });
 });
 
