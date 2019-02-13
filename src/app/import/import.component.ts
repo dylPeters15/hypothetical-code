@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material';
-import { DialogComponent } from './dialog.component';
 import { RestService } from '../rest.service';
+import { ParseCsvService } from '../parse-csv.service';
 
 @Component({
   selector: 'app-upload',
@@ -9,12 +9,23 @@ import { RestService } from '../rest.service';
   styleUrls: ['./import.component.css']
 })
 export class ImportComponent  implements OnInit {
-  constructor(public dialog: MatDialog, public rest:RestService) {}
+  @ViewChild('fileSelector') fileSelector;
 
-  public openImportDialog() {
-    let dialogRef = this.dialog.open(DialogComponent, { width: '50%', height: '50%' });
+  constructor(private parser: ParseCsvService, public dialog: MatDialog, public rest:RestService) {}
+
+  openFileSelector() {
+    this.fileSelector.nativeElement.click();
   }
 
   ngOnInit() {
+  }
+
+  filesSelected() {
+    this.parser.parseCSVFiles(this.fileSelector.nativeElement.files).then(result => {
+      console.log(result);
+    }).catch(err => {
+      console.log(err);
+    });
+
   }
 }
