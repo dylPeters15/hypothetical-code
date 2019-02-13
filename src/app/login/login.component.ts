@@ -20,6 +20,8 @@ export class LoginComponent implements OnInit {
   mypassword: string;
 
   failedLogin: boolean = false;
+  
+  hidePassword: boolean = true;
 
   ngOnInit() {
     if (window.location.hash.length > 0) {

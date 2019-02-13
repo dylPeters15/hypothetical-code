@@ -28,6 +28,11 @@ export class NavigationComponent implements OnInit {
     
    }
 
+   isAuthenticatedForUserOperation() {
+    return auth.isAuthenticatedForUserOperation();
+   }
+
+
   ngOnInit() {
     this.sidenavService.sideNav = this.sideNav;
     auth.getLoggedInObservable().subscribe(value => {
@@ -35,6 +40,8 @@ export class NavigationComponent implements OnInit {
       this.admin = auth.isAuthenticatedForAdminOperation();
       if(!this.loggedin) {
         this.sidenavService.sideNav.close();
+      } else {
+        this.sidenavService.sideNav.open();
       }
     });
   }

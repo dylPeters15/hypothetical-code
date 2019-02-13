@@ -7,8 +7,12 @@ const https = require('https');
 const user_utils = require('./user_utils.js');
 const formula_utils = require('./formula_utils.js');
 const ingredient_utils = require('./ingredient_utils.js');
+<<<<<<< HEAD
 const line_utils = require('./manufacturing_line_utils');
 const activity_utils = require('./manufacturing_activity_utils');
+=======
+const product_line_utils = require('./product_line_utils.js');
+>>>>>>> b05834c74e43d756c2f0c5d505d82587035e7059
 
 const app = express();
 const corsOptions = {
@@ -156,7 +160,11 @@ app.route('/ingredients').get((req, res) => {
     });
 }).put((req, res) => {
     ingredient_utils.createIngredient(req.body['ingredientname'], req.body['ingredientnumber'],
+<<<<<<< HEAD
     req.body['vendorinformation'], req.body['packagesize'],
+=======
+    req.body['vendorinformation'], req.body['unitofmeasure'], req.body['amount'],
+>>>>>>> b05834c74e43d756c2f0c5d505d82587035e7059
     req.body['costperpackage'], req.body['comment']).then(response => {
         res.send(response);
     }).catch(err => {
@@ -165,9 +173,13 @@ app.route('/ingredients').get((req, res) => {
         });
     });
 }).post((req, res) => {
+<<<<<<< HEAD
     ingredient_utils.modifyIngredeint(req.headers['ingredientname'], req.body['ingredeintname'],
     req.body['ingredientnumber'], req.body['vendorinformation'], req.body['packagesize'],
     req.body['costperpackage'], req.body['comment']).then(response => {
+=======
+    ingredient_utils.modifyIngredient(req.headers['ingredientname'], req.body).then(response => {
+>>>>>>> b05834c74e43d756c2f0c5d505d82587035e7059
         res.send(response);
     }).catch(err => {
         res.send({
@@ -175,7 +187,11 @@ app.route('/ingredients').get((req, res) => {
         });
     });
 }).delete((req, res) => {
+<<<<<<< HEAD
     formula_utils.deleteIngredients(req.headers['ingredientname']).then(response => {
+=======
+    ingredient_utils.deleteIngredient(req.headers['ingredientname']).then(response => {
+>>>>>>> b05834c74e43d756c2f0c5d505d82587035e7059
         res.send(response);
     }).catch(err => {
         res.send({
@@ -223,6 +239,7 @@ app.route('/skus').get((req, res) => {
     });
 });
 
+<<<<<<< HEAD
 ///////////////////// Manufacturing Goals /////////////////////
 app.route('/manufacturing-goals').get((req, res) => {
     goals_utils.getGoals(req.headers['username'],req.headers['goalname'],req.headers['goalnameregex'], req.headers['limit']).then(formulas => {
@@ -325,6 +342,39 @@ app.route('/manufacturing-activities').get((req, res) => {
     }).catch(err => {
         res.send({
             err:err
+=======
+///////////////////// product lines /////////////////////
+app.route('/product_lines').get((req, res) => {
+    product_line_utils.getProductLines(req.headers['productlinename'], req.headers['limit']).then(productLines => {
+        res.send(productLines);
+    }).catch(err => {
+        res.send({
+            err:""+err
+        });
+    });
+}).put((req, res) => {
+    product_line_utils.createProductLine(req.body).then(response => {
+        res.send(response);
+    }).catch(err => {
+        res.send({
+            err:""+err
+        });
+    });
+}).post((req, res) => {
+    product_line_utils.modifyProductLine(req.headers['productlinename'], req.body).then(response => {
+        res.send(response);
+    }).catch(err => {
+        res.send({
+            err:""+err
+        });
+    });
+}).delete((req, res) => {
+    product_line_utils.deleteProductLine(req.headers['productlinename']).then(response => {
+        res.send(response);
+    }).catch(err => {
+        res.send({
+            err:""+err
+>>>>>>> b05834c74e43d756c2f0c5d505d82587035e7059
         });
     });
 });
