@@ -163,12 +163,12 @@ function createUniqueCaseUpcNumber() {
         return new Promise(function (resolve, reject) {
             database.skuModel.find({ 'caseUpcNumber': newCaseUpcNumber }, 'caseUpcNumber').exec((err, result) => {
                 if (result == null) {
+                    numFound = true;
                 }
                 if (err) {
                     reject(Error(err));
                 }
                 if (result != null) {
-                    numFound = true;
                 }
 
 
@@ -181,27 +181,10 @@ function createUniqueCaseUpcNumber() {
 function createUnitUpcNumber() {
     var newUnitUpcNumber;
     var firstDigitOption1;
-    var numFound = false;
-    while (!numFound) {
-        newUnitUpcNumber = Math.round(Math.random() * 10000000000);
-        firstDigitOption1 = "1" + int.Parse(newUnitUpcNumber.ToString()); // Case upc number must start with a 0,1,6,7,8, or 8. For random generated, just let it equal 1.
-        newUnitUpcNumber = parseInt(firstDigitOption1)
-        return new Promise(function (resolve, reject) {
-            database.skuModel.find({ 'unitUpcNumber': newUnitUpcNumber }, 'unitUpcNumber').exec((err, result) => {
-                if (result == null) {
-                }
-                if (err) {
-                    reject(Error(err));
-                }
-                if (result != null) {
-                    numFound = true;
-                }
-
-
-            });
-            resolve(newUnitUpcNumber);
-        });
-    }
+    newUnitUpcNumber = Math.round(Math.random() * 10000000000);
+    firstDigitOption1 = "1" + int.Parse(newUnitUpcNumber.ToString()); // Case upc number must start with a 0,1,6,7,8, or 8. For random generated, just let it equal 1.
+    newUnitUpcNumber = parseInt(firstDigitOption1);
+    return(newUnitUpcNumber);
 }
 
 

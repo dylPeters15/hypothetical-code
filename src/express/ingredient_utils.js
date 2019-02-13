@@ -118,12 +118,12 @@ function createUniqueIngredientNumber() {
         return new Promise(function (resolve, reject) {
             database.ingredientModel.find({ 'ingredientnumber':newingredientnumber }, 'ingredientnumber').exec((err,result)=> {
                 if (result == null) {
+                    numFound = true;
                 }
                 if (err) {
                     reject(Error(err));
                 }
                 if (result != null) {
-                    numFound = true;
                 }
              
                  
