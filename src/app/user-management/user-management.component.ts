@@ -10,6 +10,7 @@ import { auth } from '../auth.service';
 export interface UserForTable {
   username: string;
   checked: boolean;
+  localuser: boolean;
 }
 
 
@@ -73,8 +74,8 @@ export class UserManagementComponent implements OnInit {
     });
   }
 
-  deleteUserConfirmed(username) {
-    this.rest.deleteUser(username).subscribe(response => {
+  deleteUserConfirmed(username, localuser) {
+    this.rest.deleteUser(username, localuser).subscribe(response => {
       this.snackBar.open("User " + username + " deleted successfully.", "close", {
         duration: 2000,
       });
@@ -85,12 +86,12 @@ export class UserManagementComponent implements OnInit {
     });
   }
 
-  deleteUser(username) {
+  deleteUser(username, localuser) {
     const dialogConfig = new MatDialogConfig();
     this.passwordDialogRef = this.dialog.open(PasswordConfirmationDialogComponent, dialogConfig);
     this.passwordDialogRef.afterClosed().subscribe(event => {
       if (event.validated) {
-        this.deleteUserConfirmed(username);
+        this.deleteUserConfirmed(username, localuser);
       }
     });
   }
@@ -106,7 +107,7 @@ export class UserManagementComponent implements OnInit {
       if (event.validated) {
         this.data.forEach(user => {
           if (user.checked) {
-            this.deleteUserConfirmed(user.username);
+            this.deleteUserConfirmed(user.username, user.localuser);
           }
         });
       }

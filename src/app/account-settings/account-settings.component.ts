@@ -19,10 +19,12 @@ export class AccountSettingsComponent implements OnInit {
   hidePassword2: boolean = true;
   hidePassword3: boolean = true;
   dialogRef: MatDialogRef<UserNotificationDialogComponent>;
+  localuser: boolean;
 
   constructor(private rest: RestService, private dialog: MatDialog, public router: Router) { }
 
   ngOnInit() {
+    this.localuser = auth.getLocal();
   }
 
   openDialog(title, message) {
@@ -59,31 +61,22 @@ export class AccountSettingsComponent implements OnInit {
   }
 
   deleteAccount() {
-    const pass = this.deleteForm.get('confirmDelete').value
-    this.rest.loginRequest(auth.getUsername(), pass).subscribe(loginresponse => {
-      if (loginresponse['token']) {
-        this.rest.deleteUser(auth.getUsername()).subscribe(response => {
-          if (response['deletedCount'] == 1 && response['ok'] == 1) {
-            this.openDialog("Success", "Account deleted successfully. You will be redirected to the login page.");
-            auth.clearLogin();
-            this.router.navigate(['login']);
-          } else {
-            this.openDialog("Unkown Error", "Unable to perform operation.");
-          }
-        });
-      } else {
-        this.openDialog("Incorrect password", "Please ensure that you have entered your password correctly and try again.");
-      }
-    })
-    // this.rest.sendDeleteAccountRequest(pass).subscribe(response => {
-    //   if (response['success']) {
-    //     this.openDialog("Success", "Account deleted successfully. You will be redirected to the login page.");
-    //     auth.clearLogin();
-    //     this.router.navigate(['login']);
+    // const pass = this.deleteForm.get('confirmDelete').value
+    // this.rest.loginRequest(auth.getUsername(), pass).subscribe(loginresponse => {
+    //   if (loginresponse['token']) {
+    //     this.rest.deleteUser(auth.getUsername()).subscribe(response => {
+    //       if (response['deletedCount'] == 1 && response['ok'] == 1) {
+    //         this.openDialog("Success", "Account deleted successfully. You will be redirected to the login page.");
+    //         auth.clearLogin();
+    //         this.router.navigate(['login']);
+    //       } else {
+    //         this.openDialog("Unkown Error", "Unable to perform operation.");
+    //       }
+    //     });
     //   } else {
-    //     this.openDialog("Error", "There was an error updating your password. Check that you entered your current password correctly and try again.");
+    //     this.openDialog("Incorrect password", "Please ensure that you have entered your password correctly and try again.");
     //   }
-    // });
+    // })
   }
 
   form = new FormGroup(

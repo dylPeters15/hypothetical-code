@@ -55,7 +55,8 @@ export class RestService {
     return this.http.put(endpoint + 'users', {
       username: username,
       password: password,
-      admin: admin
+      admin: admin,
+      localuser: true
     },
       this.generateHeader());
   }
@@ -71,9 +72,10 @@ export class RestService {
       }));
   }
 
-  deleteUser(username: string): Observable<any> {
+  deleteUser(username: string, localuser: boolean): Observable<any> {
     return this.http.delete(endpoint + 'users', this.generateHeader({
-      username: username
+      username: username,
+      localuser: ""+localuser
     }));
   }
 
