@@ -17,8 +17,10 @@
           <tr>
             <td>
               <mat-form-field class="example-full-width">
-                <input matInput placeholder="Password" [(ngModel)]="mypassword" type="password" name="password"
+                <input matInput placeholder="Password" [(ngModel)]="mypassword" [type]="hidePassword ? 'password' : 'text'" name="password"
                   required (keydown.enter)="login()">
+                <mat-icon matSuffix (click)="hidePassword = !hidePassword">{{hidePassword ? 'visibility_off' :
+                  'visibility'}}</mat-icon>
               </mat-form-field>
             </td>
           </tr>
