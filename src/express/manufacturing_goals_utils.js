@@ -39,13 +39,10 @@ function createGoal(goalObject) {
     });
 }
 
-function modifyGoal(name, activities, date, enabled, newGoalObject) {
+function modifyGoal(goalname, newGoalObject) {
     return new Promise((resolve, reject) => {
         var filterSchema = {
-            goalname: name,
-            activities: activities,
-            enabled: enabled,
-            date: date
+            goalname: goalname
         }
         database.goalsModel.updateOne(filterSchema, newGoalObject, (err, response) => {
             if (err) {
@@ -57,14 +54,10 @@ function modifyGoal(name, activities, date, enabled, newGoalObject) {
     });
 }
 
-function deleteGoal(owner, name, activities, date, enabled) {
+function deleteGoal(name) {
     return new Promise((resolve, reject) => {
         var filterSchema = {
-            owner: owner,
             goalname: name,
-            activities: activities,
-            date: date,
-            enabled: enabled
         }
         database.goalsModel.deleteOne(filterSchema, (err, response) => {
             if (err) {

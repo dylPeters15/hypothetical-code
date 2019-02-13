@@ -40,13 +40,10 @@ function createLine(lineObject) {
     });
 }
 
-function modifyLine(linename, shortname, skus, comment, newLineObject) {
+function modifyLine(linename, newLineObject) {
     return new Promise((resolve, reject) => {
         var filterSchema = {
-            linename: linename,
-            shortname: shortname,
-            skus: skus,
-            comment: comment
+            linename: linename
         }
         database.manufacturingLineModel.updateOne(filterSchema, newLineObject, (err, response) => {
             if (err) {
@@ -58,13 +55,10 @@ function modifyLine(linename, shortname, skus, comment, newLineObject) {
     });
 }
 
-function deleteLine(linename,shortname,skus,comment) {
+function deleteLine(linename) {
     return new Promise((resolve, reject) => {
         var filterSchema = {
-            linename: linename,
-            shortname: shortname,
-            skus: skus,
-            comment: comment
+            linename: linename
         }
         database.manufacturingLineModel.deleteOne(filterSchema, (err, response) => {
             if (err) {
