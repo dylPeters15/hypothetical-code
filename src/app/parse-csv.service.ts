@@ -8,7 +8,7 @@ export class ParseCsvService {
 
   constructor(private papa: Papa) { }
 
-  parseCSVFile(files: { [key: string]: File }): Promise<any> {
+  parseCSVFiles(files: { [key: string]: File }): Promise<any> {
     return new Promise((resolve, reject) => {
       var filesAsArray: File[] = [];
       for (let key in files) {
@@ -46,7 +46,6 @@ export class ParseCsvService {
                   reject(Error("Filename incorrect."));
                 }
               }
-              console.log(objectToReturn);
               resolve(objectToReturn);
             }).catch(err => {
               reject(err);
@@ -58,7 +57,7 @@ export class ParseCsvService {
     });
   }
 
-  parseFilesWithNames(filesWithNames: { [fileName: string]: string }): Promise<any> {
+  private parseFilesWithNames(filesWithNames: { [fileName: string]: string }): Promise<any> {
     return new Promise((resolve, reject) => {
       //check filenames
       var numFiles = 0;
