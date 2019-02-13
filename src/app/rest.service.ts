@@ -145,10 +145,85 @@ export class RestService {
     }));
   }
 
+  ///////////////////// ingredients /////////////////////
+  getIngredients(ingredientname: String, ingredientnumber: number, limit: number): Observable<any> {
+    return this.http.get(endpoint + "ingredients", this.generateHeader({
+      ingredientname: ingredientname,
+      ingredientnumber: ingredientnumber,
+      limit: limit
+    }));
+  }
+
+  createIngredient(ingredientname: String, ingredientnumber: number, 
+    vendorinformation: String, unitofmeasure: String, amount: number, 
+    costperpackage: number, comment: String): Observable<any> {
+    return this.http.put(endpoint + "ingredients", {
+      ingredientname: ingredientname,
+      ingredientnumber: ingredientnumber,
+      vendorinformation: vendorinformation,
+      unitofmeasure: unitofmeasure,
+      amount: amount,
+      costperpackage: costperpackage,
+      comment: comment
+    },
+    this.generateHeader());
+  }
+
+  modifyIngredient(ingredientname: String,  newingredientname: String, 
+    ingredientnumber: number, vendorinformation: String, unitofmeasure: String, 
+    amount: number, costperpackage: number, comment: String): Observable<any> {
+    return this.http.post(endpoint + "ingredients", {
+      ingredientname: newingredientname,
+      ingredientnumber: ingredientnumber,
+      vendorinformation: vendorinformation,
+      unitofmeasure: unitofmeasure,
+      amount: amount,
+      costperpackage: costperpackage,
+      comment: comment
+    },
+    this.generateHeader({
+      ingredientname: ingredientname
+    }));
+  }
+
+  deleteIngredient(ingredientname: String): Observable<any> {
+    return this.http.delete(endpoint + "ingredients", this.generateHeader({
+      ingredientname: ingredientname,
+    }));
+  }
 
 
+  ///////////////////// product lines /////////////////////
+  getProductLines(productlinename: String, limit: number): Observable<any> {
+    return this.http.get(endpoint + "product_lines", this.generateHeader({
+      productlinename: productlinename,
+      limit: limit
+    }));
+  }
 
+  createProductLine(productlinename: String, skus: []): Observable<any> {
+    return this.http.put(endpoint + "product_lines", {
+      productlinename: productlinename,
+      skus: skus,
+    },
+    this.generateHeader());
+  }
 
+  modifyProductLine(productlinename: String,  newproductlinename: String, skus: [], ): Observable<any> {
+    return this.http.post(endpoint + "product_lines", {
+      newproductlinename: newproductlinename,
+      skus: skus
+    },
+    this.generateHeader({
+      productlinename: productlinename
+    }));
+  }
+
+  deleteProductLine(productlinename: String): Observable<any> {
+    return this.http.delete(endpoint + "product_line", this.generateHeader({
+      productlinename: productlinename
+    }));
+  }
 
 
 
