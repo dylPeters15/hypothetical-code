@@ -3,6 +3,7 @@ import { FormGroup, FormControl, Validators, FormGroupDirective } from '@angular
 import { RestService } from '../rest.service';
 import { MatDialog, MatDialogConfig, MatDialogRef } from "@angular/material";
 import { UserNotificationDialogComponent } from '../user-notification-dialog/user-notification-dialog.component';
+import { ConfirmActionDialogComponent } from '../confirm-action-dialog/confirm-action-dialog.component';
 import { Router } from '@angular/router';
 import { auth } from '../auth.service';
 
@@ -71,15 +72,19 @@ export class AccountSettingsComponent implements OnInit {
         }
       });
     } else {
-      this.deleteAccountConfirmed();
+      const dialogConfig = new MatDialogConfig();
+      dialogConfig.closeOnNavigation = false;
+      this.dialog.open(ConfirmActionDialogComponent
+        , dialogConfig).afterClosed().subscribe(closeData => {
+          if (closeData && closeData['confirmed']) {
+            this.deleteAccountConfirmed();
+          }
+        });
     }
   }
 
   deleteAccountConfirmed() {
-    console.log(auth.getUsername());
-    console.log(auth.getLocal());
     this.rest.deleteUser(auth.getUsername(), auth.getLocal()).subscribe(response => {
-      console.log(response);
       if (response['deletedCount'] == 1 && response['ok'] == 1) {
         this.openDialog("Success", "Account deleted successfully. You will be redirected to the login page.");
         auth.clearLogin();
