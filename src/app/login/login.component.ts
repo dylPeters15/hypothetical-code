@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { RestService } from '../rest.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { auth } from '../auth.service';
+import * as querystring from 'querystring';
 
 @Component({
   selector: 'app-login',
@@ -10,27 +11,45 @@ import { auth } from '../auth.service';
 })
 export class LoginComponent implements OnInit {
 
-  products:any = [];
+  products: any = [];
 
-  constructor(public rest:RestService, private route: ActivatedRoute, private router: Router) { }
-  
+  constructor(public rest: RestService, private route: ActivatedRoute, private router: Router) { }
+
   myusername: string;
-  
+
   mypassword: string;
 
   failedLogin: boolean = false;
-  
-    ngOnInit() {
-  
-    }
 
-  login() : void {
+  ngOnInit() {
+    if (window.location.hash.length > 0) {
+      var netidtoken = querystring.parse(window.location.hash.substring(1)).access_token;
+      if (netidtoken) {
+        this.rest.loginRequest("", "", netidtoken).subscribe(response => {
+          var username = response['username'];
+          var token = response['token'];
+          var admin = response['admin'];
+          if (username && token && admin!==null) {
+            this.failedLogin = false;
+            auth.storeLogin(username, token, admin, false);
+            this.router.navigateByUrl('/home');
+          } else {
+            //incorrect login
+            this.failedLogin = true;
+            auth.clearLogin();
+          }
+        });
+      }
+    }
+  }
+
+  login(): void {
     this.rest.loginRequest(this.myusername, this.mypassword).subscribe(
       (data: {}) => {
         if (data['token']) {
           //logged in successfully
           this.failedLogin = false;
-          auth.storeLogin(this.myusername, data['token'], data['admin']);
+          auth.storeLogin(this.myusername, data['token'], data['admin'], true);
           this.router.navigateByUrl('/home');
         } else {
           //incorrect login
@@ -39,6 +58,16 @@ export class LoginComponent implements OnInit {
         }
       }
     );
-}
+  }
+
+  netid(): void {
+    var redirectURL = 'https://'+this.rest.serverLocation+'/login';
+    var clientID = this.rest.getClientID();
+    var clientSecret = this.rest.getClientSecret();
+    var url: string = encodeURI('https://oauth.oit.duke.edu/oauth/authorize.php?response_type=token&redirect_uri=' + redirectURL + '&scope=identity:netid:read&client_id=' + clientID + '&client_secret=' + clientSecret + '&state=1234');
+    // Simulate an HTTP redirect:
+    window.location.replace(url);
+
+  }
 
 }

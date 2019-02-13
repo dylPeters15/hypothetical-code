@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 
 // const endpoint = 'https://vcm-8238.vm.duke.edu:8443/'; // Ben
 // const endpoint = 'https://vcm-8405.vm.duke.edu:8443/'; // Noah
+// const endpoint = 'https://vcm-8205.vm.duke.edu:8443/'; // Prod
 const endpoint = 'https://localhost:8443/'; // localhost
 
 @Injectable({
@@ -13,6 +14,32 @@ const endpoint = 'https://localhost:8443/'; // localhost
 export class RestService {
 
   constructor(private http: HttpClient) { }
+
+  serverLocation: string = endpoint.substring(endpoint.indexOf("//")+2, endpoint.indexOf(":", endpoint.indexOf("//")));
+
+  getClientID(): string {
+    if (this.serverLocation == 'vcm-8238.vm.duke.edu') { // Ben
+      return 'benserver';
+    } else if (this.serverLocation == 'vcm-8405.vm.duke.edu') { // Noah
+      return 'noahserver';
+    } else if (this.serverLocation == 'vcm-8205.vm.duke.edu') { // Prod
+      return 'prodserver';
+    } else { // localhost
+      return 'localhost';
+    }
+  }
+
+  getClientSecret(): string {
+    if (this.serverLocation == 'vcm-8238.vm.duke.edu') { // Ben
+      return 'HQIaVbToUN84U1@kwTy6!t%8=AQimYUBPhtoMI2!iTx9pP43fC';
+    } else if (this.serverLocation == 'vcm-8405.vm.duke.edu') { // Noah
+      return '$w8J3iMdA!o16ktD@ijjHgnua#P!KQt#+ZXRJ5et%95gKgP!WE';
+    } else if (this.serverLocation == 'vcm-8205.vm.duke.edu') { // Prod
+      return 'Qtc8mg5pZSeeTtg#WP4gR=h9g+gxFkYzf**4l2XjHHpDmGhK#s';
+    } else { // localhost
+      return '4sqNKIcu%*H7$9=QPKG3Qx=n=9I3zqmnDwZ14MaaFYS3Wx86*p';
+    }
+  }
 
   private generateHeader(options?) {
     options = options || {};
@@ -23,21 +50,32 @@ export class RestService {
     };
   }
 
-  loginRequest(username, password): Observable<any> {
-    return this.http.get(endpoint + 'login', {
-      headers: new HttpHeaders({
-        username: username,
-        password: password
-      })
-    });
+  loginRequest(username, password, netidtoken?): Observable<any> {
+    if (netidtoken) {
+
+      return this.http.get(endpoint + 'login', {
+        headers: new HttpHeaders({
+          netidtoken: netidtoken,
+          clientid: this.getClientID()
+        })
+      });
+    } else {
+      return this.http.get(endpoint + 'login', {
+        headers: new HttpHeaders({
+          username: username,
+          password: password
+        })
+      });
+    }
   }
 
   ///////////////////// users /////////////////////
-  getUsers(username: string, usernameregex: string, admin: boolean, limit: number): Observable<any> {
+  getUsers(username: string, usernameregex: string, admin: boolean, localuser: boolean, limit: number): Observable<any> {
     return this.http.get(endpoint + 'users', this.generateHeader({
       username: username,
       usernameregex: usernameregex,
       admin: admin==null?"":""+admin,
+      localuser: localuser==null?"":""+localuser,
       limit: ""+limit
     }));
   }
@@ -46,24 +84,27 @@ export class RestService {
     return this.http.put(endpoint + 'users', {
       username: username,
       password: password,
-      admin: admin
+      admin: admin,
+      localuser: true
     },
       this.generateHeader());
   }
 
-  modifyUser(username: string, newpassword: string, newadmin: boolean): Observable<any> {
+  modifyUser(username: string, localuser: boolean, newpassword: string, newadmin: boolean): Observable<any> {
     return this.http.post(endpoint + 'users', {
       password: newpassword||"",
       admin: newadmin==null?"":newadmin
     },
       this.generateHeader({
-        username: username
+        username: username,
+        localuser: ""+localuser
       }));
   }
 
-  deleteUser(username: string): Observable<any> {
+  deleteUser(username: string, localuser: boolean): Observable<any> {
     return this.http.delete(endpoint + 'users', this.generateHeader({
-      username: username
+      username: username,
+      localuser: ""+localuser
     }));
   }
 

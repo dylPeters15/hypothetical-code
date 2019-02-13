@@ -6,10 +6,19 @@
   <input matInput placeholder="Filter" [(ngModel)]="filterQuery" (ngModelChange)="refreshData($event)">
 </mat-form-field>
 <mat-radio-group [(ngModel)]="displayAdmins" (ngModelChange)="refreshData()">
-  <mat-radio-button value="all">All Users</mat-radio-button>
-  <mat-radio-button value="adminsonly">Admins Only</mat-radio-button>
-  <mat-radio-button value="nonadminsonly">Non-Admins Only</mat-radio-button>
+  <div>
+      <mat-radio-button value="all">All Users</mat-radio-button>
+      <mat-radio-button value="adminsonly">Admins Only</mat-radio-button>
+      <mat-radio-button value="nonadminsonly">Non-Admins Only</mat-radio-button>
+  </div>
 </mat-radio-group>
+<mat-radio-group [(ngModel)]="displayLocal" (ngModelChange)="refreshData()">
+    <div>
+        <mat-radio-button value="all">All Users</mat-radio-button>
+        <mat-radio-button value="localonly">Local Only</mat-radio-button>
+        <mat-radio-button value="federatedonly">Federated Only</mat-radio-button>
+    </div>
+  </mat-radio-group>
 
 
 
@@ -31,14 +40,21 @@
   <ng-container matColumnDef="admin">
     <mat-header-cell *matHeaderCellDef>Administrator</mat-header-cell>
     <mat-cell *matCellDef="let element">
-      <mat-checkbox [(ngModel)]="element['admin']" (ngModelChange)="changeAdminPriviledge(element['username'], $event)"></mat-checkbox>
+      <mat-checkbox [(ngModel)]="element['admin']" (ngModelChange)="changeAdminPriviledge(element['username'], element['localuser'], $event)"></mat-checkbox>
+    </mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="loginType">
+    <mat-header-cell *matHeaderCellDef>Login Type</mat-header-cell>
+    <mat-cell *matCellDef="let element">
+      <p>{{element['localuser']?"Local":"Federated"}}</p>
     </mat-cell>
   </ng-container>
 
   <ng-container matColumnDef="actions">
     <mat-header-cell *matHeaderCellDef>Actions</mat-header-cell>
     <mat-cell *matCellDef="let element">
-      <button mat-raised-button (click)="deleteUser(element['username'])" color="warn"> Delete User </button>
+      <button mat-raised-button (click)="deleteUser(element['username'], element['localuser'])" color="warn"> Delete User </button>
     </mat-cell>
   </ng-container>
 
