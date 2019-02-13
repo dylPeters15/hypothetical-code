@@ -38,8 +38,10 @@ export class NavigationComponent implements OnInit {
     auth.getLoggedInObservable().subscribe(value => {
       this.loggedin = value;
       this.admin = auth.isAuthenticatedForAdminOperation();
-      if(!this.loggedin && this.sidenavService.sideNav) {
+      if(!this.loggedin) {
         this.sidenavService.sideNav.close();
+      } else {
+        this.sidenavService.sideNav.open();
       }
     });
   }
