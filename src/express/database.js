@@ -17,6 +17,9 @@ function dropDatabase() {
   return db.dropDatabase();
 }
 
+var localUserRequired = function() {
+  return this.localuser;
+}
 /**
  * Valid search criteria:
  * userName - match/regex
@@ -25,16 +28,16 @@ var userSchema = new mongoose.Schema({
   username: {
     type: String,
     required: true,
-    unique: true
+    unique: false
   },
   salt: {
     type: String,
-    required: true,
+    required: localUserRequired,
     unique: false
   },
   saltedhashedpassword: {
     type: String,
-    required: true,
+    required: localUserRequired,
     unique: false
   },
   token: {
@@ -46,9 +49,16 @@ var userSchema = new mongoose.Schema({
     type: Boolean,
     required: true,
     unique: false
+  },
+  localuser: {
+    type: Boolean,
+    required: true,
+    unique: false
   }
 });
+userSchema.index({ username: 1, localuser: 1 }, { unique: true }); //the combination of username and localuser should be unique
 userSchema.plugin(uniqueValidator);
+
 var userModel = mongoose.model('user', userSchema);
 
 /**
@@ -177,8 +187,8 @@ var productLineSchema = new mongoose.Schema({
   }]
   
 });
-productLineSchema.plugin(uniqueValidator);
 productLineSchema.index({ productlinename: 1, sku: 1 }, { unique: true }); //the combination of name and sku should be unique
+productLineSchema.plugin(uniqueValidator);
 
 var productLineModel = mongoose.model('productline', productLineSchema);
 
@@ -210,8 +220,8 @@ var manufacturingGoalsSchema = new mongoose.Schema({
     required: true
   }
 });
-manufacturingGoalsSchema.plugin(uniqueValidator);
 manufacturingGoalsSchema.index({ owner: 1, goalname: 1 }, { unique: true }); //the combination of owner and goal name should be unique
+manufacturingGoalsSchema.plugin(uniqueValidator);
 
 var goalsModel = mongoose.model('goal', manufacturingGoalsSchema);
 
@@ -248,8 +258,8 @@ var formulaSchema = new mongoose.Schema({
     unique: false
   }
 });
-formulaSchema.plugin(uniqueValidator);
 formulaSchema.index({ sku: 1, ingredient: 1 }, { unique: true }); //the combination of sku and ingredient should be unique
+formulaSchema.plugin(uniqueValidator);
 
 var formulaModel = mongoose.model('formula', formulaSchema);
 

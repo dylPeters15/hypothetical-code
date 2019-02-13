@@ -54,13 +54,15 @@ app.route('/login').get((req, res) => {
 ///////////////////// users /////////////////////
 
 app.route('/users').get((req, res) => {
-    var admin = req.headers['admin']===""||req.headers['admin']==="null"?null:req.headers['admin']==="true";
-    user_utils.getUsers(req.headers['username'], req.headers['usernameregex'], admin, Number(req.headers['limit'])).then(users => {
+    var admin = req.headers['admin']===undefined||req.headers['admin']===""||req.headers['admin']==="null"?null:req.headers['admin']==="true";
+    var localuser = req.headers['localuser']===undefined||req.headers['localuser']===""||req.headers['localuser']==="null"?null:req.headers['localuser']==="true";
+    user_utils.getUsers(req.headers['username'], req.headers['usernameregex'], admin, localuser, Number(req.headers['limit'])).then(users => {
         var usersToSend = [];
         for (var i = 0; i < users.length; i=i+1) {
             usersToSend.push({
                 username: users[i].username,
-                admin: users[i].admin
+                admin: users[i].admin,
+                localuser: localuser
             });
         }
         res.send(usersToSend);
@@ -70,7 +72,7 @@ app.route('/users').get((req, res) => {
         });
     });
 }).put((req, res) => {
-    user_utils.createUser(req.body['username'], req.body['password'], req.body['admin']).then(response => {
+    user_utils.createUser(req.body['username'], req.body['password'], req.body['admin'], req.body['localuser']).then(response => {
         res.send(response);
     }).catch(err => {
         res.send({
@@ -78,7 +80,7 @@ app.route('/users').get((req, res) => {
         });
     });
 }).post((req, res) => {
-    user_utils.modifyUser(req.headers['username'], req.body['password'], req.body['admin']).then(response => {
+    user_utils.modifyUser(req.headers['username'], req.headers['localuser'], req.body['password'], req.body['admin']).then(response => {
         res.send(response);
     }).catch(err => {
         res.send({
@@ -86,7 +88,7 @@ app.route('/users').get((req, res) => {
         });
     });
 }).delete((req, res) => {
-    user_utils.deleteUser(req.headers['username']).then(response => {
+    user_utils.deleteUser(req.headers['username'], req.headers['localuser']).then(response => {
         res.send(response);
     }).catch(err => {
         res.send({

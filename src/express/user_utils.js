@@ -52,7 +52,7 @@ function generateToken() {
     });
 }
 
-function getUsers(username, usernameregex, admin, limit) {
+function getUsers(username, usernameregex, admin, localuser, limit) {
     username = username || "";
     usernameregex = usernameregex || "$a";
     limit = limit || database.defaultSearchLimit;
@@ -67,6 +67,9 @@ function getUsers(username, usernameregex, admin, limit) {
         if (admin !== null && admin !== undefined && admin !== "") {
             filterSchema['admin'] = admin;
         }
+        if (localuser !== null && localuser !== undefined && localuser !== "") {
+            filterSchema['localuser'] = localuser;
+        }
         database.userModel.find(filterSchema).limit(limit).exec((err, users) => {
             if (err) {
                 reject(Error(err));
@@ -77,17 +80,21 @@ function getUsers(username, usernameregex, admin, limit) {
     });
 }
 
-function createUser(username, password, admin) {
+function createUser(username, password, admin, localuser) {
     return new Promise((resolve, reject) => {
-        let saltAndHash = generateSaltAndHash(password);
         generateToken().then(token => {
-            let user = new database.userModel({
+            var userObject = {
                 username: username,
-                salt: saltAndHash.salt,
-                saltedhashedpassword: saltAndHash.hash,
                 token: token,
-                admin: admin
-            });
+                admin: admin,
+                localuser: localuser
+            };
+            if (localuser) {
+                let saltAndHash = generateSaltAndHash(password);
+                userObject['salt'] = saltAndHash.salt;
+                userObject['saltedhashedpassword'] = saltAndHash.hash;
+            }
+            let user = new database.userModel(userObject);
             user.save().then(response => {
                 resolve(response);
             }).catch(err => {
@@ -99,13 +106,14 @@ function createUser(username, password, admin) {
     });
 }
 
-function modifyUser(username, newPassword, newAdmin) {
+function modifyUser(username, localuser, newPassword, newAdmin) {
     return new Promise((resolve, reject) => {
         var filterSchema = {
-            username: username
+            username: username,
+            localuser: localuser
         }
         var toSet = {};
-        if (newPassword !== null && newPassword !== undefined && newPassword !== "") {
+        if (localuser && newPassword !== null && newPassword !== undefined && newPassword !== "") {
             var saltAndHash = generateSaltAndHash(newPassword);
             toSet['salt'] = saltAndHash.salt;
             toSet['saltedhashedpassword'] = saltAndHash.hash;
@@ -126,10 +134,11 @@ function modifyUser(username, newPassword, newAdmin) {
     });
 }
 
-function deleteUser(username) {
+function deleteUser(username, localuser) {
     return new Promise((resolve, reject) => {
         var filterSchema = {
-            username: username
+            username: username,
+            localuser: localuser
         }
         database.userModel.deleteOne(filterSchema, (err, response) => {
             if (err) {
