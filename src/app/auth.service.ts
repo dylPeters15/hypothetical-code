@@ -19,14 +19,15 @@ export class AuthService {
   }
 
   public isAuthenticatedForAdminOperation(): boolean {
-    const username = localStorage.getItem('username');
-    const token = localStorage.getItem('token');
-    return (username == 'admin') && ((token != null) && (token != ''));
+    const admin = localStorage.getItem('admin');
+    return this.isAuthenticatedForUserOperation() && admin=='true';
   }
 
-  public storeLogin(username: string, token: string): void {
+  public storeLogin(username: string, token: string, admin: boolean, localuser: boolean): void {
     localStorage.setItem('username', username);
     localStorage.setItem('token', token);
+    localStorage.setItem('admin', ""+admin);
+    localStorage.setItem('localuser', ""+localuser);
     this.loggedInBehaviorSubject.next(true);
   }
 
@@ -42,6 +43,11 @@ export class AuthService {
 
   public getToken(): string {
     return localStorage.getItem('token');
+  }
+
+  public getLocal(): boolean {
+    var local = localStorage.getItem('localuser');
+    return local && local === "true";
   }
 
   public getLoggedInObservable(): Observable<boolean> {

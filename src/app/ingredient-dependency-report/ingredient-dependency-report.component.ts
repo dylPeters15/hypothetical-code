@@ -40,13 +40,13 @@ export class IngredientDependencyComponent implements OnInit {
   }
 
   refreshData() {
-    this.rest.getIngredients().subscribe(response => {
-      this.data = response;
-      console.log(this.data);
-      this.dataSource.sort = this.sort;
-      this.dataSource =  new MatTableDataSource<IngredientDependencyData>(this.data);
-      this.dataSource.paginator = this.paginator;
-    });
+    // this.rest.getIngredients().subscribe(response => {
+    //   this.data = response;
+    //   console.log(this.data);
+    //   this.dataSource.sort = this.sort;
+    //   this.dataSource =  new MatTableDataSource<IngredientDependencyData>(this.data);
+    //   this.dataSource.paginator = this.paginator;
+    // });
     
   }
 

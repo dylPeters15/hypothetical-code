@@ -1,4 +1,4 @@
-<input type="file" #fileSelector style="display: none" (change)="onFilesAdded()" single />
+<input type="file" #fileSelector style="display: none" (change)="onFilesAdded()" multiple />
 <div class="container" fxLayout="column" fxLayoutAlign="space-evenly stretch">
   <h1 mat-dialog-title>Upload Files</h1>
   <div>
@@ -17,7 +17,7 @@
 
       </mat-list-item>
     </mat-list> -->
-    <h4 *ngIf="fileObject != undefined" mat-line>{{fileObject.name}}</h4>
+    <!-- <h4 *ngIf="fileObject != undefined" mat-line>{{fileObject.name}}</h4> -->
   </mat-dialog-content>
 
   <!-- This are the actions of the dialog, containing the primary and the cancel button-->

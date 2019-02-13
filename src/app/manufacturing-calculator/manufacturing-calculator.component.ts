@@ -39,9 +39,9 @@ export class ManufacturingCalculatorComponent implements OnInit {
   }
 
   ngOnInit() {
-  this.rest.getGoals().subscribe(data => {
-    this.goals = data;
-  });
+  // this.rest.getGoals().subscribe(data => {
+  //   this.goals = data;
+  // });
   }
 
   getGoalByName(name) {
@@ -49,54 +49,54 @@ export class ManufacturingCalculatorComponent implements OnInit {
     this.data = [];
     this.ingredients = [];
     this.dataSource = new MatTableDataSource<SkuQuantityTable>(this.data);
-    this.rest.getGoalByName(name).subscribe(data => {
-      this.selectedGoal = data;
-      let skus = this.selectedGoal['skus'];
-      let quantities = this.selectedGoal['quantities'];
-      var i;
-      for(i = 0; i< skus.length; i++){
-        let currentSKU = skus[i];
-        let currentQuantity = quantities[i];
-        this.calculateIngredientsAndQuantities(currentSKU, currentQuantity);
-      }
-    });
+    // this.rest.getGoalByName(name).subscribe(data => {
+    //   this.selectedGoal = data;
+    //   let skus = this.selectedGoal['skus'];
+    //   let quantities = this.selectedGoal['quantities'];
+    //   var i;
+    //   for(i = 0; i< skus.length; i++){
+    //     let currentSKU = skus[i];
+    //     let currentQuantity = quantities[i];
+    //     this.calculateIngredientsAndQuantities(currentSKU, currentQuantity);
+    //   }
+    // });
   }
 
   calculateIngredientsAndQuantities(SKU, goalQuantity) {
     console.log("SKU: " + SKU  + " Quantity: " + goalQuantity);
-    this.rest.getSkus().subscribe(data => {
-      console.log("SKUS: " + data);
-      let skus = data;
-      for(i = 0; i< skus.length; i++){
-        let currentSKU = skus[i];
-        if(currentSKU['skuNumber'] == SKU){
-          let ingredientsFromDatabase = currentSKU['ingredientTuples'];
-          var i;
-          for(i = 0; i<ingredientsFromDatabase.length-1; i +=2){
-            this.addToDataSource(ingredientsFromDatabase[i].toString(), ingredientsFromDatabase[i+1], goalQuantity);
-          }
-        }
-      }
+    // this.rest.getSkus().subscribe(data => {
+    //   console.log("SKUS: " + data);
+    //   let skus = data;
+    //   for(i = 0; i< skus.length; i++){
+    //     let currentSKU = skus[i];
+    //     if(currentSKU['skuNumber'] == SKU){
+    //       let ingredientsFromDatabase = currentSKU['ingredientTuples'];
+    //       var i;
+    //       for(i = 0; i<ingredientsFromDatabase.length-1; i +=2){
+    //         this.addToDataSource(ingredientsFromDatabase[i].toString(), ingredientsFromDatabase[i+1], goalQuantity);
+    //       }
+    //     }
+    //   }
       
-    });
+    // });
   }
 
   addToDataSource(ingredientId, ingredientQuantity, goalQuantity){
-    this.rest.getIngredientById(ingredientId).subscribe(data => {
-      let ingredient = data;
-      let name = ingredient.name;
-      let actualQuantity = ingredientQuantity * goalQuantity;
-      // if(this.ingredients.contains(name)){
-      //   this.updateIngredient(name, actualQuantity);
-      // }
-      // else {
-        this.ingredients.push(name);
-        let newIngredientPair = new SkuQuantityTable(name, actualQuantity);
-        this.data.push(newIngredientPair);
-      this.dataSource = new MatTableDataSource<SkuQuantityTable>(this.data);
-      this.dataSource.paginator = this.paginator;
-      // }
-    });
+    // this.rest.getIngredientById(ingredientId).subscribe(data => {
+    //   let ingredient = data;
+    //   let name = ingredient.name;
+    //   let actualQuantity = ingredientQuantity * goalQuantity;
+    //   // if(this.ingredients.contains(name)){
+    //   //   this.updateIngredient(name, actualQuantity);
+    //   // }
+    //   // else {
+    //     this.ingredients.push(name);
+    //     let newIngredientPair = new SkuQuantityTable(name, actualQuantity);
+    //     this.data.push(newIngredientPair);
+    //   this.dataSource = new MatTableDataSource<SkuQuantityTable>(this.data);
+    //   this.dataSource.paginator = this.paginator;
+    //   // }
+    // });
   }
 
   updateIngredient(ingredientName, additionalQuantity){
