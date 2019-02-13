@@ -102,7 +102,7 @@ export class SkuInventoryComponent  implements OnInit {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.data = {edit: edit, present_name: present_name, present_skuNumber: present_skuNumber, present_caseUpcNumber: present_caseUpcNumber, present_unitUpcNumber: present_unitUpcNumber, present_unitSize:present_unitSize, present_countPerCase:present_countPerCase, present_productLine:present_productLine,present_ingredientTuples:present_ingredientTuples, present_comment:present_comment, present_id:present_id};
     console.log('sku-inventory ingredient data', present_ingredientTuples)
-    this.newDialogRef = this.dialog.open(NewSkuDialogComponent, dialogConfig);
+    this.newDialogRef = this.dialog.open(NewSkuDialogComponent, {panelClass: 'my-panel'});
     this.newDialogRef.afterClosed().subscribe(event => {
       this.refreshData();
     });
