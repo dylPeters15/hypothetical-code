@@ -7,6 +7,8 @@ const https = require('https');
 const user_utils = require('./user_utils.js');
 const formula_utils = require('./formula_utils.js');
 const ingredient_utils = require('./ingredient_utils.js');
+const line_utils = require('./manufacturing_line_utils');
+const activity_utils = require('./manufacturing_activity_utils');
 
 const app = express();
 const corsOptions = {
@@ -230,9 +232,7 @@ app.route('/manufacturing-goals').get((req, res) => {
             err:err
         });
     });
-});
-
-app.route('/manufacturing-goals').put((req, res) => {
+}).put((req, res) => {
     goals_utils.createGoal(req.body).then(response => {
         res.send(response);
     }).catch(err => {
@@ -240,10 +240,16 @@ app.route('/manufacturing-goals').put((req, res) => {
             err:err
         });
     });
-});
-
-app.route('/manufacturing-goals').post((req, res) => {
+}).post((req, res) => {
     goals_utils.modifyGoal(req.headers['owner'], req.headers['goalname'],req.headers['sku'],req.headers['quantity'],req.headers['date'], req.body).then(response => {
+        res.send(response);
+    }).catch(err => {
+        res.send({
+            err:err
+        });
+    });
+}).delete((req, res) => {
+    goals_utils.deleteGoal(req.headers['goalname'], req.headers['sku'],req.headers['quantity'],req.headers['date']).then(response => {
         res.send(response);
     }).catch(err => {
         res.send({
@@ -252,8 +258,69 @@ app.route('/manufacturing-goals').post((req, res) => {
     });
 });
 
-app.route('/manufacturing-goals').delete((req, res) => {
-    formula_utils.deleteFormula(req.headers['goalname'], req.headers['sku'],req.headers['quantity'],req.headers['date']).then(response => {
+
+///////////////////// Manufacturing Lines /////////////////////
+app.route('/manufacturing-lines').get((req, res) => {
+    line_utils.getLine(req.headers['linename'],req.headers['shortname'],req.headers['linenameregex'], req.headers['shortnameregex'], req.headers['limit']).then(formulas => {
+        res.send(formulas);
+    }).catch(err => {
+        res.send({
+            err:err
+        });
+    });
+}).put((req, res) => {
+    line_utils.createLine(req.body).then(response => {
+        res.send(response);
+    }).catch(err => {
+        res.send({
+            err:err
+        });
+    });
+}).post((req, res) => {
+    line_utils.modifyLine(req.headers['linename'], req.headers['shortname'],req.headers['skus'],req.headers['comment'],req.body).then(response => {
+        res.send(response);
+    }).catch(err => {
+        res.send({
+            err:err
+        });
+    });
+}).delete((req, res) => {
+    line_utils.deleteLine(req.headers['linename'], req.headers['shortname'],req.headers['skus'],req.headers['comment']).then(response => {
+        res.send(response);
+    }).catch(err => {
+        res.send({
+            err:err
+        });
+    });
+});
+
+///////////////////// Manufacturing Activity /////////////////////
+app.route('/manufacturing-activities').get((req, res) => {
+    activity_utils.getActivity(req.headers['startdate'],req.headers['limit']).then(formulas => {
+        res.send(formulas);
+    }).catch(err => {
+        res.send({
+            err:err
+        });
+    });
+}).put((req, res) => {
+    activity_utils.createActivity(req.body).then(response => {
+        res.send(response);
+    }).catch(err => {
+        res.send({
+            err:err
+        });
+    });
+}).post((req, res) => {
+    activity_utils.modifyActivity(req.headers['sku'], req.headers['numcases'],req.headers['calculatedhours'],req.headers['sethours'], req.headers['line'], req.headers['startdate'],req.body).then(response => {
+        res.send(response);
+    }).catch(err => {
+        res.send({
+            err:err
+        });
+    });
+}).delete((req, res) => {
+    activity_utils.deleteActivity(req.headers['sku'], req.headers['numcases'],req.headers['calculatedhours'],req.headers['sethours'], req.headers['line'], req.headers['startdate']).then(response => {
         res.send(response);
     }).catch(err => {
         res.send({

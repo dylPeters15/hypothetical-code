@@ -195,7 +195,7 @@ var productLineModel = mongoose.model('productline', productLineSchema);
 /**
  * Valid search criteria:
  * goalName - match/regex
- * sku - match,
+ * enabled - match,
  * date - match,
  * owner - match
  */
@@ -218,6 +218,11 @@ var manufacturingGoalsSchema = new mongoose.Schema({
     type: ObjectId,
     ref: 'user',
     required: true
+  },
+  enabled: {
+    type: Boolean,
+    required: true,
+    unique: false
   }
 });
 manufacturingGoalsSchema.index({ owner: 1, goalname: 1 }, { unique: true }); //the combination of owner and goal name should be unique
@@ -297,8 +302,7 @@ var manufacturingLineModel = mongoose.model('line', manufacturingLineSchema);
 
 /**
  * Valid search criteria:
- * linename - match, regex,
- * shortname - match, regex
+ * startdate - after X date
  */
 var manufacturingActivitySchema = new mongoose.Schema({
   sku: {

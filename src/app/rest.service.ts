@@ -150,7 +150,7 @@ export class RestService {
 
 
 
-  ///////////////////// manufacturing Goals /////////////////////
+  ///////////////////// Manufacturing Goals /////////////////////
   createGoal(name, sku, quantity, date){
     return this.http.post(endpoint + 'manufacturing-goals',{
       user: auth.getUsername,

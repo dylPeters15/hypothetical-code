@@ -1,17 +1,18 @@
 const database = require('./database.js');
 
    
-function getGoals(username, goalname, goalnameregex, limit) {
+function getGoals(username, enabled, goalname, goalnameregex, limit) {
     username = username || "";
     goalname = goalname || "";
     goalnameregex = goalnameregex || "";
     limit = limit || database.defaultSearchLimit;
     return new Promise((resolve, reject) => {
         var filterSchema = {
-            owner: username,
             $or: [
+                {owner: username},
                 {goalname: goalname},
-                {goalname: {$regex: goalnameregex}}
+                {goalname: {$regex: goalnameregex}},
+                {enabled: enabled}
             ]
         }
         database.goalsModel.find(filterSchema).limit(limit).toArray(function(err,results) {
@@ -38,16 +39,15 @@ function createGoal(goalObject) {
     });
 }
 
-function modifyGoal(owner, name, sku, quantity, date, newGoalObject) {
+function modifyGoal(name, activities, date, enabled, newGoalObject) {
     return new Promise((resolve, reject) => {
         var filterSchema = {
             goalname: name,
-            owner: owner,
-            sku: sku,
-            quantity: quantity,
+            activities: activities,
+            enabled: enabled,
             date: date
         }
-        database.formulaModel.updateOne(filterSchema, newGoalObject, (err, response) => {
+        database.goalsModel.updateOne(filterSchema, newGoalObject, (err, response) => {
             if (err) {
                 reject(Error(err));
                 return
@@ -57,15 +57,16 @@ function modifyGoal(owner, name, sku, quantity, date, newGoalObject) {
     });
 }
 
-function deleteGoal(goalname,sku,quantity,date) {
+function deleteGoal(owner, name, activities, date, enabled) {
     return new Promise((resolve, reject) => {
         var filterSchema = {
-            goalname: goalname,
-            sku: sku,
-            quantity: quantity,
-            date: date
+            owner: owner,
+            goalname: name,
+            activities: activities,
+            date: date,
+            enabled: enabled
         }
-        database.userModel.deleteOne(filterSchema, (err, response) => {
+        database.goalsModel.deleteOne(filterSchema, (err, response) => {
             if (err) {
                 reject(Error(err));
                 return
