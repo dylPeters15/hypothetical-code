@@ -23,23 +23,21 @@ export class RestService {
     };
   }
 
-  loginRequest(username, password): Observable<any> {
-    return this.http.get(endpoint + 'login', {
-      headers: new HttpHeaders({
-        username: username,
-        password: password
-      })
-    });
-  }
-
-  getNetID(token): Observable<any> {
-    return this.http.get('https://api.colab.duke.edu/identity/v1/', {
-      headers: new HttpHeaders({
-        'Accept': 'application/json',
-        'x-api-key': 'api-docs',
-        'Authorization': 'Bearer '+token
-      })
-    });
+  loginRequest(username, password, netidtoken?): Observable<any> {
+    if (netidtoken) {
+      return this.http.get(endpoint + 'login', {
+        headers: new HttpHeaders({
+          netidtoken: netidtoken
+        })
+      });
+    } else {
+      return this.http.get(endpoint + 'login', {
+        headers: new HttpHeaders({
+          username: username,
+          password: password
+        })
+      });
+    }
   }
 
   ///////////////////// users /////////////////////

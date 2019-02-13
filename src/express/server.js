@@ -27,28 +27,46 @@ const server = https.createServer({
 module.exports = server;
 
 app.route('/login').get((req, res) => {
-    user_utils.usernamePasswordCorrect(req.headers['username'], req.headers['password']).then(correct => {
-        if (correct) {
-            user_utils.getUsers(req.headers['username']).then(response => {
-                res.send({
-                    token: response[0].token,
-                    admin: response[0].admin
-                });
-            }).catch(err => {
-                res.send({
-                    err:""+err
-                });
-            });
-        } else {
+    console.log(req.headers);
+    if (req.headers['netidtoken']) {
+        user_utils.getLoginInfoForFederatedUser(req.headers['netidtoken']).then(user => {
             res.send({
-                err: "Incorrect username or password"
+                username: user.username,
+                token: user.token,
+                admin: user.admin,
+                localuser: false
             });
-        }
-    }).catch(err => {
-        res.send({
-            err:""+err
+        }).catch(err => {
+            console.log("Error in getting federated: ",err);
+            res.send({
+                err:""+err
+            });
         });
-    });
+    } else {
+        user_utils.usernamePasswordCorrect(req.headers['username'], req.headers['password']).then(correct => {
+            if (correct) {
+                user_utils.getUsers(req.headers['username'],"",null,true,1).then(response => {
+                    res.send({
+                        token: response[0].token,
+                        admin: response[0].admin,
+                        localuser: true
+                    });
+                }).catch(err => {
+                    res.send({
+                        err:""+err
+                    });
+                });
+            } else {
+                res.send({
+                    err: "Incorrect username or password"
+                });
+            }
+        }).catch(err => {
+            res.send({
+                err:""+err
+            });
+        });
+    }
 });
 
 ///////////////////// users /////////////////////
