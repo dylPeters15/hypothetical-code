@@ -35,7 +35,7 @@ function resolveError(err, res) {
 
 app.route('/login').get((req, res) => {
     if (req.headers['netidtoken']) {
-        user_utils.getLoginInfoForFederatedUser(req.headers['netidtoken']).then(user => {
+        user_utils.getLoginInfoForFederatedUser(req.headers['netidtoken'], req.headers['clientid']).then(user => {
             res.send({
                 username: user.username,
                 token: user.token,

@@ -152,12 +152,12 @@ function deleteUser(username, localuser) {
     });
 }
 
-function createFederatedUser(netidtoken) {
+function createFederatedUser(netidtoken, clientid) {
     console.log("Create federated user.");
     return new Promise((resolve, reject) => {
         axios.get('https://api.colab.duke.edu/identity/v1/', {
             headers: {
-                'x-api-key': 'localhost',
+                'x-api-key': clientid,
                 'Authorization': 'Bearer ' + netidtoken
             }
         }).then(response => {
@@ -173,11 +173,11 @@ function createFederatedUser(netidtoken) {
     });
 }
 
-function getLoginInfoForFederatedUser(netidtoken) {
+function getLoginInfoForFederatedUser(netidtoken, clientid) {
     return new Promise((resolve, reject) => {
         axios.get('https://api.colab.duke.edu/identity/v1/', {
             headers: {
-                'x-api-key': 'localhost',
+                'x-api-key': clientid,
                 'Authorization': 'Bearer ' + netidtoken
             }
         }).then(response => {
@@ -188,7 +188,7 @@ function getLoginInfoForFederatedUser(netidtoken) {
                     resolve(users[0]);
                 } else if (users.length == 0) {
                     //user does not exist. create it
-                    createFederatedUser(netidtoken).then(createResponse => {
+                    createFederatedUser(netidtoken, clientid).then(createResponse => {
                         console.log("Create response: ", createResponse);
                         getUsers(netid, null, null, false, 1).then(users => {
                             console.log(users);

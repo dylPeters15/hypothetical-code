@@ -61,8 +61,10 @@ export class LoginComponent implements OnInit {
   }
 
   netid(): void {
-    var redirectURI = 'https://localhost/login';
-    var url: string = encodeURI('https://oauth.oit.duke.edu/oauth/authorize.php?response_type=token&redirect_uri=' + redirectURI + '&scope=identity:netid:read&client_id=localhost&client_secret=4sqNKIcu%*H7$9=QPKG3Qx=n=9I3zqmnDwZ14MaaFYS3Wx86*p&state=1234');
+    var redirectURL = 'https://'+this.rest.serverLocation+'/login';
+    var clientID = this.rest.getClientID();
+    var clientSecret = this.rest.getClientSecret();
+    var url: string = encodeURI('https://oauth.oit.duke.edu/oauth/authorize.php?response_type=token&redirect_uri=' + redirectURL + '&scope=identity:netid:read&client_id=' + clientID + '&client_secret=' + clientSecret + '&state=1234');
     // Simulate an HTTP redirect:
     window.location.replace(url);
 
