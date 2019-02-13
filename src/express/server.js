@@ -80,7 +80,7 @@ app.route('/users').get((req, res) => {
             usersToSend.push({
                 username: users[i].username,
                 admin: users[i].admin,
-                localuser: localuser
+                localuser: users[i].localuser
             });
         }
         res.send(usersToSend);

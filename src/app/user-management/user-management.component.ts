@@ -25,7 +25,7 @@ export class UserManagementComponent implements OnInit {
 
   constructor(public rest: RestService, private snackBar: MatSnackBar, private dialog: MatDialog) { }
   allReplacement = 54321;
-  displayedColumns: string[] = ['checked', 'username', 'admin', 'actions'];
+  displayedColumns: string[] = ['checked', 'username', 'admin', 'loginType', 'actions'];
   data: UserForTable[] = [];
   dataSource = new MatTableDataSource<UserForTable>(this.data);
   dialogRef: MatDialogRef<NewUserDialogComponent>;
@@ -33,6 +33,7 @@ export class UserManagementComponent implements OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   filterQuery: string = "";
   displayAdmins: string = "all";
+  displayLocal: string = "all";
 
   ngOnInit() {
     this.paginator.pageSize = 20;
@@ -47,9 +48,11 @@ export class UserManagementComponent implements OnInit {
   }
 
   refreshData(filterQueryData?) {
+    console.log("Refresh data");
     // filterQueryData = filterQueryData ? "^"+filterQueryData+".*" : "^"+this.filterQuery+".*"; //this returns things that start with the pattern
     filterQueryData = filterQueryData ? ".*"+filterQueryData+".*" : ".*"+this.filterQuery+".*"; //this returns things that have the pattern anywhere in the string
-    this.rest.getUsers("", filterQueryData, this.displayAdmins=="all"?null:this.displayAdmins=="adminsonly", this.paginator.pageSize*10).subscribe(response => {
+    this.rest.getUsers("", filterQueryData, this.displayAdmins=="all"?null:this.displayAdmins=="adminsonly", this.displayLocal=="all"?null:this.displayLocal=="localonly", this.paginator.pageSize*10).subscribe(response => {
+      console.log(response);
       this.data = response;
       this.deselectAll();
       this.sortData();
@@ -160,10 +163,13 @@ export class UserManagementComponent implements OnInit {
     return true;
   }
 
-  changeAdminPriviledge(username, newPriviledge) {
-    this.rest.modifyUser(username, null, newPriviledge).subscribe(response => {
+  changeAdminPriviledge(username, localuser, newPriviledge) {
+    this.rest.modifyUser(username, localuser, null, newPriviledge).subscribe(response => {
+      console.log(response);
       if (response['ok'] != 1) {
         this.snackBar.open("Unable to change user privilege. Please try again later.", "close");
+        this.refreshData();
+      } else if (this.displayAdmins != "all") {
         this.refreshData();
       }
     });

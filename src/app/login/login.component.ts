@@ -31,9 +31,10 @@ export class LoginComponent implements OnInit {
           var username = response['username'];
           var token = response['token'];
           var admin = response['admin'];
+          var local = response['localuser'];
           if (username && token && admin!==null) {
             this.failedLogin = false;
-            auth.storeLogin(this.myusername, token, admin);
+            auth.storeLogin(this.myusername, token, admin, false);
             this.router.navigateByUrl('/home');
           } else {
             //incorrect login
@@ -51,7 +52,7 @@ export class LoginComponent implements OnInit {
         if (data['token']) {
           //logged in successfully
           this.failedLogin = false;
-          auth.storeLogin(this.myusername, data['token'], data['admin']);
+          auth.storeLogin(this.myusername, data['token'], data['admin'], true);
           this.router.navigateByUrl('/home');
         } else {
           //incorrect login

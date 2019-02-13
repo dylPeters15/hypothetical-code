@@ -66,7 +66,7 @@ export class NewUserDialogComponent implements OnInit {
   }
 
   usernameChanged() {
-    this.rest.getUsers(this.form.get('username').value, "", null, 1).subscribe(result => {
+    this.rest.getUsers(this.form.get('username').value, "", null, true, 1).subscribe(result => {
       this.usernameExists = result.length == 1;
     });
   }
