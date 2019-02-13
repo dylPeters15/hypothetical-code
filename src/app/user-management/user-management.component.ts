@@ -48,11 +48,9 @@ export class UserManagementComponent implements OnInit {
   }
 
   refreshData(filterQueryData?) {
-    console.log("Refresh data");
     // filterQueryData = filterQueryData ? "^"+filterQueryData+".*" : "^"+this.filterQuery+".*"; //this returns things that start with the pattern
     filterQueryData = filterQueryData ? ".*"+filterQueryData+".*" : ".*"+this.filterQuery+".*"; //this returns things that have the pattern anywhere in the string
     this.rest.getUsers("", filterQueryData, this.displayAdmins=="all"?null:this.displayAdmins=="adminsonly", this.displayLocal=="all"?null:this.displayLocal=="localonly", this.paginator.pageSize*10).subscribe(response => {
-      console.log(response);
       this.data = response;
       this.deselectAll();
       this.sortData();
@@ -165,7 +163,6 @@ export class UserManagementComponent implements OnInit {
 
   changeAdminPriviledge(username, localuser, newPriviledge) {
     this.rest.modifyUser(username, localuser, null, newPriviledge).subscribe(response => {
-      console.log(response);
       if (response['ok'] != 1) {
         this.snackBar.open("Unable to change user privilege. Please try again later.", "close");
         this.refreshData();

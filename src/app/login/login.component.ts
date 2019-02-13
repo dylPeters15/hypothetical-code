@@ -22,12 +22,10 @@ export class LoginComponent implements OnInit {
   failedLogin: boolean = false;
 
   ngOnInit() {
-    console.log(window.location.href);
     if (window.location.hash.length > 0) {
       var netidtoken = querystring.parse(window.location.hash.substring(1)).access_token;
       if (netidtoken) {
         this.rest.loginRequest("", "", netidtoken).subscribe(response => {
-          console.log(response);
           var username = response['username'];
           var token = response['token'];
           var admin = response['admin'];
@@ -66,7 +64,6 @@ export class LoginComponent implements OnInit {
   netid(): void {
     var redirectURI = 'https://localhost/login';
     var url: string = encodeURI('https://oauth.oit.duke.edu/oauth/authorize.php?response_type=token&redirect_uri=' + redirectURI + '&scope=identity:netid:read&client_id=localhost&client_secret=4sqNKIcu%*H7$9=QPKG3Qx=n=9I3zqmnDwZ14MaaFYS3Wx86*p&state=1234');
-    console.log(url);
     // Simulate an HTTP redirect:
     window.location.replace(url);
 

@@ -27,7 +27,6 @@ const server = https.createServer({
 module.exports = server;
 
 app.route('/login').get((req, res) => {
-    console.log(req.headers);
     if (req.headers['netidtoken']) {
         user_utils.getLoginInfoForFederatedUser(req.headers['netidtoken']).then(user => {
             res.send({
@@ -37,7 +36,6 @@ app.route('/login').get((req, res) => {
                 localuser: false
             });
         }).catch(err => {
-            console.log("Error in getting federated: ",err);
             res.send({
                 err:""+err
             });
