@@ -32,6 +32,16 @@ export class RestService {
     });
   }
 
+  getNetID(token): Observable<any> {
+    return this.http.get('https://api.colab.duke.edu/identity/v1/', {
+      headers: new HttpHeaders({
+        'Accept': 'application/json',
+        'x-api-key': 'api-docs',
+        'Authorization': 'Bearer '+token
+      })
+    });
+  }
+
   ///////////////////// users /////////////////////
   getUsers(username: string, usernameregex: string, admin: boolean, limit: number): Observable<any> {
     return this.http.get(endpoint + 'users', this.generateHeader({
