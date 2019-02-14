@@ -4,18 +4,18 @@ import { RestService } from '../rest.service';
 import { ParseCsvService } from '../parse-csv.service';
 import { ImportMatchConflictNewCheckerService } from '../import-match-conflict-new-checker.service';
 import { ImportPreviewDialogComponent } from '../import-preview-dialog/import-preview-dialog.component';
-import { reject } from 'q';
+import { UserNotificationDialogComponent } from '../user-notification-dialog/user-notification-dialog.component';
 
 @Component({
   selector: 'app-upload',
   templateUrl: './import.component.html',
   styleUrls: ['./import.component.css']
 })
-export class ImportComponent  implements OnInit {
+export class ImportComponent implements OnInit {
   @ViewChild('fileSelector') fileSelector;
   @ViewChild('fileSelectorForm') fileSelectorForm;
 
-  constructor(private parser: ParseCsvService, private importChecker: ImportMatchConflictNewCheckerService, public dialog: MatDialog, public rest:RestService) {}
+  constructor(private parser: ParseCsvService, private importChecker: ImportMatchConflictNewCheckerService, public dialog: MatDialog, public rest: RestService) { }
 
   openFileSelector() {
     this.fileSelector.nativeElement.click();
@@ -31,7 +31,7 @@ export class ImportComponent  implements OnInit {
       console.log(csvResult);
       this.importChecker.checkAll(csvResult).then(checkResult => {
         console.log(checkResult);
-        
+
         const dialogConfig = new MatDialogConfig();
         dialogConfig.data = checkResult;
         this.dialog.open(ImportPreviewDialogComponent, dialogConfig).afterClosed().subscribe(closeData => {
@@ -56,7 +56,7 @@ export class ImportComponent  implements OnInit {
 
   importData(data): void {
     new Promise((resolve, reject) => {
-      function resolution(result){
+      function resolution(result) {
         if (result) {
           numCompleted = numCompleted + 1;
           if (numCompleted == totalNum) {
@@ -66,7 +66,7 @@ export class ImportComponent  implements OnInit {
           reject(result);
         }
       };
-      function catcher(err){
+      function catcher(err) {
         reject(err);
       };
       var numCompleted = 0;
@@ -79,38 +79,50 @@ export class ImportComponent  implements OnInit {
     }).then(result => {
       console.log(result);
       //popup a dialog telling the user it was successfull
+      const dialogConfig = new MatDialogConfig();
+      dialogConfig.data = {
+        title: "Success!",
+        message: "Successfully imported data."
+      };
+      this.dialog.open(UserNotificationDialogComponent, dialogConfig);
     }).catch(err => {
       console.log(err);
       //popup a dialog telling the user there was an error
+      const dialogConfig = new MatDialogConfig();
+      dialogConfig.data = {
+        title: "Error!",
+        message: "Error importing data."
+      };
+      this.dialog.open(UserNotificationDialogComponent, dialogConfig);
     });
   }
 
   importIngredients(ingredients): Promise<any> {
-    return new Promise((resolve,reject) => {
+    return new Promise((resolve, reject) => {
       resolve(true);
     });
   }
 
   importFormulas(formulas): Promise<any> {
-    return new Promise((resolve,reject) => {
+    return new Promise((resolve, reject) => {
       resolve(true);
     });
   }
 
   importSKUs(skus): Promise<any> {
-    return new Promise((resolve,reject) => {
+    return new Promise((resolve, reject) => {
       resolve(true);
     });
   }
 
   importProductLines(productLines): Promise<any> {
-    return new Promise((resolve,reject) => {
+    return new Promise((resolve, reject) => {
       resolve(true);
     });
   }
 
   importManufacturingLines(manufacturingLines): Promise<any> {
-    return new Promise((resolve,reject) => {
+    return new Promise((resolve, reject) => {
       resolve(true);
     });
   }
