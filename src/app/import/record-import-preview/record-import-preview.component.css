@@ -3,7 +3,7 @@
 }
 
 :host-context(.matches) * {
-    color: black;
+    color: blue;
 }
 
 md-list-item.md-3-line{
