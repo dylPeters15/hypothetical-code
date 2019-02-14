@@ -56,15 +56,11 @@ export class ImportComponent implements OnInit {
 
   importData(data): void {
     new Promise((resolve, reject) => {
-      function resolution(result) {
-        if (result) {
-          numCompleted = numCompleted + 1;
+      function resolution() {
+        numCompleted = numCompleted + 1;
           if (numCompleted == totalNum) {
             resolve(true);
           }
-        } else {
-          reject(result);
-        }
       };
       function catcher(err) {
         reject(err);
@@ -99,7 +95,21 @@ export class ImportComponent implements OnInit {
 
   importIngredients(ingredients): Promise<any> {
     return new Promise((resolve, reject) => {
-      resolve(true);
+      var numIngredientsProcessed = 0;
+      var totalIngredients = ingredients['new'].length;//+conflicted
+      ingredients['new'].forEach(ingredient => {
+        this.rest.createIngredient(ingredient['Name'], ingredient['Ingr#'], ingredient['Vendor Info'], "lb", 5, 10, ingredient['comment']).subscribe(result => {
+          console.log("Create ingredient result: ",result);
+          if (result['ingredientname'] == ingredient['Name']) {
+            console.log(numIngredientsProcessed);
+            if (++numIngredientsProcessed==totalIngredients) {
+              resolve();
+            }
+          } else {
+            reject(result);
+          }
+        });
+      });
     });
   }
 
