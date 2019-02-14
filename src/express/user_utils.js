@@ -91,7 +91,6 @@ function createUser(username, password, admin, localuser) {
                 localuser: localuser
             };
             if (localuser) {
-                console.log("Creating hash.");
                 let saltAndHash = generateSaltAndHash(password);
                 userObject['salt'] = saltAndHash.salt;
                 userObject['saltedhashedpassword'] = saltAndHash.hash;
@@ -153,7 +152,6 @@ function deleteUser(username, localuser) {
 }
 
 function createFederatedUser(netidtoken, clientid) {
-    console.log("Create federated user.");
     return new Promise((resolve, reject) => {
         axios.get('https://api.colab.duke.edu/identity/v1/', {
             headers: {
@@ -183,15 +181,12 @@ function getLoginInfoForFederatedUser(netidtoken, clientid) {
         }).then(response => {
             var netid = response.data.netid;
             getUsers(netid, null, null, false, 1).then(users => {
-                console.log(users);
                 if (users.length == 1) {
                     resolve(users[0]);
                 } else if (users.length == 0) {
                     //user does not exist. create it
                     createFederatedUser(netidtoken, clientid).then(createResponse => {
-                        console.log("Create response: ", createResponse);
                         getUsers(netid, null, null, false, 1).then(users => {
-                            console.log(users);
                             if (users.length == 1) {
                                 resolve(users[0]);
                             } else {

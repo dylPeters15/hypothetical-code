@@ -1,1 +1,55 @@
-<button mat-raised-button (click)="openImportDialog()">Upload</button>
+<form #fileSelectorForm>
+    <input type="file" #fileSelector style="display: none" (change)="filesSelected()" multiple/>
+</form>
+<mat-card>
+    <mat-card-header style="align-content: center; align-items: center; justify-content: center; display: grid;">
+        <mat-card-title style="text-align:center;">
+            Bulk Import
+        </mat-card-title>
+        <mat-card-subtitle style="text-align:center;">
+            Import multiple records from multiple files.
+        </mat-card-subtitle>
+    </mat-card-header>
+    <br>
+    <mat-divider></mat-divider>
+    <br>
+
+    <div style="display:inline-block;width:100%;text-align: center;">
+        <div style="display:inline-block;width: 70%; text-align: left;">
+            <mat-card-content>
+                    <h4>Instructions</h4>
+                    <p>
+                        To import records, click the "Upload" button below and select one or more valid input files.
+                    </p>
+
+                <h4>File Types</h4>
+                <p>
+                    All files must end with ".csv" and contain valid comma-separated data. Furthermore, the files must start with one of the following prefixes:
+                </p>
+                <ul>
+                    <li>ingredients</li>
+                    <li>formulas</li>
+                    <li>skus</li>
+                    <li>product_lines</li>
+                    <li>manufacturing_lines</li>
+                </ul>
+
+                <h4>Common Errors</h4>
+                <p>
+                    If the import files reference records that do not exist in your database or in the other import files, the system will alert you of an unfulfilled dependency.
+                    <br>
+                    Example: If you are attempting to import a formula for tomato soup, but the database does not contain a record for tomatos - and none of the import files contains a record for tomatos - then the system will throw an error. To resolve this, create a record for tomatos before importing.
+                </p>
+            </mat-card-content>
+        </div>
+    </div>
+
+
+    <br>
+    <mat-divider></mat-divider>
+    <br>
+    <mat-card-actions style="align-content: center; align-items: center; justify-content: center; display: grid;">
+        <button mat-raised-button (click)="openFileSelector()" color="primary">Upload</button>
+        <br>
+    </mat-card-actions>
+</mat-card>
