@@ -100,7 +100,6 @@ app.route('/users').get((req, res) => {
         resolveError(err, res);
     });
 }).delete((req, res) => {
-    console.log(req.headers);
     user_utils.deleteUser(req.headers['username'], req.headers['localuser']).then(response => {
         res.send(response);
     }).catch(err => {

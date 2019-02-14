@@ -69,15 +69,14 @@ function modifyIngredient(ingredientname, newIngredientObject) {
 
         return new Promise(function (resolve, reject) {
             const filterschema = {
-                ingredientname: ingredientname,
+                ingredientname: ingredientname
         
             };
-            database.productLineModel.updateOne(filterschema, newIngredientObject , (err, response) => {
+            database.ingredientModel.updateOne(filterschema, newIngredientObject , (err, response) => {
                 if (err) {
                     reject(Error(err));
                     return
                 }
-                console.log("utils",response)
                 resolve(response);
             });
         });
