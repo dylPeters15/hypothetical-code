@@ -22,6 +22,36 @@ export class ImportPreviewDialogComponent implements OnInit {
     this.dialogRef.close(this.data);
   }
 
+  selectAllOld() {
+    this.selectAllOldOfSection('ingredients');
+    this.selectAllOldOfSection('formulas');
+    this.selectAllOldOfSection('skus');
+    this.selectAllOldOfSection('productlines');
+    this.selectAllOldOfSection('manufacturinglines');
+  }
+
+  selectAllNew() {
+    this.selectAllNewOfSection('ingredients');
+    this.selectAllNewOfSection('formulas');
+    this.selectAllNewOfSection('skus');
+    this.selectAllNewOfSection('productlines');
+    this.selectAllNewOfSection('manufacturinglines');
+  }
+
+  selectAllOldOfSection(section) {
+    for (var i = 0; i < this.data[section]['conflicts'].length; i++) {
+      this.data[section]['conflicts'][i]['select'] = 'old';
+      console.log(this.data[section]['conflicts'][i]['select']);
+    }
+  }
+
+  selectAllNewOfSection(section) {
+    for (var i = 0; i < this.data[section]['conflicts'].length; i++) {
+      this.data[section]['conflicts'][i]['select'] = 'new';
+      console.log(this.data[section]['conflicts'][i]['select']);
+    }
+  }
+
   areAllOldSelected() {
     return this.areAllOfSectionOld('ingredients')
     && this.areAllOfSectionOld('formulas')
