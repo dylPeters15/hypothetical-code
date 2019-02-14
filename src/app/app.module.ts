@@ -39,7 +39,6 @@ import { TermsAndConditionsDialogComponent } from './footer/terms-and-conditions
 import { ManufacturingGoalsComponent } from './manufacturing-goals/manufacturing-goals.component';
 import { NewGoalDialogComponent } from './new-goal-dialog/new-goal-dialog.component';
 import { ImportComponent } from './import/import.component';
-import { RecordCompareDialogComponent } from './import/record-compare-dialog/record-compare-dialog.component';
 import { PapaParseModule } from 'ngx-papaparse';
 import { MatRadioModule } from '@angular/material/radio';
 import { ConfirmActionDialogComponent } from './confirm-action-dialog/confirm-action-dialog.component';
@@ -93,7 +92,6 @@ const appRoutes: Routes = [
     ManufacturingGoalsComponent,
     NewGoalDialogComponent,
     ImportComponent,
-    RecordCompareDialogComponent,
     ConfirmActionDialogComponent,
     ImportPreviewDialogComponent,
     ImportConflictResolverComponent,
@@ -124,6 +122,6 @@ const appRoutes: Routes = [
   ],
   providers: [],
   bootstrap: [AppComponent],
-  entryComponents: [UserNotificationDialogComponent, NewUserDialogComponent, PasswordConfirmationDialogComponent, PrivacyPolicyDialogComponent, TermsAndConditionsDialogComponent, MoreInfoDialogComponent, NewSkuDialogComponent, NewIngredientDialogComponent, NewGoalDialogComponent, RecordCompareDialogComponent, NewProductLineDialogComponent, ConfirmActionDialogComponent, ImportPreviewDialogComponent]
+  entryComponents: [UserNotificationDialogComponent, NewUserDialogComponent, PasswordConfirmationDialogComponent, PrivacyPolicyDialogComponent, TermsAndConditionsDialogComponent, MoreInfoDialogComponent, NewSkuDialogComponent, NewIngredientDialogComponent, NewGoalDialogComponent, NewProductLineDialogComponent, ConfirmActionDialogComponent, ImportPreviewDialogComponent]
 })
 export class AppModule { }
