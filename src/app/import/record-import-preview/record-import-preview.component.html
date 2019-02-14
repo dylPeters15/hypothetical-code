@@ -2,7 +2,7 @@
   <h5>{{_value['Name']}}</h5>
   <mat-list>
     <mat-list-item *ngFor="let key of keys">
-      <p>{{key}}</p>
+      <p>{{key}}: {{_value[key]}}</p>
     </mat-list-item>
   </mat-list>
 </div>
