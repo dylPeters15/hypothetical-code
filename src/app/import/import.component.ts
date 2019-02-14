@@ -1,9 +1,9 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatDialog, MatDialogConfig } from '@angular/material';
 import { RestService } from '../rest.service';
-import { ParseCsvService } from '../parse-csv.service';
-import { ImportMatchConflictNewCheckerService } from '../import-match-conflict-new-checker.service';
-import { ImportPreviewDialogComponent } from '../import-preview-dialog/import-preview-dialog.component';
+import { ParseCsvService } from './parse-csv.service';
+import { ImportMatchConflictNewCheckerService } from './import-match-conflict-new-checker.service';
+import { ImportPreviewDialogComponent } from './import-preview-dialog/import-preview-dialog.component';
 import { UserNotificationDialogComponent } from '../user-notification-dialog/user-notification-dialog.component';
 
 @Component({
