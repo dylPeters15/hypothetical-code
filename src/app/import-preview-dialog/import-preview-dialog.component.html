@@ -4,30 +4,28 @@
   <mat-divider></mat-divider>
 
   <h4>Ingredients</h4>
-  <mat-list>
-    <mat-list-item *ngFor="let ingredient of data['ingredients']['conflicts']">
-      <app-import-conflict-resolver [(ngModel)]="ingredient"></app-import-conflict-resolver>
-    </mat-list-item>
-  </mat-list>
-  <mat-list>
-    <mat-list-item *ngFor="let ingredient of data['ingredients']['new']">
-      <app-import-conflict-resolver [(ngModel)]="ingredient"></app-import-conflict-resolver>
-    </mat-list-item>
-  </mat-list>
-  <mat-list>
-    <mat-list-item *ngFor="let ingredient of data['ingredients']['matches']">
-      <app-import-conflict-resolver [(ngModel)]="ingredient"></app-import-conflict-resolver>
-    </mat-list-item>
-  </mat-list>
+  <app-import-preview-section [(ngModel)]="data['ingredients']"></app-import-preview-section>
 
   <mat-divider></mat-divider>
+
   <h4>Formulas</h4>
+  <app-import-preview-section [(ngModel)]="data['formulas']"></app-import-preview-section>
+
   <mat-divider></mat-divider>
+
   <h4>SKUs</h4>
+  <app-import-preview-section [(ngModel)]="data['skus']"></app-import-preview-section>
+
   <mat-divider></mat-divider>
+
   <h4>Product Lines</h4>
+  <app-import-preview-section [(ngModel)]="data['productlines']"></app-import-preview-section>
+
   <mat-divider></mat-divider>
+
   <h4>Manufacturing Lines</h4>
+  <app-import-preview-section [(ngModel)]="data['manufacturinglines']"></app-import-preview-section>
+
   <mat-divider></mat-divider>
 </mat-dialog-content>
 <mat-dialog-actions align="center">
