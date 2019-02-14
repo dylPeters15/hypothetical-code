@@ -1,13 +1,15 @@
 const database = require('./database.js');
 
-function getFormulas(sku, ingredient, limit) {
+function getFormulas(sku, ingredient, formulaname, formularnumber, limit) {
     limit = limit || database.defaultSearchLimit;
 
     return new Promise((resolve, reject) => {
         var filterSchema = {
             $or: [
                 { sku: sku },
-                { ingredient: ingredient }
+                { ingredient: ingredient },
+                { formulaname: formulaname },
+                { formularnumber: formularnumber }
             ]
         }
         database.formulaModel.find(filterSchema).limit(limit).populate('sku ingredient').exec((err, formulas) => {
