@@ -5,3 +5,11 @@
 :host-context(.matches) * {
     color: black;
 }
+
+md-list-item.md-3-line{
+    height: auto !important;
+    }
+
+mat-list-item {
+    height: auto !important;
+}
