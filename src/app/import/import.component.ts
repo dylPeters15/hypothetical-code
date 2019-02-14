@@ -36,7 +36,6 @@ export class ImportComponent  implements OnInit {
           if (!closeData || closeData['cancel']) {
             //operation was cancelled
             console.log("Operation cancelled");
-            this.fileSelector.nativeElement.files = null;
           } else {
             //operation confirmed
             console.log("Operation confirmed.");
