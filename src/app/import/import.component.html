@@ -1,4 +1,6 @@
-<input type="file" #fileSelector style="display: none" (change)="filesSelected()" multiple/>
+<form #fileSelectorForm>
+    <input type="file" #fileSelector style="display: none" (change)="filesSelected()" multiple/>
+</form>
 <mat-card>
     <mat-card-header style="align-content: center; align-items: center; justify-content: center; display: grid;">
         <mat-card-title style="text-align:center;">

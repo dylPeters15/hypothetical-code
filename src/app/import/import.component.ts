@@ -12,6 +12,7 @@ import { ImportPreviewDialogComponent } from '../import-preview-dialog/import-pr
 })
 export class ImportComponent  implements OnInit {
   @ViewChild('fileSelector') fileSelector;
+  @ViewChild('fileSelectorForm') fileSelectorForm;
 
   constructor(private parser: ParseCsvService, private importChecker: ImportMatchConflictNewCheckerService, public dialog: MatDialog, public rest:RestService) {}
 
@@ -25,6 +26,7 @@ export class ImportComponent  implements OnInit {
 
   filesSelected() {
     this.parser.parseCSVFiles(this.fileSelector.nativeElement.files).then(csvResult => {
+      this.fileSelectorForm.nativeElement.reset();
       console.log(csvResult);
       this.importChecker.checkAll(csvResult).then(checkResult => {
         console.log(checkResult);
