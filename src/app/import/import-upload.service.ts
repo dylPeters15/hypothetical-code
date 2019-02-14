@@ -10,22 +10,20 @@ export class ImportUploadService {
 
   importData(data): Promise<any> {
     return new Promise((resolve, reject) => {
-      function resolution() {
-        numCompleted = numCompleted + 1;
-          if (numCompleted == totalNum) {
-            resolve(data);
-          }
-      };
       function catcher(err) {
         reject(err);
       };
-      var numCompleted = 0;
-      var totalNum = 5;
-      this.importIngredients(data['ingredients']).then(resolution).catch(catcher);
-      this.importFormulas(data['formulas']).then(resolution).catch(catcher);
-      this.importSKUs(data['skus']).then(resolution).catch(catcher);
-      this.importProductLines(data['productlines']).then(resolution).catch(catcher);
-      this.importManufacturingLines(data['manufacturinglines']).then(resolution).catch(catcher);
+      this.importIngredients(data['ingredients']).then(ingredientResult => {
+        this.importFormulas(data['formulas']).then(formulaResult => {
+          this.importSKUs(data['skus']).then(skuResult => {
+            this.importProductLines(data['productlines']).then(productLineResult => {
+              this.importManufacturingLines(data['manufacturinglines']).then(manufacturingLineResult => {
+                resolve();
+              }).catch(catcher);
+            }).catch(catcher);
+          }).catch(catcher);
+        }).catch(catcher);
+      }).catch(catcher);
     });
   }
 

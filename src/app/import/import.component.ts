@@ -42,8 +42,7 @@ export class ImportComponent implements OnInit {
           } else {
             //operation confirmed
             console.log("Operation confirmed.");
-            this.importUploader.importData(closeData).then(uploadResult => {
-              console.log(uploadResult);
+            this.importUploader.importData(closeData).then(() => {
               //popup a dialog telling the user it was successfull
               const dialogConfig = new MatDialogConfig();
               dialogConfig.data = {
