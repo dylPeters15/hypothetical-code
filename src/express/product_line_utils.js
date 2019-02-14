@@ -9,16 +9,15 @@ function getProductLines(productlinename, productlinenameregex, limit){
     return new Promise(function (resolve, reject) {
         const filterSchema = {
             $or:[
-                {productlinename: productlinename},,
-                {productlinename: { $regex: productlinenameregex }}
+                {productlinename: productlinename},
+                {productlinenameregex: { $regex: productlinenameregex }}
             ]
-        }
+        };
         database.productLineModel.find(filterSchema).limit(limit).exec((err, productLines) => {
             if (err) {
                 reject(Error(err));
                 return;
             }
-            console.log(productLines)
             resolve(productLines);
         });
     });

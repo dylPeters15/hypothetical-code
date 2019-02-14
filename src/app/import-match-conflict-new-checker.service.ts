@@ -117,10 +117,27 @@ export class ImportMatchConflictNewCheckerService {
       ingredients.forEach(ingredient => {
         console.log(ingredient);
         //do processing here
-        numIngredientsProcessed = numIngredientsProcessed + 1;
-        if (numIngredientsProcessed == ingredients.length) {
-          resolve(toReturn);
-        }
+        this.rest.getIngredients(ingredient['Name'], ingredient['Ingr#'], 1).subscribe(response => {
+          if (response.length == 0) {
+            toReturn['new'].push(ingredient);
+          } else {
+            var responseIngredient = response[0];
+            if (ingredient['name'] == responseIngredient['ingredientname']
+             && ingredient['Ingr#'] == responseIngredient['ingredientnumber']
+              && ingredient['Quantity'] == responseIngredient['amount']) {
+              toReturn['matches'].push(ingredient);
+            } else {
+              toReturn['conflicts'].push({
+                old: response,
+                new: ingredient
+              });
+            }
+          }
+          numIngredientsProcessed = numIngredientsProcessed + 1;
+          if (numIngredientsProcessed == ingredients.length) {
+            resolve(toReturn);
+          }
+        });
       });
     });
   }
@@ -135,10 +152,18 @@ export class ImportMatchConflictNewCheckerService {
       productLines.forEach(productLine => {
         console.log(productLine);
         //do processing here
-        numPLsProcessed = numPLsProcessed + 1;
-        if (numPLsProcessed == productLines.length) {
-          resolve(toReturn);
-        }
+        this.rest.getProductLines(productLine['Name'], 1).subscribe(result => {
+          console.log("Product Line Result: ",result);
+          if (result.length == 0) {
+            toReturn['new'].push(productLine);
+          } else {
+            toReturn['matches'].push(productLine);
+          }
+          numPLsProcessed = numPLsProcessed + 1;
+          if (numPLsProcessed == productLines.length) {
+            resolve(toReturn);
+          }
+        });
       });
     });
   }
@@ -153,6 +178,7 @@ export class ImportMatchConflictNewCheckerService {
       formulas.forEach(formula => {
         console.log(formula);
         //do processing here
+        //can't do this yet because I'm blocked since the formula REST API calls do not support search by formulaname or formulanumber yet
         numFormulasProcessed = numFormulasProcessed + 1;
         if (numFormulasProcessed == formulas.length) {
           resolve(toReturn);
@@ -171,6 +197,7 @@ export class ImportMatchConflictNewCheckerService {
       manufacturingLines.forEach(manufacturingLine => {
         console.log(manufacturingLine);
         //do processing here
+        //can't do this yet because I'm blocked since Manufacturing Lines support is not ready in rest.service.ts yet
         numMLsProcessed = numMLsProcessed + 1;
         if (numMLsProcessed == manufacturingLines.length) {
           resolve(toReturn);
@@ -193,6 +220,7 @@ export class ImportMatchConflictNewCheckerService {
       formulas.forEach(formula => {
         console.log(formula);
         //do processing here
+        //can't do this yet because I'm blocked since formula support is not ready in rest.service.ts yet
         numFormulasProcessed = numFormulasProcessed + 1;
         if (numFormulasProcessed == formulas.length) {
           resolve(toReturn);
@@ -216,6 +244,7 @@ export class ImportMatchConflictNewCheckerService {
       formulas.forEach(formula => {
         console.log(formula);
         //do processing here
+        //can't do this yet because I'm blocked since formulas support is not ready in rest.service.ts yet
         numFormulasProcessed = numFormulasProcessed + 1;
         if (numFormulasProcessed == formulas.length) {
           resolve(toReturn);

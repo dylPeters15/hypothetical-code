@@ -197,7 +197,7 @@ export class RestService {
   getProductLines(productlinename: String, limit: number): Observable<any> {
     return this.http.get(endpoint + "product_lines", this.generateHeader({
       productlinename: productlinename,
-      limit: limit
+      limit: JSON.stringify(limit)
     }));
   }
 
