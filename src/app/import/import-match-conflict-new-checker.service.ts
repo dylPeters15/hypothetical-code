@@ -129,7 +129,8 @@ export class ImportMatchConflictNewCheckerService {
             } else {
               toReturn['conflicts'].push({
                 old: response,
-                new: ingredient
+                new: ingredient,
+                select: 'new'
               });
             }
           }
