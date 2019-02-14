@@ -45,11 +45,6 @@ import { MatRadioModule } from '@angular/material/radio';
 import { ConfirmActionDialogComponent } from './confirm-action-dialog/confirm-action-dialog.component';
 import { ImportPreviewDialogComponent } from './import-preview-dialog/import-preview-dialog.component';
 import { ImportConflictResolverComponent } from './import-conflict-resolver/import-conflict-resolver.component';
-import { IngredientImportPreviewComponent } from './ingredient-import-preview/ingredient-import-preview.component';
-import { FormulaImportPreviewComponent } from './formula-import-preview/formula-import-preview.component';
-import { SkuImportPreviewComponent } from './sku-import-preview/sku-import-preview.component';
-import { ProductLineImportPreviewComponent } from './product-line-import-preview/product-line-import-preview.component';
-import { ManufacturingLineImportPreviewComponent } from './manufacturing-line-import-preview/manufacturing-line-import-preview.component';
 import { RecordImportPreviewComponent } from './record-import-preview/record-import-preview.component';
 import { ImportPreviewSectionComponent } from './import-preview-section/import-preview-section.component';
 
@@ -102,11 +97,6 @@ const appRoutes: Routes = [
     ConfirmActionDialogComponent,
     ImportPreviewDialogComponent,
     ImportConflictResolverComponent,
-    IngredientImportPreviewComponent,
-    FormulaImportPreviewComponent,
-    SkuImportPreviewComponent,
-    ProductLineImportPreviewComponent,
-    ManufacturingLineImportPreviewComponent,
     RecordImportPreviewComponent,
     ImportPreviewSectionComponent
   ],
