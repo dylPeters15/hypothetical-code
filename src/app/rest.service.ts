@@ -145,6 +145,58 @@ export class RestService {
     }));
   }
 
+ ///////////////////// skus /////////////////////
+ getSkus(skuName: String, skuNumber: number, caseUpcNumber: number, unitUpcNumber: number, limit: number): Observable<any> {
+  return this.http.get(endpoint + "ingredients", this.generateHeader({
+    skuName: skuName,
+    skuNumber: skuNumber,
+    caseUpcNumber: caseUpcNumber,
+    unitUpcNumber: unitUpcNumber,
+    limit: limit
+  }));
+}
+
+createSku(skuName: String, skuNumber: number, 
+  caseUpcNumber: number, unitUpcNumber: number, unitSize: number, 
+  countPerCase: number, comment: String): Observable<any> {
+  return this.http.put(endpoint + "skus", {
+    skuName: skuName,
+    skuNumber: skuNumber,
+    caseUpcNumber: caseUpcNumber,
+    unitUpcNumber: unitUpcNumber,
+    unitSize: unitSize,
+    countPerCase: countPerCase,
+    comment: comment
+  },
+  this.generateHeader());
+}
+
+modifySku(skuName: String, skuNumber: number, 
+  caseUpcNumber: number, unitUpcNumber: number, unitSize: number, 
+  countPerCase: number, comment: String): Observable<any> {
+  return this.http.post(endpoint + "ingredients", {
+    $set: {
+      skuName: skuName,
+      skuNumber: skuNumber,
+      caseUpcNumber: caseUpcNumber,
+      unitUpcNumber: unitUpcNumber,
+      unitSize: unitSize,
+      countPerCase: countPerCase,
+      comment: comment
+    }
+  },
+  this.generateHeader({
+    skuName: skuName
+  }));
+}
+
+deleteSku(skuName: String): Observable<any> {
+  return this.http.delete(endpoint + "ingredients", this.generateHeader({
+    skuName: skuName,
+  }));
+}
+
+
 
 
 

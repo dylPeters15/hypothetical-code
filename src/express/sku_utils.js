@@ -1,13 +1,15 @@
 const database = require('./database.js');
 
 
-function getSkus(skuName, skuNumber, limit) {
+function getSkus(skuName, skuNumber, caseUpcNumber, unitUpcNumber, limit) {
 
     return new Promise(function (resolve, reject) {
         const filterSchema = {
             $or: [
                 { skuName: skuName },
                 { skuNumber: skuNumber },
+                { caseUpcNumber: caseUpcNumber },
+                { unitUpcNumber: unitUpcNumber },
                 { skuName: { $regex: /skuName/ } }
             ]
         }
