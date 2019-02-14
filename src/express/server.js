@@ -222,35 +222,27 @@ app.route('/skus').get((req, res) => {
 
 ///////////////////// product lines /////////////////////
 app.route('/product_lines').get((req, res) => {
-    product_line_utils.getProductLines(req.headers['productlinename'], req.headers['limit']).then(productLines => {
+    product_line_utils.getProductLines(req.headers['productlinename'], req.headers['productlinenameregex'], JSON.parse(req.headers['limit'])).then(productLines => {
         res.send(productLines);
     }).catch(err => {
-        res.send({
-            err:""+err
-        });
+        resolveError(err, res);
     });
 }).put((req, res) => {
     product_line_utils.createProductLine(req.body).then(response => {
         res.send(response);
     }).catch(err => {
-        res.send({
-            err:""+err
-        });
+        resolveError(err, res);
     });
 }).post((req, res) => {
     product_line_utils.modifyProductLine(req.headers['productlinename'], req.body).then(response => {
         res.send(response);
     }).catch(err => {
-        res.send({
-            err:""+err
-        });
+        resolveError(err, res);
     });
 }).delete((req, res) => {
     product_line_utils.deleteProductLine(req.headers['productlinename']).then(response => {
         res.send(response);
     }).catch(err => {
-        res.send({
-            err:""+err
-        });
+        resolveError(err, res);
     });
 });

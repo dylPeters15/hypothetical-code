@@ -1,0 +1,34 @@
+<h2 mat-dialog-title align="center">Import Preview</h2>
+<mat-dialog-content align="center">
+  <p>Please preview changes then press "Import" to import.</p>
+  <mat-divider></mat-divider>
+
+  <h4>Ingredients</h4>
+  <app-import-preview-section [(ngModel)]="data['ingredients']"></app-import-preview-section>
+
+  <mat-divider></mat-divider>
+
+  <h4>Formulas</h4>
+  <app-import-preview-section [(ngModel)]="data['formulas']"></app-import-preview-section>
+
+  <mat-divider></mat-divider>
+
+  <h4>SKUs</h4>
+  <app-import-preview-section [(ngModel)]="data['skus']"></app-import-preview-section>
+
+  <mat-divider></mat-divider>
+
+  <h4>Product Lines</h4>
+  <app-import-preview-section [(ngModel)]="data['productlines']"></app-import-preview-section>
+
+  <mat-divider></mat-divider>
+
+  <h4>Manufacturing Lines</h4>
+  <app-import-preview-section [(ngModel)]="data['manufacturinglines']"></app-import-preview-section>
+
+  <mat-divider></mat-divider>
+</mat-dialog-content>
+<mat-dialog-actions align="center">
+  <button mat-raised-button (click)="cancel()">Cancel</button>
+  <button mat-raised-button (click)="import()" color="primary">Import</button>
+</mat-dialog-actions>

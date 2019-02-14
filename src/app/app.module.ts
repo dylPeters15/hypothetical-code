@@ -43,6 +43,10 @@ import { RecordCompareDialogComponent } from './record-compare-dialog/record-com
 import { PapaParseModule } from 'ngx-papaparse';
 import { MatRadioModule } from '@angular/material/radio';
 import { ConfirmActionDialogComponent } from './confirm-action-dialog/confirm-action-dialog.component';
+import { ImportPreviewDialogComponent } from './import-preview-dialog/import-preview-dialog.component';
+import { ImportConflictResolverComponent } from './import-conflict-resolver/import-conflict-resolver.component';
+import { RecordImportPreviewComponent } from './record-import-preview/record-import-preview.component';
+import { ImportPreviewSectionComponent } from './import-preview-section/import-preview-section.component';
 
 const appRoutes: Routes = [
   { path: 'login', component: LoginComponent, data: { title: 'Log In' }, canActivate: [AlreadyLoggedInRouteGuardService] },
@@ -90,7 +94,11 @@ const appRoutes: Routes = [
     NewGoalDialogComponent,
     ImportComponent,
     RecordCompareDialogComponent,
-    ConfirmActionDialogComponent
+    ConfirmActionDialogComponent,
+    ImportPreviewDialogComponent,
+    ImportConflictResolverComponent,
+    RecordImportPreviewComponent,
+    ImportPreviewSectionComponent
   ],
   imports: [
     BrowserModule,
@@ -116,6 +124,6 @@ const appRoutes: Routes = [
   ],
   providers: [],
   bootstrap: [AppComponent],
-  entryComponents: [UserNotificationDialogComponent, NewUserDialogComponent, PasswordConfirmationDialogComponent, PrivacyPolicyDialogComponent, TermsAndConditionsDialogComponent, MoreInfoDialogComponent, NewSkuDialogComponent, NewIngredientDialogComponent, NewGoalDialogComponent, RecordCompareDialogComponent, NewProductLineDialogComponent, ConfirmActionDialogComponent]
+  entryComponents: [UserNotificationDialogComponent, NewUserDialogComponent, PasswordConfirmationDialogComponent, PrivacyPolicyDialogComponent, TermsAndConditionsDialogComponent, MoreInfoDialogComponent, NewSkuDialogComponent, NewIngredientDialogComponent, NewGoalDialogComponent, RecordCompareDialogComponent, NewProductLineDialogComponent, ConfirmActionDialogComponent, ImportPreviewDialogComponent]
 })
 export class AppModule { }

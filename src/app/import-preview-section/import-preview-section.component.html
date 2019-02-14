@@ -1,0 +1,19 @@
+
+  <h5 style="color:red">Conflicts:</h5>
+  <mat-list>
+    <mat-list-item *ngFor="let ingredient of _value['conflicts']">
+      <app-import-conflict-resolver [(ngModel)]="ingredient"></app-import-conflict-resolver>
+    </mat-list-item>
+  </mat-list>
+  <h5 style="color:green">New:</h5>
+  <mat-list>
+    <mat-list-item *ngFor="let ingredient of _value['new']">
+      <app-record-import-preview class="new" [(ngModel)]="ingredient"></app-record-import-preview>
+    </mat-list-item>
+  </mat-list>
+  <h5 style="color:black">matches:</h5>
+  <mat-list>
+    <mat-list-item *ngFor="let ingredient of _value['matches']">
+      <app-record-import-preview class="matches" [(ngModel)]="ingredient"></app-record-import-preview>
+    </mat-list-item>
+  </mat-list>

@@ -1,0 +1,7 @@
+:host-context(.new) p {
+    color: green;
+}
+
+:host-context(.matches) p {
+    color: black;
+}
