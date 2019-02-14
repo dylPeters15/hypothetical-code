@@ -43,6 +43,7 @@ import { RecordCompareDialogComponent } from './record-compare-dialog/record-com
 import { PapaParseModule } from 'ngx-papaparse';
 import { MatRadioModule } from '@angular/material/radio';
 import { ConfirmActionDialogComponent } from './confirm-action-dialog/confirm-action-dialog.component';
+import { ImportPreviewDialogComponent } from './import-preview-dialog/import-preview-dialog.component';
 
 const appRoutes: Routes = [
   { path: 'login', component: LoginComponent, data: { title: 'Log In' }, canActivate: [AlreadyLoggedInRouteGuardService] },
@@ -90,7 +91,8 @@ const appRoutes: Routes = [
     NewGoalDialogComponent,
     ImportComponent,
     RecordCompareDialogComponent,
-    ConfirmActionDialogComponent
+    ConfirmActionDialogComponent,
+    ImportPreviewDialogComponent
   ],
   imports: [
     BrowserModule,
