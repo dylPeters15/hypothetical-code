@@ -34,19 +34,19 @@ import { NewIngredientDialogComponent } from './new-ingredient-dialog/new-ingred
 import { NewProductLineDialogComponent } from './new-product-line-dialog/new-product-line-dialog.component';
 import { MoreInfoDialogComponent } from './more-info-dialog/more-info-dialog.component';
 import { PasswordConfirmationDialogComponent } from './password-confirmation-dialog/password-confirmation-dialog.component'; 
-import { PrivacyPolicyDialogComponent } from './privacy-policy-dialog/privacy-policy-dialog.component';
-import { TermsAndConditionsDialogComponent } from './terms-and-conditions-dialog/terms-and-conditions-dialog.component'; 
+import { PrivacyPolicyDialogComponent } from './footer/privacy-policy-dialog/privacy-policy-dialog.component';
+import { TermsAndConditionsDialogComponent } from './footer/terms-and-conditions-dialog/terms-and-conditions-dialog.component'; 
 import { ManufacturingGoalsComponent } from './manufacturing-goals/manufacturing-goals.component';
 import { NewGoalDialogComponent } from './new-goal-dialog/new-goal-dialog.component';
 import { ImportComponent } from './import/import.component';
-import { RecordCompareDialogComponent } from './record-compare-dialog/record-compare-dialog.component';
+import { RecordCompareDialogComponent } from './import/record-compare-dialog/record-compare-dialog.component';
 import { PapaParseModule } from 'ngx-papaparse';
 import { MatRadioModule } from '@angular/material/radio';
 import { ConfirmActionDialogComponent } from './confirm-action-dialog/confirm-action-dialog.component';
-import { ImportPreviewDialogComponent } from './import-preview-dialog/import-preview-dialog.component';
-import { ImportConflictResolverComponent } from './import-conflict-resolver/import-conflict-resolver.component';
-import { RecordImportPreviewComponent } from './record-import-preview/record-import-preview.component';
-import { ImportPreviewSectionComponent } from './import-preview-section/import-preview-section.component';
+import { ImportPreviewDialogComponent } from './import/import-preview-dialog/import-preview-dialog.component';
+import { ImportConflictResolverComponent } from './import/import-conflict-resolver/import-conflict-resolver.component';
+import { RecordImportPreviewComponent } from './import/record-import-preview/record-import-preview.component';
+import { ImportPreviewSectionComponent } from './import/import-preview-section/import-preview-section.component';
 
 const appRoutes: Routes = [
   { path: 'login', component: LoginComponent, data: { title: 'Log In' }, canActivate: [AlreadyLoggedInRouteGuardService] },
