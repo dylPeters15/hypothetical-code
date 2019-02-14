@@ -1,9 +1,36 @@
 <h2 mat-dialog-title align="center">Import Preview</h2>
 <mat-dialog-content align="center">
   <p>Please preview changes then press "Import" to import.</p>
-  <app-import-conflict-resolver [(ngModel)]="data"></app-import-conflict-resolver>
+  <mat-divider></mat-divider>
+
+  <h4>Ingredients</h4>
+  <mat-list>
+    <mat-list-item *ngFor="let ingredient of data['ingredients']['conflicts']">
+      <app-import-conflict-resolver [(ngModel)]="{ingredient:ingredient}"></app-import-conflict-resolver>
+    </mat-list-item>
+  </mat-list>
+  <mat-list>
+    <mat-list-item *ngFor="let ingredient of data['ingredients']['new']">
+      <app-import-conflict-resolver [(ngModel)]="{ingredient:ingredient}"></app-import-conflict-resolver>
+    </mat-list-item>
+  </mat-list>
+  <mat-list>
+    <mat-list-item *ngFor="let ingredient of data['ingredients']['matches']">
+      <app-import-conflict-resolver [(ngModel)]="{ingredient:ingredient}"></app-import-conflict-resolver>
+    </mat-list-item>
+  </mat-list>
+
+  <mat-divider></mat-divider>
+  <h4>Formulas</h4>
+  <mat-divider></mat-divider>
+  <h4>SKUs</h4>
+  <mat-divider></mat-divider>
+  <h4>Product Lines</h4>
+  <mat-divider></mat-divider>
+  <h4>Manufacturing Lines</h4>
+  <mat-divider></mat-divider>
 </mat-dialog-content>
 <mat-dialog-actions align="center">
-    <button mat-raised-button (click)="cancel()">Cancel</button>
-    <button mat-raised-button (click)="import()" color="primary">Import</button>
+  <button mat-raised-button (click)="cancel()">Cancel</button>
+  <button mat-raised-button (click)="import()" color="primary">Import</button>
 </mat-dialog-actions>
