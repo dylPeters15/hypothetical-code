@@ -1,17 +1,13 @@
 <mat-radio-group>
-  <div>
-    <div style="float: left;">
+  <div style="height: 100%; vertical-align: middle;">
       <mat-radio-button value="old">
         <app-record-import-preview [(ngModel)]="_value['old']">
         </app-record-import-preview>
       </mat-radio-button>
-    </div>
 
-    <div style="float: left;">
       <mat-radio-button value="new">
         <app-record-import-preview [(ngModel)]="_value['new']">
         </app-record-import-preview>
       </mat-radio-button>
-    </div>
   </div>
 </mat-radio-group>
