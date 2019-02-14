@@ -32,9 +32,13 @@ export class ImportComponent implements OnInit {
       this.importChecker.checkAll(csvResult).then(checkResult => {
         console.log(checkResult);
 
-        const dialogConfig = new MatDialogConfig();
-        dialogConfig.data = checkResult;
-        this.dialog.open(ImportPreviewDialogComponent, dialogConfig).afterClosed().subscribe(closeData => {
+        // const dialogConfig = new MatDialogConfig();
+        // dialogConfig.data = checkResult;
+        this.dialog.open(ImportPreviewDialogComponent, {
+          data: checkResult,
+          height: '90%',
+          width: '90%',
+        }).afterClosed().subscribe(closeData => {
           console.log(closeData);
           if (!closeData || closeData['cancel']) {
             //operation was cancelled
