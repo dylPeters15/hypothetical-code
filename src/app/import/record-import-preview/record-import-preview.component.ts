@@ -19,6 +19,7 @@ export class RecordImportPreviewComponent implements ControlValueAccessor {
 
   _value = '';
   stringified = '';
+  keys = [];
 
   propagateChange: any = () => { };
 
@@ -28,6 +29,7 @@ export class RecordImportPreviewComponent implements ControlValueAccessor {
     if (value) {
       this._value = value;
       this.stringified = JSON.stringify(value);
+      this.keys = Object.keys(value);
     }
   }
 
@@ -38,6 +40,7 @@ export class RecordImportPreviewComponent implements ControlValueAccessor {
 
   onChange(event) {
     this.stringified = JSON.stringify(event.target.value);
+    this.keys = Object.keys(event.target.value);
     this.propagateChange(event.target.value);
   }
 
