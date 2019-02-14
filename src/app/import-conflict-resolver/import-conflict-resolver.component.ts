@@ -18,6 +18,7 @@ export class ImportConflictResolverComponent implements ControlValueAccessor {
   constructor() { }
 
   _value = '';
+  stringified = '';
 
   propagateChange: any = () => { };
 
@@ -26,6 +27,7 @@ export class ImportConflictResolverComponent implements ControlValueAccessor {
   writeValue(value: any) {
     if (value) {
       this._value = value;
+      this.stringified = JSON.stringify(value);
     }
   }
 
@@ -35,6 +37,7 @@ export class ImportConflictResolverComponent implements ControlValueAccessor {
   registerOnTouched(fn: () => void): void { }
 
   onChange(event) {
+    this.stringified = JSON.stringify(event.target.value);
     this.propagateChange(event.target.value);
   }
 
