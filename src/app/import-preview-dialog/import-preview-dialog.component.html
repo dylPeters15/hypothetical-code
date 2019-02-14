@@ -1,6 +1,7 @@
 <h2 mat-dialog-title align="center">Import Preview</h2>
 <mat-dialog-content align="center">
   <p>Please preview changes then press "Import" to import.</p>
+  <app-import-conflict-resolver [(ngModel)]="data"></app-import-conflict-resolver>
 </mat-dialog-content>
 <mat-dialog-actions align="center">
     <button mat-raised-button (click)="cancel()">Cancel</button>
