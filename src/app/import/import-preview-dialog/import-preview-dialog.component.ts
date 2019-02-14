@@ -41,14 +41,12 @@ export class ImportPreviewDialogComponent implements OnInit {
   selectAllOldOfSection(section) {
     for (var i = 0; i < this.data[section]['conflicts'].length; i++) {
       this.data[section]['conflicts'][i]['select'] = 'old';
-      console.log(this.data[section]['conflicts'][i]['select']);
     }
   }
 
   selectAllNewOfSection(section) {
     for (var i = 0; i < this.data[section]['conflicts'].length; i++) {
       this.data[section]['conflicts'][i]['select'] = 'new';
-      console.log(this.data[section]['conflicts'][i]['select']);
     }
   }
 
@@ -70,9 +68,7 @@ export class ImportPreviewDialogComponent implements OnInit {
 
   areAllOfSectionNew(section) {
     for (var i = 0; i < this.data[section]['conflicts'].length; i++) {
-      console.log(this.data[section]['conflicts'][i]['select']);
       if (this.data[section]['conflicts'][i]['select'] != 'new') {
-        console.log(false);
         return false;
       }
     }
@@ -81,9 +77,7 @@ export class ImportPreviewDialogComponent implements OnInit {
 
   areAllOfSectionOld(section) {
     for (var i = 0; i < this.data[section]['conflicts'].length; i++) {
-      console.log(this.data[section]['conflicts'][i]['select']);
       if (this.data[section]['conflicts'][i]['select'] != 'old') {
-        console.log(false);
         return false;
       }
     }
