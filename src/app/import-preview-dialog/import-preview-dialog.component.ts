@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Inject } from '@angular/core';
+import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material";
 
 @Component({
   selector: 'app-import-preview-dialog',
@@ -7,9 +8,18 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ImportPreviewDialogComponent implements OnInit {
 
-  constructor() { }
+  constructor(private dialogRef: MatDialogRef<ImportPreviewDialogComponent>, @Inject(MAT_DIALOG_DATA) public data: any) { }
 
   ngOnInit() {
+    console.log(this.data);
+  }
+
+  cancel() {
+    this.dialogRef.close({cancel:true});
+  }
+
+  import() {
+    this.dialogRef.close(this.data);
   }
 
 }

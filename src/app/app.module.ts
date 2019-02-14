@@ -118,6 +118,6 @@ const appRoutes: Routes = [
   ],
   providers: [],
   bootstrap: [AppComponent],
-  entryComponents: [UserNotificationDialogComponent, NewUserDialogComponent, PasswordConfirmationDialogComponent, PrivacyPolicyDialogComponent, TermsAndConditionsDialogComponent, MoreInfoDialogComponent, NewSkuDialogComponent, NewIngredientDialogComponent, NewGoalDialogComponent, RecordCompareDialogComponent, NewProductLineDialogComponent, ConfirmActionDialogComponent]
+  entryComponents: [UserNotificationDialogComponent, NewUserDialogComponent, PasswordConfirmationDialogComponent, PrivacyPolicyDialogComponent, TermsAndConditionsDialogComponent, MoreInfoDialogComponent, NewSkuDialogComponent, NewIngredientDialogComponent, NewGoalDialogComponent, RecordCompareDialogComponent, NewProductLineDialogComponent, ConfirmActionDialogComponent, ImportPreviewDialogComponent]
 })
 export class AppModule { }

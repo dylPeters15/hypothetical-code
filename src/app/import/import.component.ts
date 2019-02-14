@@ -1,8 +1,9 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { MatDialog } from '@angular/material';
+import { MatDialog, MatDialogConfig } from '@angular/material';
 import { RestService } from '../rest.service';
 import { ParseCsvService } from '../parse-csv.service';
 import { ImportMatchConflictNewCheckerService } from '../import-match-conflict-new-checker.service';
+import { ImportPreviewDialogComponent } from '../import-preview-dialog/import-preview-dialog.component';
 
 @Component({
   selector: 'app-upload',
@@ -19,6 +20,7 @@ export class ImportComponent  implements OnInit {
   }
 
   ngOnInit() {
+
   }
 
   filesSelected() {
@@ -26,6 +28,21 @@ export class ImportComponent  implements OnInit {
       console.log(csvResult);
       this.importChecker.checkAll(csvResult).then(checkResult => {
         console.log(checkResult);
+        
+        const dialogConfig = new MatDialogConfig();
+        dialogConfig.data = checkResult;
+        this.dialog.open(ImportPreviewDialogComponent, dialogConfig).afterClosed().subscribe(closeData => {
+          console.log(closeData);
+          if (!closeData || closeData['cancel']) {
+            //operation was cancelled
+            console.log("Operation cancelled");
+            this.fileSelector.nativeElement.files = null;
+          } else {
+            //operation confirmed
+            console.log("Operation confirmed.");
+          }
+        });
+
       }).catch(err => {
         console.log(err);
       });
