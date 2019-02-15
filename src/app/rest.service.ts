@@ -146,13 +146,13 @@ export class RestService {
   }
 
  ///////////////////// skus /////////////////////
- getSkus(skuName: String, skuNumber: number, caseUpcNumber: number, unitUpcNumber: number, formulanumber: number, limit: number): Observable<any> {
+ getSkus(skuName: String, skuNumber: number, caseUpcNumber: number, unitUpcNumber: number, formulaNumber: number, limit: number): Observable<any> {
   return this.http.get(endpoint + "skus", this.generateHeader({
-    skuName: skuName,
-    skuNumber: skuNumber,
-    caseUpcNumber: caseUpcNumber,
-    unitUpcNumber: unitUpcNumber,
-    formulanumber: formulanumber,
+    skuname: skuName,
+    skunumber: skuNumber,
+    caseupcnumber: caseUpcNumber,
+    unitupcnumber: unitUpcNumber,
+    formulanumber: formulaNumber,
     limit: limit
   }));
 }
@@ -161,12 +161,12 @@ createSku(skuName: String, skuNumber: number,
   caseUpcNumber: number, unitUpcNumber: number, unitSize: number, 
   countPerCase: number, comment: String): Observable<any> {
   return this.http.put(endpoint + "skus", {
-    skuName: skuName,
-    skuNumber: skuNumber,
-    caseUpcNumber: caseUpcNumber,
-    unitUpcNumber: unitUpcNumber,
-    unitSize: unitSize,
-    countPerCase: countPerCase,
+    skuname: skuName,
+    skunumber: skuNumber,
+    caseupcnumber: caseUpcNumber,
+    unitupcnumber: unitUpcNumber,
+    unitsize: unitSize,
+    countpercase: countPerCase,
     comment: comment
   },
   this.generateHeader());
