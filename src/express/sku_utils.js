@@ -141,12 +141,13 @@ function createUniqueSkuNumber() {
             database.skuModel.find({ 'skunumber': newSkuNumber }, 'skunumber').exec((err, result) => {
                 if (result == null) {
                     numFound = true;
+                    Console.log("result null for check database result for unitUPC number: " + result);
                 }
                 if (err) {
                     reject(Error(err));
                 }
                 if (result != null) {
-                    Console.log("check database result for unique sku number: " + result);
+                    Console.log("result not null for check database result for unitUPC number: " + result);
                 }
             });            
         }
@@ -168,16 +169,17 @@ function createUniqueCaseUpcNumber() {
             database.skuModel.find({ 'caseUpcNumber': newCaseUpcNumber }, 'caseUpcNumber').exec((err, result) => {
                 if (result == null) {
                     numFound = true;
+                    Console.log("result null for check database result for caseUPC number: " + result);
                 }
                 if (err) {
                     reject(Error(err));
                 }
                 if (result != null) {
-                    Console.log("check database result for caseUPC number: " + result);
+                    Console.log("result not null for check database result for caseUPC number: " + result);
                 }
 
 
-            });
+                });
             }
             resolve(newCaseUpcNumber);
         });
