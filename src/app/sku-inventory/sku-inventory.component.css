@@ -14,3 +14,10 @@ button {
   min-width: 110px;
   
 }
+
+.my-panel .mat-dialog-container {
+  overflow: hidden;
+  border-radius: 5px;
+  padding: 5px;
+  background-color: orange;
+}

@@ -182,7 +182,7 @@ app.route('/ingredients').get((req, res) => {
 
 ///////////////////// skus /////////////////////
 app.route('/skus').get((req, res) => {
-    sku_utils.getSkus(req.headers['skuName'], req.headers['skuNumber'], Number(req.headers['limit'])).then(skus => {
+    sku_utils.getSkus(req.headers['skuname'], req.headers['skunumber'], req.headers['caseupcnumber'], req.headers['unitupcnumber'], Number(req.headers['limit'])).then(skus => {
         res.send(skus);
     }).catch(err => {
         res.send({
@@ -190,9 +190,9 @@ app.route('/skus').get((req, res) => {
         });
     });
 }).put((req, res) => {
-    sku_utils.createSku(req.body['skuName'], req.body['skuNumber'],
-    req.body['caseUpcNumber'], req.body['unitUpcNumber'],
-    req.body['unitSize'], req.body['countPerCase'], req.body['comment']).then(response => {
+    sku_utils.createSku(req.body['skuname'], req.body['skunumber'],
+    req.body['caseupcnumber'], req.body['unitupcnumber'],
+    req.body['unitsize'], req.body['countpercase'], req.body['comment']).then(response => {
         res.send(response);
     }).catch(err => {
         res.send({
@@ -200,9 +200,9 @@ app.route('/skus').get((req, res) => {
         });
     });
 }).post((req, res) => {
-    sku_utils.modifySku(req.headers['skuName'], req.body['skuName'],
-    req.body['skuNumber'], req.body['caseUpcNumber'], req.body['unitUpcNumber'],
-    req.body['unitSize'], req.body['countPerCase'], req.body['comment']).then(response => {
+    sku_utils.modifySku(req.headers['skuname'], req.body['skuname'], req.body['skunumber'],
+    req.body['caseupcnumber'], req.body['unitupcnumber'],
+    req.body['unitsize'], req.body['countpercase'], req.body['comment']).then(response => {
         res.send(response);
     }).catch(err => {
         res.send({
@@ -210,7 +210,7 @@ app.route('/skus').get((req, res) => {
         });
     });
 }).delete((req, res) => {
-    sku_utils.deleteSku(req.headers['skuName']).then(response => {
+    sku_utils.deleteSku(req.headers['skuname']).then(response => {
         res.send(response);
     }).catch(err => {
         res.send({

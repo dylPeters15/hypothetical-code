@@ -4,9 +4,9 @@ import { auth } from './auth.service'
 import { Observable } from 'rxjs';
 
 // const endpoint = 'https://vcm-8238.vm.duke.edu:8443/'; // Ben
-// const endpoint = 'https://vcm-8405.vm.duke.edu:8443/'; // Noah
+const endpoint = 'https://vcm-8405.vm.duke.edu:8443/'; // Noah
 // const endpoint = 'https://vcm-8205.vm.duke.edu:8443/'; // Prod
-const endpoint = 'https://localhost:8443/'; // localhost
+//const endpoint = 'https://localhost:8443/'; // localhost
 
 @Injectable({
   providedIn: 'root'
@@ -144,6 +144,59 @@ export class RestService {
       ingredient: ingredient
     }));
   }
+
+ ///////////////////// skus /////////////////////
+ getSkus(skuName: String, skuNumber: number, caseUpcNumber: number, unitUpcNumber: number, formulaNumber: number, limit: number): Observable<any> {
+  return this.http.get(endpoint + "skus", this.generateHeader({
+    skuname: skuName,
+    skunumber: skuNumber,
+    caseupcnumber: caseUpcNumber,
+    unitupcnumber: unitUpcNumber,
+    formulanumber: formulaNumber,
+    limit: limit
+  }));
+}
+
+createSku(skuName: String, skuNumber: number, 
+  caseUpcNumber: number, unitUpcNumber: number, unitSize: number, 
+  countPerCase: number, comment: String): Observable<any> {
+  return this.http.put(endpoint + "skus", {
+    skuname: skuName,
+    skunumber: skuNumber,
+    caseupcnumber: caseUpcNumber,
+    unitupcnumber: unitUpcNumber,
+    unitsize: unitSize,
+    countpercase: countPerCase,
+    comment: comment
+  },
+  this.generateHeader());
+}
+
+modifySku(oldSkuName: String, skuName: String, skuNumber: number, 
+  caseUpcNumber: number, unitUpcNumber: number, unitSize: number, 
+  countPerCase: number, comment: String): Observable<any> {
+  return this.http.post(endpoint + "skus", {
+    $set: {
+      skuname: skuName,
+      skunumber: skuNumber,
+      caseupcnumber: caseUpcNumber,
+      unitupcnumber: unitUpcNumber,
+      unitsize: unitSize,
+      countpercase: countPerCase,
+      comment: comment
+    }
+  },
+  this.generateHeader({
+    skuname: oldSkuName
+  }));
+}
+
+deleteSku(skuName: String): Observable<any> {
+  return this.http.delete(endpoint + "skus", this.generateHeader({
+    skuName: skuName,
+  }));
+}
+
 
   ///////////////////// ingredients /////////////////////
   getIngredients(ingredientname: String, ingredientnumber: number, limit: number): Observable<any> {

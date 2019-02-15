@@ -1,13 +1,16 @@
 const database = require('./database.js');
 
 
-function getSkus(skuName, skuNumber, limit) {
+function getSkus(skuname, skunumber, caseupcnumber, unitupcnumber, formulanumber, limit) {
 
     return new Promise(function (resolve, reject) {
         const filterSchema = {
             $or: [
-                { skuName: skuName },
-                { skuNumber: skuNumber },
+                { skuname: skuname },
+                { skuNumber: skunumber },
+                { caseUpcNumber: caseupcnumber },
+                { unitUpcNumber: unitupcnumber },
+                { formulaNumber: formulanumber },
                 { skuName: { $regex: /skuName/ } }
             ]
         }
@@ -58,12 +61,12 @@ function createSku(name, number, case_upc, unit_upc, unit_size, count, comment) 
                     // newingredientnumber = ingredientnumber || Number(response);
 
                     let sku = new database.skusModel({
-                        skuName: name,
-                        skuNumber: newSkuNumber,
-                        caseUpcNumber: newCaseUpcNumber,
-                        unitUpcNumber: newUnitUpcNumber,
-                        unitSize: unit_size,
-                        countPerCase: count,
+                        skuname: name,
+                        skunumber: newSkuNumber,
+                        caseupcnumber: newCaseUpcNumber,
+                        unitupcnumber: newUnitUpcNumber,
+                        unitsize: unit_size,
+                        countpercase: count,
                         comment: comment
                     });
                     sku.save().then(response => {
@@ -95,12 +98,12 @@ function modifySku(oldName, name, number, case_upc, unit_upc, unit_size, count, 
         };
         database.skuModel.updateOne(filterschema, {
             $set: {
-                skuName: name,
-                skuNumber: number,
-                caseUpcNumber: case_upc,
-                unitUpcNumber: unit_upc,
-                unitSize: unit_size,
-                countPerCase: count,
+                skuname: name,
+                skunumber: number,
+                caseupcnumber: case_upc,
+                unitupcnumber: unit_upc,
+                unitsize: unit_size,
+                countpercase: count,
                 comment: comment
             }
         }, (err, response) => {
@@ -130,29 +133,31 @@ function deleteSku(skuName) {
 }
 
 function createUniqueSkuNumber() {
+    return new Promise(function (resolve, reject) {
     var newSkuNumber;
     var numFound = false;
     while (!numFound) {
         newSkuNumber = Math.round(Math.random() * 100000000);
-        return new Promise(function (resolve, reject) {
-            database.skuModel.find({ 'skuNumber': newSkuNumber }, 'skuNumber').exec((err, result) => {
+            database.skuModel.find({ 'skunumber': newSkuNumber }, 'skunumber').exec((err, result) => {
                 if (result == null) {
+                    numFound = true;
+                    Console.log("result null for check database result for unitUPC number: " + result);
                 }
                 if (err) {
                     reject(Error(err));
                 }
                 if (result != null) {
-                    numFound = true;
+                    Console.log("result not null for check database result for unitUPC number: " + result);
                 }
-
-
-            });
-            resolve(newSkuNumber);
-        });
-    }
+            });            
+        }
+        resolve(newSkuNumber);
+    });
 }
 
+
 function createUniqueCaseUpcNumber() {
+    return new Promise(function (resolve, reject) {
     var newCaseUpcNumber;
     var firstDigitOption1;
     var numFound = false;
@@ -160,48 +165,33 @@ function createUniqueCaseUpcNumber() {
         newCaseUpcNumber = Math.round(Math.random() * 10000000000);
         firstDigitOption1 = "1" + int.Parse(newCaseUpcNumber.ToString()); // Case upc number must start with a 0,1,6,7,8, or 8. For random generated, just let it equal 1.
         newCaseUpcNumber = parseInt(firstDigitOption1);
-        return new Promise(function (resolve, reject) {
+        
             database.skuModel.find({ 'caseUpcNumber': newCaseUpcNumber }, 'caseUpcNumber').exec((err, result) => {
                 if (result == null) {
+                    numFound = true;
+                    Console.log("result null for check database result for caseUPC number: " + result);
                 }
                 if (err) {
                     reject(Error(err));
                 }
                 if (result != null) {
-                    numFound = true;
+                    Console.log("result not null for check database result for caseUPC number: " + result);
                 }
 
 
-            });
+                });
+            }
             resolve(newCaseUpcNumber);
         });
-    }
 }
 
 function createUnitUpcNumber() {
     var newUnitUpcNumber;
     var firstDigitOption1;
-    var numFound = false;
-    while (!numFound) {
-        newUnitUpcNumber = Math.round(Math.random() * 10000000000);
-        firstDigitOption1 = "1" + int.Parse(newUnitUpcNumber.ToString()); // Case upc number must start with a 0,1,6,7,8, or 8. For random generated, just let it equal 1.
-        newUnitUpcNumber = parseInt(firstDigitOption1)
-        return new Promise(function (resolve, reject) {
-            database.skuModel.find({ 'unitUpcNumber': newUnitUpcNumber }, 'unitUpcNumber').exec((err, result) => {
-                if (result == null) {
-                }
-                if (err) {
-                    reject(Error(err));
-                }
-                if (result != null) {
-                    numFound = true;
-                }
-
-
-            });
-            resolve(newUnitUpcNumber);
-        });
-    }
+    newUnitUpcNumber = Math.round(Math.random() * 10000000000);
+    firstDigitOption1 = "1" + int.Parse(newUnitUpcNumber.ToString()); // Case upc number must start with a 0,1,6,7,8, or 8. For random generated, just let it equal 1.
+    newUnitUpcNumber = parseInt(firstDigitOption1);
+    return(newUnitUpcNumber);
 }
 
 
