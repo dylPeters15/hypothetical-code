@@ -98,12 +98,12 @@ function modifySku(oldName, name, number, case_upc, unit_upc, unit_size, count, 
         };
         database.skuModel.updateOne(filterschema, {
             $set: {
-                skuName: name,
-                skuNumber: number,
-                caseUpcNumber: case_upc,
-                unitUpcNumber: unit_upc,
-                unitSize: unit_size,
-                countPerCase: count,
+                skuname: name,
+                skunumber: number,
+                caseupcnumber: case_upc,
+                unitupcnumber: unit_upc,
+                unitsize: unit_size,
+                countpercase: count,
                 comment: comment
             }
         }, (err, response) => {
@@ -140,12 +140,13 @@ function createUniqueSkuNumber() {
         newSkuNumber = Math.round(Math.random() * 100000000);
             database.skuModel.find({ 'skunumber': newSkuNumber }, 'skunumber').exec((err, result) => {
                 if (result == null) {
+                    numFound = true;
                 }
                 if (err) {
                     reject(Error(err));
                 }
                 if (result != null) {
-                    numFound = true;
+                    Console.log("check database result for unique sku number: " + result);
                 }
             });            
         }
@@ -155,6 +156,7 @@ function createUniqueSkuNumber() {
 
 
 function createUniqueCaseUpcNumber() {
+    return new Promise(function (resolve, reject) {
     var newCaseUpcNumber;
     var firstDigitOption1;
     var numFound = false;
@@ -162,7 +164,7 @@ function createUniqueCaseUpcNumber() {
         newCaseUpcNumber = Math.round(Math.random() * 10000000000);
         firstDigitOption1 = "1" + int.Parse(newCaseUpcNumber.ToString()); // Case upc number must start with a 0,1,6,7,8, or 8. For random generated, just let it equal 1.
         newCaseUpcNumber = parseInt(firstDigitOption1);
-        return new Promise(function (resolve, reject) {
+        
             database.skuModel.find({ 'caseUpcNumber': newCaseUpcNumber }, 'caseUpcNumber').exec((err, result) => {
                 if (result == null) {
                     numFound = true;
@@ -171,13 +173,14 @@ function createUniqueCaseUpcNumber() {
                     reject(Error(err));
                 }
                 if (result != null) {
+                    Console.log("check database result for caseUPC number: " + result);
                 }
 
 
             });
+            }
             resolve(newCaseUpcNumber);
         });
-    }
 }
 
 function createUnitUpcNumber() {
