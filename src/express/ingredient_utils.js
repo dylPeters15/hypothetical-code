@@ -113,10 +113,7 @@ function createUniqueIngredientNumber() {
                     reject(Error(err));
                 }
                 if (result != null) {
-<<<<<<< HEAD
-=======
                     numFound = false;
->>>>>>> master
                 }
              
                  

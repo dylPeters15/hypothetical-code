@@ -1,15 +1,16 @@
 const database = require('./database.js');
 
 
-function getSkus(skuName, skuNumber, caseUpcNumber, unitUpcNumber, limit) {
+function getSkus(skuname, skunumber, caseupcnumber, unitupcnumber, formulanumber, limit) {
 
     return new Promise(function (resolve, reject) {
         const filterSchema = {
             $or: [
-                { skuName: skuName },
-                { skuNumber: skuNumber },
-                { caseUpcNumber: caseUpcNumber },
-                { unitUpcNumber: unitUpcNumber },
+                { skuname: skuname },
+                { skuNumber: skunumber },
+                { caseUpcNumber: caseupcnumber },
+                { unitUpcNumber: unitupcnumber },
+                { formulaNumber: formulanumber },
                 { skuName: { $regex: /skuName/ } }
             ]
         }
@@ -60,12 +61,12 @@ function createSku(name, number, case_upc, unit_upc, unit_size, count, comment) 
                     // newingredientnumber = ingredientnumber || Number(response);
 
                     let sku = new database.skusModel({
-                        skuName: name,
-                        skuNumber: newSkuNumber,
-                        caseUpcNumber: newCaseUpcNumber,
-                        unitUpcNumber: newUnitUpcNumber,
-                        unitSize: unit_size,
-                        countPerCase: count,
+                        skuname: name,
+                        skunumber: newSkuNumber,
+                        caseupcnumber: newCaseUpcNumber,
+                        unitupcnumber: newUnitUpcNumber,
+                        unitsize: unit_size,
+                        countpercase: count,
                         comment: comment
                     });
                     sku.save().then(response => {
@@ -132,12 +133,12 @@ function deleteSku(skuName) {
 }
 
 function createUniqueSkuNumber() {
+    return new Promise(function (resolve, reject) {
     var newSkuNumber;
     var numFound = false;
     while (!numFound) {
         newSkuNumber = Math.round(Math.random() * 100000000);
-        return new Promise(function (resolve, reject) {
-            database.skuModel.find({ 'skuNumber': newSkuNumber }, 'skuNumber').exec((err, result) => {
+            database.skuModel.find({ 'skunumber': newSkuNumber }, 'skunumber').exec((err, result) => {
                 if (result == null) {
                 }
                 if (err) {
@@ -146,13 +147,12 @@ function createUniqueSkuNumber() {
                 if (result != null) {
                     numFound = true;
                 }
-
-
-            });
-            resolve(newSkuNumber);
-        });
-    }
+            });            
+        }
+        resolve(newSkuNumber);
+    });
 }
+
 
 function createUniqueCaseUpcNumber() {
     var newCaseUpcNumber;

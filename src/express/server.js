@@ -200,7 +200,7 @@ app.route('/skus').get((req, res) => {
         });
     });
 }).post((req, res) => {
-    sku_utils.modifySku(req.headers['skuname'], req.body['skunumber'],
+    sku_utils.modifySku(req.headers['skuname'], req.body['skuname'], req.body['skunumber'],
     req.body['caseupcnumber'], req.body['unitupcnumber'],
     req.body['unitsize'], req.body['countpercase'], req.body['comment']).then(response => {
         res.send(response);

@@ -109,7 +109,7 @@ export class RestService {
   }
 
   ///////////////////// formulas /////////////////////
-  getFormulas(sku: number, ingredient: number, formulaname: String, formulanumber: number, limit: number): Observable<any> {
+  getFormulas(sku: number, ingredient: number, limit: number): Observable<any> {
     return this.http.get(endpoint + "formulas", this.generateHeader({
       sku: sku,
       ingredient: ingredient,
@@ -146,12 +146,13 @@ export class RestService {
   }
 
  ///////////////////// skus /////////////////////
- getSkus(skuName: String, skuNumber: number, caseUpcNumber: number, unitUpcNumber: number, limit: number): Observable<any> {
-  return this.http.get(endpoint + "ingredients", this.generateHeader({
+ getSkus(skuName: String, skuNumber: number, caseUpcNumber: number, unitUpcNumber: number, formulanumber: number, limit: number): Observable<any> {
+  return this.http.get(endpoint + "skus", this.generateHeader({
     skuName: skuName,
     skuNumber: skuNumber,
     caseUpcNumber: caseUpcNumber,
     unitUpcNumber: unitUpcNumber,
+    formulanumber: formulanumber,
     limit: limit
   }));
 }
@@ -171,27 +172,27 @@ createSku(skuName: String, skuNumber: number,
   this.generateHeader());
 }
 
-modifySku(skuName: String, skuNumber: number, 
+modifySku(oldSkuName: String, skuName: String, skuNumber: number, 
   caseUpcNumber: number, unitUpcNumber: number, unitSize: number, 
   countPerCase: number, comment: String): Observable<any> {
-  return this.http.post(endpoint + "ingredients", {
+  return this.http.post(endpoint + "skus", {
     $set: {
-      skuName: skuName,
-      skuNumber: skuNumber,
-      caseUpcNumber: caseUpcNumber,
-      unitUpcNumber: unitUpcNumber,
-      unitSize: unitSize,
-      countPerCase: countPerCase,
+      skuname: skuName,
+      skunumber: skuNumber,
+      caseupcnumber: caseUpcNumber,
+      unitupcnumber: unitUpcNumber,
+      unitsize: unitSize,
+      countpercase: countPerCase,
       comment: comment
     }
   },
   this.generateHeader({
-    skuName: skuName
+    skuname: oldSkuName
   }));
 }
 
 deleteSku(skuName: String): Observable<any> {
-  return this.http.delete(endpoint + "ingredients", this.generateHeader({
+  return this.http.delete(endpoint + "skus", this.generateHeader({
     skuName: skuName,
   }));
 }
