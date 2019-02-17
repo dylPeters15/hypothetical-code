@@ -102,7 +102,6 @@ app.route('/users').get((req, res) => {
         resolveError(err, res);
     });
 }).delete((req, res) => {
-    console.log(req.headers);
     user_utils.deleteUser(req.headers['username'], req.headers['localuser']).then(response => {
         res.send(response);
     }).catch(err => {
@@ -185,7 +184,7 @@ app.route('/ingredients').get((req, res) => {
 
 ///////////////////// skus /////////////////////
 app.route('/skus').get((req, res) => {
-    sku_utils.getSkus(req.headers['skuName'], req.headers['skuNumber'], Number(req.headers['limit'])).then(skus => {
+    sku_utils.getSkus(req.headers['skuname'], req.headers['skunumber'], req.headers['caseupcnumber'], req.headers['unitupcnumber'], Number(req.headers['limit'])).then(skus => {
         res.send(skus);
     }).catch(err => {
         res.send({
@@ -193,9 +192,9 @@ app.route('/skus').get((req, res) => {
         });
     });
 }).put((req, res) => {
-    sku_utils.createSku(req.body['skuName'], req.body['skuNumber'],
-    req.body['caseUpcNumber'], req.body['unitUpcNumber'],
-    req.body['unitSize'], req.body['countPerCase'], req.body['comment']).then(response => {
+    sku_utils.createSku(req.body['skuname'], req.body['skunumber'],
+    req.body['caseupcnumber'], req.body['unitupcnumber'],
+    req.body['unitsize'], req.body['countpercase'], req.body['comment']).then(response => {
         res.send(response);
     }).catch(err => {
         res.send({
@@ -203,9 +202,9 @@ app.route('/skus').get((req, res) => {
         });
     });
 }).post((req, res) => {
-    sku_utils.modifySku(req.headers['skuName'], req.body['skuName'],
-    req.body['skuNumber'], req.body['caseUpcNumber'], req.body['unitUpcNumber'],
-    req.body['unitSize'], req.body['countPerCase'], req.body['comment']).then(response => {
+    sku_utils.modifySku(req.headers['skuname'], req.body['skuname'], req.body['skunumber'],
+    req.body['caseupcnumber'], req.body['unitupcnumber'],
+    req.body['unitsize'], req.body['countpercase'], req.body['comment']).then(response => {
         res.send(response);
     }).catch(err => {
         res.send({
@@ -213,7 +212,7 @@ app.route('/skus').get((req, res) => {
         });
     });
 }).delete((req, res) => {
-    sku_utils.deleteSku(req.headers['skuName']).then(response => {
+    sku_utils.deleteSku(req.headers['skuname']).then(response => {
         res.send(response);
     }).catch(err => {
         res.send({
@@ -329,35 +328,27 @@ app.route('/manufacturing-activities').get((req, res) => {
 });
 ///////////////////// product lines /////////////////////
 app.route('/product_lines').get((req, res) => {
-    product_line_utils.getProductLines(req.headers['productlinename'], req.headers['limit']).then(productLines => {
+    product_line_utils.getProductLines(req.headers['productlinename'], req.headers['productlinenameregex'], JSON.parse(req.headers['limit'])).then(productLines => {
         res.send(productLines);
     }).catch(err => {
-        res.send({
-            err:""+err
-        });
+        resolveError(err, res);
     });
 }).put((req, res) => {
     product_line_utils.createProductLine(req.body).then(response => {
         res.send(response);
     }).catch(err => {
-        res.send({
-            err:""+err
-        });
+        resolveError(err, res);
     });
 }).post((req, res) => {
     product_line_utils.modifyProductLine(req.headers['productlinename'], req.body).then(response => {
         res.send(response);
     }).catch(err => {
-        res.send({
-            err:""+err
-        });
+        resolveError(err, res);
     });
 }).delete((req, res) => {
     product_line_utils.deleteProductLine(req.headers['productlinename']).then(response => {
         res.send(response);
     }).catch(err => {
-        res.send({
-            err:""+err
-        });
+        resolveError(err, res);
     });
 });

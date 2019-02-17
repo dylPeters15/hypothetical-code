@@ -19,3 +19,10 @@
     list-style-type: none;
     text-align: center;
   }
+
+  .my-panel .mat-dialog-container {
+    overflow: hidden;
+    border-radius: 5px;
+    padding: 5px;
+    background-color: orange;
+  }

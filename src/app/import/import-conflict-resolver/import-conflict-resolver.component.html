@@ -1,0 +1,13 @@
+<mat-radio-group [(ngModel)]="_value['select']">
+  <div style="height: 100%; vertical-align: middle;">
+      <mat-radio-button value="old">
+        <app-record-import-preview [(ngModel)]="_value['old']">
+        </app-record-import-preview>
+      </mat-radio-button>
+
+      <mat-radio-button value="new">
+        <app-record-import-preview [(ngModel)]="_value['new']">
+        </app-record-import-preview>
+      </mat-radio-button>
+  </div>
+</mat-radio-group>

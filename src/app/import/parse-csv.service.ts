@@ -33,6 +33,9 @@ export class ParseCsvService {
               objectToReturn['ingredients'] = [];
               objectToReturn['formulas'] = [];
               objectToReturn['productlines'] = [];
+              objectToReturn['formulaingredients'] = [];
+              objectToReturn['manufacturinglines'] = [];
+              objectToReturn['skumanufacturinglines'] = [];
               for (let filename in result) {
                 if (filename.startsWith("skus")) {
                   objectToReturn['skus'] = objectToReturn['skus'].concat(result[filename])
@@ -42,6 +45,12 @@ export class ParseCsvService {
                   objectToReturn['formulas'] = objectToReturn['formulas'].concat(result[filename])
                 } else if (filename.startsWith("product_lines")) {
                   objectToReturn['productlines'] = objectToReturn['productlines'].concat(result[filename])
+                } else if (filename.startsWith("formula_ingredients")) {
+                  objectToReturn['formulaingredients'] = objectToReturn['formulaingredients'].concat(result[filename])
+                } else if (filename.startsWith("manufacturing_lines")) {
+                  objectToReturn['manufacturinglines'] = objectToReturn['manufacturinglines'].concat(result[filename])
+                } else if (filename.startsWith("sku_manufacturing_lines")) {
+                  objectToReturn['skumanufacturinglines'] = objectToReturn['skumanufacturinglines'].concat(result[filename])
                 } else {
                   reject(Error("Filename incorrect."));
                 }
@@ -65,10 +74,13 @@ export class ParseCsvService {
         var validFileBeginning = fileName.startsWith("skus")
           || fileName.startsWith("ingredients")
           || fileName.startsWith("product_lines")
-          || fileName.startsWith("formulas");
+          || fileName.startsWith("formulas")
+          || fileName.startsWith("formula_ingredients")
+          || fileName.startsWith("manufacturing_lines")
+          || fileName.startsWith("sku_manufacturing_lines");
         var validFileEnd = fileName.endsWith(".csv");
         if (!validFileBeginning) {
-          reject(Error("Error. File name must start with 'skus', 'ingredients', 'product_lines', or 'formulas'."));
+          reject(Error("Error. File name must start with 'skus', 'ingredients', 'product_lines', 'formulas', 'formula_ingredients', 'manufacturing_lines', or 'sku_manufacturing_lines'."));
         }
         if (!validFileEnd) {
           reject(Error("Error. File name must end with '.csv'."));
@@ -82,7 +94,8 @@ export class ParseCsvService {
 
         this.papa.parse(filesWithNames[fileName],
           {
-            // header: true,
+            delimiter: ',',
+            header: true,
             skipEmptyLines: true,
             dynamicTyping: true,
             complete: (result) => {
