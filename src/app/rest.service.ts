@@ -3,8 +3,8 @@ import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http
 import { auth } from './auth.service'
 import { Observable } from 'rxjs';
 
-// const endpoint = 'https://vcm-8238.vm.duke.edu:8443/'; // Ben
-const endpoint = 'https://vcm-8405.vm.duke.edu:8443/'; // Noah
+const endpoint = 'https://vcm-8238.vm.duke.edu:8443/'; // Ben
+// const endpoint = 'https://vcm-8405.vm.duke.edu:8443/'; // Noah
 // const endpoint = 'https://vcm-8205.vm.duke.edu:8443/'; // Prod
 //const endpoint = 'https://localhost:8443/'; // localhost
 
@@ -279,4 +279,120 @@ deleteSku(skuName: String): Observable<any> {
       productlinename: productlinename
     }));
   }
+
+  ///////////////////// Manufacturing Goals /////////////////////
+  getGoals(username: String,  goalname: String, enabled: boolean, limit: number): Observable<any> {
+    return this.http.get(endpoint + "manufacturing-goals", this.generateHeader({
+      owner: username,
+      enabled: enabled,
+      goalname: goalname,
+      limit: limit
+    }));
+  }
+
+  createGoal(goalname: String, activities: [], date: Date, enabled: boolean) : Observable<any>{
+    return this.http.put(endpoint + 'manufacturing-goals',{
+      owner: auth.getUsername,
+      goalname: name,
+      activities: activities,
+      date: date,
+      enabled: enabled
+    }, this.generateHeader());
+  }
+
+  modifyGoal(goalname: String, newgoalname: String, activities: [], date:Date, enabled: boolean): Observable<any> {
+    return this.http.post(endpoint + "manufacturing-goals", {
+      goalname: newgoalname,
+      activities: activities,
+      enabled: enabled
+    },
+    this.generateHeader({
+      goalname: goalname
+    }));
+  }
+
+  deleteGoal(goalname: String): Observable<any> {
+    return this.http.delete(endpoint + "manufacturing-goals", this.generateHeader({
+      goalname: goalname
+    }));
+  }
+
+
+  ///////////////////// Manufacturing Activities /////////////////////
+  getActivities(startdate: Date, limit: number): Observable<any> {
+    return this.http.get(endpoint + "manufacturing-activities", this.generateHeader({
+      startdate: startdate,
+      limit: limit
+    }));
+  }
+
+  createActivity(sku: number, numcases: number, calculatedhours: number, sethours: number, startdate: Date, line: number) : Observable<any>{
+    return this.http.put(endpoint + 'manufacturing-activities',{
+      sku: sku,
+      numcases: numcases,
+      calculatedhours: calculatedhours,
+      sethours: sethours,
+      startdate: startdate,
+      line: line
+    }, this.generateHeader());
+  }
+
+  deleteActivity(sku: number, numcases: number, calculatedhours: number, sethours: number, startdate: Date, line: number){
+    return this.http.delete(endpoint + "manufacturing-activities", this.generateHeader({
+      sku: sku,
+      numcases: numcases,
+      calculatedhours: calculatedhours,
+      sethours: sethours,
+      startdate: startdate,
+      line: line
+    }));
+  }
+
+  modifyActivity(sku: number, newsku: number, numcases: number, calculatedhours: number, sethours: number, startdate: Date, line: number){
+    return this.http.post(endpoint + 'manufacturing-activities',{
+      sku: newsku,
+      numcases: numcases,
+      calculatedhours: calculatedhours,
+      sethours: sethours,
+      startdate: startdate,
+      line: line
+    }, this.generateHeader({
+      sku: sku
+    }))
+  }
+
+  ///////////////////// Manufacturing Lines /////////////////////
+  getLine(linename: String, shortname: String, limit: number){
+    return this.http.get(endpoint + 'manufacturing-lines', this.generateHeader({
+      linename: linename,
+      shortname: shortname,
+      limit: limit
+    }));
+  }
+
+  createLine(linename: String, shortname: String, skus: [], comment: String){
+    return this.http.put(endpoint + 'manufacturing-lines', {
+      linename: linename,
+      shortname: shortname,
+      skus: skus,
+      comment: comment
+    });
+  }
+
+  modifyLine(linename: String, newlinename: String, shortname: String, skus: []){
+    return this.http.post(endpoint + 'manufacturing-lines', {
+      linename: newlinename,
+      shortname: shortname,
+      skus: skus
+    }, this.generateHeader({
+      linename: linename
+    }));
+  }
+
+  deleteLine(linename: String){
+    return this.http.delete(endpoint + 'manufacturing-lines', this.generateHeader({
+      linename: linename
+    }));
+  }
+
 }
