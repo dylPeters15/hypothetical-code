@@ -35,13 +35,13 @@ export class ParseCsvService {
               objectToReturn['productlines'] = [];
               for (let filename in result) {
                 if (filename.startsWith("skus")) {
-                  objectToReturn['skus'] = objectToReturn['skus'].concat(result[filename])
+                  objectToReturn['skus'] = objectToReturn['skus'].concat(result[filename]);
                 } else if (filename.startsWith("ingredients")) {
-                  objectToReturn['ingredients'] = objectToReturn['ingredients'].concat(result[filename])
+                  objectToReturn['ingredients'] = objectToReturn['ingredients'].concat(result[filename]);
                 } else if (filename.startsWith("formulas")) {
-                  objectToReturn['formulas'] = objectToReturn['formulas'].concat(result[filename])
+                  objectToReturn['formulas'] = objectToReturn['formulas'].concat(this.consolidateFormulas(result[filename]));
                 } else if (filename.startsWith("product_lines")) {
-                  objectToReturn['productlines'] = objectToReturn['productlines'].concat(result[filename])
+                  objectToReturn['productlines'] = objectToReturn['productlines'].concat(result[filename]);
                 } else {
                   reject(Error("Filename incorrect."));
                 }
@@ -101,6 +101,14 @@ export class ParseCsvService {
           });
       }
     });
+  }
+
+  private consolidateFormulas(formulasObject): any[] {
+    console.log(formulasObject);
+    var objectToReturn = [];
+
+    console.log(objectToReturn);
+    return formulasObject;//objectToReturn;
   }
 
 }

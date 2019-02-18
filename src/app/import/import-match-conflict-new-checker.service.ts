@@ -80,7 +80,6 @@ export class ImportMatchConflictNewCheckerService {
       //can't do this yet because I'm blocked since SKU support is not ready in rest.service.ts yet
       var numSKUsProcessed = 0;
       skus.forEach(sku => {
-        console.log(sku);
         numSKUsProcessed = numSKUsProcessed + 1;
         if (numSKUsProcessed == skus.length) {
           resolve(toReturn);
@@ -97,7 +96,6 @@ export class ImportMatchConflictNewCheckerService {
       toReturn['new'] = [];
       var numIngredientsProcessed = 0;
       ingredients.forEach(ingredient => {
-        console.log(ingredient);
         //do processing here
         this.rest.getIngredients(ingredient['Name'], ingredient['Ingr#'], 1).subscribe(response => {
           if (response.length == 0) {
@@ -133,10 +131,8 @@ export class ImportMatchConflictNewCheckerService {
       toReturn['new'] = [];
       var numPLsProcessed = 0;
       productLines.forEach(productLine => {
-        console.log(productLine);
         //do processing here
         this.rest.getProductLines(productLine['Name'], 1).subscribe(result => {
-          console.log("Product Line Result: ",result);
           if (result.length == 0) {
             toReturn['new'].push(productLine);
           } else {
@@ -159,7 +155,6 @@ export class ImportMatchConflictNewCheckerService {
       toReturn['new'] = [];
       var numFormulasProcessed = 0;
       formulas.forEach(formula => {
-        console.log(formula);
         //do processing here
         //can't do this yet because I'm blocked since the formula REST API calls do not support search by formulaname or formulanumber yet
         numFormulasProcessed = numFormulasProcessed + 1;
@@ -182,7 +177,6 @@ export class ImportMatchConflictNewCheckerService {
       toReturn['new'] = [];
       var numFormulasProcessed = 0;
       formulas.forEach(formula => {
-        console.log(formula);
         //do processing here
         //can't do this yet because I'm blocked since formula support is not ready in rest.service.ts yet
         numFormulasProcessed = numFormulasProcessed + 1;
@@ -206,7 +200,6 @@ export class ImportMatchConflictNewCheckerService {
       toReturn['new'] = [];
       var numFormulasProcessed = 0;
       formulas.forEach(formula => {
-        console.log(formula);
         //do processing here
         //can't do this yet because I'm blocked since formulas support is not ready in rest.service.ts yet
         numFormulasProcessed = numFormulasProcessed + 1;
