@@ -112,7 +112,6 @@ export class ParseCsvService {
   }
 
   private parseIngredients(ingredientsObject): any[] {
-    console.log("Ingredients: ",ingredientsObject);
     var objectToReturn = [];
     for (var i = 0; i < ingredientsObject.length; i++) {
       var currentIngredient = ingredientsObject[i];
@@ -124,13 +123,10 @@ export class ParseCsvService {
       newIngredient['unitofmeasure'] = currentIngredient['Size'].toLowerCase().match('[a-z]+')[0];
       newIngredient['amount'] = Number(currentIngredient['Size'].toLowerCase().match('[0-9]+')[0]);
       newIngredient['costperpackage'] = isNaN(currentIngredient['Cost'])?Number(currentIngredient['Cost'].toLowerCase().match('[0-9\.]+')[0]):currentIngredient['Cost'];
-      console.log(newIngredient['amount']);
       newIngredient['comment'] = currentIngredient['Comment']||"";
 
       objectToReturn.push(newIngredient);
     }
-    console.log(ingredientsObject);
-    console.log(objectToReturn);
     return objectToReturn;
   }
 

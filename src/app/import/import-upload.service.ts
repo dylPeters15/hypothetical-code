@@ -52,7 +52,7 @@ export class ImportUploadService {
       ingredients['conflicts'].forEach(conflict => {
         if (conflict['select'] == 'new') {
           var ingredient = conflict['new'];
-          this.rest.modifyIngredient(conflict['old'][0]['ingredientname'], ingredient['Name'], ingredient['Ingr#'], ingredient['Vendor Info'], ingredient['unitofmeasure'], ingredient['amount'], ingredient['costperpackage'], ingredient['comment']).subscribe(result => {
+          this.rest.modifyIngredient(conflict['old'][0]['ingredientname'], ingredient['ingredientname'], ingredient['ingredientnumber'], ingredient['vendorinformation'], ingredient['unitofmeasure'], ingredient['amount'], ingredient['costperpackage'], ingredient['comment']).subscribe(result => {
             if (result['ok'] == 1) {
               if (++numIngredientsProcessed==totalIngredients) {
                 resolve();
@@ -64,8 +64,8 @@ export class ImportUploadService {
         }
       });
       ingredients['new'].forEach(ingredient => {
-        this.rest.createIngredient(ingredient['Name'], ingredient['Ingr#'], ingredient['Vendor Info'], ingredient['unitofmeasure'], ingredient['amount'], ingredient['costperpackage'], ingredient['comment']).subscribe(result => {
-          if (result['ingredientname'] == ingredient['Name']) {
+        this.rest.createIngredient(ingredient['ingredientname'], ingredient['ingredientnumber'], ingredient['vendorinformation'], ingredient['unitofmeasure'], ingredient['amount'], ingredient['costperpackage'], ingredient['comment']).subscribe(result => {
+          if (result['ingredientname'] == ingredient['ingredientname']) {
             if (++numIngredientsProcessed==totalIngredients) {
               resolve();
             }
