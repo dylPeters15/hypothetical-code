@@ -17,9 +17,7 @@ export class ImportUploadService {
         this.importFormulas(data['formulas']).then(formulaResult => {
           this.importSKUs(data['skus']).then(skuResult => {
             this.importProductLines(data['productlines']).then(productLineResult => {
-              this.importManufacturingLines(data['manufacturinglines']).then(manufacturingLineResult => {
-                resolve();
-              }).catch(catcher);
+              resolve();
             }).catch(catcher);
           }).catch(catcher);
         }).catch(catcher);
@@ -31,8 +29,7 @@ export class ImportUploadService {
     return this.numConflictedSelectNewOfSection(data['ingredients'])
     + this.numConflictedSelectNewOfSection(data['formulas'])
     + this.numConflictedSelectNewOfSection(data['skus'])
-    + this.numConflictedSelectNewOfSection(data['productlines'])
-    + this.numConflictedSelectNewOfSection(data['manufacturinglines']);
+    + this.numConflictedSelectNewOfSection(data['productlines']);
   }
 
   private numConflictedSelectNewOfSection(data) {
@@ -112,10 +109,5 @@ export class ImportUploadService {
       });
     });
   }
-
-  private importManufacturingLines(manufacturingLines): Promise<any> {
-    return new Promise((resolve, reject) => {
-      resolve(true);
-    });
-  }
+  
 }

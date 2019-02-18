@@ -64,12 +64,22 @@ export class ImportComponent implements OnInit {
         });
 
       }).catch(err => {
-        console.log(err);
+        const dialogConfig = new MatDialogConfig();
+        dialogConfig.data = {
+          title: "Error!",
+          message: "" + err
+        };
+        this.dialog.open(UserNotificationDialogComponent, dialogConfig);
       });
     }).catch(err => {
-      console.log(err);
+      const dialogConfig = new MatDialogConfig();
+      dialogConfig.data = {
+        title: "Error!",
+        message: "" + err
+      };
+      this.dialog.open(UserNotificationDialogComponent, dialogConfig);
     });
   }
 
-  
+
 }

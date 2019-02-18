@@ -12,7 +12,7 @@ export class ImportMatchConflictNewCheckerService {
     return new Promise((resolve, reject) => {
       var toReturn = {};
       var numFinished = 0;
-      var totalNum = 8;
+      var totalNum = 6;
       this.checkSKUsMatchesConflictsNew(input['skus']).then(result => {
         toReturn['skus'] = result;
         numFinished = numFinished + 1;
@@ -49,15 +49,6 @@ export class ImportMatchConflictNewCheckerService {
       }).catch(err => {
         reject(err);
       });
-      this.checkManufacturingLinesMatchesConflictsNew(input['manufacturinglines'], input['skumanufacturinglines']).then(result => {
-        toReturn['manufacturinglines'] = result;
-        numFinished = numFinished + 1;
-        if (numFinished == totalNum) {
-          resolve(toReturn);
-        }
-      }).catch(err => {
-        reject(err);
-      });
       this.checkFormulaReferences(input['formulas'], input['ingredients']).then(result => {
         toReturn['formulaRefErrs'] = result;
         numFinished = numFinished + 1;
@@ -69,15 +60,6 @@ export class ImportMatchConflictNewCheckerService {
       });
       this.checkSKUReferences(input['skus'], input['productlines'], input['formulas']).then(result => {
         toReturn['skuRefErrs'] = result;
-        numFinished = numFinished + 1;
-        if (numFinished == totalNum) {
-          resolve(toReturn);
-        }
-      }).catch(err => {
-        reject(err);
-      });
-      this.checkManufacturingLineReferences(input['manufacturinglines'], input['skus']).then(result => {
-        toReturn['manufacturingLineRefErrs'] = result;
         numFinished = numFinished + 1;
         if (numFinished == totalNum) {
           resolve(toReturn);
@@ -188,25 +170,6 @@ export class ImportMatchConflictNewCheckerService {
     });
   }
 
-  private checkManufacturingLinesMatchesConflictsNew(manufacturingLines, skuManufacturingLines): Promise<any> {
-    return new Promise((resolve, reject) => {
-      var toReturn = {};
-      toReturn['matches'] = [];
-      toReturn['conflicts'] = [];
-      toReturn['new'] = [];
-      var numMLsProcessed = 0;
-      manufacturingLines.forEach(manufacturingLine => {
-        console.log(manufacturingLine);
-        //do processing here
-        //can't do this yet because I'm blocked since Manufacturing Lines support is not ready in rest.service.ts yet
-        numMLsProcessed = numMLsProcessed + 1;
-        if (numMLsProcessed == manufacturingLines.length) {
-          resolve(toReturn);
-        }
-      });
-    });
-  }
-
   /**
    * Objects Formulas reference that could cause errors:
    * ingredients
@@ -248,29 +211,6 @@ export class ImportMatchConflictNewCheckerService {
         //can't do this yet because I'm blocked since formulas support is not ready in rest.service.ts yet
         numFormulasProcessed = numFormulasProcessed + 1;
         if (numFormulasProcessed == formulas.length) {
-          resolve(toReturn);
-        }
-      });
-    });
-  }
-
-  /**
-   * Objects Manufacturing Lines reference that could cause errors:
-   * SKUs
-   */
-  private checkManufacturingLineReferences(manufacturingLines, skus): Promise<any> {
-    return new Promise((resolve, reject) => {
-      var toReturn = {};
-      toReturn['matches'] = [];
-      toReturn['conflicts'] = [];
-      toReturn['new'] = [];
-      //do processing here
-      //can't do this yet because I'm blocked since SKU support is not ready in rest.service.ts yet
-      var numSKUsProcessed = 0;
-      skus.forEach(sku => {
-        console.log(sku);
-        numSKUsProcessed = numSKUsProcessed + 1;
-        if (numSKUsProcessed == skus.length) {
           resolve(toReturn);
         }
       });
