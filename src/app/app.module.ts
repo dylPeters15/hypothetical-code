@@ -46,6 +46,7 @@ import { ImportPreviewDialogComponent } from './import/import-preview-dialog/imp
 import { ImportConflictResolverComponent } from './import/import-conflict-resolver/import-conflict-resolver.component';
 import { RecordImportPreviewComponent } from './import/record-import-preview/record-import-preview.component';
 import { ImportPreviewSectionComponent } from './import/import-preview-section/import-preview-section.component';
+import { ExistingRecordPreviewComponent } from './import/existing-record-preview/existing-record-preview.component';
 
 const appRoutes: Routes = [
   { path: 'login', component: LoginComponent, data: { title: 'Log In' }, canActivate: [AlreadyLoggedInRouteGuardService] },
@@ -96,7 +97,8 @@ const appRoutes: Routes = [
     ImportPreviewDialogComponent,
     ImportConflictResolverComponent,
     RecordImportPreviewComponent,
-    ImportPreviewSectionComponent
+    ImportPreviewSectionComponent,
+    ExistingRecordPreviewComponent
   ],
   imports: [
     BrowserModule,
