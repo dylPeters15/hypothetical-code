@@ -97,14 +97,23 @@ export class ImportMatchConflictNewCheckerService {
       var numIngredientsProcessed = 0;
       ingredients.forEach(ingredient => {
         //do processing here
-        this.rest.getIngredients(ingredient['Name'], ingredient['Ingr#'], 1).subscribe(response => {
+        this.rest.getIngredients(ingredient['ingredientname'], ingredient['ingredientnumber'], 1).subscribe(response => {
+          console.log("Response: ",response);
           if (response.length == 0) {
             toReturn['new'].push(ingredient);
           } else {
             var responseIngredient = response[0];
-            if (ingredient['name'] == responseIngredient['ingredientname']
-             && ingredient['Ingr#'] == responseIngredient['ingredientnumber']
-              && ingredient['Quantity'] == responseIngredient['amount']) {
+            console.log("equal:",ingredient['comment'] == responseIngredient['comment']);
+            console.log("ingredient:",ingredient['comment']);
+            console.log("responseingredient:",responseIngredient['comment']);
+            if (ingredient['ingredientname'] == responseIngredient['ingredientname']
+            && ingredient['ingredientnumber'] == responseIngredient['ingredientnumber']
+            && ingredient['vendorinformation'] == responseIngredient['vendorinformation']
+            && ingredient['unitofmeasure'] == responseIngredient['unitofmeasure']
+            && ingredient['amount'] == responseIngredient['amount']
+            && ingredient['costperpackage'] == responseIngredient['costperpackage']
+            && ingredient['comment'] == responseIngredient['comment']
+            ) {
               toReturn['matches'].push(ingredient);
             } else {
               toReturn['conflicts'].push({

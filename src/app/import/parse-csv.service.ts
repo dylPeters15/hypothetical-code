@@ -37,7 +37,7 @@ export class ParseCsvService {
                 if (filename.startsWith("skus")) {
                   objectToReturn['skus'] = objectToReturn['skus'].concat(result[filename]);
                 } else if (filename.startsWith("ingredients")) {
-                  objectToReturn['ingredients'] = objectToReturn['ingredients'].concat(result[filename]);
+                  objectToReturn['ingredients'] = objectToReturn['ingredients'].concat(this.parseIngredients(result[filename]));
                 } else if (filename.startsWith("formulas")) {
                   objectToReturn['formulas'] = objectToReturn['formulas'].concat(this.consolidateFormulas(result[filename]));
                 } else if (filename.startsWith("product_lines")) {
@@ -104,11 +104,34 @@ export class ParseCsvService {
   }
 
   private consolidateFormulas(formulasObject): any[] {
-    console.log(formulasObject);
-    var objectToReturn = [];
+    // console.log(formulasObject);
+    // var objectToReturn = [];
 
-    console.log(objectToReturn);
+    // console.log(objectToReturn);
     return formulasObject;//objectToReturn;
+  }
+
+  private parseIngredients(ingredientsObject): any[] {
+    console.log("Ingredients: ",ingredientsObject);
+    var objectToReturn = [];
+    for (var i = 0; i < ingredientsObject.length; i++) {
+      var currentIngredient = ingredientsObject[i];
+      var newIngredient = {};
+
+      newIngredient['ingredientname'] = currentIngredient['Name'];
+      newIngredient['ingredientnumber'] = currentIngredient['Ingr#'];
+      newIngredient['vendorinformation'] = currentIngredient['Vendor Info'];
+      newIngredient['unitofmeasure'] = currentIngredient['Size'].toLowerCase().match('[a-z]+')[0];
+      newIngredient['amount'] = Number(currentIngredient['Size'].toLowerCase().match('[0-9]+')[0]);
+      newIngredient['costperpackage'] = isNaN(currentIngredient['Cost'])?Number(currentIngredient['Cost'].toLowerCase().match('[0-9\.]+')[0]):currentIngredient['Cost'];
+      console.log(newIngredient['amount']);
+      newIngredient['comment'] = currentIngredient['Comment']||"";
+
+      objectToReturn.push(newIngredient);
+    }
+    console.log(ingredientsObject);
+    console.log(objectToReturn);
+    return objectToReturn;
   }
 
 }

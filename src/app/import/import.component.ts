@@ -32,6 +32,7 @@ export class ImportComponent implements OnInit {
 
         const dialogConfig = new MatDialogConfig();
         dialogConfig.data = checkResult;
+        dialogConfig.minWidth = "50%";
         this.dialog.open(ImportPreviewDialogComponent, dialogConfig).afterClosed().subscribe(closeData => {
           if (!closeData || closeData['cancel']) {
             //operation was cancelled
