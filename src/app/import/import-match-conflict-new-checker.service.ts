@@ -70,9 +70,39 @@ export class ImportMatchConflictNewCheckerService {
     });
   }
 
-  private checkSKUMatchConflictNew(sku): Promise<any> {
+  private checkSKUMatchConflictNew(sku, toReturn): Promise<any> {
     return new Promise((resolve, reject) => {
-      resolve();
+      this.rest.getSkus(sku['skuname'], sku['skunumber'], -1, -1, "-1", 1).subscribe(response => {
+        if (response.length == 0) {
+          toReturn['new'].push(sku);
+          resolve();
+        } else {
+          var responseSku = response[0];
+          var match = true;
+          match = sku['skuname'] == responseSku['skuname']
+          && sku['skunumber'] == responseSku['skunumber']
+          && sku['caseupcnumber'] == responseSku['caseupcnumber']
+          && sku['unitupcnumber'] == responseSku['unitupcnumber']
+          && sku['unitsize'] == responseSku['unitsize']
+          && sku['countpercase'] == responseSku['countpercase']
+          && sku['formula'] == responseSku['formula']['formulanumber']
+          && sku['formulascalingfactor'] == responseSku['formulascalingfactor']
+          && sku['manufacturingrate'] == responseSku['manufacturingrate']
+          && sku['comment'] == responseSku['comment'];
+
+          if (match) {
+            toReturn['matches'].push(sku);
+          } else {
+            responseSku['Name'] = responseSku['skuname'];
+            toReturn['conflicts'].push({
+              old: [responseSku],
+              new: sku,
+              select: 'new'
+            })
+          }
+          resolve();
+        }
+      });
     });
   }
 
@@ -85,7 +115,7 @@ export class ImportMatchConflictNewCheckerService {
       //do processing here
       var numSKUsProcessed = 0;
       skus.forEach(sku => {
-        this.checkSKUMatchConflictNew(sku).then(() => {
+        this.checkSKUMatchConflictNew(sku, toReturn).then(() => {
           numSKUsProcessed = numSKUsProcessed + 1;
           if (numSKUsProcessed == skus.length) {
             resolve(toReturn);
