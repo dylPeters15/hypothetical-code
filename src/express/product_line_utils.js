@@ -30,7 +30,6 @@ function createProductLine(newProductLineObject) {
 
         let productLine = new database.productLineModel(newProductLineObject);
         productLine.save().then(result => {
-            console.log(result)
             resolve(result);
         }).catch(err => {
             reject(Error(err));
@@ -53,7 +52,6 @@ function modifyProductLine(productlinename, newProductLineObject) {
                 reject(Error(err));
                 return
             }
-            console.log("utils",response)
             resolve(response);
         });
     });

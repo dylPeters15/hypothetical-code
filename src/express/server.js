@@ -188,9 +188,7 @@ app.route('/skus').get((req, res) => {
     sku_utils.getSkus(req.headers['skuname'], Number(req.headers['skunumber']), Number(req.headers['caseupcnumber']), Number(req.headers['unitupcnumber']), Number(req.headers['limit'])).then(skus => {
         res.send(skus);
     }).catch(err => {
-        res.send({
-            err:""+err
-        });
+        resolveError(err, res);
     });
 }).put((req, res) => {
     sku_utils.createSku(req.body['skuname'], req.body['skunumber'],
@@ -198,9 +196,7 @@ app.route('/skus').get((req, res) => {
     req.body['unitsize'], req.body['countpercase'], req.body['comment']).then(response => {
         res.send(response);
     }).catch(err => {
-        res.send({
-            err:""+err
-        });
+        resolveError(err, res);
     });
 }).post((req, res) => {
     sku_utils.modifySku(req.headers['skuname'], req.body['skuname'], req.body['skunumber'],
@@ -208,17 +204,13 @@ app.route('/skus').get((req, res) => {
     req.body['unitsize'], req.body['countpercase'], req.body['comment']).then(response => {
         res.send(response);
     }).catch(err => {
-        res.send({
-            err:""+err
-        });
+        resolveError(err, res);
     });
 }).delete((req, res) => {
     sku_utils.deleteSku(req.headers['skuname']).then(response => {
         res.send(response);
     }).catch(err => {
-        res.send({
-            err:""+err
-        });
+        resolveError(err, res);
     });
 });
 
