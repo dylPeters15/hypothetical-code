@@ -43,11 +43,15 @@ export class RestService {
 
   private generateHeader(options?) {
     options = options || {};
+    console.log(options)
     options['Content-Type'] = 'application/json';
     options['token'] = auth.getToken();
-    return {
-      headers: new HttpHeaders(options)
-    };
+    let header:HttpHeaders = new HttpHeaders(options)
+    console.log(header)
+    let httpOptions = {
+      headers: header
+    }
+    return httpOptions
   }
 
   loginRequest(username, password, netidtoken?): Observable<any> {
@@ -146,14 +150,14 @@ export class RestService {
   }
 
  ///////////////////// skus /////////////////////
- getSkus(skuName: String, skuNumber: number, caseUpcNumber: number, unitUpcNumber: number, formulaNumber: number, limit: number): Observable<any> {
+ getSkus(skuName: String, skuNumber: number, caseUpcNumber: number, unitUpcNumber: number, formulaNumber: String, limit: number): Observable<any> {
   return this.http.get(endpoint + "skus", this.generateHeader({
     skuname: skuName,
-    skunumber: skuNumber,
-    caseupcnumber: caseUpcNumber,
-    unitupcnumber: unitUpcNumber,
+    skunumber: skuNumber.toString(),
+    caseupcnumber: caseUpcNumber.toString(),
+    unitupcnumber: unitUpcNumber.toString(),
     formulanumber: formulaNumber,
-    limit: limit
+    limit: limit.toString()
   }));
 }
 

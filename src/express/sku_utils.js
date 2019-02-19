@@ -196,7 +196,7 @@ function createUnitUpcNumber() {
 
 
 module.exports = {
-    getSku: getSkus,
+    getSkus: getSkus,
     createSku: createSku,
     modifySku: modifySku,
     deleteSku: deleteSku

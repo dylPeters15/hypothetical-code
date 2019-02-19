@@ -10,6 +10,7 @@ const ingredient_utils = require('./ingredient_utils.js');
 const line_utils = require('./manufacturing_line_utils');
 const activity_utils = require('./manufacturing_activity_utils');
 const product_line_utils = require('./product_line_utils.js');
+const sku_utils = require('./sku_utils.js')
 
 const app = express();
 const corsOptions = {
@@ -184,7 +185,7 @@ app.route('/ingredients').get((req, res) => {
 
 ///////////////////// skus /////////////////////
 app.route('/skus').get((req, res) => {
-    sku_utils.getSkus(req.headers['skuname'], req.headers['skunumber'], req.headers['caseupcnumber'], req.headers['unitupcnumber'], Number(req.headers['limit'])).then(skus => {
+    sku_utils.getSkus(req.headers['skuname'], Number(req.headers['skunumber']), Number(req.headers['caseupcnumber']), Number(req.headers['unitupcnumber']), Number(req.headers['limit'])).then(skus => {
         res.send(skus);
     }).catch(err => {
         res.send({
