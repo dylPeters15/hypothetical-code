@@ -1,6 +1,12 @@
 const database_library = require('./database.js');
+const mongoose = require('mongoose');
 const crypto = require('crypto');
-
+const ingredientUtils = require('./ingredient_utils.js')
+const formulaUtils = require('./formula_utils.js')
+const skuUtils = require('./sku_utils.js')
+const serverName = '127.0.0.1:27017';
+const dbName = 'hypothetical-code-db';
+const connectionString = `mongodb://${serverName}/${dbName}`;
 mongoose.connect(connectionString)
     .then(() => {
         console.log('Database connection successful');
@@ -50,19 +56,49 @@ function initializeUsers() {
 //         console.log(err);
 //     }
 // );
+let testIngredient = ingredientUtils.createIngredient('salt', 1, 'salty', 'g', 50, 70, '');
+// let saltPromise = ingredientUtils.getIngredients('salt');
+// saltPromise.then((successMessage) => {
+//     saltIng = successMessage;
+//     console.log("Success: " + successMessage)
+// }).catch((err) => {
+//     console.log(err)
+// });
+// console.log(saltIng._id)
+let testFormula = new database_library.formulaModel({
+    formulaname: 'formula1',
+    formulanumber: '1',
+    ingredientsandquantities: [{
+        ingredient: testIngredient._id,
+        quantity: 5
+    }],
+    comment: 'work'
+})
+formulaUtils.createFormula(testFormula)
+let testSku = new database_library.skuModel({
+    skuname: 'Tomato Soup',
+    skunumber: 2,
+    caseupcnumber: 012312312312,
+    unitupcnumber: 163728391922,
+    unitsize: '28oz',
+    countpercase: 10,
+    formula: testFormula,
+    formulascalingfactor: 1.5,
+    manufacturingrate: 2,
+    comment: 'Enjoy this lovely can of tomato soup!'
+  });
+  
+    testSku.save().then(
+            doc => {
+                console.log(doc);
+            }
+        ).catch(
+            err => {
+                console.log(err);
+            }
+        );
 
-// let testSku = new database_library.skuModel({
-//     name: 'Tomato Soup',
-//     skuNumber: 2,
-//     caseUpcNumber: '018273821922',
-//     unitUpcNumber: '163728391922',
-//     unitSize: '28oz',
-//     countPerCase: 10,
-//     productLine: 'Example product line',
-//     ingredientTuples: [5942948208, 2, 5942948209, 0.5],
-//     comment: "Enjoy this lovely can of tomato soup!",
-//     id: 5942948208
-//   });
+
 //   testSku.save().then(
 //       doc => {
 //           console.log(doc);
@@ -93,23 +129,5 @@ function initializeUsers() {
 //       }
 //   );
 
-//   let testIngredient2 = new database_library.ingredientModel({
-//     name: 'salt',
-//     number: 2,
-//     vendorInformation: 'salty',
-//     packageSize: '20lbs',
-//     costPerPackage: 70,
-//     comment: '',
-//     skus: ['Tomato Soup'],
-//     id: 5942948209
-//   });
-//   testIngredient2.save().then(
-//       doc => {
-//           console.log(doc);
-//       }
-//   ).catch(
-//       err => {
-//           console.log(err);
-//       }
-//   );
+
 

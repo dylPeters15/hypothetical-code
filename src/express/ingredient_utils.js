@@ -1,7 +1,6 @@
 const database = require('./database.js');
 
 function getIngredients(ingredientname, ingredientnameregex, ingredientnumber,limit){
-
     ingredientname = ingredientname || "";
     ingredientnameregex = ingredientnameregex || "$a";
     ingredientnumber = ingredientnumber || 1;
@@ -17,6 +16,7 @@ function getIngredients(ingredientname, ingredientnameregex, ingredientnumber,li
         }
         database.ingredientModel.find(filterSchema).limit(limit).exec((err, ingredients) => {
             if (err) {
+                console.log(err)
                 reject(Error(err));
                 return;
             }
