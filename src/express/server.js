@@ -129,7 +129,7 @@ app.route('/formulas').get((req, res) => {
         });
     });
 }).post((req, res) => {
-    formula_utils.modifyFormula(req.headers['sku'], req.headers['ingredient'], req.body).then(response => {
+    formula_utils.modifyFormula(req.headers['formulaname'], req.body).then(response => {
         res.send(response);
     }).catch(err => {
         res.send({
@@ -148,7 +148,7 @@ app.route('/formulas').get((req, res) => {
 
 ///////////////////// ingredients /////////////////////
 app.route('/ingredients').get((req, res) => {
-    ingredient_utils.getIngredients(req.headers['ingredientname'], req.headers['ingredientnumber'], req.headers['limit']).then(ingredients => {
+    ingredient_utils.getIngredients(req.headers['ingredientname'], req.headers['ingredientnameregex'], JSON.parse(req.headers['ingredientnumber']), req.headers['limit']).then(ingredients => {
         res.send(ingredients);
     }).catch(err => {
         res.send({

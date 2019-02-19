@@ -21,7 +21,7 @@ function getFormulas(formulaname, formulanumber, sku, ingredient, limit) {
                 { formulanumber: formulanumber }
             ]
         }
-        database.formulaModel.find(filterSchema).limit(limit).populate('sku ingredient').exec((err, formulas) => {
+        database.formulaModel.find(filterSchema).limit(limit).populate('ingredientsandquantities.ingredient').exec((err, formulas) => {
             if (err) {
                 reject(Error(err));
                 return;
@@ -34,20 +34,24 @@ function getFormulas(formulaname, formulanumber, sku, ingredient, limit) {
 
 function createFormula(newFormulaObject) {
     return new Promise((resolve, reject) => {
+        console.log(newFormulaObject);
+        // for (var i = i; i < newFormulaObject['ingredientsandquantities'].length; i++) {
+        //     newFormulaObject['ingredientsandquantities'][i]['ingredient'] = mongoose.Types.ObjectId(newFormulaObject['ingredientsandquantities'][i]['ingredient']);
+        // }
         let formula = new database.formulaModel(newFormulaObject);
         formula.save().then(response => {
             resolve(response);
         }).catch(err => {
+            console.log(Error(err));
             reject(Error(err));
         });
     });
 }
 
-function modifyFormula(sku, ingredient, newFormulaObject) {
+function modifyFormula(formulaname, newFormulaObject) {
     return new Promise((resolve, reject) => {
         var filterSchema = {
-            sku: sku,
-            ingredient: ingredient
+            formulaname: formulaname
         }
         database.formulaModel.updateOne(filterSchema, newFormulaObject, (err, response) => {
             if (err) {

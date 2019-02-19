@@ -15,8 +15,8 @@ export class ImportUploadService {
       };
       this.importIngredients(data['ingredients']).then(ingredientResult => {
         this.importFormulas(data['formulas']).then(formulaResult => {
-          this.importSKUs(data['skus']).then(skuResult => {
-            this.importProductLines(data['productlines']).then(productLineResult => {
+          this.importProductLines(data['productlines']).then(productLineResult => {
+            this.importSKUs(data['skus']).then(skuResult => {
               resolve();
             }).catch(catcher);
           }).catch(catcher);
@@ -77,9 +77,99 @@ export class ImportUploadService {
     });
   }
 
+  private importFormula(formula): Promise<any> {
+    return new Promise((resolve, reject) => {
+      var numIngredientsProcessed = 0;
+      var ingredientsAndQuantities = [];
+      formula['ingredientsandquantities'].forEach(ingredientAndQuantity => {
+        var ingredientnum = ingredientAndQuantity['ingredient'];
+        this.rest.getIngredients("",ingredientnum,1).subscribe(response => {
+          if (response.length == 0) {
+            reject(Error("Could not find ingredient " + ingredientnum + " for formula " + formula['formulaname']));
+          } else {
+            var ingredientID = response[0]['_id'];
+            ingredientsAndQuantities.push({
+              ingredient: ""+ingredientID,
+              quantity: ingredientAndQuantity['quantity']
+            });
+            numIngredientsProcessed++;
+            if (numIngredientsProcessed == formula['ingredientsandquantities'].length) {
+              this.rest.createFormula(formula['formulaname'], formula['formulanumber'], ingredientsAndQuantities, formula['comment']||"").subscribe(createResponse => {
+                console.log("Create response: ",createResponse);
+                if (createResponse['formulaname'] == formula['formulaname']) {
+                  resolve();
+                } else {
+                  reject(Error("Error creating formula."));
+                }
+              });
+            }
+          }
+        });
+      });
+    });
+  }
+
+  private updateFormula(oldname, formula): Promise<any> {
+    return new Promise((resolve, reject) => {
+      var numIngredientsProcessed = 0;
+      var ingredientsAndQuantities = [];
+
+      console.log("In updatFormula");
+      formula['ingredientsandquantities'].forEach(ingredientAndQuantity => {
+        var ingredientnum = ingredientAndQuantity['ingredient'];
+        this.rest.getIngredients("",ingredientnum,1).subscribe(response => {
+          if (response.length == 0) {
+            reject(Error("Could not find ingredient " + ingredientnum + " for formula " + formula['formulaname']));
+          } else {
+            var ingredientID = response[0]['_id'];
+            ingredientsAndQuantities.push({
+              ingredient: ""+ingredientID,
+              quantity: ingredientAndQuantity['quantity']
+            });
+            numIngredientsProcessed++;
+            if (numIngredientsProcessed == formula['ingredientsandquantities'].length) {
+              this.rest.modifyFormula(oldname, formula['formulaname'], formula['formulanumber'], ingredientsAndQuantities, formula['comment']||"").subscribe(modifyResponse => {
+                console.log("Modify response: ",modifyResponse);
+                if (modifyResponse['ok'] == 1) {
+                  resolve();
+                } else {
+                  reject(Error("Error creating formula."));
+                }
+              });
+            }
+          }
+        });
+      });
+    });
+  }
+
   private importFormulas(formulas): Promise<any> {
     return new Promise((resolve, reject) => {
-      resolve(true);
+      var numFormulasToProcess = formulas['new'].length+this.numConflictedSelectNewOfSection(formulas);
+      var numFormulasProcessed = 0;
+      console.log("import formuls");
+      formulas['new'].forEach(formula => {
+        this.importFormula(formula).then(() => {
+          numFormulasProcessed++;
+          if (numFormulasProcessed >= numFormulasToProcess) {
+            resolve();
+          }
+        }).catch(err => {
+          reject(err);
+        });
+      });
+      formulas['conflicts'].forEach(conflict => {
+        if (conflict['select'] == 'new') {
+          this.updateFormula(conflict['old'][0]['formulaname'], conflict['new']).then(() => {
+            numFormulasProcessed++;
+            if (numFormulasProcessed >= numFormulasToProcess) {
+              resolve();
+            }
+          }).catch(err => {
+            reject(err);
+          });
+        }
+      });
     });
   }
 

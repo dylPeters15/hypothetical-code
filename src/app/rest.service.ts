@@ -123,24 +123,25 @@ export class RestService {
     }));
   }
 
-  createFormula(sku: number, ingredient: number, quantity: number): Observable<any> {
+  createFormula(formulaname: string, formulanumber: number, ingredientsandquantities: any[], comment: string): Observable<any> {
     return this.http.put(endpoint + "formulas", {
-      sku: sku,
-      ingredient: ingredient,
-      quantity: quantity
+      formulaname: formulaname,
+      formulanumber: formulanumber,
+      ingredientsandquantities: ingredientsandquantities,
+      comment: comment
     },
     this.generateHeader());
   }
 
-  modifyFormula(sku: number, ingredient: number, newQuantity: number): Observable<any> {
+  modifyFormula(oldname: string, formulaname: string, formulanumber: number, ingredientsandquantities: any[], comment: string): Observable<any> {
     return this.http.post(endpoint + "formulas", {
-      sku: sku,
-      ingredient: ingredient,
-      quantity: newQuantity
+      formulaname: formulaname,
+      formulanumber: formulanumber,
+      ingredientsandquantities: ingredientsandquantities,
+      comment: comment||""
     },
     this.generateHeader({
-      sku: sku,
-      ingredient: ingredient
+      formulaname: oldname
     }));
   }
 
@@ -208,7 +209,7 @@ deleteSku(skuName: String): Observable<any> {
   getIngredients(ingredientname: String, ingredientnumber: number, limit: number): Observable<any> {
     return this.http.get(endpoint + "ingredients", this.generateHeader({
       ingredientname: ingredientname,
-      ingredientnumber: ingredientnumber,
+      ingredientnumber: JSON.stringify(ingredientnumber),
       limit: limit
     }));
   }
