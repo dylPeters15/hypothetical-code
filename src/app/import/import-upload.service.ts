@@ -177,6 +177,35 @@ export class ImportUploadService {
 
   private importSKU(sku): Promise<any> {
     return new Promise((resolve, reject) => {
+      this.rest.createSku(sku['skuname'], sku['skunumber'], sku['caseupcnumber'], sku['unitupcnumber'], sku['unitsize'], sku['countpercase'], sku['comment']).subscribe(createSkuResponse => {
+        if (createSkuResponse['skuname'] == sku['skuname']) {
+          this.rest.getProductLines(sku['productline'],1).subscribe
+          (getPLResponse => {
+            if (getPLResponse.length == 0) {
+              reject(Error("Could not find product line " + sku['productline'] + " for SKU " + sku['skuname']));
+            } else {
+              var skus = getPLResponse[0]['skus'];
+              skus.push({
+                sku: createSkuResponse['_id']
+              })
+              this.rest.modifyProductLine(sku['productline'], sku['productline'], skus).subscribe(modifyPLResponse => {
+                if (modifyPLResponse['ok'] == 1) {
+                  resolve();
+                } else {
+                  reject(Error("Could not modify Product Line " + sku['productline'] + " for SKU " + sku['skuname']));
+                }
+              });
+            }
+          });
+        } else {
+          reject(Error("Could not create SKU " + sku['skuname']));
+        }
+      });
+    });
+  }
+
+  private updateSKU(sku): Promise<any> {
+    return new Promise((resolve, reject) => {
       resolve();
     });
   }
@@ -200,7 +229,7 @@ export class ImportUploadService {
       });
       skus['conflicts'].forEach(conflict => {
         if (conflict['select'] == 'new') {
-          this.importSKU(conflict['new']).then(() => {
+          this.updateSKU(conflict['new']).then(() => {
             numSKUsProcessed++;
             if (numSKUsProcessed >= totalSKUs) {
               resolve();
