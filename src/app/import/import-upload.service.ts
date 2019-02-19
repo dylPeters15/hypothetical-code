@@ -175,9 +175,41 @@ export class ImportUploadService {
     });
   }
 
+  private importSKU(sku): Promise<any> {
+    return new Promise((resolve, reject) => {
+      resolve();
+    });
+  }
+
   private importSKUs(skus): Promise<any> {
     return new Promise((resolve, reject) => {
-      resolve(true);
+      var numSKUsProcessed = 0;
+      var totalSKUs = skus['new'].length+this.numConflictedSelectNewOfSection(skus);
+      if (totalSKUs == 0) {
+        resolve();
+      }
+      skus['new'].forEach(sku => {
+        this.importSKU(sku).then(() => {
+          numSKUsProcessed++;
+          if (numSKUsProcessed >= totalSKUs) {
+            resolve();
+          }
+        }).catch(err => {
+          reject(err);
+        });
+      });
+      skus['conflicts'].forEach(conflict => {
+        if (conflict['select'] == 'new') {
+          this.importSKU(conflict['new']).then(() => {
+            numSKUsProcessed++;
+            if (numSKUsProcessed >= totalSKUs) {
+              resolve();
+            }
+          }).catch(err => {
+            reject(err);
+          });
+        }
+      });
     });
   }
 
