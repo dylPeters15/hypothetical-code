@@ -15,8 +15,8 @@ export class ImportUploadService {
       };
       this.importIngredients(data['ingredients']).then(ingredientResult => {
         this.importFormulas(data['formulas']).then(formulaResult => {
-          this.importSKUs(data['skus']).then(skuResult => {
-            this.importProductLines(data['productlines']).then(productLineResult => {
+          this.importProductLines(data['productlines']).then(productLineResult => {
+            this.importSKUs(data['skus']).then(skuResult => {
               resolve();
             }).catch(catcher);
           }).catch(catcher);
@@ -77,9 +77,44 @@ export class ImportUploadService {
     });
   }
 
-  private importFormulas(formulas): Promise<any> {
+  private importFormula(formula): Promise<any> {
     return new Promise((resolve, reject) => {
-      resolve(true);
+      console.log(formula);
+      var numIngredientsProcessed = 0;
+      formula['ingredientsandquantities'].forEach(ingredientAndQuantity => {
+        console.log("Ingredient and quantity: ", ingredientAndQuantity);
+        var ingredientnum = ingredientAndQuantity['ingredient'];
+        console.log("Ingredient num: ",ingredientnum);
+        this.rest.getIngredients("",ingredientnum,1).subscribe(response => {
+          if (response.length == 0) {
+            reject(Error("Could not find ingredient " + ingredientnum + " for formula " + formula['formulaname']));
+          } else {
+            var ingredientID = response[0]['_id'];
+            console.log("Response 0:", response[0]);
+          }
+        });
+      });
+    });
+  }
+
+  private importFormulas(formulas): Promise<any> {
+    console.log("Import formulas.");
+    return new Promise((resolve, reject) => {
+      var numFormulasToProcess = formulas['new'].length+this.numConflictedSelectNewOfSection(formulas);
+      var numFormulasProcessed = 0;
+      console.log("formulas: ",formulas);
+
+      formulas['new'].forEach(formula => {
+        this.importFormula(formula).then(() => {
+        }).catch(err => {
+          reject(err);
+        });
+      });
+
+
+
+
+      // resolve(true);
     });
   }
 

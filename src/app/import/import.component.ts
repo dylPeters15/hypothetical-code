@@ -51,7 +51,7 @@ export class ImportComponent implements OnInit {
               const dialogConfig = new MatDialogConfig();
               dialogConfig.data = {
                 title: "Error!",
-                message: "Error importing data."
+                message: "" + err
               };
               this.dialog.open(UserNotificationDialogComponent, dialogConfig);
             });
