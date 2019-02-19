@@ -12,7 +12,7 @@ export class ImportMatchConflictNewCheckerService {
     return new Promise((resolve, reject) => {
       var toReturn = {};
       var numFinished = 0;
-      var totalNum = 8;
+      var totalNum = 6;
       this.checkSKUsMatchesConflictsNew(input['skus']).then(result => {
         toReturn['skus'] = result;
         numFinished = numFinished + 1;
@@ -49,15 +49,6 @@ export class ImportMatchConflictNewCheckerService {
       }).catch(err => {
         reject(err);
       });
-      this.checkManufacturingLinesMatchesConflictsNew(input['manufacturinglines'], input['skumanufacturinglines']).then(result => {
-        toReturn['manufacturinglines'] = result;
-        numFinished = numFinished + 1;
-        if (numFinished == totalNum) {
-          resolve(toReturn);
-        }
-      }).catch(err => {
-        reject(err);
-      });
       this.checkFormulaReferences(input['formulas'], input['ingredients']).then(result => {
         toReturn['formulaRefErrs'] = result;
         numFinished = numFinished + 1;
@@ -69,15 +60,6 @@ export class ImportMatchConflictNewCheckerService {
       });
       this.checkSKUReferences(input['skus'], input['productlines'], input['formulas']).then(result => {
         toReturn['skuRefErrs'] = result;
-        numFinished = numFinished + 1;
-        if (numFinished == totalNum) {
-          resolve(toReturn);
-        }
-      }).catch(err => {
-        reject(err);
-      });
-      this.checkManufacturingLineReferences(input['manufacturinglines'], input['skus']).then(result => {
-        toReturn['manufacturingLineRefErrs'] = result;
         numFinished = numFinished + 1;
         if (numFinished == totalNum) {
           resolve(toReturn);
@@ -98,7 +80,6 @@ export class ImportMatchConflictNewCheckerService {
       //can't do this yet because I'm blocked since SKU support is not ready in rest.service.ts yet
       var numSKUsProcessed = 0;
       skus.forEach(sku => {
-        console.log(sku);
         numSKUsProcessed = numSKUsProcessed + 1;
         if (numSKUsProcessed == skus.length) {
           resolve(toReturn);
@@ -115,16 +96,20 @@ export class ImportMatchConflictNewCheckerService {
       toReturn['new'] = [];
       var numIngredientsProcessed = 0;
       ingredients.forEach(ingredient => {
-        console.log(ingredient);
         //do processing here
-        this.rest.getIngredients(ingredient['Name'], ingredient['Ingr#'], 1).subscribe(response => {
+        this.rest.getIngredients(ingredient['ingredientname'], ingredient['ingredientnumber'], 1).subscribe(response => {
           if (response.length == 0) {
             toReturn['new'].push(ingredient);
           } else {
             var responseIngredient = response[0];
-            if (ingredient['name'] == responseIngredient['ingredientname']
-             && ingredient['Ingr#'] == responseIngredient['ingredientnumber']
-              && ingredient['Quantity'] == responseIngredient['amount']) {
+            if (ingredient['ingredientname'] == responseIngredient['ingredientname']
+              && ingredient['ingredientnumber'] == responseIngredient['ingredientnumber']
+              && ingredient['vendorinformation'] == responseIngredient['vendorinformation']
+              && ingredient['unitofmeasure'] == responseIngredient['unitofmeasure']
+              && ingredient['amount'] == responseIngredient['amount']
+              && ingredient['costperpackage'] == responseIngredient['costperpackage']
+              && ingredient['comment'] == responseIngredient['comment']
+            ) {
               toReturn['matches'].push(ingredient);
             } else {
               toReturn['conflicts'].push({
@@ -151,10 +136,8 @@ export class ImportMatchConflictNewCheckerService {
       toReturn['new'] = [];
       var numPLsProcessed = 0;
       productLines.forEach(productLine => {
-        console.log(productLine);
         //do processing here
         this.rest.getProductLines(productLine['Name'], 1).subscribe(result => {
-          console.log("Product Line Result: ",result);
           if (result.length == 0) {
             toReturn['new'].push(productLine);
           } else {
@@ -169,6 +152,42 @@ export class ImportMatchConflictNewCheckerService {
     });
   }
 
+  private arrayContainsObjectWithKey(array: any[], key: string): boolean {
+    for (var i = 0; i < array.length; i++) {
+      if (Object.keys(array[i]).includes(key)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  private arrayContainsObjectWithKeyVal(array: any[], key: string, val: string): boolean {
+    for (var i = 0; i < array.length; i++) {
+      if (Object.keys(array[i]).includes(key) && array[i][key] == val) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  private arrayObjectWithKey(array: any[], key: string): any {
+    for (var i = 0; i < array.length; i++) {
+      if (Object.keys(array[i]).includes(key)) {
+        return array[i];
+      }
+    }
+    return null;
+  }
+
+  private arrayObjectWithKeyVal(array: any[], key: string, val: string): any {
+    for (var i = 0; i < array.length; i++) {
+      if (Object.keys(array[i]).includes(key) && array[i][key] == val) {
+        return array[i];
+      }
+    }
+    return null;
+  }
+
   private checkFormulasMatchesConflictsNew(formulas, formulaIngredients): Promise<any> {
     return new Promise((resolve, reject) => {
       var toReturn = {};
@@ -177,30 +196,36 @@ export class ImportMatchConflictNewCheckerService {
       toReturn['new'] = [];
       var numFormulasProcessed = 0;
       formulas.forEach(formula => {
-        console.log(formula);
         //do processing here
-        //can't do this yet because I'm blocked since the formula REST API calls do not support search by formulaname or formulanumber yet
+        this.rest.getFormulas(formula['formulaname'], null, null, null, 20).subscribe(response => {
+          console.log("Formula: ", formula);
+          console.log("Formula Response", response);
+          if (response.length == 0) {
+            toReturn['new'].push(formula);
+          } else {
+            var responseFormula = response[0];
+            var sameIngredientsAndQuantities = responseFormula['ingredientsandquantities'].length == formula['ingredientsandquantities'].length;
+            for (var i = 0; i < formula['ingredientsandquantities'].length; i++) {
+              if (this.arrayContainsObjectWithKey(responseFormula['ingredientsandquantities'], formula['ingredientsandquantities'][i]['ingredient'])) {
+                if (this.arrayObjectWithKey(responseFormula['ingredientsandquantities'], formula['ingredientsandquantities'][i]['ingredient'])['quantity'] != formula['ingredientsandquantities'][i]['quantity']) {
+                  sameIngredientsAndQuantities = false;
+                }
+              } else {
+                sameIngredientsAndQuantities = false;
+              }
+            }
+            if (responseFormula['formulaname'] == formula['formulaname']
+              && responseFormula['formulanumber'] == formula['formulanumber']
+              && responseFormula['comment'] == formula['comment']
+              && sameIngredientsAndQuantities) {
+              toReturn['matches'].push(formula);
+            } else {
+              toReturn['conflicts'].push(formula);
+            }
+          }
+        });
         numFormulasProcessed = numFormulasProcessed + 1;
         if (numFormulasProcessed == formulas.length) {
-          resolve(toReturn);
-        }
-      });
-    });
-  }
-
-  private checkManufacturingLinesMatchesConflictsNew(manufacturingLines, skuManufacturingLines): Promise<any> {
-    return new Promise((resolve, reject) => {
-      var toReturn = {};
-      toReturn['matches'] = [];
-      toReturn['conflicts'] = [];
-      toReturn['new'] = [];
-      var numMLsProcessed = 0;
-      manufacturingLines.forEach(manufacturingLine => {
-        console.log(manufacturingLine);
-        //do processing here
-        //can't do this yet because I'm blocked since Manufacturing Lines support is not ready in rest.service.ts yet
-        numMLsProcessed = numMLsProcessed + 1;
-        if (numMLsProcessed == manufacturingLines.length) {
           resolve(toReturn);
         }
       });
@@ -219,12 +244,33 @@ export class ImportMatchConflictNewCheckerService {
       toReturn['new'] = [];
       var numFormulasProcessed = 0;
       formulas.forEach(formula => {
-        console.log(formula);
         //do processing here
-        //can't do this yet because I'm blocked since formula support is not ready in rest.service.ts yet
-        numFormulasProcessed = numFormulasProcessed + 1;
-        if (numFormulasProcessed == formulas.length) {
-          resolve(toReturn);
+        var numIngredientsChecked = 0;
+        for (let ingredientAndQuantity of formula['ingredientsandquantities']) {
+          var ingredientnum = ingredientAndQuantity['ingredient'];
+          if (this.arrayContainsObjectWithKeyVal(ingredients, 'ingredientnumber', ingredientnum)) {
+            numIngredientsChecked++;
+            if (numIngredientsChecked == formula['ingredientsandquantities'].length) {
+              numFormulasProcessed = numFormulasProcessed + 1;
+              if (numFormulasProcessed == formulas.length) {
+                resolve(toReturn);
+              }
+            }
+          } else {
+            this.rest.getIngredients("", ingredientnum, 1).subscribe(response => {
+              if (response.length == 0) {
+                reject(Error("Could not find ingredient " + ingredientnum + " for formula " + formula['formulaname']));
+              } else {
+                numIngredientsChecked++;
+                if (numIngredientsChecked == formula['ingredientsandquantities'].length) {
+                  numFormulasProcessed = numFormulasProcessed + 1;
+                  if (numFormulasProcessed == formulas.length) {
+                    resolve(toReturn);
+                  }
+                }
+              }
+            });
+          }
         }
       });
     });
@@ -243,34 +289,10 @@ export class ImportMatchConflictNewCheckerService {
       toReturn['new'] = [];
       var numFormulasProcessed = 0;
       formulas.forEach(formula => {
-        console.log(formula);
         //do processing here
         //can't do this yet because I'm blocked since formulas support is not ready in rest.service.ts yet
         numFormulasProcessed = numFormulasProcessed + 1;
         if (numFormulasProcessed == formulas.length) {
-          resolve(toReturn);
-        }
-      });
-    });
-  }
-
-  /**
-   * Objects Manufacturing Lines reference that could cause errors:
-   * SKUs
-   */
-  private checkManufacturingLineReferences(manufacturingLines, skus): Promise<any> {
-    return new Promise((resolve, reject) => {
-      var toReturn = {};
-      toReturn['matches'] = [];
-      toReturn['conflicts'] = [];
-      toReturn['new'] = [];
-      //do processing here
-      //can't do this yet because I'm blocked since SKU support is not ready in rest.service.ts yet
-      var numSKUsProcessed = 0;
-      skus.forEach(sku => {
-        console.log(sku);
-        numSKUsProcessed = numSKUsProcessed + 1;
-        if (numSKUsProcessed == skus.length) {
           resolve(toReturn);
         }
       });

@@ -28,20 +28,16 @@ export class ImportComponent implements OnInit {
   filesSelected() {
     this.parser.parseCSVFiles(this.fileSelector.nativeElement.files).then(csvResult => {
       this.fileSelectorForm.nativeElement.reset();
-      console.log(csvResult);
       this.importChecker.checkAll(csvResult).then(checkResult => {
-        console.log(checkResult);
 
         const dialogConfig = new MatDialogConfig();
         dialogConfig.data = checkResult;
+        dialogConfig.minWidth = "50%";
         this.dialog.open(ImportPreviewDialogComponent, dialogConfig).afterClosed().subscribe(closeData => {
-          console.log(closeData);
           if (!closeData || closeData['cancel']) {
             //operation was cancelled
-            console.log("Operation cancelled");
           } else {
             //operation confirmed
-            console.log("Operation confirmed.");
             this.importUploader.importData(closeData).then(() => {
               //popup a dialog telling the user it was successfull
               const dialogConfig = new MatDialogConfig();
@@ -51,7 +47,6 @@ export class ImportComponent implements OnInit {
               };
               this.dialog.open(UserNotificationDialogComponent, dialogConfig);
             }).catch(err => {
-              console.log(err);
               //popup a dialog telling the user there was an error
               const dialogConfig = new MatDialogConfig();
               dialogConfig.data = {
@@ -64,12 +59,22 @@ export class ImportComponent implements OnInit {
         });
 
       }).catch(err => {
-        console.log(err);
+        const dialogConfig = new MatDialogConfig();
+        dialogConfig.data = {
+          title: "Error!",
+          message: "" + err
+        };
+        this.dialog.open(UserNotificationDialogComponent, dialogConfig);
       });
     }).catch(err => {
-      console.log(err);
+      const dialogConfig = new MatDialogConfig();
+      dialogConfig.data = {
+        title: "Error!",
+        message: "" + err
+      };
+      this.dialog.open(UserNotificationDialogComponent, dialogConfig);
     });
   }
 
-  
+
 }

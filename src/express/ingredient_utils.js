@@ -20,7 +20,6 @@ function getIngredients(ingredientname, ingredientnameregex, ingredientnumber,li
                 reject(Error(err));
                 return;
             }
-            // console.log("Found: " + ingredients)
             resolve(ingredients);
         });
     });
@@ -40,7 +39,6 @@ function createIngredient(ingredientname, ingredientnumber,
             else {
                 newingredientnumber = ingredientnumber
             }
-            console.log(newingredientnumber)
             let ingredient = new database.ingredientModel({
                 ingredientname: ingredientname,
                 ingredientnumber: newingredientnumber,
@@ -51,7 +49,6 @@ function createIngredient(ingredientname, ingredientnumber,
                 comment: comment
             });
             ingredient.save().then(result => {
-                console.log(result)
                 resolve(result);
             }).catch(err => {
                 reject(Error(err));

@@ -17,9 +17,7 @@ export class ImportUploadService {
         this.importFormulas(data['formulas']).then(formulaResult => {
           this.importSKUs(data['skus']).then(skuResult => {
             this.importProductLines(data['productlines']).then(productLineResult => {
-              this.importManufacturingLines(data['manufacturinglines']).then(manufacturingLineResult => {
-                resolve();
-              }).catch(catcher);
+              resolve();
             }).catch(catcher);
           }).catch(catcher);
         }).catch(catcher);
@@ -31,8 +29,7 @@ export class ImportUploadService {
     return this.numConflictedSelectNewOfSection(data['ingredients'])
     + this.numConflictedSelectNewOfSection(data['formulas'])
     + this.numConflictedSelectNewOfSection(data['skus'])
-    + this.numConflictedSelectNewOfSection(data['productlines'])
-    + this.numConflictedSelectNewOfSection(data['manufacturinglines']);
+    + this.numConflictedSelectNewOfSection(data['productlines']);
   }
 
   private numConflictedSelectNewOfSection(data) {
@@ -55,7 +52,7 @@ export class ImportUploadService {
       ingredients['conflicts'].forEach(conflict => {
         if (conflict['select'] == 'new') {
           var ingredient = conflict['new'];
-          this.rest.modifyIngredient(conflict['old'][0]['ingredientname'], ingredient['Name'], ingredient['Ingr#'], ingredient['Vendor Info'], "lb", 5, 10, ingredient['comment']).subscribe(result => {
+          this.rest.modifyIngredient(conflict['old'][0]['ingredientname'], ingredient['ingredientname'], ingredient['ingredientnumber'], ingredient['vendorinformation'], ingredient['unitofmeasure'], ingredient['amount'], ingredient['costperpackage'], ingredient['comment']).subscribe(result => {
             if (result['ok'] == 1) {
               if (++numIngredientsProcessed==totalIngredients) {
                 resolve();
@@ -67,8 +64,8 @@ export class ImportUploadService {
         }
       });
       ingredients['new'].forEach(ingredient => {
-        this.rest.createIngredient(ingredient['Name'], ingredient['Ingr#'], ingredient['Vendor Info'], "lb", 5, 10, ingredient['comment']).subscribe(result => {
-          if (result['ingredientname'] == ingredient['Name']) {
+        this.rest.createIngredient(ingredient['ingredientname'], ingredient['ingredientnumber'], ingredient['vendorinformation'], ingredient['unitofmeasure'], ingredient['amount'], ingredient['costperpackage'], ingredient['comment']).subscribe(result => {
+          if (result['ingredientname'] == ingredient['ingredientname']) {
             if (++numIngredientsProcessed==totalIngredients) {
               resolve();
             }
@@ -112,10 +109,5 @@ export class ImportUploadService {
       });
     });
   }
-
-  private importManufacturingLines(manufacturingLines): Promise<any> {
-    return new Promise((resolve, reject) => {
-      resolve(true);
-    });
-  }
+  
 }

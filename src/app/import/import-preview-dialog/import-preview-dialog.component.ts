@@ -11,7 +11,6 @@ export class ImportPreviewDialogComponent implements OnInit {
   constructor(private dialogRef: MatDialogRef<ImportPreviewDialogComponent>, @Inject(MAT_DIALOG_DATA) public data: any) { }
 
   ngOnInit() {
-    console.log(this.data);
   }
 
   cancel() {
@@ -27,7 +26,6 @@ export class ImportPreviewDialogComponent implements OnInit {
     this.selectAllOldOfSection('formulas');
     this.selectAllOldOfSection('skus');
     this.selectAllOldOfSection('productlines');
-    this.selectAllOldOfSection('manufacturinglines');
   }
 
   selectAllNew() {
@@ -35,7 +33,6 @@ export class ImportPreviewDialogComponent implements OnInit {
     this.selectAllNewOfSection('formulas');
     this.selectAllNewOfSection('skus');
     this.selectAllNewOfSection('productlines');
-    this.selectAllNewOfSection('manufacturinglines');
   }
 
   selectAllOldOfSection(section) {
@@ -54,16 +51,14 @@ export class ImportPreviewDialogComponent implements OnInit {
     return this.areAllOfSectionOld('ingredients')
     && this.areAllOfSectionOld('formulas')
     && this.areAllOfSectionOld('skus')
-    && this.areAllOfSectionOld('productlines')
-    && this.areAllOfSectionOld('manufacturinglines');
+    && this.areAllOfSectionOld('productlines');
   }
 
   areAllNewSelected() {
     return this.areAllOfSectionNew('ingredients')
     && this.areAllOfSectionNew('formulas')
     && this.areAllOfSectionNew('skus')
-    && this.areAllOfSectionNew('productlines')
-    && this.areAllOfSectionNew('manufacturinglines');
+    && this.areAllOfSectionNew('productlines');
   }
 
   areAllOfSectionNew(section) {

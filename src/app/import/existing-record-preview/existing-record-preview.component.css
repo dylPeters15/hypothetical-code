@@ -1,0 +1,15 @@
+:host-context(.new) * {
+    color: green;
+}
+
+:host-context(.matches) * {
+    color: blue;
+}
+
+md-list-item.md-3-line{
+    height: auto !important;
+    }
+
+mat-list-item {
+    height: auto !important;
+}

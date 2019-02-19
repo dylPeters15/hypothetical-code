@@ -48,6 +48,7 @@ import { ImportPreviewDialogComponent } from './import/import-preview-dialog/imp
 import { ImportConflictResolverComponent } from './import/import-conflict-resolver/import-conflict-resolver.component';
 import { RecordImportPreviewComponent } from './import/record-import-preview/record-import-preview.component';
 import { ImportPreviewSectionComponent } from './import/import-preview-section/import-preview-section.component';
+import { ExistingRecordPreviewComponent } from './import/existing-record-preview/existing-record-preview.component';
 import { NewLineDialogComponent } from './new-line-dialog/new-line-dialog.component';
 import { ManufacturingLinesComponent } from './manufacturing-lines/manufacturing-lines.component';
 
@@ -102,6 +103,7 @@ const appRoutes: Routes = [
     ImportConflictResolverComponent,
     RecordImportPreviewComponent,
     ImportPreviewSectionComponent,
+    ExistingRecordPreviewComponent,
     ManufacturingLinesComponent,
     NewLineDialogComponent
   ],

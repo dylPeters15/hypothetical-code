@@ -1,13 +1,22 @@
 const database = require('./database.js');
 
-function getFormulas(sku, ingredient, formulaname, formulanumber, limit) {
+function getFormulas(formulaname, formulanumber, sku, ingredient, limit) {
+
+    formulaname = formulaname||"";
+    formulanumber = formulanumber||-1;
+    sku = sku||-1;
+    ingredient = ingredient||-1;
     limit = limit || database.defaultSearchLimit;
+
+
+    console.log("Formula name: ", JSON.stringify(formulaname));
+    console.log("Formula num: ", formulanumber);
+    console.log("sku: ", sku);
+    console.log("ingredient: ", ingredient);
 
     return new Promise((resolve, reject) => {
         var filterSchema = {
             $or: [
-                { sku: sku },
-                { ingredient: ingredient },
                 { formulaname: formulaname },
                 { formulanumber: formulanumber }
             ]
@@ -17,6 +26,7 @@ function getFormulas(sku, ingredient, formulaname, formulanumber, limit) {
                 reject(Error(err));
                 return;
             }
+            console.log(formulas);
             resolve(formulas);
         });
     });

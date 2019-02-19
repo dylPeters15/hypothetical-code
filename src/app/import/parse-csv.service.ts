@@ -33,24 +33,15 @@ export class ParseCsvService {
               objectToReturn['ingredients'] = [];
               objectToReturn['formulas'] = [];
               objectToReturn['productlines'] = [];
-              objectToReturn['formulaingredients'] = [];
-              objectToReturn['manufacturinglines'] = [];
-              objectToReturn['skumanufacturinglines'] = [];
               for (let filename in result) {
                 if (filename.startsWith("skus")) {
-                  objectToReturn['skus'] = objectToReturn['skus'].concat(result[filename])
+                  objectToReturn['skus'] = objectToReturn['skus'].concat(result[filename]);
                 } else if (filename.startsWith("ingredients")) {
-                  objectToReturn['ingredients'] = objectToReturn['ingredients'].concat(result[filename])
+                  objectToReturn['ingredients'] = objectToReturn['ingredients'].concat(this.parseIngredients(result[filename]));
                 } else if (filename.startsWith("formulas")) {
-                  objectToReturn['formulas'] = objectToReturn['formulas'].concat(result[filename])
+                  objectToReturn['formulas'] = objectToReturn['formulas'].concat(this.consolidateFormulas(result[filename]));
                 } else if (filename.startsWith("product_lines")) {
-                  objectToReturn['productlines'] = objectToReturn['productlines'].concat(result[filename])
-                } else if (filename.startsWith("formula_ingredients")) {
-                  objectToReturn['formulaingredients'] = objectToReturn['formulaingredients'].concat(result[filename])
-                } else if (filename.startsWith("manufacturing_lines")) {
-                  objectToReturn['manufacturinglines'] = objectToReturn['manufacturinglines'].concat(result[filename])
-                } else if (filename.startsWith("sku_manufacturing_lines")) {
-                  objectToReturn['skumanufacturinglines'] = objectToReturn['skumanufacturinglines'].concat(result[filename])
+                  objectToReturn['productlines'] = objectToReturn['productlines'].concat(result[filename]);
                 } else {
                   reject(Error("Filename incorrect."));
                 }
@@ -74,16 +65,13 @@ export class ParseCsvService {
         var validFileBeginning = fileName.startsWith("skus")
           || fileName.startsWith("ingredients")
           || fileName.startsWith("product_lines")
-          || fileName.startsWith("formulas")
-          || fileName.startsWith("formula_ingredients")
-          || fileName.startsWith("manufacturing_lines")
-          || fileName.startsWith("sku_manufacturing_lines");
+          || fileName.startsWith("formulas");
         var validFileEnd = fileName.endsWith(".csv");
         if (!validFileBeginning) {
-          reject(Error("Error. File name must start with 'skus', 'ingredients', 'product_lines', 'formulas', 'formula_ingredients', 'manufacturing_lines', or 'sku_manufacturing_lines'."));
+          reject(Error("File name must start with 'skus', 'ingredients', 'product_lines', or 'formulas'."));
         }
         if (!validFileEnd) {
-          reject(Error("Error. File name must end with '.csv'."));
+          reject(Error("File name must end with '.csv'."));
         }
         numFiles = numFiles + 1;
       }
@@ -103,7 +91,7 @@ export class ParseCsvService {
                 reject(result.errors[0]);
               }
               let objectArray: any[] = result.data;
-              objectArray.shift(); //remove header
+              // objectArray.shift(); //remove header
               objectToReturn[fileName] = objectArray;
               numParsed = numParsed + 1;
               if (numParsed == numFiles) {
@@ -113,6 +101,77 @@ export class ParseCsvService {
           });
       }
     });
+  }
+  
+  private arrayContainsObjectWithKey(array: any[], key: string): boolean {
+    for (var i = 0; i < array.length; i++) {
+      if (Object.keys(array[i]).includes(key)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  private arrayContainsObjectWithKeyVal(array: any[], key: string, val: string): boolean {
+    for (var i = 0; i < array.length; i++) {
+      if (Object.keys(array[i]).includes(key) && array[i][key] == val) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  private arrayObjectWithKeyVal(array: any[], key: string, val: string): any {
+    for (var i = 0; i < array.length; i++) {
+      if (Object.keys(array[i]).includes(key) && array[i][key] == val) {
+        return array[i];
+      }
+    }
+    return null;
+  }
+
+  
+  private consolidateFormulas(formulasObject): any[] {
+    var objectToReturn = [];
+
+    for (var i = 0; i < formulasObject.length; i++) {
+      var currentFormula = formulasObject[i];
+      var newFormula = {};//this.arrayObjectWithKey(objectToReturn,currentFormula['Name'])||{};
+      if (this.arrayContainsObjectWithKeyVal(objectToReturn, 'formulaname', currentFormula['Name'])) {
+        newFormula = this.arrayObjectWithKeyVal(objectToReturn, 'formulaname', currentFormula['Name']);
+      } else {
+        newFormula['formulaname'] = currentFormula['Name'];
+        newFormula['formulanumber'] = currentFormula['Formula#'];
+        newFormula['ingredientsandquantities'] = [];
+        newFormula['comment'] = currentFormula['Comment'];
+        objectToReturn.push(newFormula);
+      }
+      newFormula['ingredientsandquantities'].push({
+        ingredient: currentFormula['Ingr#'],
+        quantity: currentFormula['Quantity']
+      });
+    }
+
+    return objectToReturn;
+  }
+
+  private parseIngredients(ingredientsObject): any[] {
+    var objectToReturn = [];
+    for (var i = 0; i < ingredientsObject.length; i++) {
+      var currentIngredient = ingredientsObject[i];
+      var newIngredient = {};
+
+      newIngredient['ingredientname'] = currentIngredient['Name'];
+      newIngredient['ingredientnumber'] = currentIngredient['Ingr#'];
+      newIngredient['vendorinformation'] = currentIngredient['Vendor Info'];
+      newIngredient['unitofmeasure'] = currentIngredient['Size'].toLowerCase().match('[a-z]+')[0];
+      newIngredient['amount'] = Number(currentIngredient['Size'].toLowerCase().match('[0-9]+')[0]);
+      newIngredient['costperpackage'] = isNaN(currentIngredient['Cost'])?Number(currentIngredient['Cost'].toLowerCase().match('[0-9\.]+')[0]):currentIngredient['Cost'];
+      newIngredient['comment'] = currentIngredient['Comment']||"";
+
+      objectToReturn.push(newIngredient);
+    }
+    return objectToReturn;
   }
 
 }
