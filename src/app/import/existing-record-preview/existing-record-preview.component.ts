@@ -29,6 +29,7 @@ export class ExistingRecordPreviewComponent implements ControlValueAccessor {
     if (value) {
       this._value = value;
       this.stringified = JSON.stringify(value);
+      console.log("Value: ", value);
       this.keys = Object.keys(value[0]).filter((value, index, array) => {
         return !value.startsWith('_');
       });

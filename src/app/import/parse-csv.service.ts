@@ -143,7 +143,7 @@ export class ParseCsvService {
         newFormula['formulaname'] = currentFormula['Name'];
         newFormula['formulanumber'] = currentFormula['Formula#'];
         newFormula['ingredientsandquantities'] = [];
-        newFormula['comment'] = currentFormula['Comment'];
+        newFormula['comment'] = currentFormula['Comment']||"";
         objectToReturn.push(newFormula);
       }
       newFormula['ingredientsandquantities'].push({

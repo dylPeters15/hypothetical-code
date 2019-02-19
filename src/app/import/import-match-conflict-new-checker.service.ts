@@ -40,7 +40,7 @@ export class ImportMatchConflictNewCheckerService {
       }).catch(err => {
         reject(err);
       });
-      this.checkFormulasMatchesConflictsNew(input['formulas'], input['formulaingredients']).then(result => {
+      this.checkFormulasMatchesConflictsNew(input['formulas']).then(result => {
         toReturn['formulas'] = result;
         numFinished = numFinished + 1;
         if (numFinished == totalNum) {
@@ -188,7 +188,55 @@ export class ImportMatchConflictNewCheckerService {
     return null;
   }
 
-  private checkFormulasMatchesConflictsNew(formulas, formulaIngredients): Promise<any> {
+  private responseFormulaContainsIngredientAndQuantity(responseFormula, ingredientnum, quantity): boolean {
+    for (var i = 0; i < responseFormula['ingredientsandquantities'].length; i++) {
+      var IAndQ = responseFormula['ingredientsandquantities'][i];
+      if (IAndQ['ingredient']['ingredientnumber'] == ingredientnum) {
+        return IAndQ['quantity'] == quantity;
+      }
+    }
+    return false;
+  }
+
+  private checkFormulaMatchConflictNew(formula, toReturn): Promise<any> {
+    return new Promise((resolve, reject) => {
+      this.rest.getFormulas(formula['formulaname'], null, null, null, 1).subscribe(response => {
+        console.log("Formula to check: ", formula);
+        console.log("Response 0 is:", response[0]);
+        if (response.length == 0) {
+          toReturn['new'].push(formula);
+          resolve();
+        } else {
+          var responseFormula = response[0];
+          var sameIngredientsAndQuantities = responseFormula['ingredientsandquantities'].length == formula['ingredientsandquantities'].length;
+          for (var i = 0; i < formula['ingredientsandquantities'].length; i++) {
+            if (!this.responseFormulaContainsIngredientAndQuantity(responseFormula, formula['ingredientsandquantities'][i]['ingredient'], formula['ingredientsandquantities'][i]['quantity'])) {
+              sameIngredientsAndQuantities = false;
+            }
+          }
+          console.log("Response comment: ",responseFormula['comment']);
+          console.log(" comment: ",formula['comment']);
+          if (responseFormula['formulaname'] == formula['formulaname']
+            && responseFormula['formulanumber'] == formula['formulanumber']
+            && responseFormula['comment'] == formula['comment']
+            && sameIngredientsAndQuantities
+            ) {
+            toReturn['matches'].push(formula);
+          } else {
+            responseFormula['Name'] = responseFormula['formulaname'];
+            toReturn['conflicts'].push({
+              old: [responseFormula],
+              new: formula,
+              select: 'new'
+            });
+          }
+          resolve();
+        }
+      });
+    });
+  }
+
+  private checkFormulasMatchesConflictsNew(formulas): Promise<any> {
     return new Promise((resolve, reject) => {
       var toReturn = {};
       toReturn['matches'] = [];
@@ -197,37 +245,15 @@ export class ImportMatchConflictNewCheckerService {
       var numFormulasProcessed = 0;
       formulas.forEach(formula => {
         //do processing here
-        this.rest.getFormulas(formula['formulaname'], null, null, null, 20).subscribe(response => {
-          console.log("Formula: ", formula);
-          console.log("Formula Response", response);
-          if (response.length == 0) {
-            toReturn['new'].push(formula);
-          } else {
-            var responseFormula = response[0];
-            var sameIngredientsAndQuantities = responseFormula['ingredientsandquantities'].length == formula['ingredientsandquantities'].length;
-            for (var i = 0; i < formula['ingredientsandquantities'].length; i++) {
-              if (this.arrayContainsObjectWithKey(responseFormula['ingredientsandquantities'], formula['ingredientsandquantities'][i]['ingredient'])) {
-                if (this.arrayObjectWithKey(responseFormula['ingredientsandquantities'], formula['ingredientsandquantities'][i]['ingredient'])['quantity'] != formula['ingredientsandquantities'][i]['quantity']) {
-                  sameIngredientsAndQuantities = false;
-                }
-              } else {
-                sameIngredientsAndQuantities = false;
-              }
-            }
-            if (responseFormula['formulaname'] == formula['formulaname']
-              && responseFormula['formulanumber'] == formula['formulanumber']
-              && responseFormula['comment'] == formula['comment']
-              && sameIngredientsAndQuantities) {
-              toReturn['matches'].push(formula);
-            } else {
-              toReturn['conflicts'].push(formula);
-            }
+        this.checkFormulaMatchConflictNew(formula, toReturn).then(() => {
+          console.log("num processed: ", numFormulasProcessed);
+          numFormulasProcessed++;
+          if (numFormulasProcessed == formulas.length) {
+            resolve(toReturn);
           }
+        }).catch(err => {
+          reject(err);
         });
-        numFormulasProcessed = numFormulasProcessed + 1;
-        if (numFormulasProcessed == formulas.length) {
-          resolve(toReturn);
-        }
       });
     });
   }

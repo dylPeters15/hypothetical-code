@@ -138,7 +138,7 @@ export class RestService {
       formulaname: formulaname,
       formulanumber: formulanumber,
       ingredientsandquantities: ingredientsandquantities,
-      comment: comment
+      comment: comment||""
     },
     this.generateHeader({
       formulaname: oldname

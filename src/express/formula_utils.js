@@ -21,7 +21,7 @@ function getFormulas(formulaname, formulanumber, sku, ingredient, limit) {
                 { formulanumber: formulanumber }
             ]
         }
-        database.formulaModel.find(filterSchema).limit(limit).populate('sku ingredient').exec((err, formulas) => {
+        database.formulaModel.find(filterSchema).limit(limit).populate('ingredientsandquantities.ingredient').exec((err, formulas) => {
             if (err) {
                 reject(Error(err));
                 return;
