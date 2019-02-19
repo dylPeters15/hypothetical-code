@@ -162,16 +162,19 @@ export class RestService {
   }));
 }
 
-createSku(skuName: String, skuNumber: number, 
-  caseUpcNumber: number, unitUpcNumber: number, unitSize: number, 
-  countPerCase: number, comment: String): Observable<any> {
+createSku(skuname: String, skunumber: number, 
+  caseupcnumber: number, unitupcnumber: number, unitsize: number, 
+  countpercase: number, formulanum: Number, formulascalingfactor: Number, manufacturingrate: Number, comment: String): Observable<any> {
   return this.http.put(endpoint + "skus", {
-    skuname: skuName,
-    skunumber: skuNumber,
-    caseupcnumber: caseUpcNumber,
-    unitupcnumber: unitUpcNumber,
-    unitsize: unitSize,
-    countpercase: countPerCase,
+    skuname: skuname,
+    skunumber: skunumber,
+    caseupcnumber: caseupcnumber,
+    unitupcnumber: unitupcnumber,
+    unitsize: unitsize,
+    countpercase: countpercase,
+    formulanum: formulanum,
+    formulascalingfactor: formulascalingfactor,
+    manufacturingrate: manufacturingrate,
     comment: comment
   },
   this.generateHeader());

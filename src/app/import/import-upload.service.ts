@@ -177,7 +177,8 @@ export class ImportUploadService {
 
   private importSKU(sku): Promise<any> {
     return new Promise((resolve, reject) => {
-      this.rest.createSku(sku['skuname'], sku['skunumber'], sku['caseupcnumber'], sku['unitupcnumber'], sku['unitsize'], sku['countpercase'], sku['comment']).subscribe(createSkuResponse => {
+      console.log("SKU: ",sku);
+      this.rest.createSku(sku['skuname'], sku['skunumber'], sku['caseupcnumber'], sku['unitupcnumber'], sku['unitsize'], sku['countpercase'], sku['formula'], sku['formulascalingfactor'], sku['manufacturingrate'], sku['comment']).subscribe(createSkuResponse => {
         if (createSkuResponse['skuname'] == sku['skuname']) {
           this.rest.getProductLines(sku['productline'],1).subscribe
           (getPLResponse => {
