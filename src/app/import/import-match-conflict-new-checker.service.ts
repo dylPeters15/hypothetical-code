@@ -103,12 +103,12 @@ export class ImportMatchConflictNewCheckerService {
           } else {
             var responseIngredient = response[0];
             if (ingredient['ingredientname'] == responseIngredient['ingredientname']
-            && ingredient['ingredientnumber'] == responseIngredient['ingredientnumber']
-            && ingredient['vendorinformation'] == responseIngredient['vendorinformation']
-            && ingredient['unitofmeasure'] == responseIngredient['unitofmeasure']
-            && ingredient['amount'] == responseIngredient['amount']
-            && ingredient['costperpackage'] == responseIngredient['costperpackage']
-            && ingredient['comment'] == responseIngredient['comment']
+              && ingredient['ingredientnumber'] == responseIngredient['ingredientnumber']
+              && ingredient['vendorinformation'] == responseIngredient['vendorinformation']
+              && ingredient['unitofmeasure'] == responseIngredient['unitofmeasure']
+              && ingredient['amount'] == responseIngredient['amount']
+              && ingredient['costperpackage'] == responseIngredient['costperpackage']
+              && ingredient['comment'] == responseIngredient['comment']
             ) {
               toReturn['matches'].push(ingredient);
             } else {
@@ -161,9 +161,27 @@ export class ImportMatchConflictNewCheckerService {
     return false;
   }
 
+  private arrayContainsObjectWithKeyVal(array: any[], key: string, val: string): boolean {
+    for (var i = 0; i < array.length; i++) {
+      if (Object.keys(array[i]).includes(key) && array[i][key] == val) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   private arrayObjectWithKey(array: any[], key: string): any {
     for (var i = 0; i < array.length; i++) {
       if (Object.keys(array[i]).includes(key)) {
+        return array[i];
+      }
+    }
+    return null;
+  }
+
+  private arrayObjectWithKeyVal(array: any[], key: string, val: string): any {
+    for (var i = 0; i < array.length; i++) {
+      if (Object.keys(array[i]).includes(key) && array[i][key] == val) {
         return array[i];
       }
     }
@@ -181,7 +199,7 @@ export class ImportMatchConflictNewCheckerService {
         //do processing here
         this.rest.getFormulas(formula['formulaname'], null, null, null, 20).subscribe(response => {
           console.log("Formula: ", formula);
-          console.log("Formula Response",response);
+          console.log("Formula Response", response);
           if (response.length == 0) {
             toReturn['new'].push(formula);
           } else {
@@ -197,9 +215,9 @@ export class ImportMatchConflictNewCheckerService {
               }
             }
             if (responseFormula['formulaname'] == formula['formulaname']
-            && responseFormula['formulanumber'] == formula['formulanumber']
-            && responseFormula['comment'] == formula['comment']
-            && sameIngredientsAndQuantities) {
+              && responseFormula['formulanumber'] == formula['formulanumber']
+              && responseFormula['comment'] == formula['comment']
+              && sameIngredientsAndQuantities) {
               toReturn['matches'].push(formula);
             } else {
               toReturn['conflicts'].push(formula);
@@ -227,10 +245,32 @@ export class ImportMatchConflictNewCheckerService {
       var numFormulasProcessed = 0;
       formulas.forEach(formula => {
         //do processing here
-        //can't do this yet because I'm blocked since formula support is not ready in rest.service.ts yet
-        numFormulasProcessed = numFormulasProcessed + 1;
-        if (numFormulasProcessed == formulas.length) {
-          resolve(toReturn);
+        var numIngredientsChecked = 0;
+        for (let ingredientAndQuantity of formula['ingredientsandquantities']) {
+          var ingredientnum = ingredientAndQuantity['ingredient'];
+          if (this.arrayContainsObjectWithKeyVal(ingredients, 'ingredientnumber', ingredientnum)) {
+            numIngredientsChecked++;
+            if (numIngredientsChecked == formula['ingredientsandquantities'].length) {
+              numFormulasProcessed = numFormulasProcessed + 1;
+              if (numFormulasProcessed == formulas.length) {
+                resolve(toReturn);
+              }
+            }
+          } else {
+            this.rest.getIngredients("", ingredientnum, 1).subscribe(response => {
+              if (response.length == 0) {
+                reject(Error("Could not find ingredient " + ingredientnum + " for formula " + formula['formulaname']));
+              } else {
+                numIngredientsChecked++;
+                if (numIngredientsChecked == formula['ingredientsandquantities'].length) {
+                  numFormulasProcessed = numFormulasProcessed + 1;
+                  if (numFormulasProcessed == formulas.length) {
+                    resolve(toReturn);
+                  }
+                }
+              }
+            });
+          }
         }
       });
     });
