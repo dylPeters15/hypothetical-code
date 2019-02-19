@@ -263,7 +263,6 @@ var formulaSchema = new mongoose.Schema({
     unique: false
   }
 });
-formulaSchema.index({ sku: 1, ingredient: 1 }, { unique: true }); //the combination of sku and ingredient should be unique
 formulaSchema.plugin(uniqueValidator);
 
 var formulaModel = mongoose.model('formula', formulaSchema);

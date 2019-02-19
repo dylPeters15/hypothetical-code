@@ -123,11 +123,12 @@ export class RestService {
     }));
   }
 
-  createFormula(sku: number, ingredient: number, quantity: number): Observable<any> {
+  createFormula(formulaname: string, formulanumber: number, ingredientsandquantities: any[], comment: string): Observable<any> {
     return this.http.put(endpoint + "formulas", {
-      sku: sku,
-      ingredient: ingredient,
-      quantity: quantity
+      formulaname: formulaname,
+      formulanumber: formulanumber,
+      ingredientsandquantities: ingredientsandquantities,
+      comment: comment
     },
     this.generateHeader());
   }

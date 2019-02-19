@@ -34,10 +34,15 @@ function getFormulas(formulaname, formulanumber, sku, ingredient, limit) {
 
 function createFormula(newFormulaObject) {
     return new Promise((resolve, reject) => {
+        console.log(newFormulaObject);
+        // for (var i = i; i < newFormulaObject['ingredientsandquantities'].length; i++) {
+        //     newFormulaObject['ingredientsandquantities'][i]['ingredient'] = mongoose.Types.ObjectId(newFormulaObject['ingredientsandquantities'][i]['ingredient']);
+        // }
         let formula = new database.formulaModel(newFormulaObject);
         formula.save().then(response => {
             resolve(response);
         }).catch(err => {
+            console.log(Error(err));
             reject(Error(err));
         });
     });

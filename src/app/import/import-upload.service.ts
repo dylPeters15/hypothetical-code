@@ -79,18 +79,26 @@ export class ImportUploadService {
 
   private importFormula(formula): Promise<any> {
     return new Promise((resolve, reject) => {
-      console.log(formula);
       var numIngredientsProcessed = 0;
+      var ingredientsAndQuantities = [];
       formula['ingredientsandquantities'].forEach(ingredientAndQuantity => {
-        console.log("Ingredient and quantity: ", ingredientAndQuantity);
         var ingredientnum = ingredientAndQuantity['ingredient'];
-        console.log("Ingredient num: ",ingredientnum);
         this.rest.getIngredients("",ingredientnum,1).subscribe(response => {
           if (response.length == 0) {
             reject(Error("Could not find ingredient " + ingredientnum + " for formula " + formula['formulaname']));
           } else {
             var ingredientID = response[0]['_id'];
-            console.log("Response 0:", response[0]);
+            ingredientsAndQuantities.push({
+              ingredient: ""+ingredientID,
+              quantity: ingredientAndQuantity['quantity']
+            });
+            numIngredientsProcessed++;
+            if (numIngredientsProcessed == formula['ingredientsandquantities'].length) {
+              this.rest.createFormula(formula['formulaname'], formula['formulanumber'], ingredientsAndQuantities, formula['comment']||"").subscribe(createResponse => {
+                console.log("Create response: ",createResponse);
+                resolve();
+              });
+            }
           }
         });
       });
@@ -98,11 +106,9 @@ export class ImportUploadService {
   }
 
   private importFormulas(formulas): Promise<any> {
-    console.log("Import formulas.");
     return new Promise((resolve, reject) => {
       var numFormulasToProcess = formulas['new'].length+this.numConflictedSelectNewOfSection(formulas);
       var numFormulasProcessed = 0;
-      console.log("formulas: ",formulas);
 
       formulas['new'].forEach(formula => {
         this.importFormula(formula).then(() => {
