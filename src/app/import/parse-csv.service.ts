@@ -132,23 +132,19 @@ export class ParseCsvService {
 
   
   private consolidateFormulas(formulasObject): any[] {
-    console.log("Formulasobject: ",formulasObject);
     var objectToReturn = [];
 
     for (var i = 0; i < formulasObject.length; i++) {
       var currentFormula = formulasObject[i];
       var newFormula = {};//this.arrayObjectWithKey(objectToReturn,currentFormula['Name'])||{};
       if (this.arrayContainsObjectWithKeyVal(objectToReturn, 'formulaname', currentFormula['Name'])) {
-        console.log("NewFormula");
         newFormula = this.arrayObjectWithKeyVal(objectToReturn, 'formulaname', currentFormula['Name']);
       } else {
-        console.log(currentFormula['Name']);
         newFormula['formulaname'] = currentFormula['Name'];
         newFormula['formulanumber'] = currentFormula['Formula#'];
         newFormula['ingredientsandquantities'] = [];
         newFormula['comment'] = currentFormula['Comment'];
         objectToReturn.push(newFormula);
-        console.log("New formula: ",newFormula);
       }
       newFormula['ingredientsandquantities'].push({
         ingredient: currentFormula['Ingr#'],
@@ -156,7 +152,6 @@ export class ParseCsvService {
       });
     }
 
-    console.log("Object to return:",objectToReturn);
     return objectToReturn;
   }
 

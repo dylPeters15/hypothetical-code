@@ -98,14 +98,10 @@ export class ImportMatchConflictNewCheckerService {
       ingredients.forEach(ingredient => {
         //do processing here
         this.rest.getIngredients(ingredient['ingredientname'], ingredient['ingredientnumber'], 1).subscribe(response => {
-          console.log("Response: ",response);
           if (response.length == 0) {
             toReturn['new'].push(ingredient);
           } else {
             var responseIngredient = response[0];
-            console.log("equal:",ingredient['comment'] == responseIngredient['comment']);
-            console.log("ingredient:",ingredient['comment']);
-            console.log("responseingredient:",responseIngredient['comment']);
             if (ingredient['ingredientname'] == responseIngredient['ingredientname']
             && ingredient['ingredientnumber'] == responseIngredient['ingredientnumber']
             && ingredient['vendorinformation'] == responseIngredient['vendorinformation']
@@ -183,8 +179,8 @@ export class ImportMatchConflictNewCheckerService {
       var numFormulasProcessed = 0;
       formulas.forEach(formula => {
         //do processing here
-        console.log("Formula: ", formula);
         this.rest.getFormulas(formula['formulaname'], null, null, null, 20).subscribe(response => {
+          console.log("Formula: ", formula);
           console.log("Formula Response",response);
           if (response.length == 0) {
             toReturn['new'].push(formula);
