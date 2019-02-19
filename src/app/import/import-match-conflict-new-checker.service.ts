@@ -201,8 +201,6 @@ export class ImportMatchConflictNewCheckerService {
   private checkFormulaMatchConflictNew(formula, toReturn): Promise<any> {
     return new Promise((resolve, reject) => {
       this.rest.getFormulas(formula['formulaname'], null, null, null, 1).subscribe(response => {
-        console.log("Formula to check: ", formula);
-        console.log("Response 0 is:", response[0]);
         if (response.length == 0) {
           toReturn['new'].push(formula);
           resolve();
@@ -214,8 +212,6 @@ export class ImportMatchConflictNewCheckerService {
               sameIngredientsAndQuantities = false;
             }
           }
-          console.log("Response comment: ",responseFormula['comment']);
-          console.log(" comment: ",formula['comment']);
           if (responseFormula['formulaname'] == formula['formulaname']
             && responseFormula['formulanumber'] == formula['formulanumber']
             && responseFormula['comment'] == formula['comment']
@@ -246,7 +242,6 @@ export class ImportMatchConflictNewCheckerService {
       formulas.forEach(formula => {
         //do processing here
         this.checkFormulaMatchConflictNew(formula, toReturn).then(() => {
-          console.log("num processed: ", numFormulasProcessed);
           numFormulasProcessed++;
           if (numFormulasProcessed == formulas.length) {
             resolve(toReturn);

@@ -95,7 +95,6 @@ export class ImportUploadService {
             numIngredientsProcessed++;
             if (numIngredientsProcessed == formula['ingredientsandquantities'].length) {
               this.rest.createFormula(formula['formulaname'], formula['formulanumber'], ingredientsAndQuantities, formula['comment']||"").subscribe(createResponse => {
-                console.log("Create response: ",createResponse);
                 if (createResponse['formulaname'] == formula['formulaname']) {
                   resolve();
                 } else {
@@ -113,8 +112,6 @@ export class ImportUploadService {
     return new Promise((resolve, reject) => {
       var numIngredientsProcessed = 0;
       var ingredientsAndQuantities = [];
-
-      console.log("In updatFormula");
       formula['ingredientsandquantities'].forEach(ingredientAndQuantity => {
         var ingredientnum = ingredientAndQuantity['ingredient'];
         this.rest.getIngredients("",ingredientnum,1).subscribe(response => {
@@ -129,7 +126,6 @@ export class ImportUploadService {
             numIngredientsProcessed++;
             if (numIngredientsProcessed == formula['ingredientsandquantities'].length) {
               this.rest.modifyFormula(oldname, formula['formulaname'], formula['formulanumber'], ingredientsAndQuantities, formula['comment']||"").subscribe(modifyResponse => {
-                console.log("Modify response: ",modifyResponse);
                 if (modifyResponse['ok'] == 1) {
                   resolve();
                 } else {
@@ -147,7 +143,6 @@ export class ImportUploadService {
     return new Promise((resolve, reject) => {
       var numFormulasToProcess = formulas['new'].length+this.numConflictedSelectNewOfSection(formulas);
       var numFormulasProcessed = 0;
-      console.log("import formuls");
       formulas['new'].forEach(formula => {
         this.importFormula(formula).then(() => {
           numFormulasProcessed++;
