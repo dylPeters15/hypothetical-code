@@ -14,9 +14,13 @@ export class ImportUploadService {
         reject(err);
       };
       this.importIngredients(data['ingredients']).then(ingredientResult => {
+        console.log("finished ingredients.");
         this.importFormulas(data['formulas']).then(formulaResult => {
+          console.log("finished formulas.");
           this.importProductLines(data['productlines']).then(productLineResult => {
+            console.log("finished product lines.");
             this.importSKUs(data['skus']).then(skuResult => {
+              console.log("finished skus.");
               resolve();
             }).catch(catcher);
           }).catch(catcher);
@@ -143,6 +147,9 @@ export class ImportUploadService {
     return new Promise((resolve, reject) => {
       var numFormulasToProcess = formulas['new'].length+this.numConflictedSelectNewOfSection(formulas);
       var numFormulasProcessed = 0;
+      if (numFormulasToProcess == 0) {
+        resolve();
+      }
       formulas['new'].forEach(formula => {
         this.importFormula(formula).then(() => {
           numFormulasProcessed++;

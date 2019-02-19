@@ -70,6 +70,12 @@ export class ImportMatchConflictNewCheckerService {
     });
   }
 
+  private checkSKUMatchConflictNew(sku): Promise<any> {
+    return new Promise((resolve, reject) => {
+      resolve();
+    });
+  }
+
   private checkSKUsMatchesConflictsNew(skus): Promise<any> {
     return new Promise((resolve, reject) => {
       var toReturn = {};
@@ -77,13 +83,16 @@ export class ImportMatchConflictNewCheckerService {
       toReturn['conflicts'] = [];
       toReturn['new'] = [];
       //do processing here
-      //can't do this yet because I'm blocked since SKU support is not ready in rest.service.ts yet
       var numSKUsProcessed = 0;
       skus.forEach(sku => {
-        numSKUsProcessed = numSKUsProcessed + 1;
-        if (numSKUsProcessed == skus.length) {
-          resolve(toReturn);
-        }
+        this.checkSKUMatchConflictNew(sku).then(() => {
+          numSKUsProcessed = numSKUsProcessed + 1;
+          if (numSKUsProcessed == skus.length) {
+            resolve(toReturn);
+          }
+        }).catch(err => {
+          reject(Error(err));
+        });
       });
     });
   }

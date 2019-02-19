@@ -43,11 +43,9 @@ export class RestService {
 
   private generateHeader(options?) {
     options = options || {};
-    console.log(options)
     options['Content-Type'] = 'application/json';
     options['token'] = auth.getToken();
     let header:HttpHeaders = new HttpHeaders(options)
-    console.log(header)
     let httpOptions = {
       headers: header
     }
