@@ -353,7 +353,34 @@ export class ImportMatchConflictNewCheckerService {
 
   private checkSKUReference(sku, productLines, formulas): Promise<any> {
     return new Promise((resolve, reject) => {
-      resolve();
+      var numMLsChecked = 0;
+      if (sku['manufacturinglines'].length == 0) {
+        this.rest.getFormulas("", sku['formula'], -1, -1, 1).subscribe(formulaResponse => {
+          if (formulaResponse.length == 1) {
+            resolve();
+          } else {
+            reject(Error("Could not find formula " + sku['formula'] + " for SKU " + sku['skuname']));
+          }
+        });
+      }
+      sku['manufacturinglines'].forEach(shortname => {
+        this.rest.getLine("",shortname,1).subscribe(mlResponse => {
+          if (mlResponse.length == 1) {
+            numMLsChecked++;
+            if (numMLsChecked >= sku['manufacturinglines'].length) {
+              this.rest.getFormulas("", sku['formula'], -1, -1, 1).subscribe(formulaResponse => {
+                if (formulaResponse.length == 1) {
+                  resolve();
+                } else {
+                  reject(Error("Could not find formula " + sku['formula'] + " for SKU " + sku['skuname']));
+                }
+              });
+            }
+          } else {
+            reject(Error("Could not find Manufacturing Line " + shortname + " for SKU " + sku['skuname']));
+          }
+        });
+      });
     });
   }
 
