@@ -11,7 +11,6 @@ export class ImportPreviewDialogComponent implements OnInit {
   constructor(private dialogRef: MatDialogRef<ImportPreviewDialogComponent>, @Inject(MAT_DIALOG_DATA) public data: any) { }
 
   ngOnInit() {
-    console.log(this.data);
   }
 
   cancel() {
