@@ -2,24 +2,34 @@ const database = require('./database.js');
 const formula_utils = require('./formula_utils.js');
 
 
-function getSkus(skuname, skunumber, caseupcnumber, unitupcnumber, formulanumber, limit) {
-
+function getSkus(skuname, skunameregex, skunumber, caseupcnumber, unitupcnumber, formulanumber, limit) {
+    skuname = skuname || "";
+    skunameregex = skunameregex || "$a";
+    skunumber = skunumber || -1;
+    console.log("skuname: " + skuname)
+    caseupcnumber = caseupcnumber || -1;
+    unitupcnumber = unitupcnumber || -1;
+    formulanumber = formulanumber || "";
+    limit = (limit != 0) ? limit : database.defaultSearchLimit;
     return new Promise(function (resolve, reject) {
         const filterSchema = {
             $or: [
                 { skuname: skuname },
+                { skuname: {$regex: skunameregex }},
                 { skunumber: skunumber },
                 { caseupcnumber: caseupcnumber },
                 { unitupcnumber: unitupcnumber },
                 { formulanumber: formulanumber },
-                { skuname: { $regex: /skuname/ } }
+
             ]
         }
+        console.log(filterSchema)
         database.skuModel.find(filterSchema).limit(limit).exec((err, skus) => {
             if (err) {
                 reject(Error(err));
                 return;
             }
+            console.log("SKUS: " + skus)
             resolve(skus);
         });
     });

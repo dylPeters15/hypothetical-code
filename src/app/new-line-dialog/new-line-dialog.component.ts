@@ -23,10 +23,11 @@ export class NewLineDialogComponent implements OnInit {
   filteredSkus: Observable<String[]>;
   linename: string = '';
   shortname: string = '';
+  selectedSkuNames: string[] = [];
   selectedSkus: any = [];
   comment: string = '';
   skuList: any = [];
-  skuNameList: String[] = [];
+  skuNameList: string[] = [];
 
   @ViewChild('skuInput') skuInput: ElementRef<HTMLInputElement>;
   @ViewChild('auto') matAutocomplete: MatAutocomplete;
@@ -38,7 +39,7 @@ export class NewLineDialogComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.rest.getSkus('Tomato Soup',2,1395233994,163728391922,'5c6b4d269e971610f3e09f93',5).subscribe(response => {
+    this.rest.getSkus('', '.*',0,0,0,'',5).subscribe(response => {
         this.skuList = response;
         this.skuList.forEach(element => {
           this.skuNameList.push(element.skuname)
@@ -49,25 +50,28 @@ export class NewLineDialogComponent implements OnInit {
   closeDialog() {
     this.dialogRef.close();
     this.linename = '';
+    this.selectedSkuNames = [];
+    this.skuList = [];
     this.selectedSkus = [];
+    this.skuNameList = [];
     this.shortname = '';
     this.comment = '';
   }
 
   createLine() {
-    this.rest.createLine(this.linename, this.shortname, this.selectedSkus, this.comment).subscribe(response => {
-      if (response['success']) {
-        this.snackBar.open("Successfully created Line: " + this.linename + ".", "close", {
-          duration: 2000,
-        });
-      } else {
-        console.log(response);
-        this.snackBar.open("Error creating Line: " + this.linename + ". Please refresh and try again.", "close", {
-          duration: 2000,
-        });
-      }
-      this.closeDialog();
-    });
+      this.rest.createLine(this.linename, this.shortname, this.selectedSkus, this.comment).subscribe(response => {
+        console.log(response)
+          this.snackBar.open("Successfully created Line: " + this.linename + ".", "close", {
+            duration: 2000,
+          });
+        //   console.log(response);
+        //   this.snackBar.open("Error creating Line: " + this.linename + ". Please refresh and try again.", "close", {
+        //     duration: 2000,
+        //   });
+        // }
+        this.closeDialog();
+      });
+
   }
 
   add(event: MatChipInputEvent): void {
@@ -77,10 +81,10 @@ export class NewLineDialogComponent implements OnInit {
       const input = event.input;
       const value = event.value;
 
+
       // Add our sku
       if ((value || '').trim()) {
-        console.log("adding: " + value.trim());
-        this.selectedSkus.push(value.trim());
+        this.selectedSkuNames.push(value.trim());
       }
 
       // Reset the input value
@@ -93,15 +97,21 @@ export class NewLineDialogComponent implements OnInit {
   }
 
   remove(sku: string): void {
-    const index = this.selectedSkus.indexOf(sku);
+    const index = this.selectedSkuNames.indexOf(sku);
 
     if (index >= 0) {
-      this.selectedSkus.splice(index, 1);
+      this.selectedSkuNames.splice(index, 1);
     }
   }
 
   selected(event: MatAutocompleteSelectedEvent): void {
-    this.selectedSkus.push(event.option.viewValue);
+    this.selectedSkuNames.push(event.option.viewValue);
+    console.log(event.option.viewValue)
+    this.rest.getSkus(event.option.viewValue, '', 0,0,0,'',5).subscribe(response => {
+      console.log(response)
+      this.selectedSkus.push(response)
+      
+    });
     this.skuInput.nativeElement.value = '';
     this.skuCtrl.setValue(null);
   }
@@ -109,6 +119,6 @@ export class NewLineDialogComponent implements OnInit {
   private _filter(value: string): string[] {
     const filterValue = value.toLowerCase();
 
-    return this.skuList.filter(sku => sku.toLowerCase().indexOf(filterValue) === 0);
+    return this.skuNameList.filter(sku => sku.toLowerCase().indexOf(filterValue) === 0);
   }
 }

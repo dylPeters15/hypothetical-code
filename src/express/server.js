@@ -185,7 +185,7 @@ app.route('/ingredients').get((req, res) => {
 
 ///////////////////// skus /////////////////////
 app.route('/skus').get((req, res) => {
-    sku_utils.getSkus(req.headers['skuname'], Number(req.headers['skunumber']), Number(req.headers['caseupcnumber']), Number(req.headers['unitupcnumber']), Number(req.headers['limit'])).then(skus => {
+    sku_utils.getSkus(req.headers['skuname'], req.headers['skunameregex'], Number(req.headers['skunumber']), Number(req.headers['caseupcnumber']), Number(req.headers['unitupcnumber']), Number(req.headers['limit'])).then(skus => {
         res.send(skus);
     }).catch(err => {
         resolveError(err, res);

@@ -3,10 +3,10 @@ import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http
 import { auth } from './auth.service'
 import { Observable } from 'rxjs';
 
-// const endpoint = 'https://vcm-8238.vm.duke.edu:8443/'; // Ben
+const endpoint = 'https://vcm-8238.vm.duke.edu:8443/'; // Ben
 // const endpoint = 'https://vcm-8405.vm.duke.edu:8443/'; // Noah
 // const endpoint = 'https://vcm-8205.vm.duke.edu:8443/'; // Prod
-const endpoint = 'https://localhost:8443/'; // localhost
+// const endpoint = 'https://localhost:8443/'; // localhost
 
 @Injectable({
   providedIn: 'root'
@@ -42,6 +42,7 @@ export class RestService {
   }
 
   private generateHeader(options?) {
+    console.log("options: " + JSON.stringify(options))
     options = options || {};
     options['Content-Type'] = 'application/json';
     options['token'] = auth.getToken();
@@ -151,14 +152,15 @@ export class RestService {
   }
 
  ///////////////////// skus /////////////////////
- getSkus(skuName: String, skuNumber: number, caseUpcNumber: number, unitUpcNumber: number, formulaNumber: String, limit: number): Observable<any> {
+ getSkus(skuName: String, skunameregex: String, skuNumber: number, caseUpcNumber: number, unitUpcNumber: number, formulaNumber: String, limit: number): Observable<any> {
   return this.http.get(endpoint + "skus", this.generateHeader({
     skuname: skuName,
-    skunumber: skuNumber.toString(),
-    caseupcnumber: caseUpcNumber.toString(),
-    unitupcnumber: unitUpcNumber.toString(),
+    skunameregex: skunameregex,
+    skunumber: JSON.stringify(skuNumber),
+    caseupcnumber: JSON.stringify(caseUpcNumber),
+    unitupcnumber: JSON.stringify(unitUpcNumber),
     formulanumber: formulaNumber,
-    limit: limit.toString()
+    limit: JSON.stringify(limit)
   }));
 }
 
@@ -370,12 +372,14 @@ deleteSku(skuName: String): Observable<any> {
   }
 
   ///////////////////// Manufacturing Lines /////////////////////
-  getLine(linename: String, shortname: String, limit: number): Observable<any> {
+  getLine(linename: String, linenameregex: String, shortname: String, shortnameregex: String, limit: number): Observable<any> {
     console.log(linename);
     console.log(shortname);
     return this.http.get(endpoint + 'manufacturing-lines', this.generateHeader({
       linename: linename,
+      linenameregex: linenameregex,
       shortname: shortname,
+      shortnameregex: shortnameregex,
       limit: limit
     }));
   }

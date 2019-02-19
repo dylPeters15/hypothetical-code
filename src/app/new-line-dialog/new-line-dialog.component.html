@@ -14,7 +14,7 @@
       <mat-form-field class="example-chip-list">
         <mat-chip-list #chipList>
           <mat-chip
-            *ngFor="let sku of selectedSkus"
+            *ngFor="let sku of selectedSkuNames"
             [selectable]="selectable"
             [removable]="removable"
             (removed)="remove(sku)">

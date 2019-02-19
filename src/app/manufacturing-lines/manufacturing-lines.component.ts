@@ -42,7 +42,7 @@ export class ExportableLine {
 
 export class ManufacturingLinesComponent implements OnInit {
   allReplacement = 54321;
-  line:any = [];
+  lines:any = [];
   displayedColumns: string[] = ['checked', 'linename', 'shortname','skus', 'comment'];
   data: ManufacturingLine[] = [];
   dataSource = new MatTableDataSource<ManufacturingLine>(this.data);
@@ -70,24 +70,29 @@ export class ManufacturingLinesComponent implements OnInit {
 
   refreshData() {
     this.data = [];
-    // this.rest.getline().subscribe(data => {
-    //     this.line = data;
-    //     var i;
-    //     this.dataSource = new MatTableDataSource<ManufacturingGoal>(this.data);
-    //     for(i = 0; i<this.line.length; i++){
-    //       let name = this.line[i]['name'];
-    //       let skus = this.line[i]['skus'];
-    //       let quantities = this.line[i]['quantities'];
-    //       let date = this.line[i]['date'];
-    //       let currentGoal = new ManufacturingGoal(name, skus, quantities, date, false);
-    //       this.data.push(currentGoal);
-    //     }
-    //     this.data.forEach(element => {
-    //       element['checked'] = false;
-    //     });
-    //     this.dataSource = new MatTableDataSource<ManufacturingGoal>(this.data);
-    //     this.dataSource.paginator = this.paginator;
-    // })
+    this.rest.getLine('', '.*','','',5).subscribe(data => {
+      this.lines = data;
+      this.dataSource = new MatTableDataSource<ManufacturingLine>(this.data);
+      var i;
+      for(i = 0; i<this.lines.length; i++){
+        let linename = this.lines[i]['linename'];
+        let shortname = this.lines[i]['shortname'];
+        var j;
+        let skus = '';
+        for(j = 0; j<this.lines[i]['skus'].length; j++){
+          console.log(this.lines[i]['skus'][j]);
+        }
+        // let skus = this.lines[i]['skus'];
+        let comment = this.lines[i]['comment'];
+        let currentLine = new ManufacturingLine(linename, shortname, skus, comment, false);
+        this.data.push(currentLine)
+      }
+      this.data.forEach(element => {
+        element['checked'] = false;
+      });
+      this.dataSource = new MatTableDataSource<ManufacturingLine>(this.data);
+      this.dataSource.paginator = this.paginator;
+    });
   }
 
   deleteSelected() {
