@@ -61,6 +61,7 @@ export class NewLineDialogComponent implements OnInit {
           duration: 2000,
         });
       } else {
+        console.log(response);
         this.snackBar.open("Error creating Line: " + this.linename + ". Please refresh and try again.", "close", {
           duration: 2000,
         });

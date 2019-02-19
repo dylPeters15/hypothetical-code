@@ -365,6 +365,7 @@ export class ImportMatchConflictNewCheckerService {
       }
       sku['manufacturinglines'].forEach(shortname => {
         this.rest.getLine("",shortname,1).subscribe(mlResponse => {
+          console.log(mlResponse);
           if (mlResponse.length == 1) {
             numMLsChecked++;
             if (numMLsChecked >= sku['manufacturinglines'].length) {

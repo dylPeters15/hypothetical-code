@@ -260,36 +260,28 @@ app.route('/manufacturing-goals').get((req, res) => {
 
 ///////////////////// Manufacturing Lines /////////////////////
 app.route('/manufacturing-lines').get((req, res) => {
-    line_utils.getLine(req.headers['linename'],req.headers['shortname'],req.headers['linenameregex'], req.headers['shortnameregex'], req.headers['limit']).then(formulas => {
+    line_utils.getLine(req.headers['linename'], req.headers['linenameregex'], req.headers['shortname'], req.headers['shortnameregex'], req.headers['limit']).then(formulas => {
         res.send(formulas);
     }).catch(err => {
-        res.send({
-            err:err
-        });
+        resolveError(err, res);
     });
 }).put((req, res) => {
     line_utils.createLine(req.body).then(response => {
         res.send(response);
     }).catch(err => {
-        res.send({
-            err:err
-        });
+        resolveError(err, res);
     });
 }).post((req, res) => {
     line_utils.modifyLine(req.headers['linename'],req.body).then(response => {
         res.send(response);
     }).catch(err => {
-        res.send({
-            err:err
-        });
+        resolveError(err, res);
     });
 }).delete((req, res) => {
     line_utils.deleteLine(req.headers['linename'], req.headers['shortname'],req.headers['skus'],req.headers['comment']).then(response => {
         res.send(response);
     }).catch(err => {
-        res.send({
-            err:err
-        });
+        resolveError(err, res);
     });
 });
 

@@ -368,6 +368,8 @@ deleteSku(skuName: String): Observable<any> {
 
   ///////////////////// Manufacturing Lines /////////////////////
   getLine(linename: String, shortname: String, limit: number): Observable<any> {
+    console.log(linename);
+    console.log(shortname);
     return this.http.get(endpoint + 'manufacturing-lines', this.generateHeader({
       linename: linename,
       shortname: shortname,
