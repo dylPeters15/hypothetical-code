@@ -20,6 +20,8 @@ import { AlreadyLoggedInRouteGuardService } from './already-logged-in-route-guar
 import { LogoutComponent } from './logout/logout.component';
 import {MatSelectModule} from '@angular/material/select';
 import {MatIconModule, MatIcon} from '@angular/material/icon';
+import {MatChipsModule} from '@angular/material/chips';
+import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import { AccountSettingsComponent } from './account-settings/account-settings.component';
 import { UserNotificationDialogComponent } from './user-notification-dialog/user-notification-dialog.component';
 import { ManufacturingCalculatorComponent } from './manufacturing-calculator/manufacturing-calculator.component';
@@ -46,6 +48,8 @@ import { ImportPreviewDialogComponent } from './import/import-preview-dialog/imp
 import { ImportConflictResolverComponent } from './import/import-conflict-resolver/import-conflict-resolver.component';
 import { RecordImportPreviewComponent } from './import/record-import-preview/record-import-preview.component';
 import { ImportPreviewSectionComponent } from './import/import-preview-section/import-preview-section.component';
+import { NewLineDialogComponent } from './new-line-dialog/new-line-dialog.component';
+import { ManufacturingLinesComponent } from './manufacturing-lines/manufacturing-lines.component';
 
 const appRoutes: Routes = [
   { path: 'login', component: LoginComponent, data: { title: 'Log In' }, canActivate: [AlreadyLoggedInRouteGuardService] },
@@ -57,6 +61,7 @@ const appRoutes: Routes = [
   { path: 'manufacturing-calculator', component: ManufacturingCalculatorComponent, data: { title: 'Manufacturing Calculator' }, canActivate: [UserRouteGuardService] },
   { path: 'ingredient-dependency-report', component: IngredientDependencyComponent, data: { title: 'Ingredient Dependency Report' }, canActivate: [UserRouteGuardService] },
   { path: 'manufacturing-goal', component: ManufacturingGoalsComponent, data: { title: 'Manufacturing Goals' }, canActivate: [UserRouteGuardService] },
+  { path: 'manufacturing-lines', component: ManufacturingLinesComponent, data: { title: 'Manufacturing Lines' }, canActivate: [UserRouteGuardService] },
   { path: 'ingredient-inventory', component: IngredientInventoryComponent, data: { title: 'Ingredient Inventory' }, canActivate: [UserRouteGuardService] },
   { path: 'sku-inventory', component: SkuInventoryComponent, data: { title: 'SKU Inventory' }, canActivate: [UserRouteGuardService] },
   { path: 'product-line-inventory', component: ProductLineInventoryComponent, data: { title: 'Product Line Inventory' }, canActivate: [UserRouteGuardService] },
@@ -96,7 +101,9 @@ const appRoutes: Routes = [
     ImportPreviewDialogComponent,
     ImportConflictResolverComponent,
     RecordImportPreviewComponent,
-    ImportPreviewSectionComponent
+    ImportPreviewSectionComponent,
+    ManufacturingLinesComponent,
+    NewLineDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -118,10 +125,12 @@ const appRoutes: Routes = [
     MatSnackBarModule,
     MatPaginatorModule,
     PapaParseModule,
-    MatRadioModule
+    MatRadioModule,
+    MatChipsModule,
+    MatAutocompleteModule
   ],
   providers: [],
   bootstrap: [AppComponent],
-  entryComponents: [UserNotificationDialogComponent, NewUserDialogComponent, PasswordConfirmationDialogComponent, PrivacyPolicyDialogComponent, TermsAndConditionsDialogComponent, MoreInfoDialogComponent, NewSkuDialogComponent, NewIngredientDialogComponent, NewGoalDialogComponent, NewProductLineDialogComponent, ConfirmActionDialogComponent, ImportPreviewDialogComponent]
+  entryComponents: [UserNotificationDialogComponent, NewUserDialogComponent, PasswordConfirmationDialogComponent, PrivacyPolicyDialogComponent, TermsAndConditionsDialogComponent, MoreInfoDialogComponent, NewSkuDialogComponent, NewIngredientDialogComponent, NewGoalDialogComponent, NewProductLineDialogComponent, ConfirmActionDialogComponent, ImportPreviewDialogComponent, NewLineDialogComponent]
 })
 export class AppModule { }
