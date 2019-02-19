@@ -156,6 +156,24 @@ export class ImportMatchConflictNewCheckerService {
     });
   }
 
+  private arrayContainsObjectWithKey(array: any[], key: string): boolean {
+    for (var i = 0; i < array.length; i++) {
+      if (Object.keys(array[i]).includes(key)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  private arrayObjectWithKey(array: any[], key: string): any {
+    for (var i = 0; i < array.length; i++) {
+      if (Object.keys(array[i]).includes(key)) {
+        return array[i];
+      }
+    }
+    return null;
+  }
+
   private checkFormulasMatchesConflictsNew(formulas, formulaIngredients): Promise<any> {
     return new Promise((resolve, reject) => {
       var toReturn = {};
@@ -165,7 +183,33 @@ export class ImportMatchConflictNewCheckerService {
       var numFormulasProcessed = 0;
       formulas.forEach(formula => {
         //do processing here
-        //can't do this yet because I'm blocked since the formula REST API calls do not support search by formulaname or formulanumber yet
+        console.log("Formula: ", formula);
+        this.rest.getFormulas(formula['formulaname'], null, null, null, 20).subscribe(response => {
+          console.log("Formula Response",response);
+          if (response.length == 0) {
+            toReturn['new'].push(formula);
+          } else {
+            var responseFormula = response[0];
+            var sameIngredientsAndQuantities = responseFormula['ingredientsandquantities'].length == formula['ingredientsandquantities'].length;
+            for (var i = 0; i < formula['ingredientsandquantities'].length; i++) {
+              if (this.arrayContainsObjectWithKey(responseFormula['ingredientsandquantities'], formula['ingredientsandquantities'][i]['ingredient'])) {
+                if (this.arrayObjectWithKey(responseFormula['ingredientsandquantities'], formula['ingredientsandquantities'][i]['ingredient'])['quantity'] != formula['ingredientsandquantities'][i]['quantity']) {
+                  sameIngredientsAndQuantities = false;
+                }
+              } else {
+                sameIngredientsAndQuantities = false;
+              }
+            }
+            if (responseFormula['formulaname'] == formula['formulaname']
+            && responseFormula['formulanumber'] == formula['formulanumber']
+            && responseFormula['comment'] == formula['comment']
+            && sameIngredientsAndQuantities) {
+              toReturn['matches'].push(formula);
+            } else {
+              toReturn['conflicts'].push(formula);
+            }
+          }
+        });
         numFormulasProcessed = numFormulasProcessed + 1;
         if (numFormulasProcessed == formulas.length) {
           resolve(toReturn);

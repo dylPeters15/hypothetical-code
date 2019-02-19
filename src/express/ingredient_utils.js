@@ -20,7 +20,6 @@ function getIngredients(ingredientname, ingredientnameregex, ingredientnumber,li
                 reject(Error(err));
                 return;
             }
-            console.log(ingredients)
             resolve(ingredients);
         });
     });

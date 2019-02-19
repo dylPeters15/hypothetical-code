@@ -109,11 +109,13 @@ export class RestService {
   }
 
   ///////////////////// formulas /////////////////////
-  getFormulas(sku: number, ingredient: number, limit: number): Observable<any> {
+  getFormulas(formulaname: string, formulanumber: number, sku: number, ingredient: number, limit: number): Observable<any> {
     return this.http.get(endpoint + "formulas", this.generateHeader({
-      sku: sku,
-      ingredient: ingredient,
-      limit: limit
+      formulaname: formulaname,
+      formulanumber: JSON.stringify(formulanumber),
+      sku: JSON.stringify(sku),
+      ingredient: JSON.stringify(ingredient),
+      limit: JSON.stringify(limit)
     }));
   }
 

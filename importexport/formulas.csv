@@ -1,6 +1,5 @@
-﻿Formula#,Name,Comment
-1,Chicken Soup Formula,My Grandma's recipe
-2,Tomato Soup Formula,
-3,Potato Soup Recipe,Hot take: potato soup is better than chicken noodle
-4,Cheerios Recipe,
-5,Thin Mints,The most addictive substance on earth
+﻿Formula#,Name,Ingr#,Quantity,Comment
+1,Chicken Soup Formula,1,1,My Grandma's recipe
+1,Chicken Soup Formula,2,1,
+2,Tomato Soup Formula,2,2,
+2,Tomato Soup Formula,3,2,

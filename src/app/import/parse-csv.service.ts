@@ -91,7 +91,7 @@ export class ParseCsvService {
                 reject(result.errors[0]);
               }
               let objectArray: any[] = result.data;
-              objectArray.shift(); //remove header
+              // objectArray.shift(); //remove header
               objectToReturn[fileName] = objectArray;
               numParsed = numParsed + 1;
               if (numParsed == numFiles) {
@@ -102,13 +102,62 @@ export class ParseCsvService {
       }
     });
   }
+  
+  private arrayContainsObjectWithKey(array: any[], key: string): boolean {
+    for (var i = 0; i < array.length; i++) {
+      if (Object.keys(array[i]).includes(key)) {
+        return true;
+      }
+    }
+    return false;
+  }
 
+  private arrayContainsObjectWithKeyVal(array: any[], key: string, val: string): boolean {
+    for (var i = 0; i < array.length; i++) {
+      if (Object.keys(array[i]).includes(key) && array[i][key] == val) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  private arrayObjectWithKeyVal(array: any[], key: string, val: string): any {
+    for (var i = 0; i < array.length; i++) {
+      if (Object.keys(array[i]).includes(key) && array[i][key] == val) {
+        return array[i];
+      }
+    }
+    return null;
+  }
+
+  
   private consolidateFormulas(formulasObject): any[] {
-    // console.log(formulasObject);
-    // var objectToReturn = [];
+    console.log("Formulasobject: ",formulasObject);
+    var objectToReturn = [];
 
-    // console.log(objectToReturn);
-    return formulasObject;//objectToReturn;
+    for (var i = 0; i < formulasObject.length; i++) {
+      var currentFormula = formulasObject[i];
+      var newFormula = {};//this.arrayObjectWithKey(objectToReturn,currentFormula['Name'])||{};
+      if (this.arrayContainsObjectWithKeyVal(objectToReturn, 'formulaname', currentFormula['Name'])) {
+        console.log("NewFormula");
+        newFormula = this.arrayObjectWithKeyVal(objectToReturn, 'formulaname', currentFormula['Name']);
+      } else {
+        console.log(currentFormula['Name']);
+        newFormula['formulaname'] = currentFormula['Name'];
+        newFormula['formulanumber'] = currentFormula['Formula#'];
+        newFormula['ingredientsandquantities'] = [];
+        newFormula['comment'] = currentFormula['Comment'];
+        objectToReturn.push(newFormula);
+        console.log("New formula: ",newFormula);
+      }
+      newFormula['ingredientsandquantities'].push({
+        ingredient: currentFormula['Ingr#'],
+        quantity: currentFormula['Quantity']
+      });
+    }
+
+    console.log("Object to return:",objectToReturn);
+    return objectToReturn;
   }
 
   private parseIngredients(ingredientsObject): any[] {
