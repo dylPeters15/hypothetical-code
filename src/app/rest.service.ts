@@ -133,15 +133,15 @@ export class RestService {
     this.generateHeader());
   }
 
-  modifyFormula(sku: number, ingredient: number, newQuantity: number): Observable<any> {
+  modifyFormula(oldname: string, formulaname: string, formulanumber: number, ingredientsandquantities: any[], comment: string): Observable<any> {
     return this.http.post(endpoint + "formulas", {
-      sku: sku,
-      ingredient: ingredient,
-      quantity: newQuantity
+      formulaname: formulaname,
+      formulanumber: formulanumber,
+      ingredientsandquantities: ingredientsandquantities,
+      comment: comment
     },
     this.generateHeader({
-      sku: sku,
-      ingredient: ingredient
+      formulaname: oldname
     }));
   }
 

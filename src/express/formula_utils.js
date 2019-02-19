@@ -48,11 +48,10 @@ function createFormula(newFormulaObject) {
     });
 }
 
-function modifyFormula(sku, ingredient, newFormulaObject) {
+function modifyFormula(formulaname, newFormulaObject) {
     return new Promise((resolve, reject) => {
         var filterSchema = {
-            sku: sku,
-            ingredient: ingredient
+            formulaname: formulaname
         }
         database.formulaModel.updateOne(filterSchema, newFormulaObject, (err, response) => {
             if (err) {

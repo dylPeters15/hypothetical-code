@@ -96,7 +96,43 @@ export class ImportUploadService {
             if (numIngredientsProcessed == formula['ingredientsandquantities'].length) {
               this.rest.createFormula(formula['formulaname'], formula['formulanumber'], ingredientsAndQuantities, formula['comment']||"").subscribe(createResponse => {
                 console.log("Create response: ",createResponse);
-                resolve();
+                if (createResponse['formulaname'] == formula['formulaname']) {
+                  resolve();
+                } else {
+                  reject(Error("Error creating formula."));
+                }
+              });
+            }
+          }
+        });
+      });
+    });
+  }
+
+  private updateFormula(oldname, formula): Promise<any> {
+    return new Promise((resolve, reject) => {
+      var numIngredientsProcessed = 0;
+      var ingredientsAndQuantities = [];
+      formula['ingredientsandquantities'].forEach(ingredientAndQuantity => {
+        var ingredientnum = ingredientAndQuantity['ingredient'];
+        this.rest.getIngredients("",ingredientnum,1).subscribe(response => {
+          if (response.length == 0) {
+            reject(Error("Could not find ingredient " + ingredientnum + " for formula " + formula['formulaname']));
+          } else {
+            var ingredientID = response[0]['_id'];
+            ingredientsAndQuantities.push({
+              ingredient: ""+ingredientID,
+              quantity: ingredientAndQuantity['quantity']
+            });
+            numIngredientsProcessed++;
+            if (numIngredientsProcessed == formula['ingredientsandquantities'].length) {
+              this.rest.modifyFormula(oldname, formula['formulaname'], formula['formulanumber'], ingredientsAndQuantities, formula['comment']||"").subscribe(createResponse => {
+                console.log("Create response: ",createResponse);
+                if (createResponse['formulaname'] == formula['formulaname']) {
+                  resolve();
+                } else {
+                  reject(Error("Error creating formula."));
+                }
               });
             }
           }
@@ -112,15 +148,26 @@ export class ImportUploadService {
 
       formulas['new'].forEach(formula => {
         this.importFormula(formula).then(() => {
+          numFormulasProcessed++;
+          if (numFormulasProcessed == numFormulasToProcess) {
+            resolve();
+          }
         }).catch(err => {
           reject(err);
         });
       });
-
-
-
-
-      // resolve(true);
+      formulas['conflicts'].forEach(formula => {
+        if (formula['select'] == 'new') {
+          this.updateFormula(formula['old']['formulaname'], formula['new']).then(() => {
+            numFormulasProcessed++;
+            if (numFormulasProcessed == numFormulasToProcess) {
+              resolve();
+            }
+          }).catch(err => {
+            reject(err);
+          });
+        }
+      });
     });
   }
 

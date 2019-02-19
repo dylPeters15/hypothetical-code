@@ -129,7 +129,7 @@ app.route('/formulas').get((req, res) => {
         });
     });
 }).post((req, res) => {
-    formula_utils.modifyFormula(req.headers['sku'], req.headers['ingredient'], req.body).then(response => {
+    formula_utils.modifyFormula(req.headers['formulaname'], req.body).then(response => {
         res.send(response);
     }).catch(err => {
         res.send({
