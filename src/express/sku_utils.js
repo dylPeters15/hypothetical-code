@@ -1,4 +1,5 @@
 const database = require('./database.js');
+const formula_utils = require('./formula_utils.js');
 
 
 function getSkus(skuname, skunumber, caseupcnumber, unitupcnumber, formulanumber, limit) {
@@ -7,11 +8,11 @@ function getSkus(skuname, skunumber, caseupcnumber, unitupcnumber, formulanumber
         const filterSchema = {
             $or: [
                 { skuname: skuname },
-                { skuNumber: skunumber },
-                { caseUpcNumber: caseupcnumber },
-                { unitUpcNumber: unitupcnumber },
-                { formulaNumber: formulanumber },
-                { skuName: { $regex: /skuName/ } }
+                { skunumber: skunumber },
+                { caseupcnumber: caseupcnumber },
+                { unitupcnumber: unitupcnumber },
+                { formulanumber: formulanumber },
+                { skuname: { $regex: /skuname/ } }
             ]
         }
         database.skuModel.find(filterSchema).limit(limit).exec((err, skus) => {
@@ -25,7 +26,7 @@ function getSkus(skuname, skunumber, caseupcnumber, unitupcnumber, formulanumber
 
 }
 
-function createSku(name, number, case_upc, unit_upc, unit_size, count, comment) {
+function createSku(name, number, case_upc, unit_upc, unit_size, count, formulanum, formulascalingfactor, manufacturingrate, comment) {
     return new Promise(function (resolve, reject) {
         createUniqueSkuNumber().then(response => {
             console.log("SKU Num: ", response);
@@ -63,19 +64,31 @@ function createSku(name, number, case_upc, unit_upc, unit_size, count, comment) 
                     }
                     // newingredientnumber = ingredientnumber || Number(response);
 
-                    let sku = new database.skuModel({
-                        skuname: name,
-                        skunumber: newSkuNumber,
-                        caseupcnumber: newCaseUpcNumber,
-                        unitupcnumber: newUnitUpcNumber,
-                        unitsize: unit_size,
-                        countpercase: count,
-                        comment: comment
-                    });
-                    sku.save().then(response => {
-                        resolve(response);
+                    formula_utils.getFormulas("",formulanum,null,null,1).then(response => {
+                        if (response.length == 0) {
+                            reject(Error("Could not find formula " + formulanum + " for SKU " + name));
+                        } else {
+                            var formulaID = response[0]['_id'];
+                            let sku = new database.skuModel({
+                                skuname: name,
+                                skunumber: newSkuNumber,
+                                caseupcnumber: newCaseUpcNumber,
+                                unitupcnumber: newUnitUpcNumber,
+                                unitsize: unit_size,
+                                countpercase: count,
+                                formula: formulaID,
+                                formulascalingfactor: formulascalingfactor,
+                                manufacturingrate: manufacturingrate,
+                                comment: comment
+                            });
+                            sku.save().then(response => {
+                                resolve(response);
+                            }).catch(err => {
+                                reject(Error(err));
+                            });
+                        }
                     }).catch(err => {
-                        reject(Error(err));
+                        reject(err);
                     });
 
             }).catch(err => {
