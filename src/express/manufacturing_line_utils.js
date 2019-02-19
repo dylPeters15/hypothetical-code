@@ -4,8 +4,8 @@ const database = require('./database.js');
 function getLine(linename, linenameregex, shortname, shortnameregex, limit) {
     linename = linename || "";
     shortname = shortname || "";
-    shortnameregex = shortnameregex || "";
-    linenameregex = linenameregex || "";
+    shortnameregex = shortnameregex || "$a";
+    linenameregex = linenameregex || "$a";
     limit = limit || database.defaultSearchLimit;
     return new Promise((resolve, reject) => {
         var filterSchema = {
@@ -16,12 +16,12 @@ function getLine(linename, linenameregex, shortname, shortnameregex, limit) {
                 {shortname: {$regex: shortnameregex}}
             ]
         }
-        database.manufacturingLineModel.find(filterSchema).limit(limit).toArray(function(err,results) {
-            if(results.length > 0){
-              resolve(results);
+        database.manufacturingLineModel.find(filterSchema).limit(limit).exec(function(err,results) {
+            if(err){
+                reject(Error(err));
             }
             else {
-                reject(Error(err));
+                resolve(results);
             }  
         });
     })

@@ -70,6 +70,42 @@ export class ImportMatchConflictNewCheckerService {
     });
   }
 
+  private checkSKUMatchConflictNew(sku, toReturn): Promise<any> {
+    return new Promise((resolve, reject) => {
+      this.rest.getSkus(sku['skuname'], sku['skunumber'], -1, -1, "-1", 1).subscribe(response => {
+        if (response.length == 0) {
+          toReturn['new'].push(sku);
+          resolve();
+        } else {
+          var responseSku = response[0];
+          var match = true;
+          match = sku['skuname'] == responseSku['skuname']
+          && sku['skunumber'] == responseSku['skunumber']
+          && sku['caseupcnumber'] == responseSku['caseupcnumber']
+          && sku['unitupcnumber'] == responseSku['unitupcnumber']
+          && sku['unitsize'] == responseSku['unitsize']
+          && sku['countpercase'] == responseSku['countpercase']
+          && sku['formula'] == responseSku['formula']['formulanumber']
+          && sku['formulascalingfactor'] == responseSku['formulascalingfactor']
+          && sku['manufacturingrate'] == responseSku['manufacturingrate']
+          && sku['comment'] == responseSku['comment'];
+
+          if (match) {
+            toReturn['matches'].push(sku);
+          } else {
+            responseSku['Name'] = responseSku['skuname'];
+            toReturn['conflicts'].push({
+              old: [responseSku],
+              new: sku,
+              select: 'new'
+            })
+          }
+          resolve();
+        }
+      });
+    });
+  }
+
   private checkSKUsMatchesConflictsNew(skus): Promise<any> {
     return new Promise((resolve, reject) => {
       var toReturn = {};
@@ -77,13 +113,19 @@ export class ImportMatchConflictNewCheckerService {
       toReturn['conflicts'] = [];
       toReturn['new'] = [];
       //do processing here
-      //can't do this yet because I'm blocked since SKU support is not ready in rest.service.ts yet
       var numSKUsProcessed = 0;
+      if (skus.length == 0) {
+        resolve();
+      }
       skus.forEach(sku => {
-        numSKUsProcessed = numSKUsProcessed + 1;
-        if (numSKUsProcessed == skus.length) {
-          resolve(toReturn);
-        }
+        this.checkSKUMatchConflictNew(sku, toReturn).then(() => {
+          numSKUsProcessed = numSKUsProcessed + 1;
+          if (numSKUsProcessed == skus.length) {
+            resolve(toReturn);
+          }
+        }).catch(err => {
+          reject(Error(err));
+        });
       });
     });
   }
@@ -95,6 +137,9 @@ export class ImportMatchConflictNewCheckerService {
       toReturn['conflicts'] = [];
       toReturn['new'] = [];
       var numIngredientsProcessed = 0;
+      if (ingredients.length == 0) {
+        resolve();
+      }
       ingredients.forEach(ingredient => {
         //do processing here
         this.rest.getIngredients(ingredient['ingredientname'], ingredient['ingredientnumber'], 1).subscribe(response => {
@@ -135,6 +180,9 @@ export class ImportMatchConflictNewCheckerService {
       toReturn['conflicts'] = [];
       toReturn['new'] = [];
       var numPLsProcessed = 0;
+      if (productLines.length == 0) {
+        resolve();
+      }
       productLines.forEach(productLine => {
         //do processing here
         this.rest.getProductLines(productLine['Name'], 1).subscribe(result => {
@@ -201,8 +249,6 @@ export class ImportMatchConflictNewCheckerService {
   private checkFormulaMatchConflictNew(formula, toReturn): Promise<any> {
     return new Promise((resolve, reject) => {
       this.rest.getFormulas(formula['formulaname'], null, null, null, 1).subscribe(response => {
-        console.log("Formula to check: ", formula);
-        console.log("Response 0 is:", response[0]);
         if (response.length == 0) {
           toReturn['new'].push(formula);
           resolve();
@@ -214,8 +260,6 @@ export class ImportMatchConflictNewCheckerService {
               sameIngredientsAndQuantities = false;
             }
           }
-          console.log("Response comment: ",responseFormula['comment']);
-          console.log(" comment: ",formula['comment']);
           if (responseFormula['formulaname'] == formula['formulaname']
             && responseFormula['formulanumber'] == formula['formulanumber']
             && responseFormula['comment'] == formula['comment']
@@ -243,10 +287,12 @@ export class ImportMatchConflictNewCheckerService {
       toReturn['conflicts'] = [];
       toReturn['new'] = [];
       var numFormulasProcessed = 0;
+      if (formulas.length == 0) {
+        resolve();
+      }
       formulas.forEach(formula => {
         //do processing here
         this.checkFormulaMatchConflictNew(formula, toReturn).then(() => {
-          console.log("num processed: ", numFormulasProcessed);
           numFormulasProcessed++;
           if (numFormulasProcessed == formulas.length) {
             resolve(toReturn);
@@ -269,6 +315,9 @@ export class ImportMatchConflictNewCheckerService {
       toReturn['conflicts'] = [];
       toReturn['new'] = [];
       var numFormulasProcessed = 0;
+      if (formulas.length == 0) {
+        resolve();
+      }
       formulas.forEach(formula => {
         //do processing here
         var numIngredientsChecked = 0;
@@ -302,6 +351,40 @@ export class ImportMatchConflictNewCheckerService {
     });
   }
 
+  private checkSKUReference(sku, productLines, formulas): Promise<any> {
+    return new Promise((resolve, reject) => {
+      var numMLsChecked = 0;
+      if (sku['manufacturinglines'].length == 0) {
+        this.rest.getFormulas("", sku['formula'], -1, -1, 1).subscribe(formulaResponse => {
+          if (formulaResponse.length == 1) {
+            resolve();
+          } else {
+            reject(Error("Could not find formula " + sku['formula'] + " for SKU " + sku['skuname']));
+          }
+        });
+      }
+      sku['manufacturinglines'].forEach(shortname => {
+        this.rest.getLine("",shortname,1).subscribe(mlResponse => {
+          console.log(mlResponse);
+          if (mlResponse.length == 1) {
+            numMLsChecked++;
+            if (numMLsChecked >= sku['manufacturinglines'].length) {
+              this.rest.getFormulas("", sku['formula'], -1, -1, 1).subscribe(formulaResponse => {
+                if (formulaResponse.length == 1) {
+                  resolve();
+                } else {
+                  reject(Error("Could not find formula " + sku['formula'] + " for SKU " + sku['skuname']));
+                }
+              });
+            }
+          } else {
+            reject(Error("Could not find Manufacturing Line " + shortname + " for SKU " + sku['skuname']));
+          }
+        });
+      });
+    });
+  }
+
   /**
    * Objects SKUs reference that could cause errors:
    * Product Line
@@ -314,13 +397,19 @@ export class ImportMatchConflictNewCheckerService {
       toReturn['conflicts'] = [];
       toReturn['new'] = [];
       var numFormulasProcessed = 0;
-      formulas.forEach(formula => {
+      if (skus.length == 0) {
+        resolve();
+      }
+      skus.forEach(sku => {
         //do processing here
-        //can't do this yet because I'm blocked since formulas support is not ready in rest.service.ts yet
-        numFormulasProcessed = numFormulasProcessed + 1;
-        if (numFormulasProcessed == formulas.length) {
-          resolve(toReturn);
-        }
+        this.checkSKUReference(sku, productLines, formulas).then(() => {
+          numFormulasProcessed = numFormulasProcessed + 1;
+          if (numFormulasProcessed == formulas.length) {
+            resolve(toReturn);
+          }
+        }).catch(err => {
+          reject(err);
+        });
       });
     });
   }

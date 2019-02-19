@@ -35,7 +35,7 @@ export class ParseCsvService {
               objectToReturn['productlines'] = [];
               for (let filename in result) {
                 if (filename.startsWith("skus")) {
-                  objectToReturn['skus'] = objectToReturn['skus'].concat(result[filename]);
+                  objectToReturn['skus'] = objectToReturn['skus'].concat(this.parseSKUs(result[filename]));
                 } else if (filename.startsWith("ingredients")) {
                   objectToReturn['ingredients'] = objectToReturn['ingredients'].concat(this.parseIngredients(result[filename]));
                 } else if (filename.startsWith("formulas")) {
@@ -130,6 +130,27 @@ export class ParseCsvService {
     return null;
   }
 
+  private parseSKUs(skusObject): any[] {
+    var objectToReturn = [];
+    for (var i = 0; i < skusObject.length; i++) {
+      var currentSKU = skusObject[i];
+      var newSKU = {};
+      newSKU['skuname'] = currentSKU['Name'];
+      newSKU['skunumber'] = currentSKU['SKU#'];
+      newSKU['caseupcnumber'] = currentSKU['Case UPC'];
+      newSKU['unitupcnumber'] = currentSKU['Unit UPC'];
+      newSKU['unitsize'] = currentSKU['Unit size'];
+      newSKU['countpercase'] = currentSKU['Count per case'];
+      newSKU['productline'] = currentSKU['PL Name'];
+      newSKU['formula'] = currentSKU['Formula#'];
+      newSKU['formulascalingfactor'] = currentSKU['Formula factor'];
+      newSKU['manufacturingrate'] = currentSKU['Rate'];
+      newSKU['comment'] = currentSKU['Comment']||"";
+      newSKU['manufacturinglines'] = currentSKU["ML Shortnames"]?currentSKU["ML Shortnames"].split(","):[];
+      objectToReturn.push(newSKU);
+    }
+    return objectToReturn;
+  }
   
   private consolidateFormulas(formulasObject): any[] {
     var objectToReturn = [];

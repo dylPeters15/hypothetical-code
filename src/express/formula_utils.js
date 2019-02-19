@@ -8,12 +8,6 @@ function getFormulas(formulaname, formulanumber, sku, ingredient, limit) {
     ingredient = ingredient||-1;
     limit = limit || database.defaultSearchLimit;
 
-
-    console.log("Formula name: ", JSON.stringify(formulaname));
-    console.log("Formula num: ", formulanumber);
-    console.log("sku: ", sku);
-    console.log("ingredient: ", ingredient);
-
     return new Promise((resolve, reject) => {
         var filterSchema = {
             $or: [
@@ -26,7 +20,6 @@ function getFormulas(formulaname, formulanumber, sku, ingredient, limit) {
                 reject(Error(err));
                 return;
             }
-            console.log(formulas);
             resolve(formulas);
         });
     });
@@ -34,7 +27,6 @@ function getFormulas(formulaname, formulanumber, sku, ingredient, limit) {
 
 function createFormula(newFormulaObject) {
     return new Promise((resolve, reject) => {
-        console.log(newFormulaObject);
         // for (var i = i; i < newFormulaObject['ingredientsandquantities'].length; i++) {
         //     newFormulaObject['ingredientsandquantities'][i]['ingredient'] = mongoose.Types.ObjectId(newFormulaObject['ingredientsandquantities'][i]['ingredient']);
         // }
@@ -42,7 +34,6 @@ function createFormula(newFormulaObject) {
         formula.save().then(response => {
             resolve(response);
         }).catch(err => {
-            console.log(Error(err));
             reject(Error(err));
         });
     });

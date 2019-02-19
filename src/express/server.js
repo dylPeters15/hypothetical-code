@@ -188,19 +188,15 @@ app.route('/skus').get((req, res) => {
     sku_utils.getSkus(req.headers['skuname'], Number(req.headers['skunumber']), Number(req.headers['caseupcnumber']), Number(req.headers['unitupcnumber']), Number(req.headers['limit'])).then(skus => {
         res.send(skus);
     }).catch(err => {
-        res.send({
-            err:""+err
-        });
+        resolveError(err, res);
     });
 }).put((req, res) => {
     sku_utils.createSku(req.body['skuname'], req.body['skunumber'],
     req.body['caseupcnumber'], req.body['unitupcnumber'],
-    req.body['unitsize'], req.body['countpercase'], req.body['comment']).then(response => {
+    req.body['unitsize'], req.body['countpercase'], req.body['formulanum'], req.body['formulascalingfactor'], req.body['manufacturingrate'], req.body['comment']).then(response => {
         res.send(response);
     }).catch(err => {
-        res.send({
-            err:""+err
-        });
+        resolveError(err, res);
     });
 }).post((req, res) => {
     sku_utils.modifySku(req.headers['skuname'], req.body['skuname'], req.body['skunumber'],
@@ -208,17 +204,13 @@ app.route('/skus').get((req, res) => {
     req.body['unitsize'], req.body['countpercase'], req.body['comment']).then(response => {
         res.send(response);
     }).catch(err => {
-        res.send({
-            err:""+err
-        });
+        resolveError(err, res);
     });
 }).delete((req, res) => {
     sku_utils.deleteSku(req.headers['skuname']).then(response => {
         res.send(response);
     }).catch(err => {
-        res.send({
-            err:""+err
-        });
+        resolveError(err, res);
     });
 });
 
@@ -260,36 +252,28 @@ app.route('/manufacturing-goals').get((req, res) => {
 
 ///////////////////// Manufacturing Lines /////////////////////
 app.route('/manufacturing-lines').get((req, res) => {
-    line_utils.getLine(req.headers['linename'],req.headers['shortname'],req.headers['linenameregex'], req.headers['shortnameregex'], req.headers['limit']).then(formulas => {
+    line_utils.getLine(req.headers['linename'], req.headers['linenameregex'], req.headers['shortname'], req.headers['shortnameregex'], req.headers['limit']).then(formulas => {
         res.send(formulas);
     }).catch(err => {
-        res.send({
-            err:err
-        });
+        resolveError(err, res);
     });
 }).put((req, res) => {
     line_utils.createLine(req.body).then(response => {
         res.send(response);
     }).catch(err => {
-        res.send({
-            err:err
-        });
+        resolveError(err, res);
     });
 }).post((req, res) => {
     line_utils.modifyLine(req.headers['linename'],req.body).then(response => {
         res.send(response);
     }).catch(err => {
-        res.send({
-            err:err
-        });
+        resolveError(err, res);
     });
 }).delete((req, res) => {
     line_utils.deleteLine(req.headers['linename'], req.headers['shortname'],req.headers['skus'],req.headers['comment']).then(response => {
         res.send(response);
     }).catch(err => {
-        res.send({
-            err:err
-        });
+        resolveError(err, res);
     });
 });
 

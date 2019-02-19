@@ -1,5 +1,3 @@
-﻿SKU#,Name,Case UPC,Unit UPC,Unit size,Count per case,PL Name,Comment,Formula#,Formula factor,Rate
-1,Tomato Soup,72527273070,72527273060,16 oz,24,Soups,Comment,1,1.0,24
-2,Chicken Noodle Soup,72527273071,72527273061,24 oz,24,Soups,Great for a cold,2,2.5,48
-3,Potato Soup,72527273072,72527273062,1 gallon,36,Soups,,3,5.0,10
-4,Cheerios,72527273073,72527273063,32 oz,48,Cereals,,4,1,20
+﻿SKU#,Name,Case UPC,Unit UPC,Unit size,Count per case,PL Name,Formula#,Formula factor,ML Shortnames,Rate,Comment
+1,Tomato Soup,72527273070,72527273060,16 fl oz,16,Soups,2,1.5,"ABCD,EFGH",20,It's delicious
+1,Chicken Noodle Soup,72527273071,72527273061,16 fl oz,16,Soups,1,1.5,"ABCD,EFGH",20,Just like momma makes it

@@ -16,7 +16,6 @@ function getIngredients(ingredientname, ingredientnameregex, ingredientnumber,li
         }
         database.ingredientModel.find(filterSchema).limit(limit).exec((err, ingredients) => {
             if (err) {
-                console.log(err)
                 reject(Error(err));
                 return;
             }

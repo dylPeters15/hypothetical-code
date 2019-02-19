@@ -14,9 +14,13 @@ export class ImportUploadService {
         reject(err);
       };
       this.importIngredients(data['ingredients']).then(ingredientResult => {
+        console.log("finished ingredients.");
         this.importFormulas(data['formulas']).then(formulaResult => {
+          console.log("finished formulas.");
           this.importProductLines(data['productlines']).then(productLineResult => {
+            console.log("finished product lines.");
             this.importSKUs(data['skus']).then(skuResult => {
+              console.log("finished skus.");
               resolve();
             }).catch(catcher);
           }).catch(catcher);
@@ -95,7 +99,6 @@ export class ImportUploadService {
             numIngredientsProcessed++;
             if (numIngredientsProcessed == formula['ingredientsandquantities'].length) {
               this.rest.createFormula(formula['formulaname'], formula['formulanumber'], ingredientsAndQuantities, formula['comment']||"").subscribe(createResponse => {
-                console.log("Create response: ",createResponse);
                 if (createResponse['formulaname'] == formula['formulaname']) {
                   resolve();
                 } else {
@@ -113,8 +116,6 @@ export class ImportUploadService {
     return new Promise((resolve, reject) => {
       var numIngredientsProcessed = 0;
       var ingredientsAndQuantities = [];
-
-      console.log("In updatFormula");
       formula['ingredientsandquantities'].forEach(ingredientAndQuantity => {
         var ingredientnum = ingredientAndQuantity['ingredient'];
         this.rest.getIngredients("",ingredientnum,1).subscribe(response => {
@@ -129,7 +130,6 @@ export class ImportUploadService {
             numIngredientsProcessed++;
             if (numIngredientsProcessed == formula['ingredientsandquantities'].length) {
               this.rest.modifyFormula(oldname, formula['formulaname'], formula['formulanumber'], ingredientsAndQuantities, formula['comment']||"").subscribe(modifyResponse => {
-                console.log("Modify response: ",modifyResponse);
                 if (modifyResponse['ok'] == 1) {
                   resolve();
                 } else {
@@ -147,7 +147,9 @@ export class ImportUploadService {
     return new Promise((resolve, reject) => {
       var numFormulasToProcess = formulas['new'].length+this.numConflictedSelectNewOfSection(formulas);
       var numFormulasProcessed = 0;
-      console.log("import formuls");
+      if (numFormulasToProcess == 0) {
+        resolve();
+      }
       formulas['new'].forEach(formula => {
         this.importFormula(formula).then(() => {
           numFormulasProcessed++;
@@ -173,9 +175,71 @@ export class ImportUploadService {
     });
   }
 
+  private importSKU(sku): Promise<any> {
+    return new Promise((resolve, reject) => {
+      console.log("SKU: ",sku);
+      this.rest.createSku(sku['skuname'], sku['skunumber'], sku['caseupcnumber'], sku['unitupcnumber'], sku['unitsize'], sku['countpercase'], sku['formula'], sku['formulascalingfactor'], sku['manufacturingrate'], sku['comment']).subscribe(createSkuResponse => {
+        if (createSkuResponse['skuname'] == sku['skuname']) {
+          this.rest.getProductLines(sku['productline'],1).subscribe
+          (getPLResponse => {
+            if (getPLResponse.length == 0) {
+              reject(Error("Could not find product line " + sku['productline'] + " for SKU " + sku['skuname']));
+            } else {
+              var skus = getPLResponse[0]['skus'];
+              skus.push({
+                sku: createSkuResponse['_id']
+              })
+              this.rest.modifyProductLine(sku['productline'], sku['productline'], skus).subscribe(modifyPLResponse => {
+                if (modifyPLResponse['ok'] == 1) {
+                  resolve();
+                } else {
+                  reject(Error("Could not modify Product Line " + sku['productline'] + " for SKU " + sku['skuname']));
+                }
+              });
+            }
+          });
+        } else {
+          reject(Error("Could not create SKU " + sku['skuname']));
+        }
+      });
+    });
+  }
+
+  private updateSKU(sku): Promise<any> {
+    return new Promise((resolve, reject) => {
+      resolve();
+    });
+  }
+
   private importSKUs(skus): Promise<any> {
     return new Promise((resolve, reject) => {
-      resolve(true);
+      var numSKUsProcessed = 0;
+      var totalSKUs = skus['new'].length+this.numConflictedSelectNewOfSection(skus);
+      if (totalSKUs == 0) {
+        resolve();
+      }
+      skus['new'].forEach(sku => {
+        this.importSKU(sku).then(() => {
+          numSKUsProcessed++;
+          if (numSKUsProcessed >= totalSKUs) {
+            resolve();
+          }
+        }).catch(err => {
+          reject(err);
+        });
+      });
+      skus['conflicts'].forEach(conflict => {
+        if (conflict['select'] == 'new') {
+          this.updateSKU(conflict['new']).then(() => {
+            numSKUsProcessed++;
+            if (numSKUsProcessed >= totalSKUs) {
+              resolve();
+            }
+          }).catch(err => {
+            reject(err);
+          });
+        }
+      });
     });
   }
 
