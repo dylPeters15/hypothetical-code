@@ -79,6 +79,8 @@ export class ImportMatchConflictNewCheckerService {
         } else {
           var responseSku = response[0];
           var match = true;
+          console.log("SKU",sku);
+          console.log("RESPONSESKU",responseSku);
           match = sku['skuname'] == responseSku['skuname']
           && sku['skunumber'] == responseSku['skunumber']
           && sku['caseupcnumber'] == responseSku['caseupcnumber']
@@ -356,7 +358,7 @@ export class ImportMatchConflictNewCheckerService {
       var numMLsChecked = 0;
       if (sku['manufacturinglines'].length == 0) {
         this.rest.getFormulas("", sku['formula'], -1, -1, 1).subscribe(formulaResponse => {
-          if (formulaResponse.length == 1) {
+          if (formulaResponse.length == 1 || this.arrayContainsObjectWithKeyVal(formulas, 'formulanumber', sku['formula'])) {
             resolve();
           } else {
             reject(Error("Could not find formula " + sku['formula'] + " for SKU " + sku['skuname']));
@@ -370,7 +372,7 @@ export class ImportMatchConflictNewCheckerService {
             numMLsChecked++;
             if (numMLsChecked >= sku['manufacturinglines'].length) {
               this.rest.getFormulas("", sku['formula'], -1, -1, 1).subscribe(formulaResponse => {
-                if (formulaResponse.length == 1) {
+                if (formulaResponse.length == 1 || this.arrayContainsObjectWithKeyVal(formulas, 'formulanumber', sku['formula'])) {
                   resolve();
                 } else {
                   reject(Error("Could not find formula " + sku['formula'] + " for SKU " + sku['skuname']));

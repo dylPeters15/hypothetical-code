@@ -199,9 +199,11 @@ app.route('/skus').get((req, res) => {
         resolveError(err, res);
     });
 }).post((req, res) => {
+    
+    console.log(req.body);
     sku_utils.modifySku(req.headers['skuname'], req.body['skuname'], req.body['skunumber'],
     req.body['caseupcnumber'], req.body['unitupcnumber'],
-    req.body['unitsize'], req.body['countpercase'], req.body['comment']).then(response => {
+    req.body['unitsize'], req.body['countpercase'], req.body['formulanum'], req.body['formulascalingfactor'], req.body['manufacturingrate'], req.body['comment']).then(response => {
         res.send(response);
     }).catch(err => {
         resolveError(err, res);

@@ -182,19 +182,20 @@ createSku(skuname: String, skunumber: number,
   this.generateHeader());
 }
 
-modifySku(oldSkuName: String, skuName: String, skuNumber: number, 
-  caseUpcNumber: number, unitUpcNumber: number, unitSize: number, 
-  countPerCase: number, comment: String): Observable<any> {
+modifySku(oldSkuName: String, skuname: String, skunumber: number, 
+  caseupcnumber: number, unitupcnumber: number, unitsize: number, 
+  countpercase: number, formulanum: Number, formulascalingfactor: Number, manufacturingrate: Number, comment: String): Observable<any> {
   return this.http.post(endpoint + "skus", {
-    $set: {
-      skuname: skuName,
-      skunumber: skuNumber,
-      caseupcnumber: caseUpcNumber,
-      unitupcnumber: unitUpcNumber,
-      unitsize: unitSize,
-      countpercase: countPerCase,
-      comment: comment
-    }
+    skuname: skuname,
+    skunumber: skunumber,
+    caseupcnumber: caseupcnumber,
+    unitupcnumber: unitupcnumber,
+    unitsize: unitsize,
+    countpercase: countpercase,
+    formulanum: formulanum,
+    formulascalingfactor: formulascalingfactor,
+    manufacturingrate: manufacturingrate,
+    comment: comment
   },
   this.generateHeader({
     skuname: oldSkuName
@@ -269,15 +270,17 @@ deleteSku(skuName: String): Observable<any> {
   createProductLine(productlinename: String, skus: []): Observable<any> {
     return this.http.put(endpoint + "product_lines", {
       productlinename: productlinename,
-      skus: skus,
+      skus: skus
     },
     this.generateHeader());
   }
 
   modifyProductLine(productlinename: String,  newproductlinename: String, skus: [], ): Observable<any> {
     return this.http.post(endpoint + "product_lines", {
-      newproductlinename: newproductlinename,
-      skus: skus
+      $set: {
+        productlinename: newproductlinename,
+        skus: skus
+      }
     },
     this.generateHeader({
       productlinename: productlinename
