@@ -101,30 +101,43 @@ function createSku(name, number, case_upc, unit_upc, unit_size, count, formulanu
     });
 }
 
-function modifySku(oldName, name, number, case_upc, unit_upc, unit_size, count, comment) {
+function modifySku(oldName, name, number, case_upc, unit_upc, unit_size, count, formulanum, formulascalingfactor, manufacturingrate, comment) {
 
     return new Promise(function (resolve, reject) {
-        const filterschema = {
-            skuName: oldName
-
-        };
-        database.skuModel.updateOne(filterschema, {
-            $set: {
-                skuname: name,
-                skunumber: number,
-                caseupcnumber: case_upc,
-                unitupcnumber: unit_upc,
-                unitsize: unit_size,
-                countpercase: count,
-                comment: comment
+        formula_utils.getFormulas("",formulanum,null,null,1).then(response => {
+            if (response.length == 0) {
+                reject(Error("Could not find formula " + formulanum + " for SKU " + name));
+            } else {
+                var formulaID = response[0]['_id'];
+                const filterschema = {
+                    skuname: oldName
+        
+                };
+                database.skuModel.updateOne(filterschema, {
+                    $set: {
+                        skuname: name,
+                        skunumber: number,
+                        caseupcnumber: case_upc,
+                        unitupcnumber: unit_upc,
+                        unitsize: unit_size,
+                        countpercase: count,
+                        formula: formulaID,
+                        formulascalingfactor: formulascalingfactor,
+                        manufacturingrate: manufacturingrate,
+                        comment: comment
+                    }
+                }, (err, response) => {
+                    if (err) {
+                        reject(Error(err));
+                        return
+                    }
+                    resolve(response);
+                });
             }
-        }, (err, response) => {
-            if (err) {
-                reject(Error(err));
-                return
-            }
-            resolve(response);
+        }).catch(err => {
+            reject(err);
         });
+        
     });
 
 }
