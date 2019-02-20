@@ -227,7 +227,7 @@ export class ImportUploadService {
         }
       }).catch(err => {
         reject(Error(err));
-      })
+      });
     });
   }
 

@@ -15,7 +15,7 @@ function getSkus(skuname, skunumber, caseupcnumber, unitupcnumber, formulanumber
                 { skuname: { $regex: /skuname/ } }
             ]
         }
-        database.skuModel.find(filterSchema).limit(limit).exec((err, skus) => {
+        database.skuModel.find(filterSchema).limit(limit).populate('formula').exec((err, skus) => {
             if (err) {
                 reject(Error(err));
                 return;
