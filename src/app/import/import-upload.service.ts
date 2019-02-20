@@ -185,10 +185,12 @@ export class ImportUploadService {
             if (getPLResponse.length == 0) {
               reject(Error("Could not find product line " + sku['productline'] + " for SKU " + sku['skuname']));
             } else {
+              console.log("Get PL response: ", getPLResponse);
               var skus = getPLResponse[0]['skus'];
               skus.push({
                 sku: createSkuResponse['_id']
-              })
+              });
+              console.log("SKUs",skus);
               this.rest.modifyProductLine(sku['productline'], sku['productline'], skus).subscribe(modifyPLResponse => {
                 if (modifyPLResponse['ok'] == 1) {
                   resolve();
@@ -218,6 +220,8 @@ export class ImportUploadService {
       if (totalSKUs == 0) {
         resolve();
       }
+      //the problem here is that all of the updates are occurring at the same time so there is a race condition where both SKUs obtain the product line before either SKU updates it.
+      //Fix: enforce that they upload sequentially
       skus['new'].forEach(sku => {
         this.importSKU(sku).then(() => {
           numSKUsProcessed++;
