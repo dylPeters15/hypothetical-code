@@ -187,7 +187,6 @@ var productLineSchema = new mongoose.Schema({
   }]
   
 });
-productLineSchema.index({ productlinename: 1, sku: 1 }, { unique: true }); //the combination of name and sku should be unique
 productLineSchema.plugin(uniqueValidator);
 
 var productLineModel = mongoose.model('productline', productLineSchema);

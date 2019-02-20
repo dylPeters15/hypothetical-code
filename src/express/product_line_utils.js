@@ -10,14 +10,15 @@ function getProductLines(productlinename, productlinenameregex, limit){
         const filterSchema = {
             $or:[
                 {productlinename: productlinename},
-                {productlinenameregex: { $regex: productlinenameregex }}
+                {productlinename: { $regex: productlinenameregex }}
             ]
         };
-        database.productLineModel.find(filterSchema).limit(limit).exec((err, productLines) => {
+        database.productLineModel.find(filterSchema).limit(limit).populate('skus.sku').exec((err, productLines) => {
             if (err) {
                 reject(Error(err));
                 return;
             }
+            console.log("Found: ",productLines);
             resolve(productLines);
         });
     });
@@ -44,9 +45,10 @@ function modifyProductLine(productlinename, newProductLineObject) {
 
     return new Promise(function (resolve, reject) {
         const filterschema = {
-            productlinename: productlinename,
-    
+            productlinename: productlinename
         };
+        console.log(filterschema);
+        console.log(JSON.stringify(newProductLineObject));
         database.productLineModel.updateOne(filterschema, newProductLineObject , (err, response) => {
             if (err) {
                 reject(Error(err));

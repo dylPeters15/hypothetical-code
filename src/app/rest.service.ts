@@ -267,15 +267,17 @@ deleteSku(skuName: String): Observable<any> {
   createProductLine(productlinename: String, skus: []): Observable<any> {
     return this.http.put(endpoint + "product_lines", {
       productlinename: productlinename,
-      skus: skus,
+      skus: skus
     },
     this.generateHeader());
   }
 
   modifyProductLine(productlinename: String,  newproductlinename: String, skus: [], ): Observable<any> {
     return this.http.post(endpoint + "product_lines", {
-      newproductlinename: newproductlinename,
-      skus: skus
+      $set: {
+        productlinename: newproductlinename,
+        skus: skus
+      }
     },
     this.generateHeader({
       productlinename: productlinename
