@@ -25,6 +25,26 @@ export class ImportComponent implements OnInit {
 
   }
 
+  private numNew(uploadData) {
+    var numNew = 0;
+    for (let key of Object.keys(uploadData)) {
+      var objectDict = uploadData[key];
+      numNew += objectDict['new'].length;
+    }
+    return numNew;
+  }
+
+  private numUpdated(uploadData) {
+    var numNew = 0;
+    for (let key of Object.keys(uploadData)) {
+      var objectDict = uploadData[key];
+      numNew += objectDict['conflicts'].filter((value, index, array) => {
+        return value['select'] == 'new';
+      }).length;
+    }
+    return numNew;
+  }
+
   filesSelected() {
     this.parser.parseCSVFiles(this.fileSelector.nativeElement.files).then(csvResult => {
       this.fileSelectorForm.nativeElement.reset();
@@ -40,10 +60,11 @@ export class ImportComponent implements OnInit {
             //operation confirmed
             this.importUploader.importData(closeData).then(() => {
               //popup a dialog telling the user it was successfull
+              console.log(closeData);
               const dialogConfig = new MatDialogConfig();
               dialogConfig.data = {
                 title: "Success!",
-                message: "Successfully imported data."
+                message: "Successfully imported " + this.numNew(closeData) + " new records and updated " + this.numUpdated(closeData) + " records."
               };
               this.dialog.open(UserNotificationDialogComponent, dialogConfig);
             }).catch(err => {

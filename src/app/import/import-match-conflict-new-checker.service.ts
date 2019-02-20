@@ -79,6 +79,8 @@ export class ImportMatchConflictNewCheckerService {
         } else {
           var responseSku = response[0];
           var match = true;
+          console.log("SKU",sku);
+          console.log("RESPONSESKU",responseSku);
           match = sku['skuname'] == responseSku['skuname']
           && sku['skunumber'] == responseSku['skunumber']
           && sku['caseupcnumber'] == responseSku['caseupcnumber']
