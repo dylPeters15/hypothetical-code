@@ -1,0 +1,26 @@
+<h2 mat-dialog-title align="center">{{ dialog_title }}</h2>
+<mat-dialog-content align="center">
+  <mat-card>
+    <mat-card-content style="display: grid; width: 100%; justify-items: center;">
+      <mat-form-field>
+        <input matInput [(ngModel)]="formulaname" placeholder="Name" required>
+      </mat-form-field>
+
+      <mat-form-field>
+        <input matInput [(ngModel)]="formulanumber" placeholder="Formula #">
+      </mat-form-field>
+
+      <mat-form-field>
+        <input matInput [(ngModel)]="ingredientsandquantities" placeholder="Ingredients and Quantities" required>
+      </mat-form-field>
+
+      <mat-form-field>
+        <input matInput [(ngModel)]="comment" placeholder="Additional Comments">
+      </mat-form-field>
+    </mat-card-content>
+  </mat-card>
+</mat-dialog-content>
+<mat-dialog-actions align="center">
+  <button class="mat-raised-button" (click)="closeDialog()">Cancel</button>
+  <button class="mat-raised-button" (click)="createFormula()" [disabled]="username==''" color="primary">Create</button>
+</mat-dialog-actions>
