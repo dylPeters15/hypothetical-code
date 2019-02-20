@@ -48,9 +48,9 @@ export class ExportableSKU {
  * @title Table dynamically changing the columns displayed
  */
 @Component({
-    selector: 'app-sku-inventory',
-    templateUrl: './sku-inventory.component.html',
-    styleUrls: ['./sku-inventory.component.css']
+    selector: 'app-formulas',
+    templateUrl: './formulas.component.html',
+    styleUrls: ['./formulas.component.css']
   })
 export class FormulaComponent  implements OnInit {
 
