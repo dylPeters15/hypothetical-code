@@ -2,7 +2,7 @@
   <input matInput placeholder="Filter" [(ngModel)]="filterQuery" (ngModelChange)="refreshData($event)">
 </mat-form-field>
 
-<div id='product-line-container'>
+<div cdkDropListGroup class='product-line-container'>
   <div *ngFor="let productLine of dataSource['data']">
     <app-product-line-tables class="productLines" [(ngModel)]="productLine"></app-product-line-tables>
   </div>
