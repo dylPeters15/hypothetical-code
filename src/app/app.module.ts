@@ -53,6 +53,7 @@ import { ImportPreviewSectionComponent } from './import/import-preview-section/i
 import { ExistingRecordPreviewComponent } from './import/existing-record-preview/existing-record-preview.component';
 import { NewLineDialogComponent } from './new-line-dialog/new-line-dialog.component';
 import { ManufacturingLinesComponent } from './manufacturing-lines/manufacturing-lines.component';
+import { ManufacturingScheduleComponent } from './manufacturing-schedule/manufacturing-schedule.component';
 
 const appRoutes: Routes = [
   { path: 'login', component: LoginComponent, data: { title: 'Log In' }, canActivate: [AlreadyLoggedInRouteGuardService] },
@@ -108,6 +109,7 @@ const appRoutes: Routes = [
     ExistingRecordPreviewComponent,
     ManufacturingLinesComponent,
     NewLineDialogComponent,
+    ManufacturingScheduleComponent,
   ],
   imports: [
     BrowserModule,
