@@ -6,7 +6,7 @@
       </button>
     </div>
     <div [hidden]="loggedin" style="width:30%;text-align:left;"></div>
-    <h1 style="width:40%;text-align:center;">Hypothetical Code <img src="../assets/applelogo.png" style="width:50px;height:50px;"></h1>
+    <button routerLink='/home' style="width:40%;text-align:center;background-color: transparent;border: none;outline:none;"><h1>Hypothetical Code <img src="../assets/applelogo.png" style="width:50px;height:50px;"></h1></button>
     <div [hidden]="!loggedin" style="width:30%;text-align:right;">
       <button mat-icon-button [matMenuTriggerFor]="menu">
         <mat-icon>account_circle</mat-icon>
@@ -38,7 +38,7 @@
       <a mat-list-item routerLink='/ingredient-dependency-report' routerLinkActive="active">Ingredient Dependency Report</a>
       <a mat-list-item routerLink='/ingredient-inventory' routerLinkActive="active">Ingredients</a>
       <a mat-list-item routerLink='/sku-inventory' routerLinkActive="active">Stock Keeping Units</a>
-      <a mat-list-item routerLink='/product-line-inventory' routerLinkActive="active">Product Lines</a>
+      <a mat-list-item routerLink='/product-line' routerLinkActive="active">Product Lines</a>
       <a mat-list-item *ngIf="admin" routerLink='/import' routerLinkActive="active">Import</a>
 
     </mat-nav-list>
