@@ -11,16 +11,26 @@ export class ManufacturingScheduleReportComponent implements OnInit {
   constructor(public rest:RestService) { }
 
   lines: any[];
-  selectedLineName: string;
+  selectedLine: string;
+  startDate: Date = new Date();
+  endDate: Date = new Date(new Date().setUTCFullYear(new Date().getUTCFullYear()+1));
 
   ngOnInit() {
     this.rest.getLine("",".*","",".*",100).subscribe(result => {
       this.lines = result;
+      if (result.length > 0) {
+        this.selectedLine = result[0]['linename'];
+      }
+      this.selectionChange();
     });
   }
 
-  selectionChange(event) {
-    this.selectedLineName = event.value;
+  selectionChange() {
+    if (this.selectedLine && this.startDate && this.endDate) {
+      console.log(this.selectedLine);
+      console.log(this.startDate);
+      console.log(this.endDate);
+    }
   }
 
 }

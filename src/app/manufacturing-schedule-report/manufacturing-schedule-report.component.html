@@ -1,8 +1,20 @@
 <h4>Manufacturing Schedule Report</h4>
 <mat-form-field>
-  <mat-select placeholder="Select a Manufacturing Line" (selectionChange)="selectionChange($event)">
+  <mat-select placeholder="Select a Manufacturing Line" [(ngModel)]="selectedLine" (selectionChange)="selectionChange()">
     <mat-option *ngFor="let line of lines" [value]="line.linename">
       {{line.linename}} ({{line.shortname}})
     </mat-option>
   </mat-select>
+</mat-form-field>
+
+<mat-form-field>
+  <input matInput [matDatepicker]="startpicker" placeholder="Choose a start date" [(ngModel)]="startDate" (dateChange)="selectionChange()">
+  <mat-datepicker-toggle matSuffix [for]="startpicker"></mat-datepicker-toggle>
+  <mat-datepicker #startpicker></mat-datepicker>
+</mat-form-field>
+
+<mat-form-field>
+  <input matInput [matDatepicker]="endpicker" placeholder="Choose an end date" [(ngModel)]="endDate" (dateChange)="selectionChange()">
+  <mat-datepicker-toggle matSuffix [for]="endpicker"></mat-datepicker-toggle>
+  <mat-datepicker #endpicker></mat-datepicker>
 </mat-form-field>

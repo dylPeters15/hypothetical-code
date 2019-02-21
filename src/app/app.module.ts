@@ -56,6 +56,7 @@ import { NewLineDialogComponent } from './new-line-dialog/new-line-dialog.compon
 import { ManufacturingLinesComponent } from './manufacturing-lines/manufacturing-lines.component';
 import { ManufacturingScheduleComponent } from './manufacturing-schedule/manufacturing-schedule.component';
 import { ManufacturingScheduleReportComponent } from './manufacturing-schedule-report/manufacturing-schedule-report.component';
+import {MatDatepickerModule} from '@angular/material/datepicker'; 
 
 const appRoutes: Routes = [
   { path: 'login', component: LoginComponent, data: { title: 'Log In' }, canActivate: [AlreadyLoggedInRouteGuardService] },
@@ -141,6 +142,7 @@ const appRoutes: Routes = [
     MatChipsModule,
     MatAutocompleteModule,   
     DragDropModule,
+    MatDatepickerModule
   ],
   providers: [],
   bootstrap: [AppComponent],
