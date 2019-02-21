@@ -7,6 +7,7 @@
     <button mat-raised-button (click)="selectAll()"> Select All </button>
     <button mat-raised-button (click)="deselectAll()"> Deselect All </button>
     <button mat-raised-button (click)="deleteSelected()" style="color: white; background-color: red;" [disabled]="dataSource.data.length==0"> Delete Selected </button>
+    <button mat-raised-button (click)="modifySelected()" style="color: white; background-color: red;" [disabled]="dataSource.data.length==0"> Modify Selected </button>
     <button mat-raised-button (click)="newLine()"> New Line </button>
     <mat-form-field>
       <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter">
@@ -30,7 +31,12 @@
     
       <ng-container matColumnDef="skus">
         <mat-header-cell *matHeaderCellDef>Skus</mat-header-cell>
-        <mat-cell *matCellDef="let element">{{element.skus}}</mat-cell>
+        <mat-cell *matCellDef="let element"> <button mat-raised-button
+          matTooltip={{element.skus}}
+          aria-label="Button that displays all skus when focused or hovered over">
+    SKUs: {{element.skuCount}}
+  </button>
+         </mat-cell>
       </ng-container>
     
       <ng-container matColumnDef="comment">

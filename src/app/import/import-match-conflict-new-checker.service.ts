@@ -72,7 +72,7 @@ export class ImportMatchConflictNewCheckerService {
 
   private checkSKUMatchConflictNew(sku, toReturn): Promise<any> {
     return new Promise((resolve, reject) => {
-      this.rest.getSkus(sku['skuname'], sku['skunumber'], -1, -1, "-1", 1).subscribe(response => {
+      this.rest.getSkus(sku['skuname'],sku['skunameregex'], sku['skunumber'], -1, -1, "-1", 1).subscribe(response => {
         if (response.length == 0) {
           toReturn['new'].push(sku);
           resolve();
@@ -366,7 +366,7 @@ export class ImportMatchConflictNewCheckerService {
         });
       }
       sku['manufacturinglines'].forEach(shortname => {
-        this.rest.getLine("",shortname,1).subscribe(mlResponse => {
+        this.rest.getLine("","",shortname,"",1).subscribe(mlResponse => {
           console.log(mlResponse);
           if (mlResponse.length == 1) {
             numMLsChecked++;

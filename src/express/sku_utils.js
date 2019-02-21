@@ -2,17 +2,24 @@ const database = require('./database.js');
 const formula_utils = require('./formula_utils.js');
 
 
-function getSkus(skuname, skunumber, caseupcnumber, unitupcnumber, formulanumber, limit) {
-
+function getSkus(skuname, skunameregex, skunumber, caseupcnumber, unitupcnumber, formulanumber, limit) {
+    skuname = skuname || "";
+    skunameregex = skunameregex || "$a";
+    skunumber = skunumber || -1;
+    caseupcnumber = caseupcnumber || -1;
+    unitupcnumber = unitupcnumber || -1;
+    formulanumber = formulanumber || "";
+    limit = (limit != 0) ? limit : database.defaultSearchLimit;
     return new Promise(function (resolve, reject) {
         const filterSchema = {
             $or: [
                 { skuname: skuname },
+                { skuname: {$regex: skunameregex }},
                 { skunumber: skunumber },
                 { caseupcnumber: caseupcnumber },
                 { unitupcnumber: unitupcnumber },
                 { formulanumber: formulanumber },
-                { skuname: { $regex: /skuname/ } }
+
             ]
         }
         database.skuModel.find(filterSchema).limit(limit).populate('formula').exec((err, skus) => {
@@ -25,6 +32,8 @@ function getSkus(skuname, skunumber, caseupcnumber, unitupcnumber, formulanumber
     });
 
 }
+
+
 
 function createSku(name, number, case_upc, unit_upc, unit_size, count, formulanum, formulascalingfactor, manufacturingrate, comment) {
     return new Promise(function (resolve, reject) {
@@ -211,6 +220,12 @@ function createUnitUpcNumber() {
     newUnitUpcNumber = Math.round(Math.random() * 10000000000);
     firstDigitOption1 = Number("1" + newUnitUpcNumber); // Case upc number must start with a 0,1,6,7,8, or 8. For random generated, just let it equal 1.
     return(firstDigitOption1);
+}
+
+function printSKU(skuObject){
+    let skuString = '';
+    skuString += '<' + skuObject['skuname'] + '>: <' + skuObject['unitsize'] + '> * <' + skuObject['countpercase'] + '>';
+    return skuString;
 }
 
 
