@@ -1,7 +1,7 @@
 import { Component, Input, forwardRef } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import {CdkDragDrop, moveItemInArray, transferArrayItem} from '@angular/cdk/drag-drop';
-
+import { RestService } from '../rest.service';
 
 const customValueProvider = {
   provide: NG_VALUE_ACCESSOR,
@@ -17,7 +17,7 @@ const customValueProvider = {
 })
 export class ProductLineTablesComponent implements ControlValueAccessor {
 
-  constructor() { }
+  constructor(public rest: RestService) { }
 
   _value = '';
   stringified = '';
@@ -51,7 +51,29 @@ export class ProductLineTablesComponent implements ControlValueAccessor {
                         event.container.data,
                         event.previousIndex,
                         event.currentIndex);
+        console.log('previous container id',event.previousContainer.id)
+        console.log('container id',event.container.id)
+        console.log('container skus',event.container.data)
+        this.updateProductLine(event.previousContainer.id, 
+            event.previousContainer.id, event.previousContainer.data)
+        this.updateProductLine(event.container.id,
+            event.container.id, event.container.data);
     }
+  }
+
+  updateProductLine(oldname, newname, skus) {
+    return new Promise((resolve, reject) => {
+    this.rest.modifyProductLine(oldname,
+        newname, skus).subscribe(modifyPLResponse => {
+            if (modifyPLResponse['ok'] == 1) {
+                console.log('success')
+                resolve();
+            } else {
+                console.log('failure')
+                reject(Error("Could not modify Product Line " + sku['productline'] + " for SKU " + sku['skuname']));
+            }      
+        });
+    });
   }
 
 }

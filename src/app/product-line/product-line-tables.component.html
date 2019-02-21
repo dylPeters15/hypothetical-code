@@ -2,6 +2,7 @@
   <h3> {{_value['productlinename']}} </h3> 
   <div
     cdkDropList
+    [id]="_value['productlinename']"
     #productLineList="cdkDropList"
     [cdkDropListData]="_value['skus']"
     class="example-list"
