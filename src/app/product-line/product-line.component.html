@@ -1,20 +1,17 @@
-<div class="example-container">
-  <h2>To do</h2>
+<mat-form-field>
+  <input matInput placeholder="Filter" [(ngModel)]="filterQuery" (ngModelChange)="refreshData($event)">
+</mat-form-field>
 
-  <div
-    cdkDropList
-    #todoList="cdkDropList"
-    [cdkDropListData]="todo"
-    [cdkDropListConnectedTo]="[doneList]"
-    class="example-list"
-    (cdkDropListDropped)="drop($event)">
-    <div class="example-box" *ngFor="let item of todo" cdkDrag>{{item}}</div>
+<div id='product-line-container'>
+  <div *ngFor="let productLine of dataSource['data']">
+    <app-product-line-tables class="productLines" [(ngModel)]="productLine"></app-product-line-tables>
   </div>
 </div>
 
-<div class="example-container">
-  <h2>Done</h2>
 
+
+<!-- <div class="example-container">
+  <h2>Done</h2> 
   <div
     cdkDropList
     #doneList="cdkDropList"
@@ -24,4 +21,4 @@
     (cdkDropListDropped)="drop($event)">
     <div class="example-box" *ngFor="let item of done" cdkDrag>{{item}}</div>
   </div>
-</div>
+</div> -->

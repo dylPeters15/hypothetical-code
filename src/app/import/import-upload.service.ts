@@ -87,7 +87,7 @@ export class ImportUploadService {
       var ingredientsAndQuantities = [];
       formula['ingredientsandquantities'].forEach(ingredientAndQuantity => {
         var ingredientnum = ingredientAndQuantity['ingredient'];
-        this.rest.getIngredients("", ingredientnum, 1).subscribe(response => {
+        this.rest.getIngredients("","", ingredientnum, 1).subscribe(response => {
           if (response.length == 0) {
             reject(Error("Could not find ingredient " + ingredientnum + " for formula " + formula['formulaname']));
           } else {
@@ -118,7 +118,7 @@ export class ImportUploadService {
       var ingredientsAndQuantities = [];
       formula['ingredientsandquantities'].forEach(ingredientAndQuantity => {
         var ingredientnum = ingredientAndQuantity['ingredient'];
-        this.rest.getIngredients("", ingredientnum, 1).subscribe(response => {
+        this.rest.getIngredients("","", ingredientnum, 1).subscribe(response => {
           if (response.length == 0) {
             reject(Error("Could not find ingredient " + ingredientnum + " for formula " + formula['formulaname']));
           } else {
@@ -180,7 +180,7 @@ export class ImportUploadService {
       console.log("SKU: ", sku);
       this.rest.createSku(sku['skuname'], sku['skunumber'], sku['caseupcnumber'], sku['unitupcnumber'], sku['unitsize'], sku['countpercase'], sku['formula'], sku['formulascalingfactor'], sku['manufacturingrate'], sku['comment']).subscribe(createSkuResponse => {
         if (createSkuResponse['skuname'] == sku['skuname']) {
-          this.rest.getProductLines(sku['productline'], 1).subscribe
+          this.rest.getProductLines(sku['productline'],"", 1).subscribe
             (getPLResponse => {
               if (getPLResponse.length == 0) {
                 reject(Error("Could not find product line " + sku['productline'] + " for SKU " + sku['skuname']));
