@@ -6,7 +6,7 @@
       </button>
     </div>
     <div [hidden]="loggedin" style="width:30%;text-align:left;"></div>
-    <h1 style="width:40%;text-align:center;">Hypothetical Code <img src="../assets/applelogo.png" style="width:50px;height:50px;"></h1>
+    <button routerLink='/home' style="width:40%;text-align:center;background-color: transparent;border: none;outline:none;"><h1>Hypothetical Code <img src="../assets/applelogo.png" style="width:50px;height:50px;"></h1></button>
     <div [hidden]="!loggedin" style="width:30%;text-align:right;">
       <button mat-icon-button [matMenuTriggerFor]="menu">
         <mat-icon>account_circle</mat-icon>
