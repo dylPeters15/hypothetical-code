@@ -36,6 +36,7 @@ import { NewUserDialogComponent } from './new-user-dialog/new-user-dialog.compon
 import { NewSkuDialogComponent } from './new-sku-dialog/new-sku-dialog.component';
 import { NewIngredientDialogComponent } from './new-ingredient-dialog/new-ingredient-dialog.component';
 import { NewProductLineDialogComponent } from './new-product-line-dialog/new-product-line-dialog.component';
+import { ProductLineTablesComponent } from './product-line/product-line-tables.component';
 import { MoreInfoDialogComponent } from './more-info-dialog/more-info-dialog.component';
 import { PasswordConfirmationDialogComponent } from './password-confirmation-dialog/password-confirmation-dialog.component'; 
 import { PrivacyPolicyDialogComponent } from './footer/privacy-policy-dialog/privacy-policy-dialog.component';
@@ -90,6 +91,7 @@ const appRoutes: Routes = [
     NewSkuDialogComponent,
     NewIngredientDialogComponent,
     NewProductLineDialogComponent,
+    ProductLineTablesComponent,
     MoreInfoDialogComponent,
     ManufacturingCalculatorComponent,
     IngredientDependencyComponent,
