@@ -388,6 +388,7 @@ deleteSku(skuName: String): Observable<any> {
   }
 
   createLine(linename: String, shortname: String, skus: [], comment: String): Observable<any> {
+    console.log("REST: " + JSON.stringify(skus))
     return this.http.put(endpoint + 'manufacturing-lines', {
       linename: linename,
       shortname: shortname,
@@ -396,11 +397,12 @@ deleteSku(skuName: String): Observable<any> {
     });
   }
 
-  modifyLine(linename: String, newlinename: String, shortname: String, skus: []): Observable<any> {
+  modifyLine(linename: String, newlinename: String, shortname: String, skus: [], comment: String): Observable<any> {
     return this.http.post(endpoint + 'manufacturing-lines', {
       linename: newlinename,
       shortname: shortname,
-      skus: skus
+      skus: skus,
+      comment: comment
     }, this.generateHeader({
       linename: linename
     }));

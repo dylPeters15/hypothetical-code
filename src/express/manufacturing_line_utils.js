@@ -21,6 +21,7 @@ function getLine(linename, linenameregex, shortname, shortnameregex, limit) {
                 reject(Error(err));
             }
             else {
+                console.log("result: " + results)
                 resolve(results);
             }  
         });
@@ -30,7 +31,7 @@ function getLine(linename, linenameregex, shortname, shortnameregex, limit) {
 }
 
 function createLine(lineObject) {
-    console.log(lineObject)
+    console.log("Line object: " + JSON.stringify(lineObject))
     return new Promise((resolve, reject) => {
         let newLine = new database.manufacturingLineModel(lineObject);
         newLine.save().then(response => {
@@ -42,6 +43,7 @@ function createLine(lineObject) {
 }
 
 function modifyLine(linename, newLineObject) {
+    console.log("Linename: " + linename)
     return new Promise((resolve, reject) => {
         var filterSchema = {
             linename: linename
@@ -51,6 +53,7 @@ function modifyLine(linename, newLineObject) {
                 reject(Error(err));
                 return
             }
+            console.log("Response: " + JSON.stringify(response))
             resolve(response);
         });
     });

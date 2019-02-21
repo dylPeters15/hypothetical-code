@@ -6,7 +6,6 @@ function getSkus(skuname, skunameregex, skunumber, caseupcnumber, unitupcnumber,
     skuname = skuname || "";
     skunameregex = skunameregex || "$a";
     skunumber = skunumber || -1;
-    console.log("skuname: " + skuname)
     caseupcnumber = caseupcnumber || -1;
     unitupcnumber = unitupcnumber || -1;
     formulanumber = formulanumber || "";
@@ -23,22 +22,18 @@ function getSkus(skuname, skunameregex, skunumber, caseupcnumber, unitupcnumber,
 
             ]
         }
-<<<<<<< HEAD
-        console.log(filterSchema)
-        database.skuModel.find(filterSchema).limit(limit).exec((err, skus) => {
-=======
         database.skuModel.find(filterSchema).limit(limit).populate('formula').exec((err, skus) => {
->>>>>>> 7b816a158c647aff83acab1f42544ba9abf56a38
             if (err) {
                 reject(Error(err));
                 return;
             }
-            console.log("SKUS: " + skus)
             resolve(skus);
         });
     });
 
 }
+
+
 
 function createSku(name, number, case_upc, unit_upc, unit_size, count, formulanum, formulascalingfactor, manufacturingrate, comment) {
     return new Promise(function (resolve, reject) {
@@ -225,6 +220,12 @@ function createUnitUpcNumber() {
     newUnitUpcNumber = Math.round(Math.random() * 10000000000);
     firstDigitOption1 = Number("1" + newUnitUpcNumber); // Case upc number must start with a 0,1,6,7,8, or 8. For random generated, just let it equal 1.
     return(firstDigitOption1);
+}
+
+function printSKU(skuObject){
+    let skuString = '';
+    skuString += '<' + skuObject['skuname'] + '>: <' + skuObject['unitsize'] + '> * <' + skuObject['countpercase'] + '>';
+    return skuString;
 }
 
 

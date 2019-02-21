@@ -21,6 +21,7 @@ import { LogoutComponent } from './logout/logout.component';
 import {MatSelectModule} from '@angular/material/select';
 import {MatIconModule, MatIcon} from '@angular/material/icon';
 import {MatChipsModule} from '@angular/material/chips';
+import {MatTooltipModule} from '@angular/material/tooltip'
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import { AccountSettingsComponent } from './account-settings/account-settings.component';
 import { UserNotificationDialogComponent } from './user-notification-dialog/user-notification-dialog.component';
@@ -122,6 +123,7 @@ const appRoutes: Routes = [
     MatTableModule,
     MatSortModule,
     MatIconModule,
+    MatTooltipModule,
     ReactiveFormsModule,
     MatCheckboxModule,
     MatSnackBarModule,

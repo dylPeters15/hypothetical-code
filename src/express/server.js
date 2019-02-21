@@ -260,6 +260,7 @@ app.route('/manufacturing-lines').get((req, res) => {
         resolveError(err, res);
     });
 }).put((req, res) => {
+    console.log(JSON.stringify(req.body))
     line_utils.createLine(req.body).then(response => {
         res.send(response);
     }).catch(err => {
