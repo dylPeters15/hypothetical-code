@@ -68,18 +68,19 @@ export class ManufacturingLinesComponent implements OnInit {
 
   refreshData() {
     this.data = [];
-    this.skuString = '';
-    this.rest.getLine('', '.*','','',5).subscribe(data => {
-      this.lines = data;
+    this.rest.getLine('', '.*','','',5).subscribe(skus => {
+      this.lines = skus;
       this.dataSource = new MatTableDataSource<ManufacturingLine>(this.data);
       var i;
       for(i = 0; i<this.lines.length; i++){
+        this.skuString = "";
         let linename = this.lines[i]['linename'];
         let shortname = this.lines[i]['shortname'];
         var count = 0;
         var j;
         for(j = 0; j<this.lines[i]['skus'].length; j++){
           this.skuString += this.printSKU(this.lines[i]['skus'][j]['sku']) + '\n';
+          console.log("String: " + this.skuString)
           count++;
         }
         let comment = this.lines[i]['comment'];
@@ -111,6 +112,7 @@ export class ManufacturingLinesComponent implements OnInit {
       this.data = this.data.filter((value, index, arr) => {
         return value.linename != name;
       });
+      this.skuString = "";
       this.refreshData();
     });
   }
@@ -128,9 +130,9 @@ export class ManufacturingLinesComponent implements OnInit {
   }
 
   printSKU(skuObject){
-    let skuString = '';
-    skuString += '<' + skuObject['skuname'] + '>: <' + skuObject['unitsize'] + '> * <' + skuObject['countpercase'] + '>';
-    return skuString;
+    let sku = '';
+    sku += '<' + skuObject['skuname'] + '>: <' + skuObject['unitsize'] + '> * <' + skuObject['countpercase'] + '>';
+    return sku;
 }
 
   exportToCsv(line) {
@@ -192,7 +194,6 @@ export class ManufacturingLinesComponent implements OnInit {
       dialogConfig.data = {edit: edit, present_linename: present_linename, present_shortname: present_shortname, present_skus:present_skus,present_comment:present_comment };
       this.newDialogRef = this.dialog.open(NewLineDialogComponent, dialogConfig);
       this.newDialogRef.afterClosed().subscribe(event => {
-        console.log("Refreshing")
         this.refreshData();
       });
     }
