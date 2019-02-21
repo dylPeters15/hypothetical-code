@@ -144,7 +144,7 @@ export class ImportMatchConflictNewCheckerService {
       }
       ingredients.forEach(ingredient => {
         //do processing here
-        this.rest.getIngredients(ingredient['ingredientname'], ingredient['ingredientnumber'], 1).subscribe(response => {
+        this.rest.getIngredients(ingredient['ingredientname'],"", ingredient['ingredientnumber'], 1).subscribe(response => {
           if (response.length == 0) {
             toReturn['new'].push(ingredient);
           } else {
@@ -187,7 +187,7 @@ export class ImportMatchConflictNewCheckerService {
       }
       productLines.forEach(productLine => {
         //do processing here
-        this.rest.getProductLines(productLine['Name'], 1).subscribe(result => {
+        this.rest.getProductLines(productLine['Name'], "", 1).subscribe(result => {
           if (result.length == 0) {
             toReturn['new'].push(productLine);
           } else {
@@ -334,7 +334,7 @@ export class ImportMatchConflictNewCheckerService {
               }
             }
           } else {
-            this.rest.getIngredients("", ingredientnum, 1).subscribe(response => {
+            this.rest.getIngredients("","", ingredientnum, 1).subscribe(response => {
               if (response.length == 0) {
                 reject(Error("Could not find ingredient " + ingredientnum + " for formula " + formula['formulaname']));
               } else {

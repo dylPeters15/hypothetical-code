@@ -208,9 +208,10 @@ deleteSku(skuName: String): Observable<any> {
 
 
   ///////////////////// ingredients /////////////////////
-  getIngredients(ingredientname: String, ingredientnumber: number, limit: number): Observable<any> {
+  getIngredients(ingredientname: String, ingredientnameregex: String, ingredientnumber: number, limit: number): Observable<any> {
     return this.http.get(endpoint + "ingredients", this.generateHeader({
       ingredientname: ingredientname,
+      ingredientnameregex: ingredientnameregex,
       ingredientnumber: JSON.stringify(ingredientnumber),
       limit: limit
     }));
@@ -258,9 +259,10 @@ deleteSku(skuName: String): Observable<any> {
 
 
   ///////////////////// product lines /////////////////////
-  getProductLines(productlinename: String, limit: number): Observable<any> {
+  getProductLines(productlinename: String, productlinenameregex: String, limit: number): Observable<any> {
     return this.http.get(endpoint + "product_lines", this.generateHeader({
       productlinename: productlinename,
+      productlinenameregex: productlinenameregex,
       limit: JSON.stringify(limit)
     }));
   }

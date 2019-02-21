@@ -1,0 +1,11 @@
+<div class="example-container">
+  <h3> {{_value['productlinename']}} </h3> 
+  <div
+    cdkDropList
+    #productLineList="cdkDropList"
+    [cdkDropListData]="_value['skus']"
+    class="example-list"
+    (cdkDropListDropped)="drop($event)">
+    <div class="example-box" *ngFor="let item of _value['skus']" cdkDrag>{{item['sku']['skuname']}}</div>
+  </div>
+</div>
