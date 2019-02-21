@@ -1,3 +1,8 @@
-<p>
-  manufacturing-schedule-report works!
-</p>
+<h4>Manufacturing Schedule Report</h4>
+<mat-form-field>
+  <mat-select placeholder="Select a Manufacturing Line" (selectionChange)="selectionChange($event)">
+    <mat-option *ngFor="let line of lines" [value]="line.linename">
+      {{line.linename}} ({{line.shortname}})
+    </mat-option>
+  </mat-select>
+</mat-form-field>

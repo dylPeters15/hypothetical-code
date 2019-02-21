@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { RestService } from '../rest.service';
 
 @Component({
   selector: 'app-manufacturing-schedule-report',
@@ -7,9 +8,19 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ManufacturingScheduleReportComponent implements OnInit {
 
-  constructor() { }
+  constructor(public rest:RestService) { }
+
+  lines: any[];
+  selectedLineName: string;
 
   ngOnInit() {
+    this.rest.getLine("",".*","",".*",100).subscribe(result => {
+      this.lines = result;
+    });
+  }
+
+  selectionChange(event) {
+    this.selectedLineName = event.value;
   }
 
 }
