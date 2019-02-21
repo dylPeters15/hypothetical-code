@@ -56,7 +56,9 @@ import { NewLineDialogComponent } from './new-line-dialog/new-line-dialog.compon
 import { ManufacturingLinesComponent } from './manufacturing-lines/manufacturing-lines.component';
 import { ManufacturingScheduleComponent } from './manufacturing-schedule/manufacturing-schedule.component';
 import { ManufacturingScheduleReportComponent } from './manufacturing-schedule-report/manufacturing-schedule-report.component';
-import {MatDatepickerModule} from '@angular/material/datepicker'; 
+import {MatDatepickerModule} from '@angular/material/datepicker';
+import { ManufacturingScheduleReportLineTableComponent } from './manufacturing-schedule-report/manufacturing-schedule-report-line-table/manufacturing-schedule-report-line-table.component';
+import { ManufacturingScheduleReportIngredientTableComponent } from './manufacturing-schedule-report/manufacturing-schedule-report-ingredient-table/manufacturing-schedule-report-ingredient-table.component'; 
 
 const appRoutes: Routes = [
   { path: 'login', component: LoginComponent, data: { title: 'Log In' }, canActivate: [AlreadyLoggedInRouteGuardService] },
@@ -116,6 +118,8 @@ const appRoutes: Routes = [
     NewLineDialogComponent,
     ManufacturingScheduleComponent,
     ManufacturingScheduleReportComponent,
+    ManufacturingScheduleReportLineTableComponent,
+    ManufacturingScheduleReportIngredientTableComponent,
   ],
   imports: [
     BrowserModule,
