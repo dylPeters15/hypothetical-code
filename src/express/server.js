@@ -62,9 +62,7 @@ app.route('/login').get((req, res) => {
                     resolveError(err, res);
                 });
             } else {
-                res.send({
-                    err: "Incorrect username or password"
-                });
+                resolveError("Incorrect username or password", res);
             }
         }).catch(err => {
             resolveError(err, res);
@@ -116,33 +114,25 @@ app.route('/formulas').get((req, res) => {
     formula_utils.getFormulas(req.headers['formulaname'], JSON.parse(req.headers['formulanumber']), JSON.parse(req.headers['sku']), JSON.parse(req.headers['ingredient']), JSON.parse(req.headers['limit'])).then(formulas => {
         res.send(formulas);
     }).catch(err => {
-        res.send({
-            err:""+err
-        });
+        resolveError(err, res);
     });
 }).put((req, res) => {
     formula_utils.createFormula(req.body).then(response => {
         res.send(response);
     }).catch(err => {
-        res.send({
-            err:""+err
-        });
+        resolveError(err, res);
     });
 }).post((req, res) => {
     formula_utils.modifyFormula(req.headers['formulaname'], req.body).then(response => {
         res.send(response);
     }).catch(err => {
-        res.send({
-            err:""+err
-        });
+        resolveError(err, res);
     });
 }).delete((req, res) => {
     formula_utils.deleteFormula(req.headers['sku'], req.headers['ingredient']).then(response => {
         res.send(response);
     }).catch(err => {
-        res.send({
-            err:""+err
-        });
+        resolveError(err, res);
     });
 });
 
@@ -151,9 +141,7 @@ app.route('/ingredients').get((req, res) => {
     ingredient_utils.getIngredients(req.headers['ingredientname'], req.headers['ingredientnameregex'], JSON.parse(req.headers['ingredientnumber']), req.headers['limit']).then(ingredients => {
         res.send(ingredients);
     }).catch(err => {
-        res.send({
-            err:""+err
-        });
+        resolveError(err, res);
     });
 }).put((req, res) => {
     ingredient_utils.createIngredient(req.body['ingredientname'], req.body['ingredientnumber'],
@@ -161,25 +149,19 @@ app.route('/ingredients').get((req, res) => {
     req.body['costperpackage'], req.body['comment']).then(response => {
         res.send(response);
     }).catch(err => {
-        res.send({
-            err:""+err
-        });
+        resolveError(err, res);
     });
 }).post((req, res) => {
     ingredient_utils.modifyIngredient(req.headers['ingredientname'], req.body).then(response => {
         res.send(response);
     }).catch(err => {
-        res.send({
-            err:""+err
-        });
+        resolveError(err, res);
     });
 }).delete((req, res) => {
     ingredient_utils.deleteIngredient(req.headers['ingredientname']).then(response => {
         res.send(response);
     }).catch(err => {
-        res.send({
-            err:""+err
-        });
+        resolveError(err, res);
     });
 });
 
@@ -199,8 +181,6 @@ app.route('/skus').get((req, res) => {
         resolveError(err, res);
     });
 }).post((req, res) => {
-    
-    console.log(req.body);
     sku_utils.modifySku(req.headers['skuname'], req.body['skuname'], req.body['skunumber'],
     req.body['caseupcnumber'], req.body['unitupcnumber'],
     req.body['unitsize'], req.body['countpercase'], req.body['formulanum'], req.body['formulascalingfactor'], req.body['manufacturingrate'], req.body['comment']).then(response => {
@@ -221,33 +201,25 @@ app.route('/manufacturing-goals').get((req, res) => {
     goals_utils.getGoals(req.headers['username'],req.headers['goalname'],req.headers['goalnameregex'], req.headers['limit']).then(formulas => {
         res.send(formulas);
     }).catch(err => {
-        res.send({
-            err:err
-        });
+        resolveError(err, res);
     });
 }).put((req, res) => {
     goals_utils.createGoal(req.body).then(response => {
         res.send(response);
     }).catch(err => {
-        res.send({
-            err:err
-        });
+        resolveError(err, res);
     });
 }).post((req, res) => {
     goals_utils.modifyGoal(req.headers['goalname'], req.body).then(response => {
         res.send(response);
     }).catch(err => {
-        res.send({
-            err:err
-        });
+        resolveError(err, res);
     });
 }).delete((req, res) => {
     goals_utils.deleteGoal(req.headers['goalname']).then(response => {
         res.send(response);
     }).catch(err => {
-        res.send({
-            err:err
-        });
+        resolveError(err, res);
     });
 });
 
@@ -260,7 +232,6 @@ app.route('/manufacturing-lines').get((req, res) => {
         resolveError(err, res);
     });
 }).put((req, res) => {
-    console.log(JSON.stringify(req.body))
     line_utils.createLine(req.body).then(response => {
         res.send(response);
     }).catch(err => {
@@ -285,33 +256,25 @@ app.route('/manufacturing-activities').get((req, res) => {
     activity_utils.getActivity(req.headers['startdate'],req.headers['limit']).then(formulas => {
         res.send(formulas);
     }).catch(err => {
-        res.send({
-            err:err
-        });
+        resolveError(err, res);
     });
 }).put((req, res) => {
     activity_utils.createActivity(req.body).then(response => {
         res.send(response);
     }).catch(err => {
-        res.send({
-            err:err
-        });
+        resolveError(err, res);
     });
 }).post((req, res) => {
     activity_utils.modifyActivity(req.headers['sku'], req.headers['numcases'],req.headers['calculatedhours'],req.headers['sethours'], req.headers['line'], req.headers['startdate'],req.body).then(response => {
         res.send(response);
     }).catch(err => {
-        res.send({
-            err:err
-        });
+        resolveError(err, res);
     });
 }).delete((req, res) => {
     activity_utils.deleteActivity(req.headers['sku'], req.headers['numcases'],req.headers['calculatedhours'],req.headers['sethours'], req.headers['line'], req.headers['startdate']).then(response => {
         res.send(response);
     }).catch(err => {
-        res.send({
-            err:err
-        });
+        resolveError(err, res);
     });
 });
 ///////////////////// product lines /////////////////////

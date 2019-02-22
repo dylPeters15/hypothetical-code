@@ -55,6 +55,10 @@ import { ExistingRecordPreviewComponent } from './import/existing-record-preview
 import { NewLineDialogComponent } from './new-line-dialog/new-line-dialog.component';
 import { ManufacturingLinesComponent } from './manufacturing-lines/manufacturing-lines.component';
 import { ManufacturingScheduleComponent } from './manufacturing-schedule/manufacturing-schedule.component';
+import { ManufacturingScheduleReportComponent } from './manufacturing-schedule-report/manufacturing-schedule-report.component';
+import {MatDatepickerModule} from '@angular/material/datepicker';
+import { ManufacturingScheduleReportLineTableComponent } from './manufacturing-schedule-report/manufacturing-schedule-report-line-table/manufacturing-schedule-report-line-table.component';
+import { ManufacturingScheduleReportIngredientTableComponent } from './manufacturing-schedule-report/manufacturing-schedule-report-ingredient-table/manufacturing-schedule-report-ingredient-table.component'; 
 
 const appRoutes: Routes = [
   { path: 'login', component: LoginComponent, data: { title: 'Log In' }, canActivate: [AlreadyLoggedInRouteGuardService] },
@@ -67,6 +71,7 @@ const appRoutes: Routes = [
   { path: 'ingredient-dependency-report', component: IngredientDependencyComponent, data: { title: 'Ingredient Dependency Report' }, canActivate: [UserRouteGuardService] },
   { path: 'manufacturing-goal', component: ManufacturingGoalsComponent, data: { title: 'Manufacturing Goals' }, canActivate: [UserRouteGuardService] },
   { path: 'manufacturing-lines', component: ManufacturingLinesComponent, data: { title: 'Manufacturing Lines' }, canActivate: [UserRouteGuardService] },
+  { path: 'manufacturing-schedule-report', component: ManufacturingScheduleReportComponent, data: { title: 'Manufacturing Schedule Report' }, canActivate: [UserRouteGuardService] },
   { path: 'ingredient-inventory', component: IngredientInventoryComponent, data: { title: 'Ingredient Inventory' }, canActivate: [UserRouteGuardService] },
   { path: 'sku-inventory', component: SkuInventoryComponent, data: { title: 'SKU Inventory' }, canActivate: [UserRouteGuardService] },
   { path: 'product-line', component: ProductLineComponent, data: { title: 'Product Line Inventory' }, canActivate: [UserRouteGuardService] },
@@ -112,6 +117,9 @@ const appRoutes: Routes = [
     ManufacturingLinesComponent,
     NewLineDialogComponent,
     ManufacturingScheduleComponent,
+    ManufacturingScheduleReportComponent,
+    ManufacturingScheduleReportLineTableComponent,
+    ManufacturingScheduleReportIngredientTableComponent,
   ],
   imports: [
     BrowserModule,
@@ -138,6 +146,7 @@ const appRoutes: Routes = [
     MatChipsModule,
     MatAutocompleteModule,   
     DragDropModule,
+    MatDatepickerModule
   ],
   providers: [],
   bootstrap: [AppComponent],
