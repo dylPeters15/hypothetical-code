@@ -55,6 +55,7 @@ import { ExistingRecordPreviewComponent } from './import/existing-record-preview
 import { NewLineDialogComponent } from './new-line-dialog/new-line-dialog.component';
 import { ManufacturingLinesComponent } from './manufacturing-lines/manufacturing-lines.component';
 import { ManufacturingScheduleComponent } from './manufacturing-schedule/manufacturing-schedule.component';
+import { ModifyNameDialogComponent } from './product-line/modify-name-dialog.component';
 
 const appRoutes: Routes = [
   { path: 'login', component: LoginComponent, data: { title: 'Log In' }, canActivate: [AlreadyLoggedInRouteGuardService] },
@@ -112,6 +113,7 @@ const appRoutes: Routes = [
     ManufacturingLinesComponent,
     NewLineDialogComponent,
     ManufacturingScheduleComponent,
+    ModifyNameDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -141,6 +143,6 @@ const appRoutes: Routes = [
   ],
   providers: [],
   bootstrap: [AppComponent],
-  entryComponents: [UserNotificationDialogComponent, NewUserDialogComponent, PasswordConfirmationDialogComponent, PrivacyPolicyDialogComponent, TermsAndConditionsDialogComponent, MoreInfoDialogComponent, NewSkuDialogComponent, NewIngredientDialogComponent, NewGoalDialogComponent, NewProductLineDialogComponent, ConfirmActionDialogComponent, ImportPreviewDialogComponent, NewLineDialogComponent]
+  entryComponents: [ModifyNameDialogComponent, UserNotificationDialogComponent, NewUserDialogComponent, PasswordConfirmationDialogComponent, PrivacyPolicyDialogComponent, TermsAndConditionsDialogComponent, MoreInfoDialogComponent, NewSkuDialogComponent, NewIngredientDialogComponent, NewGoalDialogComponent, NewProductLineDialogComponent, ConfirmActionDialogComponent, ImportPreviewDialogComponent, NewLineDialogComponent]
 })
 export class AppModule { }
