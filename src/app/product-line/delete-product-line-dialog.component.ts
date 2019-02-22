@@ -42,4 +42,8 @@ import { RestService } from '../rest.service';
           })
         }
     }
+
+    onNoClick() {
+      this.dialogRef.close();
+    }
   }

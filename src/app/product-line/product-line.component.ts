@@ -89,7 +89,8 @@ export class ProductLineComponent implements OnInit {
   deleteProductLine() {
     const dialogRef = this.dialog.open(DeletePLDialogComponent, {
         width: '250px',
-        data: this.dataSource.data
+        data: this.dataSource.data,
+        disableClose: true
       });
   
       dialogRef.afterClosed().subscribe(result => {
