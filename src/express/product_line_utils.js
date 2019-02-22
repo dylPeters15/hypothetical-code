@@ -60,11 +60,12 @@ function modifyProductLine(productlinename, newProductLineObject) {
 function deleteProductLine(productlinename) {
     
     return new Promise(function (resolve, reject) {
-        const filterschema = {
+        var filterschema = {
             productlinename: productlinename
         };
         database.productLineModel.deleteOne(filterschema, (err, response) => {
             if (err) {
+                console.log("failed to delete ", productlinename)
                 reject(Error(err));
                 return
             }

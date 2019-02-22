@@ -89,33 +89,13 @@ export class ProductLineComponent implements OnInit {
   deleteProductLine() {
     const dialogRef = this.dialog.open(DeletePLDialogComponent, {
         width: '250px',
-        data: this.dataSource.data
+        data: this.dataSource.data,
+        disableClose: true
       });
   
       dialogRef.afterClosed().subscribe(result => {
         console.log('The dialog was closed');
-        console.log(result);
-        let i;
-        for (i=0; i<result.length; i++) {
-          return new Promise((resolve, reject) => {
-            this.rest.deleteProductLine(result[i]).subscribe(results => {
-              if (results != null) {
-                console.log(results)
-              }
-              this.refreshData();
-              resolve();
-            })
-          })
-        }
-        // return new Promise((resolve, reject) => {
-        //   this.rest.deleteProductLine(result).subscribe(results => {
-        //     if (results != null) {
-        //       console.log(results)
-        //     }
-        //     this.refreshData();
-        //     resolve();
-        //   })
-        // })
+        this.refreshData();
       });
   }
 
