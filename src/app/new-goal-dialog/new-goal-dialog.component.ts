@@ -94,7 +94,7 @@ export class NewGoalDialogComponent implements OnInit {
     let newActivity = new DisplayableActivity(hours, this.currentSku['skuname']);
     this.displayableActivities.push(newActivity);
     this.rest.createActivity(this.currentSku['_id'], this.quantity, hours, null,new Date(),null).subscribe(response => {
-      this.activityIds.push(response['id']);
+      this.activityIds.push(response['_id']);
       this.snackBar.open("Successfully created Activity: " + this.currentSku['skuname'] + ".", "close", {
               duration: 2000,
             });
@@ -103,16 +103,20 @@ export class NewGoalDialogComponent implements OnInit {
 
   createGoal() {
     // if(this.edit == false){
-      this.rest.createGoal(this.name, this.activityIds, this.date, false).subscribe(response => {
+      console.log(this.activityIds)
+      this.rest.createGoal(this.name, this.activityIds, this.date, false).then(response => {
         this.snackBar.open("Successfully created Goal: " + this.name + ".", "close", {
           duration: 2000,
-        });
+        }
+        );
       //   console.log(response);
       //   this.snackBar.open("Error creating Line: " + this.linename + ". Please refresh and try again.", "close", {
       //     duration: 2000,
       //   });
       // }
         this.closeDialog();
+      }).catch(err => {
+        console.log(err)
       });
     // }
     // else{

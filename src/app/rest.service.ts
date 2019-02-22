@@ -303,15 +303,35 @@ deleteSku(skuName: String): Observable<any> {
     }));
   }
 
-  createGoal(goalname: String, activities: [], date: Date, enabled: boolean) : Observable<any>{
-    return this.http.put(endpoint + 'manufacturing-goals',{
-      owner: auth.getUsername,
-      goalname: name,
-      activities: activities,
-      date: date,
-      enabled: enabled
-    }, this.generateHeader());
+  getUserName(){
+    return new Promise((resolve, reject) => {
+      this.getUsers(auth.getUsername(), "",null, null, null).subscribe(response =>{
+        console.log("USER: " + JSON.stringify(response))
+        setTimeout(function() {
+          resolve(response[0]['_id']);;
+        }, 1000);
+    });
+  });
   }
+
+
+
+  createGoal(goalname: String, activities: [], date: Date, enabled: boolean) : Promise<any>{
+    return new Promise((resolve, reject) => {
+      this.getUserName().then(id => {
+        this.http.put(endpoint + 'manufacturing-goals',{
+          owner: id.toString(),
+          goalname: goalname,
+          activities: activities,
+          date: date,
+          enabled: enabled
+        }, this.generateHeader()).subscribe(response => {
+          resolve(response);
+        });
+      });
+    });
+    
+}
 
   modifyGoal(goalname: String, newgoalname: String, activities: [], date:Date, enabled: boolean): Observable<any> {
     return this.http.post(endpoint + "manufacturing-goals", {

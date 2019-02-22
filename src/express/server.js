@@ -80,6 +80,7 @@ app.route('/users').get((req, res) => {
         var usersToSend = [];
         for (var i = 0; i < users.length; i=i+1) {
             usersToSend.push({
+                _id: users[i]._id,
                 username: users[i].username,
                 admin: users[i].admin,
                 localuser: users[i].localuser
