@@ -18,7 +18,6 @@ function getProductLines(productlinename, productlinenameregex, limit){
                 reject(Error(err));
                 return;
             }
-            console.log("Found: ",productLines);
             resolve(productLines);
         });
     });
@@ -47,8 +46,6 @@ function modifyProductLine(productlinename, newProductLineObject) {
         const filterschema = {
             productlinename: productlinename
         };
-        console.log(filterschema);
-        console.log(JSON.stringify(newProductLineObject));
         database.productLineModel.updateOne(filterschema, newProductLineObject , (err, response) => {
             if (err) {
                 reject(Error(err));

@@ -6,16 +6,16 @@ function getActivity(startdate, limit) {
     limit = limit || database.defaultSearchLimit;
     return new Promise((resolve, reject) => {
         var filterSchema = {
-            "created_on": {
+            "startdate": {
                 "$gte": startdate
             }
         }
-        database.manufacturingLineModel.find(filterSchema).limit(limit).toArray(function(err,results) {
-            if(results.length > 0){
-              resolve(results);
+        database.manufacturingLineModel.find(filterSchema).limit(limit).exec(function(err,results) {
+            if(err){
+                reject(Error(err));
             }
             else {
-                reject(Error(err));
+                resolve(results);
             }  
         });
     })

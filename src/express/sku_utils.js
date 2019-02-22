@@ -38,7 +38,6 @@ function getSkus(skuname, skunameregex, skunumber, caseupcnumber, unitupcnumber,
 function createSku(name, number, case_upc, unit_upc, unit_size, count, formulanum, formulascalingfactor, manufacturingrate, comment) {
     return new Promise(function (resolve, reject) {
         createUniqueSkuNumber().then(response => {
-            console.log("SKU Num: ", response);
             var newSkuNumber;
 
             if (number == null) {
@@ -50,7 +49,6 @@ function createSku(name, number, case_upc, unit_upc, unit_size, count, formulanu
             // newingredientnumber = ingredientnumber || Number(response);
 
             createUniqueCaseUpcNumber().then(response => {
-                console.log("UPC Num: ", response);
                 var newCaseUpcNumber;
 
                 if (case_upc == null) {
@@ -62,7 +60,6 @@ function createSku(name, number, case_upc, unit_upc, unit_size, count, formulanu
                 // newingredientnumber = ingredientnumber || Number(response);
 
                 response = createUnitUpcNumber();
-                    console.log("UPC Num: ", response);
                     var newUnitUpcNumber;
 
                     if (unit_upc == null) {
