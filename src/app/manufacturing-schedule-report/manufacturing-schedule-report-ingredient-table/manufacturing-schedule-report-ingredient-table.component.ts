@@ -18,8 +18,14 @@ export class ManufacturingScheduleReportIngredientTableComponent implements OnIn
   ngOnInit() {
   }
 
+  refreshData(): void {
+
+  }
+
   _value = '';
   stringified = '';
+  tableData: any;
+  displayedColumns = ['ingredientNum', 'ingredientName', 'quantity', 'numCases'];
 
   propagateChange: any = () => { };
 
@@ -28,7 +34,7 @@ export class ManufacturingScheduleReportIngredientTableComponent implements OnIn
       this._value = value;
       this.stringified = JSON.stringify(value);
     }
-    console.log("VALUE:",value);
+    this.refreshData();
   }
 
   registerOnChange(fn) {
@@ -39,7 +45,6 @@ export class ManufacturingScheduleReportIngredientTableComponent implements OnIn
   onChange(event) {
     this.stringified = JSON.stringify(event.target.value);
     this.propagateChange(event.target.value);
-    console.log("EVENT:",event);
   }
 
 }
