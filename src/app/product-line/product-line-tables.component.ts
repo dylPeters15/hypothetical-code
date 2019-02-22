@@ -53,17 +53,21 @@ export class ProductLineTablesComponent implements ControlValueAccessor {
   
       dialogRef.afterClosed().subscribe(result => {
         console.log('The dialog was closed');
-        this._value['productlinename'] = result;
+        console.log(result)
+        if (result) {
+          this._value['productlinename'] = result;
         
-        return new Promise((resolve, reject) => {
-          this.rest.getProductLines(oldname,"",1).subscribe(results => {
-            if (results != null) {
-              console.log(results)
-              this.updateProductLine(oldname, result, results[0].skus);
-            }
-            resolve();
+          return new Promise((resolve, reject) => {
+            this.rest.getProductLines(oldname,"",1).subscribe(results => {
+              if (results != null) {
+                console.log(results)
+                this.updateProductLine(oldname, result, results[0].skus);
+              }
+              resolve();
+            })
           })
-        })
+        }
+        
       });
 
   }

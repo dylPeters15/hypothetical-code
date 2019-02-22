@@ -288,7 +288,7 @@ deleteSku(skuName: String): Observable<any> {
   }
 
   deleteProductLine(productlinename: String): Observable<any> {
-    return this.http.delete(endpoint + "product_line", this.generateHeader({
+    return this.http.delete(endpoint + "product_lines", this.generateHeader({
       productlinename: productlinename
     }));
   }
