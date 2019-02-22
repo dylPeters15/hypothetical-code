@@ -30,6 +30,7 @@ function getLine(linename, linenameregex, shortname, shortnameregex, limit) {
 }
 
 function createLine(lineObject) {
+    console.log("OBJ: " + JSON.stringify(lineObject))
     return new Promise((resolve, reject) => {
         let newLine = new database.manufacturingLineModel(lineObject);
         newLine.save().then(response => {

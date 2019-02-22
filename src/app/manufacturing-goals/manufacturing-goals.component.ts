@@ -56,11 +56,7 @@ export class ManufacturingGoalsComponent implements OnInit {
   }
 
   newGoal() {
-    const dialogConfig = new MatDialogConfig();
-    this.newDialogRef = this.dialog.open(NewGoalDialogComponent, dialogConfig);
-    this.newDialogRef.afterClosed().subscribe(event => {
-      this.refreshData();
-  });
+    this.newManufacturingGoal(false, "","","");
 }
 
   ngOnInit() {
@@ -144,6 +140,15 @@ export class ManufacturingGoalsComponent implements OnInit {
     toExport.push(goalToExport);
     const csvExporter = new ExportToCsv(options);
     csvExporter.generateCsv(toExport);
+  }
+
+  newManufacturingGoal(edit, present_name, present_activities, present_date) {
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.data = {edit: edit, present_name: present_name, present_activities: present_activities, present_date:present_date };
+    this.newDialogRef = this.dialog.open(NewGoalDialogComponent, dialogConfig);
+    this.newDialogRef.afterClosed().subscribe(event => {
+      this.refreshData();
+    });
   }
 
 }

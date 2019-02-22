@@ -10,7 +10,8 @@ const ingredient_utils = require('./ingredient_utils.js');
 const line_utils = require('./manufacturing_line_utils');
 const activity_utils = require('./manufacturing_activity_utils');
 const product_line_utils = require('./product_line_utils.js');
-const sku_utils = require('./sku_utils.js')
+const sku_utils = require('./sku_utils.js');
+const goals_utils = require('./manufacturing_goals_utils.js')
 
 const app = express();
 const corsOptions = {
@@ -79,6 +80,7 @@ app.route('/users').get((req, res) => {
         var usersToSend = [];
         for (var i = 0; i < users.length; i=i+1) {
             usersToSend.push({
+                _id: users[i]._id,
                 username: users[i].username,
                 admin: users[i].admin,
                 localuser: users[i].localuser
@@ -232,6 +234,7 @@ app.route('/manufacturing-lines').get((req, res) => {
         resolveError(err, res);
     });
 }).put((req, res) => {
+    console.log("REQ: " + req)
     line_utils.createLine(req.body).then(response => {
         res.send(response);
     }).catch(err => {
@@ -259,6 +262,7 @@ app.route('/manufacturing-activities').get((req, res) => {
         resolveError(err, res);
     });
 }).put((req, res) => {
+    console.log("REQ: " + req)
     activity_utils.createActivity(req.body).then(response => {
         res.send(response);
     }).catch(err => {

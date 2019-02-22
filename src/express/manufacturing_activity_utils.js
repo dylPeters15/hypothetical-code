@@ -10,7 +10,7 @@ function getActivity(startdate, limit) {
                 "$gte": startdate
             }
         }
-        database.manufacturingLineModel.find(filterSchema).limit(limit).exec(function(err,results) {
+        database.manufacturingActivityModel.find(filterSchema).limit(limit).populate('sku').populate('line').exec(function(err,results) {
             if(err){
                 reject(Error(err));
             }
@@ -24,6 +24,7 @@ function getActivity(startdate, limit) {
 }
 
 function createActivity(activityObject) {
+    console.log("Object: " + JSON.stringify(activityObject))
     return new Promise((resolve, reject) => {
         let newActivity = new database.manufacturingActivityModel(activityObject);
         newActivity.save().then(response => {
