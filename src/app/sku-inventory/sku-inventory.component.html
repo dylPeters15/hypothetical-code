@@ -71,19 +71,19 @@
                   </mat-cell>
                 </ng-container>
           
-                <ng-container matColumnDef="ingredientTuples">
-                    <mat-header-cell *matHeaderCellDef mat-sort-header>Ingredients</mat-header-cell>
-                    <mat-cell *matCellDef="let sku">
-                      {{sku['ingredientTuples']}}
-                    </mat-cell>
-                  </ng-container>
+            <ng-container matColumnDef="ingredientTuples">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Ingredients</mat-header-cell>
+                <mat-cell *matCellDef="let sku">
+                    {{sku['ingredientTuples']}}
+                </mat-cell>
+            </ng-container>
           
-                <ng-container matColumnDef="comment">
-                    <mat-header-cell *matHeaderCellDef mat-sort-header>Comment</mat-header-cell>
-                    <mat-cell *matCellDef="let sku">
-                      {{sku['comment']}}
-                    </mat-cell>
-                  </ng-container>
+            <ng-container matColumnDef="comment">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Comment</mat-header-cell>
+                <mat-cell *matCellDef="let sku">
+                    {{sku['comment']}}
+                </mat-cell>
+            </ng-container>
           
             <ng-container matColumnDef="actions">
               <mat-header-cell *matHeaderCellDef mat-sort-header>Actions</mat-header-cell>

@@ -13,29 +13,21 @@ export class NewFormulaDialogComponent implements OnInit {
 
   dialog_title: String;
   edit: Boolean;
-  name: String = '';
-  sku_number: Number = 0;
-  case_upc_number: String = '';
-  unit_upc_number: String = '';
-  unit_size: String = '';
-  count_per_case: String = '';
-  product_line: String = '';
-  ingredients: Array<Number> = [];
+  formulaname: String = '';
+  formulanumber: Number = 0;
+  ingredientsandquantities: String = '';
   comment: String = '';
-  current_id: Number;
-  ingredients_by_id: Array<Number> = [];
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: any, private dialogRef: MatDialogRef<NewFormulaDialogComponent>, public rest:RestService, private snackBar: MatSnackBar) { }
 
   ngOnInit() {
-
     this.edit = this.data.edit;
     this.formulaname = this.data.present_formulaname;
-    this.sku_number = this.data.present_formulanumber;
-    this.case_upc_number = this.data.present_ingredientsandquantities;
-    this.unit_upc_number = this.data.present_comment;
+    this.formulanumber = this.data.present_formulanumber;
+    this.ingredientsandquantities = this.data.present_ingredientsandquantities;
+    this.comment = this.data.present_comment;
 
-    // edit == true if sku is being modified, false if a new sku is being created
+    // edit == true if formula is being modified, false if a new sku is being created
     if (this.edit == true)
     {
       this.dialog_title = "Modify Formula";
@@ -46,30 +38,18 @@ export class NewFormulaDialogComponent implements OnInit {
   closeDialog() {
     this.dialogRef.close();
     this.edit = this.data.edit;
-    this.name = this.data.present_name;
-    this.sku_number = this.data.present_skuNumber;
-    this.case_upc_number = this.data.present_caseUpcNumber;
-    this.unit_upc_number = this.data.present_unitUpcNumber;
-    this.unit_size = this.data.present_unitSize;
-    this.count_per_case = this.data.present_countPerCase;
-    this.product_line = this.data.present_productLine;
-    this.ingredients = this.data.present_ingredientTuples;
+    this.formulaname = this.data.present_formulaname;
+    this.formulanumber = this.data.present_formulanumber;
+    this.ingredientsandquantities = this.data.present_ingredientsandquantities;
     this.comment = this.data.present_comment;
-    this.current_id = this.data.present_id;
-
   }
 
-  createSku() {
+  createFormula() {
     // generate ID
     console.log("we in here now, and edit is: " + this.edit);
-    console.log(this.ingredients);
-    for (var i=0; i<this.ingredients.length; i = i+1) {
-      console.log('ingredients at index i', this.ingredients[i])
-    }
-    var id = Math.floor(Math.random() * 1000000000);
     if (this.edit == false)
     {
-      console.log("We're creating a new sku");
+      console.log("We're creating a new formula");
       for (var i=0; i<this.ingredients.length-1; i = i+2) {
         this.addIngredient(this.ingredients[i], this.name);
       }
