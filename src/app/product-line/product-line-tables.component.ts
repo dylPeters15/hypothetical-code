@@ -1,8 +1,9 @@
-import { Component, Input, forwardRef } from '@angular/core';
+import { Component, Input, forwardRef, Inject } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import {CdkDragDrop, moveItemInArray, transferArrayItem} from '@angular/cdk/drag-drop';
 import { RestService } from '../rest.service';
-
+import { MatDialog, MatDialogRef, MatTableDataSource, MatPaginator } from "@angular/material";
+import {ModifyNameDialogComponent } from './modify-name-dialog.component';
 const customValueProvider = {
   provide: NG_VALUE_ACCESSOR,
   useExisting: forwardRef(() => ProductLineTablesComponent),
@@ -17,8 +18,7 @@ const customValueProvider = {
 })
 export class ProductLineTablesComponent implements ControlValueAccessor {
 
-  constructor(public rest: RestService) { }
-
+  constructor(public rest: RestService, public dialog: MatDialog) { }
   _value = '';
   stringified = '';
 
@@ -41,6 +41,31 @@ export class ProductLineTablesComponent implements ControlValueAccessor {
   onChange(event) {
     this.stringified = JSON.stringify(event.target.value);
     this.propagateChange(event.target.value);
+  }
+
+  modifyName(event: Event) {
+    let oldname = this._value['productlinename'];
+    const dialogRef = this.dialog.open(ModifyNameDialogComponent, {
+        width: '250px',
+        data: {productlinename: this._value['productlinename']},
+        disableClose: true 
+      });
+  
+      dialogRef.afterClosed().subscribe(result => {
+        console.log('The dialog was closed');
+        this._value['productlinename'] = result;
+        
+        return new Promise((resolve, reject) => {
+          this.rest.getProductLines(oldname,"",1).subscribe(results => {
+            if (results != null) {
+              console.log(results)
+              this.updateProductLine(oldname, result, results[0].skus);
+            }
+            resolve();
+          })
+        })
+      });
+
   }
 
   drop(event: CdkDragDrop<string[]>) {
@@ -70,8 +95,8 @@ export class ProductLineTablesComponent implements ControlValueAccessor {
                 resolve();
             } else {
                 console.log('failure')
-                reject(Error("Could not modify Product Line " + sku['productline'] + " for SKU " + sku['skuname']));
-            }      
+                reject(Error("Could not modify Product Line " + oldname));
+            }     
         });
     });
   }

@@ -4,6 +4,7 @@ const crypto = require('crypto');
 const ingredientUtils = require('./ingredient_utils.js')
 const formulaUtils = require('./formula_utils.js')
 const skuUtils = require('./sku_utils.js')
+const productLineUtils = require('./product_line_utils.js')
 const serverName = '127.0.0.1:27017';
 const dbName = 'hypothetical-code-db';
 const connectionString = `mongodb://${serverName}/${dbName}`;
@@ -101,7 +102,11 @@ testSku.save().then(
 
 
 
-
+let testProductLine = new database_library.productLineModel({
+    productlinename: 'Soups',
+    skus: [testSku]
+})
+productLineUtils.createProductLine(testProductLine)
 //   testSku.save().then(
 //       doc => {
 //           console.log(doc);

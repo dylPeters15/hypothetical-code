@@ -4,7 +4,8 @@ import { MatDialogRef, MatDialog, MatDialogConfig, MatTableDataSource, MatPagina
 import { RestService } from '../rest.service';
 import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material';
-
+import { ModifyNameDialogComponent } from './modify-name-dialog.component';
+import { DeletePLDialogComponent } from './delete-product-line-dialog.component';
 
 export interface DataForTable {
   productlinename: String,
@@ -64,23 +65,59 @@ export class ProductLineComponent implements OnInit {
     }
   }
 
-  // deselectAll() {
-  //   this.data.forEach(user => {
-  //     user.checked = false;
-  //   });
-  // }
+  openDialog() {
+    const dialogRef = this.dialog.open(ModifyNameDialogComponent, {
+        width: '250px',
+        data: {}
+      });
+  
+      dialogRef.afterClosed().subscribe(result => {
+        console.log('The dialog was closed');
+        this.data['productlinename'] = result;
+        return new Promise((resolve, reject) => {
+          this.rest.createProductLine(result, []).subscribe(results => {
+            if (results != null) {
+              console.log(results)
+            }
+            this.refreshData();
+            resolve();
+          })
+        })
+      });
+  }
 
-  // selectAll() {
-  //   var lowerIndex = this.paginator.pageSize * this.paginator.pageIndex;
-  //   var upperIndex = this.paginator.pageSize * (this.paginator.pageIndex+1);
-  //   if (this.data.length < upperIndex) {
-  //     upperIndex = this.data.length;
-  //   }
-  //   this.deselectAll();
-  //   for (var i = lowerIndex; i < upperIndex; i=i+1) {
-  //     this.data[i].checked = true;
-  //   }
-  // }
+  deleteProductLine() {
+    const dialogRef = this.dialog.open(DeletePLDialogComponent, {
+        width: '250px',
+        data: this.dataSource.data
+      });
+  
+      dialogRef.afterClosed().subscribe(result => {
+        console.log('The dialog was closed');
+        console.log(result);
+        let i;
+        for (i=0; i<result.length; i++) {
+          return new Promise((resolve, reject) => {
+            this.rest.deleteProductLine(result[i]).subscribe(results => {
+              if (results != null) {
+                console.log(results)
+              }
+              this.refreshData();
+              resolve();
+            })
+          })
+        }
+        // return new Promise((resolve, reject) => {
+        //   this.rest.deleteProductLine(result).subscribe(results => {
+        //     if (results != null) {
+        //       console.log(results)
+        //     }
+        //     this.refreshData();
+        //     resolve();
+        //   })
+        // })
+      });
+  }
 
   sortData() {
     this.data.sort((a, b) => {
