@@ -17,7 +17,7 @@ mongoose.connect(connectionString)
     });
 
 function initializeUsers() {
-    
+
 }
 
 // let db = database_library.Database;
@@ -86,17 +86,20 @@ let testSku = new database_library.skuModel({
     formulascalingfactor: 1.5,
     manufacturingrate: 2,
     comment: 'Enjoy this lovely can of tomato soup!'
-  });
-  
-    testSku.save().then(
-            doc => {
-                console.log(doc);
-            }
-        ).catch(
-            err => {
-                console.log(err);
-            }
-        );
+});
+
+testSku.save().then(
+    doc => {
+        console.log(doc);
+    }
+).catch(
+    err => {
+        console.log(err);
+    }
+);
+
+
+
 
 
 //   testSku.save().then(
