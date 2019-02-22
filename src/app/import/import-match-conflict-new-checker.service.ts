@@ -72,7 +72,8 @@ export class ImportMatchConflictNewCheckerService {
 
   private checkSKUMatchConflictNew(sku, toReturn): Promise<any> {
     return new Promise((resolve, reject) => {
-      this.rest.getSkus(sku['skuname'],sku['skunameregex'], sku['skunumber'], -1, -1, "-1", 1).subscribe(response => {
+      console.log(sku);
+      this.rest.getSkus(sku['skuname'],"$a", sku['skunumber'], -1, -1, "-1", 1).subscribe(response => {
         if (response.length == 0) {
           toReturn['new'].push(sku);
           resolve();
@@ -126,6 +127,7 @@ export class ImportMatchConflictNewCheckerService {
             resolve(toReturn);
           }
         }).catch(err => {
+          console.log('error here')
           reject(Error(err));
         });
       });

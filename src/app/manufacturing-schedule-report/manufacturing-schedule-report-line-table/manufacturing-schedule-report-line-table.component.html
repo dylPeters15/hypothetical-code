@@ -1,3 +1,47 @@
-<p>
-  manufacturing-schedule-report-line-table works! {{stringified}}
-</p>
+<mat-table [dataSource]="tableData" class="mat-elevation-z8">
+
+  <ng-container matColumnDef="startDate">
+    <mat-header-cell *matHeaderCellDef>Start Date</mat-header-cell>
+    <mat-cell *matCellDef="let element">
+      {{element['startDate']}}
+    </mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="endDate">
+    <mat-header-cell *matHeaderCellDef>End Date</mat-header-cell>
+    <mat-cell *matCellDef="let element">
+      {{element['endDate']}}
+    </mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="duration">
+    <mat-header-cell *matHeaderCellDef>Duration</mat-header-cell>
+    <mat-cell *matCellDef="let element">
+      {{element['duration']}}
+    </mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="skuNameNum">
+    <mat-header-cell *matHeaderCellDef>SKU Name/#</mat-header-cell>
+    <mat-cell *matCellDef="let element">
+      {{element['skuname']}}/{{element['skunumber']}}
+    </mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="formulaNameNum">
+    <mat-header-cell *matHeaderCellDef>Formula Name/#</mat-header-cell>
+    <mat-cell *matCellDef="let element">
+      {{element['formulaname']}}/{{element['formulanumber']}}
+    </mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="numCases">
+    <mat-header-cell *matHeaderCellDef>Number of Cases</mat-header-cell>
+    <mat-cell *matCellDef="let element">
+      {{element['numcases']}}
+    </mat-cell>
+  </ng-container>
+
+  <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+  <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+</mat-table>
