@@ -22,7 +22,9 @@ export class ManufacturingScheduleReportLineTableComponent implements OnInit, Co
   refreshData(): void {
     this.rest.getActivities(this._value['startDate'],100).subscribe(response => {
       console.log(response);
-      this.tableData = response;
+      this.tableData = response.filter((value,index,array) => {
+        return value['line']['linename'] == this._value['selectedLine'];
+      });
     });
   }
   
