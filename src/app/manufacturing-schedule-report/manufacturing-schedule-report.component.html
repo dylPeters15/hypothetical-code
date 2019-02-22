@@ -14,7 +14,7 @@
 
   <mat-card-actions style="width:100%;text-align: center;">
     <mat-form-field>
-      <mat-select placeholder="Select a Manufacturing Line" [(ngModel)]="options.selectedLine"
+      <mat-select placeholder="Select a Manufacturing Line" [(ngModel)]="options['selectedLine']"
         (selectionChange)="selectionChange()">
         <mat-option *ngFor="let line of lines" [value]="line.linename">
           {{line.linename}} ({{line.shortname}})
@@ -23,14 +23,14 @@
     </mat-form-field>
 
     <mat-form-field>
-      <input matInput [matDatepicker]="startpicker" placeholder="Choose a start date" [(ngModel)]="options.startDate"
+      <input matInput [matDatepicker]="startpicker" placeholder="Choose a start date" [(ngModel)]="options['startDate']"
         (dateChange)="selectionChange()">
       <mat-datepicker-toggle matSuffix [for]="startpicker"></mat-datepicker-toggle>
       <mat-datepicker #startpicker></mat-datepicker>
     </mat-form-field>
 
     <mat-form-field>
-      <input matInput [matDatepicker]="endpicker" placeholder="Choose an end date" [(ngModel)]="options.endDate"
+      <input matInput [matDatepicker]="endpicker" placeholder="Choose an end date" [(ngModel)]="options['endDate']"
         (dateChange)="selectionChange()">
       <mat-datepicker-toggle matSuffix [for]="endpicker"></mat-datepicker-toggle>
       <mat-datepicker #endpicker></mat-datepicker>

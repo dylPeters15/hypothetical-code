@@ -32,6 +32,11 @@ export class ManufacturingScheduleReportComponent implements OnInit {
       console.log(this.options.selectedLine);
       console.log(this.options.startDate);
       console.log(this.options.endDate);
+      this.options = {
+        selectedLine: this.options.selectedLine,
+        startDate: this.options.startDate,
+        endDate: this.options.endDate
+      };
     }
   }
 

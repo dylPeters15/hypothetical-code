@@ -28,6 +28,7 @@ export class ManufacturingScheduleReportIngredientTableComponent implements OnIn
       this._value = value;
       this.stringified = JSON.stringify(value);
     }
+    console.log("VALUE:",value);
   }
 
   registerOnChange(fn) {
@@ -38,6 +39,7 @@ export class ManufacturingScheduleReportIngredientTableComponent implements OnIn
   onChange(event) {
     this.stringified = JSON.stringify(event.target.value);
     this.propagateChange(event.target.value);
+    console.log("EVENT:",event);
   }
 
 }
