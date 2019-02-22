@@ -127,6 +127,7 @@ export class ImportMatchConflictNewCheckerService {
             resolve(toReturn);
           }
         }).catch(err => {
+          console.log('error here')
           reject(Error(err));
         });
       });

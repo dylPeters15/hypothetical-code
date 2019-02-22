@@ -1,7 +1,8 @@
 <div class="example-container">
-  <h3> {{_value['productlinename']}} </h3> 
+  <button mat-button (click)="modifyName($event)"> {{_value['productlinename']}} </button> 
   <div
     cdkDropList
+    [id]="_value['productlinename']"
     #productLineList="cdkDropList"
     [cdkDropListData]="_value['skus']"
     class="example-list"

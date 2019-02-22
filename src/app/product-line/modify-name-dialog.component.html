@@ -1,0 +1,10 @@
+<h1 mat-dialog-title>Enter new product line name</h1>
+<div mat-dialog-content>
+  <mat-form-field>
+    <input matInput [(ngModel)]="data['productlinename']">
+  </mat-form-field>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="onNoClick()">No Thanks</button>
+  <button mat-button [mat-dialog-close]="data['productlinename']" cdkFocusInitial>Save</button>
+</div>

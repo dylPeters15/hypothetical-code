@@ -1,6 +1,8 @@
 <mat-form-field>
   <input matInput placeholder="Filter" [(ngModel)]="filterQuery" (ngModelChange)="refreshData($event)">
 </mat-form-field>
+<button mat-raised-button (click)="openDialog()" color="primary"> New </button>
+<!-- <button mat-raised-button (click)="deleteProductLine()" color="warn">Delete</button> -->
 
 <div cdkDropListGroup class='product-line-container'>
   <div *ngFor="let productLine of dataSource['data']">
@@ -9,16 +11,3 @@
 </div>
 
 
-
-<!-- <div class="example-container">
-  <h2>Done</h2> 
-  <div
-    cdkDropList
-    #doneList="cdkDropList"
-    [cdkDropListData]="done"
-    [cdkDropListConnectedTo]="[todoList]"
-    class="example-list"
-    (cdkDropListDropped)="drop($event)">
-    <div class="example-box" *ngFor="let item of done" cdkDrag>{{item}}</div>
-  </div>
-</div> -->

@@ -293,7 +293,9 @@ app.route('/product_lines').get((req, res) => {
 }).post((req, res) => {
     product_line_utils.modifyProductLine(req.headers['productlinename'], req.body).then(response => {
         res.send(response);
+        console.log('sent')
     }).catch(err => {
+        console.log('error');
         resolveError(err, res);
     });
 }).delete((req, res) => {
