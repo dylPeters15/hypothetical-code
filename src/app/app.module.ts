@@ -9,9 +9,9 @@ import { AppComponent } from './app.component';
 import { CustomMaterialModule } from "./core/material.module";
 import { FooterComponent } from './footer/footer.component';
 import { HomeComponent } from './home/home.component';
-import { SkuInventoryComponent } from './sku-inventory/sku-inventory.component';
+import { SkuComponent } from './sku/sku.component';
 import { ProductLineComponent } from './product-line/product-line.component';
-import { IngredientInventoryComponent } from './ingredient-inventory/ingredient-inventory.component';
+import { IngredientComponent } from './ingredient/ingredient.component';
 import { LoginComponent } from './login/login.component';
 import { NavigationComponent } from './navigation/navigation.component';
 import { UserRouteGuardService } from './user-route-guard.service';
@@ -74,9 +74,9 @@ const appRoutes: Routes = [
   { path: 'manufacturing-goal', component: ManufacturingGoalsComponent, data: { title: 'Manufacturing Goals' }, canActivate: [UserRouteGuardService] },
   { path: 'manufacturing-lines', component: ManufacturingLinesComponent, data: { title: 'Manufacturing Lines' }, canActivate: [UserRouteGuardService] },
   { path: 'manufacturing-schedule-report', component: ManufacturingScheduleReportComponent, data: { title: 'Manufacturing Schedule Report' }, canActivate: [UserRouteGuardService] },
-  { path: 'ingredient-inventory', component: IngredientInventoryComponent, data: { title: 'Ingredient Inventory' }, canActivate: [UserRouteGuardService] },
-  { path: 'sku-inventory', component: SkuInventoryComponent, data: { title: 'SKU Inventory' }, canActivate: [UserRouteGuardService] },
-  { path: 'product-line', component: ProductLineComponent, data: { title: 'Product Line Inventory' }, canActivate: [UserRouteGuardService] },
+  { path: 'ingredient', component: IngredientComponent, data: { title: 'Ingredients' }, canActivate: [UserRouteGuardService] },
+  { path: 'sku', component: SkuComponent, data: { title: 'SKUs' }, canActivate: [UserRouteGuardService] },
+  { path: 'product-line', component: ProductLineComponent, data: { title: 'Product Lines' }, canActivate: [UserRouteGuardService] },
   { path: 'import', component: ImportComponent, data: { title: 'Import' }, canActivate: [AdminRouteGuardService] },
   { path: 'logout', component: LogoutComponent, data: { title: "Logout" }, canActivate: [UserRouteGuardService] },
   { path: '**', redirectTo: 'home' }
@@ -92,9 +92,9 @@ const appRoutes: Routes = [
     LogoutComponent,
     AccountSettingsComponent,
     UserNotificationDialogComponent,
-    SkuInventoryComponent,
+    SkuComponent,
     ProductLineComponent,
-    IngredientInventoryComponent,
+    IngredientComponent,
     NewSkuDialogComponent,
     NewIngredientDialogComponent,
     NewProductLineDialogComponent,

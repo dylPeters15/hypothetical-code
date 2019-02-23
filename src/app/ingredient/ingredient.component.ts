@@ -41,11 +41,11 @@ export class ExportableIngredient {
  * @title Table dynamically changing the columns displayed
  */
 @Component({
-    selector: 'app-ingredient-inventory',
-    templateUrl: './ingredient-inventory.component.html',
-    styleUrls: ['./ingredient-inventory.component.css']
+    selector: 'app-ingredient',
+    templateUrl: './ingredient.component.html',
+    styleUrls: ['./ingredient.component.css']
   })
-export class IngredientInventoryComponent  implements OnInit {
+export class IngredientComponent  implements OnInit {
 
   constructor(public rest:RestService, private snackBar: MatSnackBar, private dialog: MatDialog) { }
   allReplacement = 54321;
