@@ -4,6 +4,8 @@ import {CdkDragDrop, moveItemInArray, transferArrayItem} from '@angular/cdk/drag
 import { RestService } from '../rest.service';
 import { MatDialog, MatDialogRef, MatTableDataSource, MatPaginator } from "@angular/material";
 import {NewProductLineDialogComponent } from '../new-product-line-dialog/new-product-line-dialog.component';
+import {MatIconModule} from '@angular/material/icon'
+
 const customValueProvider = {
   provide: NG_VALUE_ACCESSOR,
   useExisting: forwardRef(() => ProductLineTablesComponent),

@@ -6,6 +6,7 @@ import { MoreInfoDialogComponent } from '../more-info-dialog/more-info-dialog.co
 import { NewIngredientDialogComponent } from '../new-ingredient-dialog/new-ingredient-dialog.component';
 import { auth } from '../auth.service';
 import {ExportToCsv} from 'export-to-csv';
+import {MatIconModule} from '@angular/material/icon'
 
 export interface IngredientForTable {
   ingredientname: string;
@@ -52,7 +53,7 @@ export class IngredientComponent  implements OnInit {
   constructor(public rest:RestService, private snackBar: MatSnackBar, private dialog: MatDialog) { }
   allReplacement = 54321;
   displayedColumns: string[] = ['checked', 'ingredientname', 'ingredientnumber',
-    'vendorinformation', 'packagesize', 'costperpackage', 'comment'];
+    'vendorinformation', 'packagesize', 'costperpackage', 'comment', 'modify'];
   data: IngredientForTable[] = [];
   dialogRef: MatDialogRef<MoreInfoDialogComponent>;
   newDialogRef: MatDialogRef<NewIngredientDialogComponent>;
@@ -133,6 +134,7 @@ export class IngredientComponent  implements OnInit {
   }
 
   modifyIngredient(oldingredient) {
+    console.log(oldingredient)
     const dialogRef = this.dialog.open(NewIngredientDialogComponent, {
       width: '250px',
       data: {ingredientname: oldingredient.ingredientname, 
@@ -168,33 +170,6 @@ export class IngredientComponent  implements OnInit {
       this.refreshData();
     });
     
-  }
-
-  modifySelected() {
-    let counter: number = 0;
-    console.log(this.dataSource.data)
-    this.dataSource.data.forEach(ingredient => {
-      if (ingredient.checked) {
-        counter++;
-      }
-    });
-    if (counter == 0) {
-      this.snackBar.open("Please select an ingredient to modify", "close", {
-        duration: 2000,
-      });
-    }
-    else if (counter != 1) {
-      this.snackBar.open("Please only select one ingredient to modify", "close", {
-        duration: 2000,
-      });
-    }
-    else{
-      this.dataSource.data.forEach(ingredient => {
-        if (ingredient.checked) {
-          this.modifyIngredient(ingredient);
-        }
-      });
-    }   
   }
 
   deleteIngredient(ingredientname) {
