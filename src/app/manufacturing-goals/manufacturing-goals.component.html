@@ -23,14 +23,14 @@
         <mat-cell *matCellDef="let element">{{element.name}}</mat-cell>
       </ng-container>
       
-      <ng-container matColumnDef="skus">
-        <mat-header-cell *matHeaderCellDef>SKUS</mat-header-cell>
-        <mat-cell *matCellDef="let element">{{element.skus}}</mat-cell>
-      </ng-container>
-    
-      <ng-container matColumnDef="quantities">
-        <mat-header-cell *matHeaderCellDef>Quantities</mat-header-cell>
-        <mat-cell *matCellDef="let element">{{element.quantities}}</mat-cell>
+      <ng-container matColumnDef="activities">
+        <mat-header-cell *matHeaderCellDef>Activities</mat-header-cell>
+        <mat-cell *matCellDef="let element"> <button mat-raised-button
+          matTooltip={{element.activities}}
+          aria-label="Button that displays all activities when focused or hovered over">
+    Activities: {{element.activityCount}}
+        </button>
+        </mat-cell>
       </ng-container>
     
       <ng-container matColumnDef="date">

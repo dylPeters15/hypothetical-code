@@ -200,7 +200,7 @@ app.route('/skus').get((req, res) => {
 
 ///////////////////// Manufacturing Goals /////////////////////
 app.route('/manufacturing-goals').get((req, res) => {
-    goals_utils.getGoals(req.headers['username'],req.headers['goalname'],req.headers['goalnameregex'], req.headers['limit']).then(formulas => {
+    goals_utils.getGoals(req.headers['owner'],req.headers['enabled'], req.headers['goalname'],req.headers['goalnameregex'], req.headers['limit']).then(formulas => {
         res.send(formulas);
     }).catch(err => {
         resolveError(err, res);
