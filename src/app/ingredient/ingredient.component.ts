@@ -199,9 +199,15 @@ export class IngredientComponent  implements OnInit {
   }
 
   selectAll() {
-    this.data.forEach(ingredient => {
-      ingredient.checked = true;
-    });
+    var lowerIndex = this.paginator.pageSize * this.paginator.pageIndex;
+    var upperIndex = this.paginator.pageSize * (this.paginator.pageIndex+1);
+    if (this.data.length < upperIndex) {
+      upperIndex = this.data.length;
+    }
+    this.deselectAll();
+    for (var i = lowerIndex; i < upperIndex; i=i+1) {
+      this.data[i].checked = true;
+    }
   }
 
   applyFilter(filterValue: string) {
