@@ -60,9 +60,9 @@ export class NewGoalDialogComponent implements OnInit {
     this.edit = this.data.edit;
     this.name = this.data.present_name;
     // this.selectedSkus = this.data.present_skus;
-    // this.date = this.data.present_comment;
+    this.date = this.data.present_date;
     console.log("EDIT: " + this.edit)
-    // edit == true if sku is being modified, false if a new sku is being created
+    // edit == true if goal is being modified, false if a new sku is being created
     if (this.edit == true)
     {
       this.dialog_title = "Modify Manufacturing Goal";
@@ -101,7 +101,7 @@ export class NewGoalDialogComponent implements OnInit {
   }
 
   createGoal() {
-    // if(this.edit == false){
+    if(this.edit == false){
       console.log(this.activityIds)
       this.rest.createGoal(this.name, this.activityIds, this.date, false).then(response => {
         this.snackBar.open("Successfully created Goal: " + this.name + ".", "close", {
@@ -109,9 +109,6 @@ export class NewGoalDialogComponent implements OnInit {
         }
         );
         console.log(response);
-
-      //   });
-      // }
         this.closeDialog();
       }).catch(err => {
         this.snackBar.open("Error creating Goal: " + this.name + ". Please refresh and try again.", "close", {
@@ -119,15 +116,15 @@ export class NewGoalDialogComponent implements OnInit {
         });
         console.log(err)
       });
-    // }
-    // else{
-    //   this.rest.modifyLine(this.data.present_linename, this.linename, this.shortname, this.selectedSkus, this.comment).subscribe(response => {
-    //     this.snackBar.open("Successfully modified Line: " + this.linename + ".", "close", {
-    //       duration: 2000,
-    //     });
-    //     this.closeDialog();
-    //   });
-    // }
+    }
+    else{
+      this.rest.modifyGoal(this.data.present_name, this.name, this.activityIds, this.date, false).subscribe(response => {
+        this.snackBar.open("Successfully modified Line: " + this.name + ".", "close", {
+          duration: 2000,
+        });
+        this.closeDialog();
+      });
+    }
   }
 
 

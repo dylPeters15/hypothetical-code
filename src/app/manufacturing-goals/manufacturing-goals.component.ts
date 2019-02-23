@@ -82,7 +82,7 @@ export class ManufacturingGoalsComponent implements OnInit {
             let activityString = '';
             for(j = 0; j<activities.length; j++){
              let currentActivity =  activities[j]['activity']
-                activityString += "SKU: " + currentActivity['sku']['skuname'] + "Hours Required: " + currentActivity['calculatedhours'] + '\n'; 
+                activityString += "SKU: " + currentActivity['sku']['skuname'] + " Hours Required: " + currentActivity['calculatedhours'] + '\n'; 
             }
             let date = this.goals[i]['date'];
             let currentGoal = new ManufacturingGoal(name, activityString, activityCount, date, false);
@@ -108,15 +108,15 @@ export class ManufacturingGoalsComponent implements OnInit {
   }
 
   deleteGoalConfirmed(name) {
-    // this.rest.sendDeleteGoalRequest(name).subscribe(response => {
-    //   this.snackBar.open("Goal: " + name + " deleted successfully.", "close", {
-    //     duration: 2000,
-    //   });
-    //   this.data = this.data.filter((value, index, arr) => {
-    //     return value.name != name;
-    //   });
-    //   this.refreshData();
-    // });
+    this.rest.deleteGoal(name).subscribe(response => {
+      this.snackBar.open("Goal: " + name + " deleted successfully.", "close", {
+        duration: 2000,
+      });
+      this.data = this.data.filter((value, index, arr) => {
+        return value.name != name;
+      });
+      this.refreshData();
+    });
   }
 
   deselectAll() {
@@ -162,5 +162,39 @@ export class ManufacturingGoalsComponent implements OnInit {
       this.refreshData();
     });
   }
+
+  modifySelected() {
+    const dialogConfig = new MatDialogConfig();
+    let counter: number = 0;
+    this.data.forEach(line => {
+      if (line.checked) {
+        counter++;
+      }
+    });
+    if (counter == 0) 
+    {
+      this.snackBar.open("Please select a manufacturing goal to modify", "close", {
+        duration: 2000,
+      });
+    }
+    else if (counter != 1) 
+    {
+      this.snackBar.open("Please only select one manufacturing goal to modify", "close", {
+        duration: 2000,
+      });
+    }
+    else{
+        this.data.forEach(goal => {
+          if (goal.checked) {
+            this.modifyManufacturingGoal(goal.name, goal.activities, goal.date);
+          }
+        });
+      } 
+      
+    }
+
+    modifyManufacturingGoal(present_goalname, present_activities, present_date) {
+      this.newManufacturingGoal(true, present_goalname, present_activities, present_date);
+    }
 
 }

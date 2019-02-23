@@ -7,6 +7,7 @@
     <button mat-raised-button (click)="selectAll()"> Select All </button>
     <button mat-raised-button (click)="deselectAll()"> Deselect All </button>
     <button mat-raised-button (click)="deleteSelected()" style="color: white; background-color: red;" [disabled]="dataSource.data.length==0"> Delete Selected </button>
+    <button mat-raised-button (click)="modifySelected()" style="color: white; background-color: blue;" [disabled]="dataSource.data.length==0"> Modify Selected </button>
     <button mat-raised-button (click)="newGoal()"> New Goal </button>
     <mat-form-field>
       <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter">
