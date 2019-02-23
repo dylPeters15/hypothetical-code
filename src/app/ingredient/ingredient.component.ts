@@ -210,7 +210,6 @@ export class IngredientComponent  implements OnInit {
   }
 
   deleteSelected() {
-    const dialogConfig = new MatDialogConfig();
         this.data.forEach(ingredient => {
           if (ingredient.checked) {
             this.deleteIngredient(ingredient.ingredientname);
@@ -259,10 +258,10 @@ export class IngredientComponent  implements OnInit {
 
   exportSelected(){
     let exportData: ExportableIngredient[] = [];
-    this.data.forEach(sku => {
-      if(sku.checked) {
-        let skuToExport = new ExportableIngredient(sku);
-        exportData.push(skuToExport);
+    this.data.forEach(ingredient => {
+      if(ingredient.checked) {
+        let ingredientToExport = new ExportableIngredient(ingredient);
+        exportData.push(ingredientToExport);
       }
     });
       const options = { 
@@ -275,7 +274,7 @@ export class IngredientComponent  implements OnInit {
         title: 'Ingredients',
         useTextFile: false,
         useBom: true,
-        headers: ["Ingr#","Name","Vendor Info", "Size", "Cost", "Comment"]
+        headers: ["Ingr#","Name","Vendor Info", "Amount", "Unit", "Cost", "Comment"]
       };
       const csvExporter = new ExportToCsv(options);
       csvExporter.generateCsv(exportData);
