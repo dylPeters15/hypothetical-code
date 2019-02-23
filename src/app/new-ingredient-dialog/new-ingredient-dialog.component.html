@@ -14,8 +14,16 @@
         <input matInput [(ngModel)]="data['vendorinformation']" placeholder="Vendor Information">
       </mat-form-field>
 
-      <mat-form-field>
+      <!-- <mat-form-field>
         <input matInput [(ngModel)]="data['unitofmeasure']" placeholder="Unit of Measurement" required>
+      </mat-form-field> -->
+
+      <mat-form-field>
+        <mat-select [(value)]="data['unitofmeasure']">
+          <mat-option *ngFor="let unit of data['units']" [value]="unit">
+            {{unit}}
+          </mat-option>
+        </mat-select>
       </mat-form-field>
 
       <mat-form-field>

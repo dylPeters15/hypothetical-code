@@ -17,6 +17,8 @@ export class NewIngredientDialogComponent implements OnInit {
   amount: number;
   costperpackage: number;
   comment: string;
+  units: string[];
+  selected: string
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: any, private dialogRef: MatDialogRef<NewIngredientDialogComponent>) { }
 
@@ -28,6 +30,7 @@ export class NewIngredientDialogComponent implements OnInit {
     this.amount = this.data.amount;
     this.costperpackage = this.data.costperpackage;
     this.comment = this.data.comment;
+    this.units = this.data.units;
   }
 
   closeDialog() {
@@ -39,6 +42,8 @@ export class NewIngredientDialogComponent implements OnInit {
     this.amount = this.data.amount;
     this.costperpackage = this.data.costperpackage;
     this.comment = this.data.comment;
+    this.selected = this.data.selected;
+    this.unitofmeasure = this.selected;
   }
 
   onNoClick() {

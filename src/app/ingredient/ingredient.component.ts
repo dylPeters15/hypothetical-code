@@ -100,26 +100,28 @@ export class IngredientComponent  implements OnInit {
 
     const dialogRef = this.dialog.open(NewIngredientDialogComponent, {
       width: '250px',
-      data: {}
+      data: {units: ["oz", "lb", "ton", "g", "kg", "fl oz", "pt", "qt", "gal", "mL", "L"]}
     });  
     dialogRef.afterClosed().subscribe(result => {
       console.log(result)
-      this.rest.createIngredient(result.ingredientname, result.ingredientnumber, 
-        result.vendorinformation, result.unitofmeasure, result.amount, 
-        result.costperpackage, result.comment).subscribe(response => {
-        if (response['_id']) {
-          this.snackBar.open("Successfully created ingredient " + result.ingredientname + ".", "close", {
-            duration: 2000,
-          });
-          console.log('success')
-        } else {
-          console.log(response)
-          this.snackBar.open("Error creating ingredient " + result.ingredientname + ".", "close", {
-            duration: 2000,
-          });
-          console.log('failure')
-        }
-      });
+      if (result) {
+        this.rest.createIngredient(result.ingredientname, result.ingredientnumber, 
+          result.vendorinformation, result.unitofmeasure, result.amount, 
+          result.costperpackage, result.comment).subscribe(response => {
+          if (response['_id']) {
+            this.snackBar.open("Successfully created ingredient " + result.ingredientname + ".", "close", {
+              duration: 2000,
+            });
+            console.log('success')
+          } else {
+            console.log(response)
+            this.snackBar.open("Error creating ingredient " + result.ingredientname + ".", "close", {
+              duration: 2000,
+            });
+            console.log('failure')
+          }
+        });
+      }    
       this.refreshData();
     });
   }
@@ -139,27 +141,30 @@ export class IngredientComponent  implements OnInit {
         unitofmeasure: oldingredient.unitofmeasure, 
         amount: oldingredient.amount, 
         costperpackage: oldingredient.costperpackage, 
-        comment: oldingredient.comment}
+        comment: oldingredient.comment,
+        units: ["oz", "lb", "ton", "g", "kg", "fl oz", "pt", "qt", "gal", "mL", "L"]}
     });  
 
     dialogRef.afterClosed().subscribe(result => {
       console.log(result)
-      this.rest.modifyIngredient(oldingredient.ingredientname, result.ingredientname, result.ingredientnumber, 
-        result.vendorinformation, result.unitofmeasure, result.amount, 
-        result.costperpackage, result.comment).subscribe(response => {
-        if (response['nModified']) {
-          this.snackBar.open("Successfully modified ingredient " + oldingredient.ingredientname + ".", "close", {
-            duration: 2000,
-          });
-          console.log('success')
-        } else {
-          console.log(response)
-          this.snackBar.open("Error modifying ingredient " + oldingredient.ingredientname + ".", "close", {
-            duration: 2000,
-          });
-          console.log('failure')
-        }
-      });
+      if (result) {
+        this.rest.modifyIngredient(oldingredient.ingredientname, result.ingredientname, result.ingredientnumber, 
+          result.vendorinformation, result.unitofmeasure, result.amount, 
+          result.costperpackage, result.comment).subscribe(response => {
+          if (response['nModified']) {
+            this.snackBar.open("Successfully modified ingredient " + oldingredient.ingredientname + ".", "close", {
+              duration: 2000,
+            });
+            console.log('success')
+          } else {
+            console.log(response)
+            this.snackBar.open("Error modifying ingredient " + oldingredient.ingredientname + ".", "close", {
+              duration: 2000,
+            });
+            console.log('failure')
+          }
+        });
+      }   
       this.refreshData();
     });
     
