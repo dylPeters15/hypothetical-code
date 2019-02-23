@@ -49,23 +49,19 @@ export class NewFormulaDialogComponent implements OnInit {
     console.log("we in here now, and edit is: " + this.edit);
     if (this.edit == false)
     {
-      console.log("We're creating a new formula");
-      for (var i=0; i<this.ingredients.length-1; i = i+2) {
-        this.addIngredient(this.ingredients[i], this.name);
-      }
-      // this.rest.adminCreateSku(this.name, this.sku_number, this.case_upc_number, this.unit_upc_number, this.unit_size, this.count_per_case, this.product_line, this.ingredients_by_id, this.comment, id).subscribe(response => {
+      this.rest.adminCreateSku(this.name, this.sku_number, this.case_upc_number, this.unit_upc_number, this.unit_size, this.count_per_case, this.product_line, this.ingredients_by_id, this.comment, id).subscribe(response => {
         
-      //   if (response['success']) {
-      //     this.snackBar.open("Successfully created sku " + this.name + ".", "close", {
-      //       duration: 2000,
-      //     });
-      //   } else {
-      //     this.snackBar.open("Error creating user " + this.name + ". Please refresh and try again.", "close", {
-      //       duration: 2000,
-      //     });
-      //   }
-      //   this.closeDialog();
-      // });
+        if (response['success']) {
+           this.snackBar.open("Successfully created sku " + this.name + ".", "close", {
+             duration: 2000,
+           });
+         } else {
+           this.snackBar.open("Error creating user " + this.name + ". Please refresh and try again.", "close", {
+             duration: 2000,
+          });
+         }
+         this.closeDialog();
+       });
     }
     else{
       console.log("We're modifying a sku", this.ingredients);

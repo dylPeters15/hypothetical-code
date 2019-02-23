@@ -43,7 +43,6 @@ export class ExportableSKU {
   }
 }
 
-
 /**
  * @title Table dynamically changing the columns displayed
  */
@@ -56,7 +55,7 @@ export class SkuInventoryComponent  implements OnInit {
 
   constructor(public rest:RestService, private snackBar: MatSnackBar, private dialog: MatDialog) { }
   allReplacement = 54321;
-  displayedColumns: string[] = ['checked', 'name', 'skuNumber','caseUpcNumber', 'unitUpcNumber', 'unitSize', 'countPerCase', 'productLine', 'ingredientTuples', "comment"];
+  displayedColumns: string[] = ['checked', 'skuname', 'skunumber','caseupcnumber', 'unitupcnumber', 'unitsize', 'countpercase', 'formula', 'formulascalingfactor', "manufacturingrate", "comment"];
   data: UserForTable[] = [];
   dialogRef: MatDialogRef<MoreInfoDialogComponent>;
   newDialogRef: MatDialogRef<NewSkuDialogComponent>;

@@ -81,6 +81,15 @@ export class NewSkuDialogComponent implements OnInit {
       for (var i=0; i<this.ingredients.length-1; i = i+2) {
         this.addIngredient(this.ingredients[i], this.name);
       }
+
+
+
+      createSku(skuname: String, skunumber: number, 
+        caseupcnumber: number, unitupcnumber: number, unitsize: number, 
+        countpercase: number, formulanum: Number, formulascalingfactor: Number, manufacturingrate: Number, comment: String): Observable<any> {
+
+
+          
       // this.rest.adminCreateSku(this.name, this.sku_number, this.case_upc_number, this.unit_upc_number, this.unit_size, this.count_per_case, this.product_line, this.ingredients_by_id, this.comment, id).subscribe(response => {
         
       //   if (response['success']) {
@@ -127,7 +136,7 @@ export class NewSkuDialogComponent implements OnInit {
     //   console.log("Ingredient skus", response.skus)
     //   newSkus = response.skus
     //   console.log("new skus", newSkus)
-    //   newSkus.push(sku);
+    //   newSkus.push(sku); 
     //   console.log("new skus", newSkus)
     //   this.rest.addIngredientSku(ingredient, newSkus).subscribe(response => {
     //     console.log("New ingredient data", response)
