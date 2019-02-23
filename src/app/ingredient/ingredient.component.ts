@@ -151,26 +151,26 @@ export class IngredientComponent  implements OnInit {
   //   }   
   // }
 
-  // deleteIngredientConfirmed(name) {
-  //   this.rest.sendAdminDeleteIngredientRequest(name).subscribe(response => {
-  //     this.snackBar.open("Ingredient " + name + " deleted successfully.", "close", {
-  //       duration: 2000,
-  //     });
-  //     this.data = this.data.filter((value, index, arr) => {
-  //       return value.name != name;
-  //     });
-  //     this.refreshData();
-  //   });
-  // }
+  deleteIngredient(ingredientname) {
+    this.rest.deleteIngredient(ingredientname).subscribe(response => {
+      this.snackBar.open("Ingredient " + ingredientname + " deleted successfully.", "close", {
+        duration: 2000,
+      });
+      this.data = this.data.filter((value, index, arr) => {
+        return value.ingredientname != ingredientname;
+      });
+      this.refreshData();
+    });
+  }
 
-  // deleteSelected() {
-  //   const dialogConfig = new MatDialogConfig();
-  //       this.data.forEach(user => {
-  //         if (user.checked) {
-  //           this.deleteIngredientConfirmed(user.name);
-  //         }
-  //       });
-  //     }
+  deleteSelected() {
+    const dialogConfig = new MatDialogConfig();
+        this.data.forEach(ingredient => {
+          if (ingredient.checked) {
+            this.deleteIngredient(ingredient.ingredientname);
+          }
+        });
+      }
 
   deselectAll() {
     this.data.forEach(ingredient => {
