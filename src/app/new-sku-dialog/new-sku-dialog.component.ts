@@ -19,9 +19,9 @@ export class NewSkuDialogComponent implements OnInit {
   unitupcnumber: Number = 0;
   unitsize: String = '';
   countpercase: Number = 0;
-  formula: String = '';
-  formulascalingfactor: Array<Number> = [];
-  manufacturingrate: String = '';
+  formula: any = null;
+  formulascalingfactor: Number = 0;
+  manufacturingrate: Number = 0;
   comment: String = '';
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: any, private dialogRef: MatDialogRef<NewSkuDialogComponent>, public rest:RestService, private snackBar: MatSnackBar) { }
@@ -52,17 +52,16 @@ export class NewSkuDialogComponent implements OnInit {
   closeDialog() {
     this.dialogRef.close();
     this.edit = this.data.edit;
-    this.name = this.data.present_name;
-    this.sku_number = this.data.present_skuNumber;
-    this.case_upc_number = this.data.present_caseUpcNumber;
-    this.unit_upc_number = this.data.present_unitUpcNumber;
-    this.unit_size = this.data.present_unitSize;
-    this.count_per_case = this.data.present_countPerCase;
-    this.product_line = this.data.present_productLine;
-    this.ingredients = this.data.present_ingredientTuples;
-    this.comment = this.data.present_comment;
-    this.current_id = this.data.present_id;
-
+    this.skuname = this.data.present_name;
+    this.skunumber = this.data.present_skuNumber;
+    this.caseupcnumber = this.data.present_caseUpcNumber;
+    this.unitupcnumber = this.data.present_unitUpcNumber;
+    this.unitsize = this.data.present_unitSize;
+    this.countpercase = this.data.present_countPerCase;
+    this.formula = this.data.present_formula;
+    this.formulascalingfactor = this.data.present_formulascalingfactor;
+    this.manufacturingrate = this.data.present_manufacturingrate;
+    this.comment = this.data.comment;
   }
 
   createSku() {
