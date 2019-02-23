@@ -48,11 +48,11 @@ export class ExportableSKU {
  * @title Table dynamically changing the columns displayed
  */
 @Component({
-    selector: 'app-sku-inventory',
-    templateUrl: './sku-inventory.component.html',
-    styleUrls: ['./sku-inventory.component.css']
+    selector: 'app-sku',
+    templateUrl: './sku.component.html',
+    styleUrls: ['./sku.component.css']
   })
-export class SkuInventoryComponent  implements OnInit {
+export class SkuComponent  implements OnInit {
 
   constructor(public rest:RestService, private snackBar: MatSnackBar, private dialog: MatDialog) { }
   allReplacement = 54321;
@@ -101,7 +101,7 @@ export class SkuInventoryComponent  implements OnInit {
   newSku(edit, present_name, present_skuNumber, present_caseUpcNumber, present_unitUpcNumber, present_unitSize, present_countPerCase, present_productLine, present_ingredientTuples, present_comment, present_id) {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.data = {edit: edit, present_name: present_name, present_skuNumber: present_skuNumber, present_caseUpcNumber: present_caseUpcNumber, present_unitUpcNumber: present_unitUpcNumber, present_unitSize:present_unitSize, present_countPerCase:present_countPerCase, present_productLine:present_productLine,present_ingredientTuples:present_ingredientTuples, present_comment:present_comment, present_id:present_id};
-    console.log('sku-inventory ingredient data', present_ingredientTuples)
+    console.log('sku ingredient data', present_ingredientTuples)
     this.newDialogRef = this.dialog.open(NewSkuDialogComponent, {panelClass: 'my-panel'});
     this.newDialogRef.afterClosed().subscribe(event => {
       this.refreshData();
