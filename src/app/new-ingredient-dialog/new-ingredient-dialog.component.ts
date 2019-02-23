@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { MatDialogRef} from "@angular/material";
+import { Component, OnInit, Inject } from '@angular/core';
+import { MatDialogRef, MAT_DIALOG_DATA} from "@angular/material";
 import { RestService } from '../rest.service';
 import {MatSnackBar} from '@angular/material';
 
@@ -18,39 +18,30 @@ export class NewIngredientDialogComponent implements OnInit {
   costperpackage: number;
   comment: string;
 
-  constructor(private dialogRef: MatDialogRef<NewIngredientDialogComponent>, public rest:RestService, private snackBar: MatSnackBar) { }
+  constructor(@Inject(MAT_DIALOG_DATA) public data: any, private dialogRef: MatDialogRef<NewIngredientDialogComponent>) { }
 
   ngOnInit() {
+    this.ingredientname = this.data.ingredientname;
+    this.ingredientnumber = this.data.ingredientnumber;
+    this.vendorinformation = this.data.vendorinformation;
+    this.unitofmeasure = this.data.unitofmeasure;
+    this.amount = this.data.amount;
+    this.costperpackage = this.data.costperpackage;
+    this.comment = this.data.comment;
   }
 
   closeDialog() {
     this.dialogRef.close();
-    this.ingredientname;
-    this.ingredientnumber;
-    this.vendorinformation;
-    this.unitofmeasure;
-    this.amount;
-    this.costperpackage;
-    this.comment;
+    this.ingredientname = this.data.ingredientname;
+    this.ingredientnumber = this.data.ingredientnumber;
+    this.vendorinformation = this.data.vendorinformation;
+    this.unitofmeasure = this.data.unitofmeasure;
+    this.amount = this.data.amount;
+    this.costperpackage = this.data.costperpackage;
+    this.comment = this.data.comment;
   }
 
-  createIngredient() {
-    this.rest.createIngredient(this.ingredientname, this.ingredientnumber, 
-      this.vendorinformation, this.unitofmeasure, this.amount, this.costperpackage, this.comment).subscribe(response => {
-      if (response['token']) {
-        this.snackBar.open("Successfully created ingredient " + this.ingredientname + ".", "close", {
-          duration: 2000,
-        });
-        console.log('success')
-      } else {
-        console.log(response)
-        this.snackBar.open("Error creating ingredient " + this.ingredientname + ".", "close", {
-          duration: 2000,
-        });
-        console.log('failure')
-      }
-      this.closeDialog();
-    });
+  onNoClick() {
+    this.dialogRef.close();
   }
-
 }

@@ -46,30 +46,27 @@ export class ProductLineTablesComponent implements ControlValueAccessor {
   modifyName(event: Event) {
     let oldname = this._value['productlinename'];
     const dialogRef = this.dialog.open(NewProductLineDialogComponent, {
-        width: '250px',
-        data: {productlinename: this._value['productlinename']},
-        disableClose: true 
-      });
+      width: '250px',
+      data: {productlinename: this._value['productlinename']},
+      disableClose: true 
+    });
   
-      dialogRef.afterClosed().subscribe(result => {
-        console.log('The dialog was closed');
-        console.log(result)
-        if (result) {
-          this._value['productlinename'] = result;
-        
-          return new Promise((resolve, reject) => {
-            this.rest.getProductLines(oldname,"",1).subscribe(results => {
-              if (results != null) {
-                console.log(results)
-                this.updateProductLine(oldname, result, results[0].skus);
-              }
-              resolve();
-            })
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('The dialog was closed');
+      console.log(result)
+      if (result) {
+        this._value['productlinename'] = result;  
+        return new Promise((resolve, reject) => {
+          this.rest.getProductLines(oldname,"",1).subscribe(results => {
+            if (results != null) {
+              console.log(results)
+              this.updateProductLine(oldname, result, results[0].skus);
+            }
+            resolve();
           })
-        }
-        
-      });
-
+        })
+      }      
+    });
   }
 
   drop(event: CdkDragDrop<string[]>) {

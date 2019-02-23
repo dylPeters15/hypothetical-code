@@ -96,21 +96,32 @@ export class IngredientComponent  implements OnInit {
     });
   }
 
-  newIngredient(edit, ingredientname, ingredientnumber,vendorinformation, 
-    unitofmeasure, amount, costperpackage, comment) {
-    console.log(vendorinformation)
-    const dialogConfig = new MatDialogConfig();
-    dialogConfig.data = {edit: edit, ingredientname:ingredientname, 
-      ingredientnumber:ingredientnumber, vendorinformation:vendorinformation, 
-      unitofmeasure:unitofmeasure, amount:amount, costperpackage: costperpackage, comment: comment};
-    this.newDialogRef = this.dialog.open(NewIngredientDialogComponent, dialogConfig);
-    this.newDialogRef.afterClosed().subscribe(event => {
+  newIngredient() {
+
+    const dialogRef = this.dialog.open(NewIngredientDialogComponent, {
+      width: '250px',
+      data: {}
+    });  
+    dialogRef.afterClosed().subscribe(result => {
+      console.log(result)
+      this.rest.createIngredient(result.ingredientname, result.ingredientnumber, 
+        result.vendorinformation, result.unitofmeasure, result.amount, 
+        result.costperpackage, result.comment).subscribe(response => {
+        if (response['_id']) {
+          this.snackBar.open("Successfully created ingredient " + result.ingredientname + ".", "close", {
+            duration: 2000,
+          });
+          console.log('success')
+        } else {
+          console.log(response)
+          this.snackBar.open("Error creating ingredient " + result.ingredientname + ".", "close", {
+            duration: 2000,
+          });
+          console.log('failure')
+        }
+      });
       this.refreshData();
     });
-  }
-
-  newIngredientButton() {
-    this.newIngredient(false, "", 0, "","", 0, "", 0);
   }
 
   sortData() {
@@ -119,37 +130,67 @@ export class IngredientComponent  implements OnInit {
     });
   }
 
-  // modifyIngredientConfirmed(present_name, present_number, present_vendorInformation, present_packageSize, present_costPerPackage, present_comment, present_id) {
-  //   this.newIngredient(true, present_name, present_number, present_vendorInformation, present_packageSize, present_costPerPackage, present_comment, present_id);
-  // }
+  modifyIngredient(oldingredient) {
+    const dialogRef = this.dialog.open(NewIngredientDialogComponent, {
+      width: '250px',
+      data: {ingredientname: oldingredient.ingredientname, 
+        ingredientnumber: oldingredient.ingredientnumber, 
+        vendorinformation: oldingredient.vendorinformation, 
+        unitofmeasure: oldingredient.unitofmeasure, 
+        amount: oldingredient.amount, 
+        costperpackage: oldingredient.costperpackage, 
+        comment: oldingredient.comment}
+    });  
 
-  // modifySelected() {
-  //   const dialogConfig = new MatDialogConfig();
-  //   let counter: number = 0;
-  //   this.data.forEach(ingredient => {
-  //     if (ingredient.checked) {
-  //       counter++;
-  //     }
-  //   });
-  //   if (counter == 0) {
-  //     this.snackBar.open("Please select an ingredient to modify", "close", {
-  //       duration: 2000,
-  //     });
-  //   }
-  //   else if (counter != 1) {
-  //     this.snackBar.open("Please only select one ingredient to modify", "close", {
-  //       duration: 2000,
-  //     });
-  //   }
-  //   else{
-  //     this.data.forEach(ingredient => {
-  //       if (ingredient.checked) {
-  //         this.modifyIngredientConfirmed(ingredient.ingredientname, ingredient.ingredientnumber, ingredient.vendorinformation, 
-  //         ingredient.amount, ingredient.unitofmeasure, ingredient.costperpackage, ingredient.comment);
-  //       }
-  //     });
-  //   }   
-  // }
+    dialogRef.afterClosed().subscribe(result => {
+      console.log(result)
+      this.rest.modifyIngredient(oldingredient.ingredientname, result.ingredientname, result.ingredientnumber, 
+        result.vendorinformation, result.unitofmeasure, result.amount, 
+        result.costperpackage, result.comment).subscribe(response => {
+        if (response['nModified']) {
+          this.snackBar.open("Successfully modified ingredient " + oldingredient.ingredientname + ".", "close", {
+            duration: 2000,
+          });
+          console.log('success')
+        } else {
+          console.log(response)
+          this.snackBar.open("Error modifying ingredient " + oldingredient.ingredientname + ".", "close", {
+            duration: 2000,
+          });
+          console.log('failure')
+        }
+      });
+      this.refreshData();
+    });
+    
+  }
+
+  modifySelected() {
+    let counter: number = 0;
+    console.log(this.dataSource.data)
+    this.dataSource.data.forEach(ingredient => {
+      if (ingredient.checked) {
+        counter++;
+      }
+    });
+    if (counter == 0) {
+      this.snackBar.open("Please select an ingredient to modify", "close", {
+        duration: 2000,
+      });
+    }
+    else if (counter != 1) {
+      this.snackBar.open("Please only select one ingredient to modify", "close", {
+        duration: 2000,
+      });
+    }
+    else{
+      this.dataSource.data.forEach(ingredient => {
+        if (ingredient.checked) {
+          this.modifyIngredient(ingredient);
+        }
+      });
+    }   
+  }
 
   deleteIngredient(ingredientname) {
     this.rest.deleteIngredient(ingredientname).subscribe(response => {

@@ -3,38 +3,38 @@
   <mat-card>
     <mat-card-content style="display: grid; width: 100%; justify-items: center;">
       <mat-form-field>
-        <input matInput [(ngModel)]="ingredientname" placeholder="Name" required>
+        <input matInput [(ngModel)]="data['ingredientname']" placeholder="Name" required>
       </mat-form-field>
 
       <mat-form-field>
-        <input matInput [(ngModel)]="ingredientnumber" placeholder="Ingr#">
+        <input matInput [(ngModel)]="data['ingredientnumber']" placeholder="Ingr#">
       </mat-form-field>
 
       <mat-form-field>
-        <input matInput [(ngModel)]="vendorinformation" placeholder="Vendor Information">
+        <input matInput [(ngModel)]="data['vendorinformation']" placeholder="Vendor Information">
       </mat-form-field>
 
       <mat-form-field>
-        <input matInput [(ngModel)]="unitofmeasure" placeholder="Unit of Measurement" required>
+        <input matInput [(ngModel)]="data['unitofmeasure']" placeholder="Unit of Measurement" required>
       </mat-form-field>
 
       <mat-form-field>
-        <input matInput [(ngModel)]="amount" placeholder="Amount" required>
+        <input matInput [(ngModel)]="data['amount']" placeholder="Amount" required>
       </mat-form-field>
 
       <mat-form-field>
-        <input matInput [(ngModel)]="costperpackage" placeholder="Cost Per Package (USD)" required>
+        <input matInput [(ngModel)]="data['costperpackage']" placeholder="Cost Per Package (USD)" required>
       </mat-form-field>
       
 
       <mat-form-field>
-        <input matInput [(ngModel)]="comment" placeholder="Additional Comments">
+        <input matInput [(ngModel)]="data['comment']" placeholder="Additional Comments">
       </mat-form-field>
 
     </mat-card-content>
   </mat-card>
 </mat-dialog-content>
 <mat-dialog-actions align="center">
-  <button class="mat-raised-button" (click)="closeDialog()">Cancel</button>
-  <button class="mat-raised-button" (click)="createIngredient()" [disabled]="username==''" color="primary">Create</button>
+  <button class="mat-raised-button" (click)="onNoClick()">Cancel</button>
+  <button class="mat-raised-button" [mat-dialog-close]="data" cdkFocusInitial>Create</button>
 </mat-dialog-actions>
