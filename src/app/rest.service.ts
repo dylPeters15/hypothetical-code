@@ -42,7 +42,6 @@ export class RestService {
   }
 
   private generateHeader(options?) {
-    console.log("options: " + JSON.stringify(options))
     options = options || {};
     options['Content-Type'] = 'application/json';
     options['token'] = auth.getToken();
@@ -307,7 +306,6 @@ deleteSku(skuName: String): Observable<any> {
   getUserName(){
     return new Promise((resolve, reject) => {
       this.getUsers(auth.getUsername(), "",null, null, null).subscribe(response =>{
-        console.log("USER: " + JSON.stringify(response))
         setTimeout(function() {
           resolve(response[0]['_id']);;
         }, 1000);

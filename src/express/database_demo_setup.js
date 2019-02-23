@@ -66,7 +66,7 @@ let testIngredient = ingredientUtils.createIngredient('salt', 1, 'salty', 'g', 5
 //     console.log(err)
 // });
 // console.log(saltIng._id)
-let testFormula = new database_library.formulaModel({
+let testFormula = {
     formulaname: 'formula1',
     formulanumber: '1',
     ingredientsandquantities: [{
@@ -74,7 +74,7 @@ let testFormula = new database_library.formulaModel({
         quantity: 5
     }],
     comment: 'work'
-})
+}
 formulaUtils.createFormula(testFormula)
 let testSku = new database_library.skuModel({
     skuname: 'Tomato Soup',
