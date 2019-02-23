@@ -15,7 +15,7 @@ function getGoals(username, enabled, goalname, goalnameregex, limit) {
                 {enabled: enabled}
             ]
         }
-        database.goalsModel.find(filterSchema).limit(limit).deepPopulate('activities.activity.sku').exec(function(err,results) {
+        database.goalsModel.find(filterSchema).limit(limit).deepPopulate('activities.activity.sku.formula.ingredientsandquantities.ingredient').exec(function(err,results) {
             if(results != undefined && results != null){
               resolve(results);
             }

@@ -7,10 +7,12 @@ import { MatDialogRef, MatDialog, MatDialogConfig, MatTableDataSource, MatPagina
 
 export class SkuQuantityTable{
   ingredientName: any;
-  quantity: any;
-  constructor(ingredientName,quantity){
+  packages: any;
+  packagesMeasured: any;
+  constructor(ingredientName,packages, packagesMeasured){
     this.ingredientName = ingredientName;
-    this.quantity = quantity;
+    this.packages = packages;
+    this.packagesMeasured = packagesMeasured;
   }
 }
 
@@ -19,12 +21,13 @@ export class SkuQuantityTable{
   templateUrl: './manufacturing-calculator.component.html',
   styleUrls: ['./manufacturing-calculator.component.css']
 })
-//TODO: Integrate with SKU and Ingredient database to get ingredient name/list from SKU
+
 export class ManufacturingCalculatorComponent implements OnInit {
   allReplacement = 54321;
   goals: any = [];
   selectedGoal: any;
-  displayedColumns: string[] = ['ingredientName', 'quantity'];
+  username: string;
+  displayedColumns: string[] = ['ingredientName', 'packages', 'packagesMeasured'];
   data: SkuQuantityTable[] = [];
   ingredients: string[] = [];
   dataSource = new MatTableDataSource<SkuQuantityTable>(this.data);
@@ -39,9 +42,13 @@ export class ManufacturingCalculatorComponent implements OnInit {
   }
 
   ngOnInit() {
-  // this.rest.getGoals().subscribe(data => {
-  //   this.goals = data;
-  // });
+    this.rest.getUserName().then(result => {
+      this.username = result.toString();
+      this.rest.getGoals(this.username, "", ".*", false, 5).subscribe(data => {
+          this.goals = data;
+          
+      })
+    })
   }
 
   getGoalByName(name) {
@@ -49,68 +56,54 @@ export class ManufacturingCalculatorComponent implements OnInit {
     this.data = [];
     this.ingredients = [];
     this.dataSource = new MatTableDataSource<SkuQuantityTable>(this.data);
-    // this.rest.getGoalByName(name).subscribe(data => {
-    //   this.selectedGoal = data;
-    //   let skus = this.selectedGoal['skus'];
-    //   let quantities = this.selectedGoal['quantities'];
-    //   var i;
-    //   for(i = 0; i< skus.length; i++){
-    //     let currentSKU = skus[i];
-    //     let currentQuantity = quantities[i];
-    //     this.calculateIngredientsAndQuantities(currentSKU, currentQuantity);
-    //   }
-    // });
-  }
+      this.rest.getGoals(this.username, name, name, false, 5).subscribe(data => {
+          this.selectedGoal = data[0];
+          console.log("GOAL: " + JSON.stringify(data[0]))
+          let skus: String[] = [];
+          let activities = this.selectedGoal['activities'];
+          this.calculateIngredientsAndQuantities(activities)
+    
+        });
+    }
 
-  calculateIngredientsAndQuantities(SKU, goalQuantity) {
-    console.log("SKU: " + SKU  + " Quantity: " + goalQuantity);
-    // this.rest.getSkus().subscribe(data => {
-    //   console.log("SKUS: " + data);
-    //   let skus = data;
-    //   for(i = 0; i< skus.length; i++){
-    //     let currentSKU = skus[i];
-    //     if(currentSKU['skuNumber'] == SKU){
-    //       let ingredientsFromDatabase = currentSKU['ingredientTuples'];
-    //       var i;
-    //       for(i = 0; i<ingredientsFromDatabase.length-1; i +=2){
-    //         this.addToDataSource(ingredientsFromDatabase[i].toString(), ingredientsFromDatabase[i+1], goalQuantity);
-    //       }
-    //     }
-    //   }
-      
-    // });
-  }
-
-  addToDataSource(ingredientId, ingredientQuantity, goalQuantity){
-    // this.rest.getIngredientById(ingredientId).subscribe(data => {
-    //   let ingredient = data;
-    //   let name = ingredient.name;
-    //   let actualQuantity = ingredientQuantity * goalQuantity;
-    //   // if(this.ingredients.contains(name)){
-    //   //   this.updateIngredient(name, actualQuantity);
-    //   // }
-    //   // else {
-    //     this.ingredients.push(name);
-    //     let newIngredientPair = new SkuQuantityTable(name, actualQuantity);
-    //     this.data.push(newIngredientPair);
-    //   this.dataSource = new MatTableDataSource<SkuQuantityTable>(this.data);
-    //   this.dataSource.paginator = this.paginator;
-    //   // }
-    // });
-  }
-
-  updateIngredient(ingredientName, additionalQuantity){
+  calculateIngredientsAndQuantities(activitiesList) {
     var i;
-    for(i = 0; i<this.data.length; i++){
-      if(this.data[i].ingredientName == ingredientName){
-        let oldQuantity = this.data[i].quantity;
-        this.data.splice(i,i);
-        let newQuantity = oldQuantity + additionalQuantity;
-        let newPair = new SkuQuantityTable(name, newQuantity);
-        this.data.push(newPair);
+    for(i = 0; i<activitiesList.length; i++){
+      let activityQuantity = activitiesList[i]['activity']['numcases'];
+      let ingredientsandquanties = activitiesList[i]['activity']['sku']['formula']['ingredientsandquantities'];
+      let scaleFactor = activitiesList[i]['activity']['sku']['formulascalingfactor'];
+      var j;
+      for(j = 0; j<ingredientsandquanties.length; j++){
+        this.addToDataSource(ingredientsandquanties[j]['ingredient'], activityQuantity, scaleFactor)
       }
     }
   }
+
+  addToDataSource(ingredient, numCases, formulaScaleFactor){
+    console.log("ING: " + JSON.stringify(ingredient))
+      let name = ingredient['ingredientname'];
+      let packages = numCases * formulaScaleFactor;
+      let packagesMeasured = numCases * formulaScaleFactor * ingredient['amount'];
+      let packagesMeasuredString = packagesMeasured + " " + ingredient['unitofmeasure']
+      this.ingredients.push(name);
+      let newIngredient = new SkuQuantityTable(name, packages, packagesMeasuredString);
+      this.data.push(newIngredient);
+      this.dataSource = new MatTableDataSource<SkuQuantityTable>(this.data);
+      this.dataSource.paginator = this.paginator;
+    }
+
+  // updateIngredient(ingredientName, additionalQuantity){
+  //   var i;
+  //   for(i = 0; i<this.data.length; i++){
+  //     if(this.data[i].ingredientName == ingredientName){
+  //       let oldQuantity = this.data[i].quantity;
+  //       this.data.splice(i,i);
+  //       let newQuantity = oldQuantity + additionalQuantity;
+  //       let newPair = new SkuQuantityTable(name, newQuantity);
+  //       this.data.push(newPair);
+  //     }
+  //   }
+  // }
 
   exportToCsv() {
     const options = { 
@@ -122,7 +115,7 @@ export class ManufacturingCalculatorComponent implements OnInit {
       title: 'Calculation Result',
       useTextFile: false,
       useBom: true,
-      headers: ["Ingredient", "Quantity (Packages)"]
+      headers: ["Ingredient", "Packages", "Packages (with Units)"]
     };
     const csvExporter = new ExportToCsv(options);
     csvExporter.generateCsv(this.data);
