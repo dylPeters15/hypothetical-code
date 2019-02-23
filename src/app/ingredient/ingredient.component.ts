@@ -6,6 +6,7 @@ import { MoreInfoDialogComponent } from '../more-info-dialog/more-info-dialog.co
 import { NewIngredientDialogComponent } from '../new-ingredient-dialog/new-ingredient-dialog.component';
 import { auth } from '../auth.service';
 import {ExportToCsv} from 'export-to-csv';
+import {MatIconModule} from '@angular/material/icon'
 
 export interface IngredientForTable {
   ingredientname: string;
@@ -52,7 +53,7 @@ export class IngredientComponent  implements OnInit {
   constructor(public rest:RestService, private snackBar: MatSnackBar, private dialog: MatDialog) { }
   allReplacement = 54321;
   displayedColumns: string[] = ['checked', 'ingredientname', 'ingredientnumber',
-    'vendorinformation', 'packagesize', 'costperpackage', 'comment'];
+    'vendorinformation', 'packagesize', 'costperpackage', 'comment', 'modify'];
   data: IngredientForTable[] = [];
   dialogRef: MatDialogRef<MoreInfoDialogComponent>;
   newDialogRef: MatDialogRef<NewIngredientDialogComponent>;
@@ -96,21 +97,34 @@ export class IngredientComponent  implements OnInit {
     });
   }
 
-  newIngredient(edit, ingredientname, ingredientnumber,vendorinformation, 
-    unitofmeasure, amount, costperpackage, comment) {
-    console.log(vendorinformation)
-    const dialogConfig = new MatDialogConfig();
-    dialogConfig.data = {edit: edit, ingredientname:ingredientname, 
-      ingredientnumber:ingredientnumber, vendorinformation:vendorinformation, 
-      unitofmeasure:unitofmeasure, amount:amount, costperpackage: costperpackage, comment: comment};
-    this.newDialogRef = this.dialog.open(NewIngredientDialogComponent, dialogConfig);
-    this.newDialogRef.afterClosed().subscribe(event => {
+  newIngredient() {
+
+    const dialogRef = this.dialog.open(NewIngredientDialogComponent, {
+      width: '250px',
+      data: {units: ["oz", "lb", "ton", "g", "kg", "fl oz", "pt", "qt", "gal", "mL", "L"]}
+    });  
+    dialogRef.afterClosed().subscribe(result => {
+      console.log(result)
+      if (result) {
+        this.rest.createIngredient(result.ingredientname, result.ingredientnumber, 
+          result.vendorinformation, result.unitofmeasure, result.amount, 
+          result.costperpackage, result.comment).subscribe(response => {
+          if (response['_id']) {
+            this.snackBar.open("Successfully created ingredient " + result.ingredientname + ".", "close", {
+              duration: 2000,
+            });
+            console.log('success')
+          } else {
+            console.log(response)
+            this.snackBar.open("Error creating ingredient " + result.ingredientname + ".", "close", {
+              duration: 2000,
+            });
+            console.log('failure')
+          }
+        });
+      }    
       this.refreshData();
     });
-  }
-
-  newIngredientButton() {
-    this.newIngredient(false, "", 0, "","", 0, "", 0);
   }
 
   sortData() {
@@ -119,37 +133,44 @@ export class IngredientComponent  implements OnInit {
     });
   }
 
-  // modifyIngredientConfirmed(present_name, present_number, present_vendorInformation, present_packageSize, present_costPerPackage, present_comment, present_id) {
-  //   this.newIngredient(true, present_name, present_number, present_vendorInformation, present_packageSize, present_costPerPackage, present_comment, present_id);
-  // }
+  modifyIngredient(oldingredient) {
+    console.log(oldingredient)
+    const dialogRef = this.dialog.open(NewIngredientDialogComponent, {
+      width: '250px',
+      data: {ingredientname: oldingredient.ingredientname, 
+        ingredientnumber: oldingredient.ingredientnumber, 
+        vendorinformation: oldingredient.vendorinformation, 
+        unitofmeasure: oldingredient.unitofmeasure, 
+        amount: oldingredient.amount, 
+        costperpackage: oldingredient.costperpackage, 
+        comment: oldingredient.comment,
+        units: ["oz", "lb", "ton", "g", "kg", "fl oz", "pt", "qt", "gal", "mL", "L"]}
+    });  
 
-  // modifySelected() {
-  //   const dialogConfig = new MatDialogConfig();
-  //   let counter: number = 0;
-  //   this.data.forEach(ingredient => {
-  //     if (ingredient.checked) {
-  //       counter++;
-  //     }
-  //   });
-  //   if (counter == 0) {
-  //     this.snackBar.open("Please select an ingredient to modify", "close", {
-  //       duration: 2000,
-  //     });
-  //   }
-  //   else if (counter != 1) {
-  //     this.snackBar.open("Please only select one ingredient to modify", "close", {
-  //       duration: 2000,
-  //     });
-  //   }
-  //   else{
-  //     this.data.forEach(ingredient => {
-  //       if (ingredient.checked) {
-  //         this.modifyIngredientConfirmed(ingredient.ingredientname, ingredient.ingredientnumber, ingredient.vendorinformation, 
-  //         ingredient.amount, ingredient.unitofmeasure, ingredient.costperpackage, ingredient.comment);
-  //       }
-  //     });
-  //   }   
-  // }
+    dialogRef.afterClosed().subscribe(result => {
+      console.log(result)
+      if (result) {
+        this.rest.modifyIngredient(oldingredient.ingredientname, result.ingredientname, result.ingredientnumber, 
+          result.vendorinformation, result.unitofmeasure, result.amount, 
+          result.costperpackage, result.comment).subscribe(response => {
+          if (response['nModified']) {
+            this.snackBar.open("Successfully modified ingredient " + oldingredient.ingredientname + ".", "close", {
+              duration: 2000,
+            });
+            console.log('success')
+          } else {
+            console.log(response)
+            this.snackBar.open("Error modifying ingredient " + oldingredient.ingredientname + ".", "close", {
+              duration: 2000,
+            });
+            console.log('failure')
+          }
+        });
+      }   
+      this.refreshData();
+    });
+    
+  }
 
   deleteIngredient(ingredientname) {
     this.rest.deleteIngredient(ingredientname).subscribe(response => {
@@ -164,7 +185,6 @@ export class IngredientComponent  implements OnInit {
   }
 
   deleteSelected() {
-    const dialogConfig = new MatDialogConfig();
         this.data.forEach(ingredient => {
           if (ingredient.checked) {
             this.deleteIngredient(ingredient.ingredientname);
@@ -213,10 +233,10 @@ export class IngredientComponent  implements OnInit {
 
   exportSelected(){
     let exportData: ExportableIngredient[] = [];
-    this.data.forEach(sku => {
-      if(sku.checked) {
-        let skuToExport = new ExportableIngredient(sku);
-        exportData.push(skuToExport);
+    this.data.forEach(ingredient => {
+      if(ingredient.checked) {
+        let ingredientToExport = new ExportableIngredient(ingredient);
+        exportData.push(ingredientToExport);
       }
     });
       const options = { 
@@ -229,7 +249,7 @@ export class IngredientComponent  implements OnInit {
         title: 'Ingredients',
         useTextFile: false,
         useBom: true,
-        headers: ["Ingr#","Name","Vendor Info", "Size", "Cost", "Comment"]
+        headers: ["Ingr#","Name","Vendor Info", "Amount", "Unit", "Cost", "Comment"]
       };
       const csvExporter = new ExportToCsv(options);
       csvExporter.generateCsv(exportData);

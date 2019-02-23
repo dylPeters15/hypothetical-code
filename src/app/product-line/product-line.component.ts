@@ -67,12 +67,12 @@ export class ProductLineComponent implements OnInit {
 
   openDialog() {
     const dialogRef = this.dialog.open(NewProductLineDialogComponent, {
-        width: '250px',
-        data: {}
-      });
-  
-      dialogRef.afterClosed().subscribe(result => {
-        console.log('The dialog was closed');
+      width: '250px',
+      data: {}
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('The dialog was closed');
+      if (result) {
         this.data['productlinename'] = result;
         return new Promise((resolve, reject) => {
           this.rest.createProductLine(result, []).subscribe(results => {
@@ -83,7 +83,8 @@ export class ProductLineComponent implements OnInit {
             resolve();
           })
         })
-      });
+      }
+    });
   }
 
   deleteProductLine() {
