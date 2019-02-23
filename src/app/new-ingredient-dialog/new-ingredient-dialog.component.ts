@@ -37,7 +37,7 @@ export class NewIngredientDialogComponent implements OnInit {
   createIngredient() {
     this.rest.createIngredient(this.ingredientname, this.ingredientnumber, 
       this.vendorinformation, this.unitofmeasure, this.amount, this.costperpackage, this.comment).subscribe(response => {
-      if (response['success']) {
+      if (response['token']) {
         this.snackBar.open("Successfully created ingredient " + this.ingredientname + ".", "close", {
           duration: 2000,
         });
