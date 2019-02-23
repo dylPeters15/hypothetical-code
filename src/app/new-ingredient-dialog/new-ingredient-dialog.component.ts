@@ -10,13 +10,13 @@ import {MatSnackBar} from '@angular/material';
 })
 export class NewIngredientDialogComponent implements OnInit {
 
-  name: string = '';
-  number: any = '';
-  vendor_information: string = '';
-  package_size: string = '';
-  cost_per_package: any = '';
-  comment: string = '';
-  skus: Array<String>;
+  ingredientname: string;
+  ingredientnumber: number;
+  vendorinformation: string;
+  unitofmeasure: string;
+  amount: number;
+  costperpackage: number;
+  comment: string;
 
   constructor(private dialogRef: MatDialogRef<NewIngredientDialogComponent>, public rest:RestService, private snackBar: MatSnackBar) { }
 
@@ -25,32 +25,32 @@ export class NewIngredientDialogComponent implements OnInit {
 
   closeDialog() {
     this.dialogRef.close();
-    this.name = '';
-    this.number = '';
-    this.vendor_information = '';
-    this.package_size = '';
-    this.cost_per_package = '';
-    this.comment = '';
-    this.skus = [];
+    this.ingredientname;
+    this.ingredientnumber;
+    this.vendorinformation;
+    this.unitofmeasure;
+    this.amount;
+    this.costperpackage;
+    this.comment;
   }
 
   createIngredient() {
-    console.log("well we got here...");
-    var id = Math.floor(Math.random() * 1000000000);
-    // this.rest.adminCreateIngredient(this.name, this.number, this.vendor_information, this.package_size, this.cost_per_package, this.comment, this.skus, id).subscribe(response => {
-    //   if (response['success']) {
-    //     this.snackBar.open("Successfully created ingredient " + this.name + ".", "close", {
-    //       duration: 2000,
-    //     });
-    //     console.log('success')
-    //   } else {
-    //     this.snackBar.open("Error creating ingredient " + this.name + ". Please refresh and try again.", "close", {
-    //       duration: 2000,
-    //     });
-    //     console.log('failure')
-    //   }
-    //   this.closeDialog();
-    // });
+    this.rest.createIngredient(this.ingredientname, this.ingredientnumber, 
+      this.vendorinformation, this.unitofmeasure, this.amount, this.costperpackage, this.comment).subscribe(response => {
+      if (response['success']) {
+        this.snackBar.open("Successfully created ingredient " + this.ingredientname + ".", "close", {
+          duration: 2000,
+        });
+        console.log('success')
+      } else {
+        console.log(response)
+        this.snackBar.open("Error creating ingredient " + this.ingredientname + ".", "close", {
+          duration: 2000,
+        });
+        console.log('failure')
+      }
+      this.closeDialog();
+    });
   }
 
 }

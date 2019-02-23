@@ -3,25 +3,29 @@
   <mat-card>
     <mat-card-content style="display: grid; width: 100%; justify-items: center;">
       <mat-form-field>
-        <input matInput [(ngModel)]="name" placeholder="Name" required>
+        <input matInput [(ngModel)]="ingredientname" placeholder="Name" required>
       </mat-form-field>
 
       <mat-form-field>
-        <input matInput [(ngModel)]="number" placeholder="Number">
+        <input matInput [(ngModel)]="ingredientnumber" placeholder="Ingr#">
       </mat-form-field>
 
       <mat-form-field>
-        <input matInput [(ngModel)]="vendor_information" placeholder="Vendor Information">
+        <input matInput [(ngModel)]="vendorinformation" placeholder="Vendor Information">
       </mat-form-field>
 
       <mat-form-field>
-        <input matInput [(ngModel)]="package_size" placeholder="Package Size" required>
-        <mat-hint>e.g. "60lb", "55 gallon drum", etc.</mat-hint>
+        <input matInput [(ngModel)]="unitofmeasure" placeholder="Unit of Measurement" required>
       </mat-form-field>
 
       <mat-form-field>
-        <input matInput [(ngModel)]="cost_per_package" placeholder="Cost Per Package (USD)" required>
+        <input matInput [(ngModel)]="amount" placeholder="Amount" required>
       </mat-form-field>
+
+      <mat-form-field>
+        <input matInput [(ngModel)]="costperpackage" placeholder="Cost Per Package (USD)" required>
+      </mat-form-field>
+      
 
       <mat-form-field>
         <input matInput [(ngModel)]="comment" placeholder="Additional Comments">
