@@ -29,6 +29,7 @@ function getGoals(username, enabled, goalname, goalnameregex, limit) {
 }
 
 function createGoal(goalObject) {
+    console.log("GOAL: " + JSON.stringify(goalObject))
     return new Promise((resolve, reject) => {
         let goal = new database.goalsModel(goalObject);
         goal.save().then(response => {

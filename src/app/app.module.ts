@@ -62,6 +62,7 @@ import {MatDatepickerModule} from '@angular/material/datepicker';
 import { ManufacturingScheduleReportLineTableComponent } from './manufacturing-schedule-report/manufacturing-schedule-report-line-table/manufacturing-schedule-report-line-table.component';
 import { ManufacturingScheduleReportIngredientTableComponent } from './manufacturing-schedule-report/manufacturing-schedule-report-ingredient-table/manufacturing-schedule-report-ingredient-table.component'; 
 
+
 const appRoutes: Routes = [
   { path: 'login', component: LoginComponent, data: { title: 'Log In' }, canActivate: [AlreadyLoggedInRouteGuardService] },
   { path: 'user-management', component: UserManagementComponent, data: { title: 'User Management' }, canActivate: [AdminRouteGuardService] },
