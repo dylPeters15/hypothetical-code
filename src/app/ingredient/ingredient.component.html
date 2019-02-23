@@ -22,38 +22,38 @@
             </mat-cell>
           </ng-container>
         
-          <ng-container matColumnDef="name">
+          <ng-container matColumnDef="ingredientname">
             <mat-header-cell *matHeaderCellDef mat-sort-header>Name</mat-header-cell>
             <mat-cell *matCellDef="let ingredient">
-              {{ingredient['name']}}
+              {{ingredient['ingredientname']}}
             </mat-cell>
           </ng-container>
         
-          <ng-container matColumnDef="number">
+          <ng-container matColumnDef="ingredientnumber">
             <mat-header-cell *matHeaderCellDef mat-sort-header> Ingredient #</mat-header-cell>
             <mat-cell *matCellDef="let ingredient">
-              {{ingredient['number']}}
+              {{ingredient['ingredientnumber']}}
             </mat-cell>
           </ng-container>
         
-          <ng-container matColumnDef="vendorInformation">
+          <ng-container matColumnDef="vendorinformation">
             <mat-header-cell *matHeaderCellDef mat-sort-header>Vendor Information</mat-header-cell>
             <mat-cell *matCellDef="let ingredient">
-              {{ingredient['vendorInformation']}}
+              {{ingredient['vendorinformation']}}
             </mat-cell>
           </ng-container>
         
-          <ng-container matColumnDef="packageSize">
+          <ng-container matColumnDef="packagesize">
             <mat-header-cell *matHeaderCellDef mat-sort-header>Package Size</mat-header-cell>
             <mat-cell *matCellDef="let ingredient">
-              {{ingredient['packageSize']}}
+              {{ingredient['amount']}} {{ingredient['unitofmeasure']}}
             </mat-cell>
           </ng-container>
         
-          <ng-container matColumnDef="costPerPackage">
+          <ng-container matColumnDef="costperpackage">
             <mat-header-cell *matHeaderCellDef mat-sort-header>Cost Per Package (USD)</mat-header-cell>
             <mat-cell *matCellDef="let ingredient">
-              ${{ingredient['costPerPackage']}}
+              ${{ingredient['costperpackage']}}
             </mat-cell>
           </ng-container>
         

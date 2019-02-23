@@ -8,29 +8,31 @@ import { auth } from '../auth.service';
 import {ExportToCsv} from 'export-to-csv';
 
 export interface IngredientForTable {
-  name: string;
-  number: number;
-  vendorInformation: string;
-  packageSize: string;
-  costPerPackage: string;
+  ingredientname: string;
+  ingredientnumber: number;
+  vendorinformation: string;
+  unitofmeasure: string;
+  amount: number;
+  costperpackage: string;
   comment: string;
-  id: number;
   checked: boolean;
 }
 
 export class ExportableIngredient {
-  number: Number;
-  name: String;
-  vendorInfo: String;
-  size: String;
-  cost: String;
+  ingredientnumber: Number;
+  ingredientname: String;
+  vendorinformation: String;
+  unitofmeasure: String;
+  costperpackage: String;
+  amount: Number;
   comment: String;
   constructor(ingredientForTable){
-    this.number = ingredientForTable.number;
-    this.name = ingredientForTable.name;
-    this.vendorInfo = ingredientForTable.vendorInformation;
-    this.size = ingredientForTable.packageSize;
-    this.cost = ingredientForTable.costPerPackage;
+    this.ingredientnumber = ingredientForTable.ingredientnumber;
+    this.ingredientname = ingredientForTable.ingredientname;
+    this.vendorinformation = ingredientForTable.vendorinformation;
+    this.amount = ingredientForTable.amount;
+    this.unitofmeasure = ingredientForTable.unitofmeasure;
+    this.costperpackage = ingredientForTable.costperpackage;
     this.comment = ingredientForTable.comment;
   }
 
@@ -49,12 +51,14 @@ export class IngredientComponent  implements OnInit {
 
   constructor(public rest:RestService, private snackBar: MatSnackBar, private dialog: MatDialog) { }
   allReplacement = 54321;
-  displayedColumns: string[] = ['checked', 'name', 'number','vendorInformation', 'packageSize', 'costPerPackage', 'comment'];
+  displayedColumns: string[] = ['checked', 'ingredientname', 'ingredientnumber',
+    'vendorinformation', 'packagesize', 'costperpackage', 'comment'];
   data: IngredientForTable[] = [];
   dialogRef: MatDialogRef<MoreInfoDialogComponent>;
   newDialogRef: MatDialogRef<NewIngredientDialogComponent>;
   dataSource =  new MatTableDataSource<IngredientForTable>(this.data);
   admin: boolean = false;
+  filterQuery: string = "";
   
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
@@ -68,17 +72,18 @@ export class IngredientComponent  implements OnInit {
     return [5, 10, 20, this.allReplacement];
   }
 
-  refreshData() {
-    // this.rest.getIngredients().subscribe(response => {
-    //   this.data = response;
-    //   this.data.forEach(user => {
-    //     user['checked'] = false;
-    //   });
-    //   console.log(this.data);
-    //   this.dataSource =  new MatTableDataSource<IngredientForTable>(this.data);
-    //   this.dataSource.sort = this.sort;
-    // this.dataSource.paginator = this.paginator;
-    // });
+  refreshData(filterQueryData?) {
+    filterQueryData = filterQueryData ? ".*"+filterQueryData+".*" : ".*"+this.filterQuery+".*"; //this returns things that have the pattern anywhere in the string
+    this.rest.getIngredients("", filterQueryData, 1, this.paginator.pageSize*10).subscribe(response => {
+      this.data = response;
+      this.data.forEach(user => {
+        user['checked'] = false;
+      });
+      console.log(this.data);
+      this.dataSource =  new MatTableDataSource<IngredientForTable>(this.data);
+      this.dataSource.sort = this.sort;
+    this.dataSource.paginator = this.paginator;
+    });
     
   }
 
@@ -91,10 +96,13 @@ export class IngredientComponent  implements OnInit {
     });
   }
 
-  newIngredient(edit, name, number,vendorInformation, packageSize, costPerPackage, comment, id) {
-    console.log(vendorInformation)
+  newIngredient(edit, ingredientname, ingredientnumber,vendorinformation, 
+    unitofmeasure, amount, costperpackage, comment) {
+    console.log(vendorinformation)
     const dialogConfig = new MatDialogConfig();
-    dialogConfig.data = {edit: edit, name:name, number:number, vendorInformation:vendorInformation, packageSize:packageSize, costPerPackage: costPerPackage, comment: comment, id: id};
+    dialogConfig.data = {edit: edit, ingredientname:ingredientname, 
+      ingredientnumber:ingredientnumber, vendorinformation:vendorinformation, 
+      unitofmeasure:unitofmeasure, amount:amount, costperpackage: costperpackage, comment: comment};
     this.newDialogRef = this.dialog.open(NewIngredientDialogComponent, dialogConfig);
     this.newDialogRef.afterClosed().subscribe(event => {
       this.refreshData();
@@ -107,72 +115,72 @@ export class IngredientComponent  implements OnInit {
 
   sortData() {
     this.data.sort((a,b) => {
-      return a.name > b.name ? 1 : -1;
+      return a.ingredientname > b.ingredientname ? 1 : -1;
     });
   }
 
-  modifyIngredientConfirmed(present_name, present_number, present_vendorInformation, present_packageSize, present_costPerPackage, present_comment, present_id) {
-    this.newIngredient(true, present_name, present_number, present_vendorInformation, present_packageSize, present_costPerPackage, present_comment, present_id);
-  }
+  // modifyIngredientConfirmed(present_name, present_number, present_vendorInformation, present_packageSize, present_costPerPackage, present_comment, present_id) {
+  //   this.newIngredient(true, present_name, present_number, present_vendorInformation, present_packageSize, present_costPerPackage, present_comment, present_id);
+  // }
 
-  modifySelected() {
-    const dialogConfig = new MatDialogConfig();
-    let counter: number = 0;
-    this.data.forEach(ingredient => {
-      if (ingredient.checked) {
-        counter++;
-      }
-    });
-    if (counter == 0) {
-      this.snackBar.open("Please select am ingredient to modify", "close", {
-        duration: 2000,
-      });
-    }
-    else if (counter != 1) {
-      this.snackBar.open("Please only select one ingredient to modify", "close", {
-        duration: 2000,
-      });
-    }
-    else{
-      this.data.forEach(ingredient => {
-        if (ingredient.checked) {
-          this.modifyIngredientConfirmed(ingredient.name, ingredient.number, ingredient.vendorInformation, 
-          ingredient.packageSize, ingredient.costPerPackage, ingredient.comment, ingredient.id);
-        }
-      });
-    }   
-  }
+  // modifySelected() {
+  //   const dialogConfig = new MatDialogConfig();
+  //   let counter: number = 0;
+  //   this.data.forEach(ingredient => {
+  //     if (ingredient.checked) {
+  //       counter++;
+  //     }
+  //   });
+  //   if (counter == 0) {
+  //     this.snackBar.open("Please select an ingredient to modify", "close", {
+  //       duration: 2000,
+  //     });
+  //   }
+  //   else if (counter != 1) {
+  //     this.snackBar.open("Please only select one ingredient to modify", "close", {
+  //       duration: 2000,
+  //     });
+  //   }
+  //   else{
+  //     this.data.forEach(ingredient => {
+  //       if (ingredient.checked) {
+  //         this.modifyIngredientConfirmed(ingredient.ingredientname, ingredient.ingredientnumber, ingredient.vendorinformation, 
+  //         ingredient.amount, ingredient.unitofmeasure, ingredient.costperpackage, ingredient.comment);
+  //       }
+  //     });
+  //   }   
+  // }
 
-  deleteIngredientConfirmed(name) {
-    // this.rest.sendAdminDeleteIngredientRequest(name).subscribe(response => {
-    //   this.snackBar.open("Ingredient " + name + " deleted successfully.", "close", {
-    //     duration: 2000,
-    //   });
-    //   this.data = this.data.filter((value, index, arr) => {
-    //     return value.name != name;
-    //   });
-    //   this.refreshData();
-    // });
-  }
+  // deleteIngredientConfirmed(name) {
+  //   this.rest.sendAdminDeleteIngredientRequest(name).subscribe(response => {
+  //     this.snackBar.open("Ingredient " + name + " deleted successfully.", "close", {
+  //       duration: 2000,
+  //     });
+  //     this.data = this.data.filter((value, index, arr) => {
+  //       return value.name != name;
+  //     });
+  //     this.refreshData();
+  //   });
+  // }
 
-  deleteSelected() {
-    const dialogConfig = new MatDialogConfig();
-        this.data.forEach(user => {
-          if (user.checked) {
-            this.deleteIngredientConfirmed(user.name);
-          }
-        });
-      }
+  // deleteSelected() {
+  //   const dialogConfig = new MatDialogConfig();
+  //       this.data.forEach(user => {
+  //         if (user.checked) {
+  //           this.deleteIngredientConfirmed(user.name);
+  //         }
+  //       });
+  //     }
 
   deselectAll() {
-    this.data.forEach(user => {
-      user.checked = false;
+    this.data.forEach(ingredient => {
+      ingredient.checked = false;
     });
   }
 
   selectAll() {
-    this.data.forEach(user => {
-      user.checked = true;
+    this.data.forEach(ingredient => {
+      ingredient.checked = true;
     });
   }
 
