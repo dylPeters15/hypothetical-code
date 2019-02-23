@@ -24,7 +24,6 @@ function getActivity(startdate, limit) {
 }
 
 function createActivity(activityObject) {
-    console.log("Object: " + JSON.stringify(activityObject))
     return new Promise((resolve, reject) => {
         let newActivity = new database.manufacturingActivityModel(activityObject);
         newActivity.save().then(response => {
