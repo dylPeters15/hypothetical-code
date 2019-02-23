@@ -45,7 +45,7 @@ export class ExportableLine {
 export class ManufacturingLinesComponent implements OnInit {
   allReplacement = 54321;
   lines:any = [];
-  displayedColumns: string[] = ['checked', 'linename', 'shortname','skus', 'comment', 'export'];
+  displayedColumns: string[] = ['checked', 'linename', 'shortname','skus', 'comment', 'export', 'actions'];
   data: ManufacturingLine[] = [];
   dataSource = new MatTableDataSource<ManufacturingLine>(this.data);
   @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -156,34 +156,8 @@ export class ManufacturingLinesComponent implements OnInit {
     csvExporter.generateCsv(toExport);
   }
 
-  modifySelected() {
-    const dialogConfig = new MatDialogConfig();
-    let counter: number = 0;
-    this.data.forEach(line => {
-      if (line.checked) {
-        counter++;
-      }
-    });
-    if (counter == 0) 
-    {
-      this.snackBar.open("Please select a manufacturing line to modify", "close", {
-        duration: 2000,
-      });
-    }
-    else if (counter != 1) 
-    {
-      this.snackBar.open("Please only select one promanufacturingduct line to modify", "close", {
-        duration: 2000,
-      });
-    }
-    else{
-        this.data.forEach(line => {
-          if (line.checked) {
-            this.modifyManufacturingLineConfirmed(line.linename, line.shortname, line.skus, line.comment);
-          }
-        });
-      } 
-      
+  modifySelected(line) {
+    this.modifyManufacturingLineConfirmed(line.linename, line.shortname, line.skus, line.comment); 
     }
 
     modifyManufacturingLineConfirmed(present_linename, present_shortname, present_skus, present_comment) {
