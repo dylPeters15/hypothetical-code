@@ -3,7 +3,7 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import {CdkDragDrop, moveItemInArray, transferArrayItem} from '@angular/cdk/drag-drop';
 import { RestService } from '../rest.service';
 import { MatDialog, MatDialogRef, MatTableDataSource, MatPaginator } from "@angular/material";
-import {ModifyNameDialogComponent } from './modify-name-dialog.component';
+import {NewProductLineDialogComponent } from '../new-product-line-dialog/new-product-line-dialog.component';
 const customValueProvider = {
   provide: NG_VALUE_ACCESSOR,
   useExisting: forwardRef(() => ProductLineTablesComponent),
@@ -45,7 +45,7 @@ export class ProductLineTablesComponent implements ControlValueAccessor {
 
   modifyName(event: Event) {
     let oldname = this._value['productlinename'];
-    const dialogRef = this.dialog.open(ModifyNameDialogComponent, {
+    const dialogRef = this.dialog.open(NewProductLineDialogComponent, {
         width: '250px',
         data: {productlinename: this._value['productlinename']},
         disableClose: true 

@@ -7,10 +7,10 @@ import {MatSnackBar} from '@angular/material';
     selector: 'app-delete-product-line-dialog',
     templateUrl: 'delete-product-line-dialog.component.html',
   })
-  export class DeletePLDialogComponent implements OnInit {
+  export class DeleteProductLineDialogComponent implements OnInit {
 
     productlines: String[];
-    constructor(@Inject(MAT_DIALOG_DATA) public data: any, public rest: RestService, private snackBar: MatSnackBar, private dialogRef: MatDialogRef<DeletePLDialogComponent>) {}
+    constructor(@Inject(MAT_DIALOG_DATA) public data: any, public rest: RestService, private snackBar: MatSnackBar, private dialogRef: MatDialogRef<DeleteProductLineDialogComponent>) {}
   
     selectedOptions: String[] = [];
 

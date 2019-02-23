@@ -4,8 +4,8 @@ import { MatDialogRef, MatDialog, MatDialogConfig, MatTableDataSource, MatPagina
 import { RestService } from '../rest.service';
 import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material';
-import { ModifyNameDialogComponent } from './modify-name-dialog.component';
-import { DeletePLDialogComponent } from './delete-product-line-dialog.component';
+import { NewProductLineDialogComponent } from '../new-product-line-dialog/new-product-line-dialog.component';
+import { DeleteProductLineDialogComponent } from '../delete-product-line-dialog/delete-product-line-dialog.component';
 
 export interface DataForTable {
   productlinename: String,
@@ -66,7 +66,7 @@ export class ProductLineComponent implements OnInit {
   }
 
   openDialog() {
-    const dialogRef = this.dialog.open(ModifyNameDialogComponent, {
+    const dialogRef = this.dialog.open(NewProductLineDialogComponent, {
         width: '250px',
         data: {}
       });
@@ -87,7 +87,7 @@ export class ProductLineComponent implements OnInit {
   }
 
   deleteProductLine() {
-    const dialogRef = this.dialog.open(DeletePLDialogComponent, {
+    const dialogRef = this.dialog.open(DeleteProductLineDialogComponent, {
         width: '250px',
         data: this.dataSource.data,
         disableClose: true
