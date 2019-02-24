@@ -20,7 +20,7 @@ export class ManufacturingScheduleReportLineTableComponent implements OnInit, Co
   }
 
   refreshData(): void {
-    this.calc.refreshData(this._value['selectedLine'], this._value['startDate'], this._value['endDate']).then(result => {
+    this.calc.getActivities(this._value['selectedLine'], this._value['startDate'], this._value['endDate']).then(result => {
       this.tableData = result;
     });
   }
