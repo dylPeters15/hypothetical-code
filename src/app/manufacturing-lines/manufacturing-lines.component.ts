@@ -69,6 +69,7 @@ export class ManufacturingLinesComponent implements OnInit {
   refreshData() {
     this.data = [];
     this.rest.getLine('', '.*','','',5).subscribe(skus => {
+      console.log("DATA: " + JSON.stringify(skus))
       this.lines = skus;
       this.dataSource = new MatTableDataSource<ManufacturingLine>(this.data);
       var i;

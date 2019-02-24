@@ -3,10 +3,10 @@ import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http
 import { auth } from './auth.service'
 import { Observable } from 'rxjs';
 
-// const endpoint = 'https://vcm-8238.vm.duke.edu:8443/'; // Ben
+const endpoint = 'https://vcm-8238.vm.duke.edu:8443/'; // Ben
 // const endpoint = 'https://vcm-8405.vm.duke.edu:8443/'; // Noah
 // const endpoint = 'https://vcm-8205.vm.duke.edu:8443/'; // Prod
-const endpoint = 'https://localhost:8443/'; // localhost
+// const endpoint = 'https://localhost:8443/'; // localhost
 
 @Injectable({
   providedIn: 'root'
@@ -42,7 +42,6 @@ export class RestService {
   }
 
   private generateHeader(options?) {
-    console.log("options: " + JSON.stringify(options))
     options = options || {};
     options['Content-Type'] = 'application/json';
     options['token'] = auth.getToken();
@@ -293,11 +292,12 @@ deleteSku(skuName: String): Observable<any> {
   }
 
   ///////////////////// Manufacturing Goals /////////////////////
-  getGoals(username: String,  goalname: String, enabled: boolean, limit: number): Observable<any> {
+  getGoals(username: String,  goalname: String, goalnameregex: String, enabled: boolean, limit: number): Observable<any> {
     return this.http.get(endpoint + "manufacturing-goals", this.generateHeader({
       owner: username,
       enabled: enabled,
       goalname: goalname,
+      goalnameregex: goalnameregex,
       limit: limit
     }));
   }
@@ -305,7 +305,6 @@ deleteSku(skuName: String): Observable<any> {
   getUserName(){
     return new Promise((resolve, reject) => {
       this.getUsers(auth.getUsername(), "",null, null, null).subscribe(response =>{
-        console.log("USER: " + JSON.stringify(response))
         setTimeout(function() {
           resolve(response[0]['_id']);;
         }, 1000);

@@ -60,9 +60,9 @@ export class NewGoalDialogComponent implements OnInit {
     this.edit = this.data.edit;
     this.name = this.data.present_name;
     // this.selectedSkus = this.data.present_skus;
-    // this.date = this.data.present_comment;
+    this.date = this.data.present_date;
     console.log("EDIT: " + this.edit)
-    // edit == true if sku is being modified, false if a new sku is being created
+    // edit == true if goal is being modified, false if a new sku is being created
     if (this.edit == true)
     {
       this.dialog_title = "Modify Manufacturing Goal";
@@ -71,7 +71,6 @@ export class NewGoalDialogComponent implements OnInit {
       this.dialog_title = "Create New Manufacturing Goal";
     }
     this.rest.getSkus('', '.*',0,0,0,'',5).subscribe(response => {
-      console.log("Response: " + JSON.stringify(response))
         this.skuList = response;
         this.skuList.forEach(element => {
           this.skuNameList.push(element.skuname)
@@ -94,7 +93,7 @@ export class NewGoalDialogComponent implements OnInit {
     let newActivity = new DisplayableActivity(hours, this.currentSku['skuname']);
     this.displayableActivities.push(newActivity);
     this.rest.createActivity(this.currentSku['_id'], this.quantity, hours, null,new Date(),null).subscribe(response => {
-      this.activityIds.push(response['_id']);
+      this.activityIds.push({activity: response['_id']});
       this.snackBar.open("Successfully created Activity: " + this.currentSku['skuname'] + ".", "close", {
               duration: 2000,
             });
@@ -102,31 +101,30 @@ export class NewGoalDialogComponent implements OnInit {
   }
 
   createGoal() {
-    // if(this.edit == false){
+    if(this.edit == false){
       console.log(this.activityIds)
       this.rest.createGoal(this.name, this.activityIds, this.date, false).then(response => {
         this.snackBar.open("Successfully created Goal: " + this.name + ".", "close", {
           duration: 2000,
         }
         );
-      //   console.log(response);
-      //   this.snackBar.open("Error creating Line: " + this.linename + ". Please refresh and try again.", "close", {
-      //     duration: 2000,
-      //   });
-      // }
+        console.log(response);
         this.closeDialog();
       }).catch(err => {
+        this.snackBar.open("Error creating Goal: " + this.name + ". Please refresh and try again.", "close", {
+          duration: 2000,
+        });
         console.log(err)
       });
-    // }
-    // else{
-    //   this.rest.modifyLine(this.data.present_linename, this.linename, this.shortname, this.selectedSkus, this.comment).subscribe(response => {
-    //     this.snackBar.open("Successfully modified Line: " + this.linename + ".", "close", {
-    //       duration: 2000,
-    //     });
-    //     this.closeDialog();
-    //   });
-    // }
+    }
+    else{
+      this.rest.modifyGoal(this.data.present_name, this.name, this.activityIds, this.date, false).subscribe(response => {
+        this.snackBar.open("Successfully modified Line: " + this.name + ".", "close", {
+          duration: 2000,
+        });
+        this.closeDialog();
+      });
+    }
   }
 
 
