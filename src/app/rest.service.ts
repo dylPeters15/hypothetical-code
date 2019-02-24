@@ -110,62 +110,62 @@ export class RestService {
     }));
   }
 
-  ///////////////////// formulas /////////////////////
-  getFormulas(formulaname: string, formulanumber: number, sku: number, ingredient: number, limit: number): Observable<any> {
-    return this.http.get(endpoint + "formulas", this.generateHeader({
-      formulaname: formulaname,
-      formulanumber: JSON.stringify(formulanumber),
-      sku: JSON.stringify(sku),
-      ingredient: JSON.stringify(ingredient),
-      limit: JSON.stringify(limit)
-    }));
-  }
-
-  createFormula(formulaname: string, formulanumber: number, ingredientsandquantities: any[], comment: string): Observable<any> {
-    return this.http.put(endpoint + "formulas", {
-      formulaname: formulaname,
-      formulanumber: formulanumber,
-      ingredientsandquantities: ingredientsandquantities,
-      comment: comment
-    },
-    this.generateHeader());
-  }
-
-  modifyFormula(oldname: string, formulaname: string, formulanumber: number, ingredientsandquantities: any[], comment: string): Observable<any> {
-    return this.http.post(endpoint + "formulas", {
-      formulaname: formulaname,
-      formulanumber: formulanumber,
-      ingredientsandquantities: ingredientsandquantities,
-      comment: comment||""
-    },
-    this.generateHeader({
-      formulaname: oldname
-    }));
-  }
-
-  deleteFormula(sku: number, ingredient: number): Observable<any> {
-    return this.http.delete(endpoint + "formulas", this.generateHeader({
-      sku: sku,
-      ingredient: ingredient
-    }));
-  }
-
- ///////////////////// skus /////////////////////
- getSkus(skuName: String, skuNumber: number, caseUpcNumber: number, unitUpcNumber: number, formulaNumber: String, limit: number): Observable<any> {
-  return this.http.get(endpoint + "skus", this.generateHeader({
-    skuname: skuName,
-    skunumber: skuNumber.toString(),
-    caseupcnumber: caseUpcNumber.toString(),
-    unitupcnumber: unitUpcNumber.toString(),
-    formulanumber: formulaNumber,
-    limit: limit.toString()
+///////////////////// formulas /////////////////////
+getFormulas(formulaname: string, formulanumber: number, sku: number, ingredient: number, limit: number): Observable<any> {
+  return this.http.get(endpoint + "formulas", this.generateHeader({
+    formulaname: formulaname,
+    formulanumber: JSON.stringify(formulanumber),
+    sku: JSON.stringify(sku),
+    ingredient: JSON.stringify(ingredient),
+    limit: JSON.stringify(limit)
   }));
 }
 
-createSku(skuname: String, skunumber: Number, 
-  caseupcnumber: Number, unitupcnumber: Number, unitsize: String, 
-  countpercase: Number, formulanum: Number, formulascalingfactor: Number, manufacturingrate: Number, comment: String): Observable<any> {
-  console.log("here we are friendo");
+createFormula(formulaname: string, formulanumber: number, ingredientsandquantities: any[], comment: string): Observable<any> {
+  return this.http.put(endpoint + "formulas", {
+    formulaname: formulaname,
+    formulanumber: formulanumber,
+    ingredientsandquantities: ingredientsandquantities,
+    comment: comment
+  },
+  this.generateHeader());
+}
+
+modifyFormula(oldname: string, formulaname: string, formulanumber: number, ingredientsandquantities: any[], comment: string): Observable<any> {
+  return this.http.post(endpoint + "formulas", {
+    formulaname: formulaname,
+    formulanumber: formulanumber,
+    ingredientsandquantities: ingredientsandquantities,
+    comment: comment||""
+  },
+  this.generateHeader({
+    formulaname: oldname
+  }));
+}
+
+deleteFormula(sku: number, ingredient: number): Observable<any> {
+  return this.http.delete(endpoint + "formulas", this.generateHeader({
+    sku: sku,
+    ingredient: ingredient
+  }));
+}
+
+ ///////////////////// skus /////////////////////
+ getSkus(skuName: String, skunameregex: String, skuNumber: number, caseUpcNumber: number, unitUpcNumber: number, formulaNumber: String, limit: number): Observable<any> {
+  return this.http.get(endpoint + "skus", this.generateHeader({
+    skuname: skuName,
+    skunameregex: skunameregex,
+    skunumber: JSON.stringify(skuNumber),
+    caseupcnumber: JSON.stringify(caseUpcNumber),
+    unitupcnumber: JSON.stringify(unitUpcNumber),
+    formulanumber: formulaNumber,
+    limit: JSON.stringify(limit)
+  }));
+}
+
+createSku(skuname: String, skunumber: number, 
+  caseupcnumber: number, unitupcnumber: number, unitsize: number, 
+  countpercase: number, formulanum: Number, formulascalingfactor: Number, manufacturingrate: Number, comment: String): Observable<any> {
   return this.http.put(endpoint + "skus", {
     skuname: skuname,
     skunumber: skunumber,
@@ -181,8 +181,8 @@ createSku(skuname: String, skunumber: Number,
   this.generateHeader());
 }
 
-modifySku(oldskuname: String, skuname: String, skunumber: number, 
-  caseupcnumber: number, unitupcnumber: number, unitsize: String, 
+modifySku(oldSkuName: String, skuname: String, skunumber: number, 
+  caseupcnumber: number, unitupcnumber: number, unitsize: number, 
   countpercase: number, formulanum: Number, formulascalingfactor: Number, manufacturingrate: Number, comment: String): Observable<any> {
   return this.http.post(endpoint + "skus", {
     skuname: skuname,
@@ -197,20 +197,19 @@ modifySku(oldskuname: String, skuname: String, skunumber: number,
     comment: comment
   },
   this.generateHeader({
-    skuname: oldskuname
+    skuname: oldSkuName
   }));
 }
 
 deleteSku(skuName: String): Observable<any> {
   return this.http.delete(endpoint + "skus", this.generateHeader({
-    skuname: skuName,
+    skuName: skuName,
   }));
 }
 
 
 ///////////////////// ingredients /////////////////////
 getIngredients(ingredientname: String, ingredientnameregex: String, ingredientnumber: number, limit: number): Observable<any> {
-  console.log("We are in getIngredients method now");
   return this.http.get(endpoint + "ingredients", this.generateHeader({
     ingredientname: ingredientname,
     ingredientnameregex: ingredientnameregex,

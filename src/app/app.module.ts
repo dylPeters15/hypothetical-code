@@ -14,6 +14,7 @@ import { FormulaComponent } from './formulas/formulas.component';
 import { ProductLineInventoryComponent } from './product-line-inventory/product-line.component';
 import { IngredientComponent } from './ingredient/ingredient.component';
 import { LoginComponent } from './login/login.component';
+import {MatTooltipModule} from '@angular/material/tooltip'
 import { NavigationComponent } from './navigation/navigation.component';
 import { UserRouteGuardService } from './user-route-guard.service';
 import { AdminRouteGuardService } from './admin-route-guard.service';
@@ -22,6 +23,7 @@ import { LogoutComponent } from './logout/logout.component';
 import {MatSelectModule} from '@angular/material/select';
 import {MatIconModule, MatIcon} from '@angular/material/icon';
 import {MatChipsModule} from '@angular/material/chips';
+import {DragDropModule} from '@angular/cdk/drag-drop';
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import { AccountSettingsComponent } from './account-settings/account-settings.component';
 import { UserNotificationDialogComponent } from './user-notification-dialog/user-notification-dialog.component';
@@ -46,6 +48,7 @@ import { NewGoalDialogComponent } from './new-goal-dialog/new-goal-dialog.compon
 import { ImportComponent } from './import/import.component';
 import { PapaParseModule } from 'ngx-papaparse';
 import { MatRadioModule } from '@angular/material/radio';
+import {MatDatepickerModule} from '@angular/material/datepicker';
 import { ConfirmActionDialogComponent } from './confirm-action-dialog/confirm-action-dialog.component';
 import { ImportPreviewDialogComponent } from './import/import-preview-dialog/import-preview-dialog.component';
 import { ImportConflictResolverComponent } from './import/import-conflict-resolver/import-conflict-resolver.component';
@@ -129,6 +132,7 @@ const appRoutes: Routes = [
     MatTableModule,
     MatSortModule,
     MatIconModule,
+    MatTooltipModule,
     ReactiveFormsModule,
     MatCheckboxModule,
     MatSnackBarModule,
@@ -136,7 +140,9 @@ const appRoutes: Routes = [
     PapaParseModule,
     MatRadioModule,
     MatChipsModule,
-    MatAutocompleteModule
+    MatAutocompleteModule,   
+    DragDropModule,
+    MatDatepickerModule
   ],
   providers: [],
   bootstrap: [AppComponent],
