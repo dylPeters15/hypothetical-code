@@ -46,34 +46,27 @@ export class EnableGoalsDialogComponent implements OnInit {
   }
 
   refreshData() {
-    // filterQueryData = filterQueryData ? "^"+filterQueryData+".*" : "^"+this.filterQuery+".*"; //this returns things that start with the pattern
-      this.rest.getGoals(null, "", "", true, 5).subscribe(enabledGoals => {
+    this.rest.getUserName().then(result => {
+      this.rest.getGoals(result.toString(), "", "", true, 5).subscribe(goals => {
         let enabledGoalsList = [];
-        console.log("ENABLED:" + JSON.stringify(enabledGoals))
-      //   enabledGoals.forEach(enabledGoal => {
-      //     console.log("IS IT ENABLED: " + enabledGoal['enabled'])
-      //     enabledGoalsList.push(enabledGoal['goalname']);
-      //   })
-      //   let enabledGoalsTable = new DataForTable("Enabled", enabledGoalsList)
-      //   console.log("ENABLED: " + JSON.stringify(enabledGoalsTable))
-      //   this.data.push(enabledGoalsTable)
-      //   this.rest.getGoals("", "", "", false, 5).subscribe(disabledGoals => {
-      //     let disabledGoalsList = [];
-      //     disabledGoals.forEach(disabledGoal => {
-      //       console.log("IS IT ENABLED: " + disabledGoal['enabled'])
-      //       disabledGoalsList.push(disabledGoal['goalname'])
-      //     });
-      //     let disabledGoalsTable = new DataForTable("Disabled", disabledGoalsList)
-      //     console.log("DISABLED: " + JSON.stringify(disabledGoalsTable))
-      //     this.data.push(disabledGoalsTable)
-      //           // this.sortData();
-      //     this.dataSource = new MatTableDataSource<DataForTable>(this.data);
-      // // this.dataSource.paginator = this.paginator;
-      //     console.log(this.dataSource.data)
-        // });
+        let disabledGoalsList = [];
+        goals.forEach(goal => {
+          if(goal['enabled'] == true){
+            enabledGoalsList.push(goal);
+          }
+          else{
+            disabledGoalsList.push(goal);
+          }
+        })
+        let enabledGoalsTable = new DataForTable("Enabled", enabledGoalsList)
+        this.data.push(enabledGoalsTable)
+          let disabledGoalsTable = new DataForTable("Disabled", disabledGoalsList)
+          this.data.push(disabledGoalsTable)
+          this.dataSource = new MatTableDataSource<DataForTable>(this.data);
+          console.log(this.dataSource.data)
       });
 
-
+    });
   }
 
   drop(event: CdkDragDrop<string[]>) {

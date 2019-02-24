@@ -4,8 +4,8 @@
 <button mat-raised-button (click)="openDialog()" color="primary"> New </button>
 <button mat-raised-button (click)="deleteProductLine()" color="warn">Delete</button>
 
-<div cdkDropListGroup class='product-line-container'>
+<div cdkDropListGroup class='manufacturing-goals-container'>
   <div *ngFor="let goals of dataSource['data']">
-    <app-manufacturing-goals-tables class="goals" [(ngModel)]="goal"></app-manufacturing-goals-tables>
+    <app-manufacturing-goals-tables class="manufacturingGoal" [(ngModel)]="goals"></app-manufacturing-goals-tables>
   </div>
 </div>

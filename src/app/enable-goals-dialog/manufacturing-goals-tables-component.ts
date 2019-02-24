@@ -54,28 +54,38 @@ export class ManufacturingGoalsTablesComponent implements ControlValueAccessor {
                         event.currentIndex);
         console.log('previous container id',event.previousContainer.id)
         console.log('container id',event.container.id)
-        console.log('container skus',event.container.data)
-        this.updateManufacturingSchedule(event.previousContainer.id, 
+        console.log('container goals',event.container.data)
+        this.updateGoals(event.previousContainer.id, 
             event.previousContainer.id, event.previousContainer.data)
-        this.updateManufacturingSchedule(event.container.id,
+        this.updateGoals(event.container.id,
             event.container.id, event.container.data);
     }
   }
 
-  updateManufacturingSchedule(oldname, newname, skus) {
-//     return new Promise((resolve, reject) => {
-//     // this.rest.modifyManufacturingSchedule(oldname,
-//     //     newname, skus).subscribe(modifyPLResponse => {
-//     //         if (modifyPLResponse['ok'] == 1) {
-//     //             console.log('success')
-//     //             resolve();
-//     //         } else {
-//     //             console.log('failure')
-//     //             reject(Error("Could not modify Product Line " + oldname));
-//     //         }     
-//     //     });
-//     // });
-//   }
+  updateGoals(oldEnabledStatus, newEnabledStatus, goal) {
+    let enabledStatus: boolean;
+   if(newEnabledStatus == "Enabled"){
+      enabledStatus = true;
+   }
+   else{
+     enabledStatus = false;
+   }
+    
+    return new Promise((resolve, reject) => {
+      goal.forEach(element => {
+        this.rest.modifyGoal(element['goalname'],element['goalname'],element['activities'],element['date'],enabledStatus).subscribe(modifyPLResponse => {
+          if (modifyPLResponse['ok'] == 1) {
+              console.log('success')
+              resolve();
+          } else {
+              console.log('failure')
+              reject(Error("Could not modify Goal " + goal['goalname']));
+          }     
+      });
+  });
+      });
+    
+  }
 }
 
-}
+

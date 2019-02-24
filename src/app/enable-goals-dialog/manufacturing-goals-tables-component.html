@@ -1,14 +1,14 @@
 <div class="example-container">
     <h1>
-       {{_value['productlinename']}} 
+       {{_value['enabled']}} 
     </h1> 
     <div
       cdkDropList
-      [id]="_value['productlinename']"
+      [id]="_value['enabled']"
       #productLineList="cdkDropList"
-      [cdkDropListData]="_value['skus']"
+      [cdkDropListData]="_value['goals']"
       class="example-list"
       (cdkDropListDropped)="drop($event)">
-      <div class="example-box" *ngFor="let item of _value['skus']" cdkDrag>{{item['sku']['skuname']}}</div>
+      <div class="example-box" *ngFor="let item of _value['goals']" cdkDrag>{{item['goalname']}}</div>
     </div>
   </div>

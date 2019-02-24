@@ -336,6 +336,7 @@ deleteSku(skuName: String): Observable<any> {
     return this.http.post(endpoint + "manufacturing-goals", {
       goalname: newgoalname,
       activities: activities,
+      date: date,
       enabled: enabled
     },
     this.generateHeader({
@@ -405,7 +406,6 @@ deleteSku(skuName: String): Observable<any> {
   }
 
   createLine(linename: String, shortname: String, skus: [], comment: String): Observable<any> {
-    console.log("REST: " + JSON.stringify(skus))
     return this.http.put(endpoint + 'manufacturing-lines', {
       linename: linename,
       shortname: shortname,

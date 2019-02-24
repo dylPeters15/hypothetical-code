@@ -16,7 +16,6 @@ function getGoals(username, enabled, goalname, goalnameregex, limit) {
 
             ]
         }
-        console.log("FILTER: " + JSON.stringify(filterSchema))
         database.goalsModel.find(filterSchema).limit(limit).deepPopulate('activities.activity.sku.formula.ingredientsandquantities.ingredient').exec(function(err,results) {
             if(results != undefined && results != null){
               resolve(results);
@@ -31,7 +30,6 @@ function getGoals(username, enabled, goalname, goalnameregex, limit) {
 }
 
 function createGoal(goalObject) {
-    console.log("GOAL: " + JSON.stringify(goalObject))
     return new Promise((resolve, reject) => {
         let goal = new database.goalsModel(goalObject);
         goal.save().then(response => {
