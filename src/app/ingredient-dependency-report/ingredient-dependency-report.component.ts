@@ -48,38 +48,83 @@ export class IngredientDependencyComponent implements OnInit {
 
   refreshData(filterQueryData?) {
     filterQueryData = filterQueryData ? ".*"+filterQueryData+".*" : ".*"+this.filterQuery+".*"; //this returns things that have the pattern anywhere in the string  
-    this.rest.getIngredients("", filterQueryData, 0, this.paginator.pageSize*10).subscribe(response => {
-      this.data = response;
-      console.log(response);
-      response.forEach(ingredient => {
-        let skuArray = [];
-        this.rest.getFormulas("", -1, ingredient['_id'], 10).subscribe(formulas => {
-          if (formulas) {
-            console.log(formulas)
-            formulas.forEach(formula => {
-              console.log(formula['_id'])
-              this.rest.getSkus("", "", -1, -1, -1, formula['_id'], 10).subscribe(skus => {
-                console.log(skus)
-                skus.forEach(sku => {
-                  skuArray.push(sku['skuname']);
-                })
-              })
-            })
-            
-          }
+    var numingredients;
+    var thisobject = this;
+    var promise3 = new Promise(function(resolve, reject) {
+      thisobject.rest.getIngredients("", filterQueryData, 0, thisobject.paginator.pageSize*10).subscribe(response => {
+        console.log(response);
+        
+        var ingredientsvisited = 0;
+        response.forEach(ingredient => {
+          thisobject.formulaSearch(ingredient).then(function( skuArray) {
+            console.log("final: ", skuArray)
+            let currentIngredient = new IngredientDependencyData(ingredient['ingredientname'], ingredient['ingredientnumber'], skuArray.length, skuArray);
+            thisobject.data.push(currentIngredient);
+            ingredientsvisited ++;
+
+            console.log("ingredientsvisited", ingredientsvisited) 
+            if (ingredientsvisited == response.length) {
+              resolve();
+            }
+          }) 
           
-        });
-        let currentIngredient = new IngredientDependencyData(ingredient['ingredientname'], ingredient['ingredientnumber'], skuArray.length, skuArray);
-        this.data.push(currentIngredient);
+        })
+        
+        
       });
+    
+    
+    });
+    promise3.then(() => {
+      console.log('data sent')
       this.dataSource.sort = this.sort;
       this.dataSource =  new MatTableDataSource<IngredientDependencyData>(this.data);
       this.dataSource.paginator = this.paginator;
-    });
-    
+    }) 
   }
 
-  // applyFilter(filterValue: string) {
-  //   this.dataSource.filter = filterValue.trim().toLowerCase();
-  // }
+  formulaSearch(ingredient) {
+    var thisobject = this;
+    var total = 100;
+    var skuArray = [];
+    var numberProcessed = 100;
+    return new Promise(function(resolve, reject) {
+      thisobject.rest.getFormulas("", -1, ingredient['_id'], 10).subscribe(formulas => {
+        if (formulas) {
+          total = formulas.length;
+          console.log(formulas)
+          
+        }
+        thisobject.skuSearch(formulas, skuArray, total).then(() => {
+          if (numberProcessed >= total) {
+            console.log('total', total)
+            resolve(skuArray)
+          } 
+        })  
+      });
+    });
+  }
+
+
+  skuSearch(formulas, skuArray, total) {
+    var thisobject = this;
+    return new Promise(function(resolve, reject) {
+      var formulasvisited = 0;
+      formulas.forEach(formula => {
+        console.log(formula['_id'])
+        thisobject.rest.getSkus("", "", -1, -1, -1, formula['_id'], 10).subscribe(skus => {
+          total += skus.length;
+          skus.forEach(sku => {
+            skuArray.push(sku['skuname']);
+            console.log('pushed: ', skuArray)
+          })
+          resolve(skus.length);
+        })
+        formulasvisited ++;
+      })   
+      if (formulasvisited == formulas.length) {
+        resolve(skuArray);
+      }
+    })
+  }
 }
