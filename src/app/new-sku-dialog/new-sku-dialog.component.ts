@@ -13,7 +13,7 @@ export class NewSkuDialogComponent implements OnInit {
 
   dialog_title: String;
   edit: Boolean;
-  skuname: String = 'what';
+  skuname: String = '';
   oldskuname: String = '';
   skunumber: number = 0;
   caseupcnumber: number = 0;
