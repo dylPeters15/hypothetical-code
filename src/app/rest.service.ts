@@ -150,14 +150,15 @@ export class RestService {
   }
 
  ///////////////////// skus /////////////////////
- getSkus(skuName: String, skunameregex: String, skuNumber: number, caseUpcNumber: number, unitUpcNumber: number, formulaNumber: String, limit: number): Observable<any> {
+ getSkus(skuName: String, skunameregex: String, skuNumber: number, caseUpcNumber: number, unitUpcNumber: number, formula: String, limit: number): Observable<any> {
+   console.log("formula number rest", formula)
   return this.http.get(endpoint + "skus", this.generateHeader({
     skuname: skuName,
     skunameregex: skunameregex,
     skunumber: JSON.stringify(skuNumber),
     caseupcnumber: JSON.stringify(caseUpcNumber),
     unitupcnumber: JSON.stringify(unitUpcNumber),
-    formulanumber: formulaNumber,
+    formula: formula,
     limit: JSON.stringify(limit)
   }));
 }

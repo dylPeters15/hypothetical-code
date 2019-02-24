@@ -11,17 +11,17 @@
         
           <ng-container matColumnDef="ingredientName">
             <th mat-header-cell *matHeaderCellDef mat-sort-header> Ingredient Name </th>
-            <td mat-cell *matCellDef="let ingredient"> {{ingredient.name}} </td>
+            <td mat-cell *matCellDef="let ingredient"> {{ingredient.ingredientname}} </td>
           </ng-container>
 
           <ng-container matColumnDef="ingredientNumber">
             <th mat-header-cell *matHeaderCellDef mat-sort-header> Ingr# </th>
-            <td mat-cell *matCellDef="let ingredient"> {{ingredient.number}} </td>
+            <td mat-cell *matCellDef="let ingredient"> {{ingredient.ingredientnumber}} </td>
           </ng-container>
         
           <ng-container matColumnDef="numberSKUs">
             <th mat-header-cell *matHeaderCellDef mat-sort-header> Number of SKUs </th>
-            <td mat-cell *matCellDef="let ingredient"> {{ingredient.skus.length}} </td>
+            <td mat-cell *matCellDef="let ingredient"> {{ingredient.numberskus}} </td>
           </ng-container>
         
           <ng-container matColumnDef="SKUs">

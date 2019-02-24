@@ -6,12 +6,18 @@ import { MoreInfoDialogComponent } from '../more-info-dialog/more-info-dialog.co
 import { NewIngredientDialogComponent } from '../new-ingredient-dialog/new-ingredient-dialog.component';
 import { AfterViewChecked } from '@angular/core';
 
-export interface IngredientDependencyData {
+export class IngredientDependencyData {
   // completion: boolean;
   ingredientname: string;
   ingredientnumber: number;
   numberskus: number;
   skus: string[];
+  constructor(ingredientname, ingredientnumber, numberskus, skus) {
+    this.ingredientname = ingredientname;
+    this.ingredientnumber = ingredientnumber;
+    this.numberskus = numberskus;
+    this.skus = skus;
+  }
 }
  
 @Component({
@@ -46,16 +52,29 @@ export class IngredientDependencyComponent implements OnInit {
       this.data = response;
       console.log(response);
       response.forEach(ingredient => {
-        this.rest.getFormulas("", -1, ingredient['_id'], 10).subscribe(formulaResponse => {
-          if (formulaResponse) {
-            console.log(formulaResponse)
+        let skuArray = [];
+        this.rest.getFormulas("", -1, ingredient['_id'], 10).subscribe(formulas => {
+          if (formulas) {
+            console.log(formulas)
+            formulas.forEach(formula => {
+              console.log(formula['_id'])
+              this.rest.getSkus("", "", -1, -1, -1, formula['_id'], 10).subscribe(skus => {
+                console.log(skus)
+                skus.forEach(sku => {
+                  skuArray.push(sku['skuname']);
+                })
+              })
+            })
+            
           }
           
         });
+        let currentIngredient = new IngredientDependencyData(ingredient['ingredientname'], ingredient['ingredientnumber'], skuArray.length, skuArray);
+        this.data.push(currentIngredient);
       });
-      // this.dataSource.sort = this.sort;
-      // this.dataSource =  new MatTableDataSource<IngredientDependencyData>(this.data);
-      // this.dataSource.paginator = this.paginator;
+      this.dataSource.sort = this.sort;
+      this.dataSource =  new MatTableDataSource<IngredientDependencyData>(this.data);
+      this.dataSource.paginator = this.paginator;
     });
     
   }
