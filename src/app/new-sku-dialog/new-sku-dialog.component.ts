@@ -14,6 +14,7 @@ export class NewSkuDialogComponent implements OnInit {
   dialog_title: String;
   edit: Boolean;
   skuname: String = '';
+  oldskuname: String = '';
   skunumber: number = 0;
   caseupcnumber: number = 0;
   unitupcnumber: number = 0;
@@ -30,6 +31,7 @@ export class NewSkuDialogComponent implements OnInit {
 
     this.edit = this.data.edit;
     this.skuname = this.data.present_name;
+    this.oldskuname = this.data.present_name;
     this.skunumber = this.data.present_skuNumber;
     this.caseupcnumber = this.data.present_caseUpcNumber;
     this.unitupcnumber = this.data.present_unitUpcNumber;
@@ -53,6 +55,7 @@ export class NewSkuDialogComponent implements OnInit {
     this.dialogRef.close();
     this.edit = this.data.edit;
     this.skuname = this.data.present_name;
+    this.oldskuname = this.data.present_name;
     this.skunumber = this.data.present_skuNumber;
     this.caseupcnumber = this.data.present_caseUpcNumber;
     this.unitupcnumber = this.data.present_unitUpcNumber;
@@ -86,7 +89,7 @@ export class NewSkuDialogComponent implements OnInit {
 
     else{
       console.log("We're modifying a sku");
-      this.rest.modifySku(this.name, this.sku_number, this.case_upc_number, this.unit_upc_number, this.unit_size, this.count_per_case, this.product_line, this.ingredients_by_id, this.comment, this.current_id).subscribe(response => {
+      this.rest.modifySku(this.oldskuname, this.skuname, this.skunumber, this.caseupcnumber, this.unitupcnumber, this.unitsize, this.countpercase, this.formula, this.formulascalingfactor, this.manufacturingrate, this.comment).subscribe(response => {
         
       //   if (response['success']) {
       //     this.snackBar.open("Successfully modifyed sku " + this.name + ".", "close", {

@@ -7,34 +7,39 @@
       </mat-form-field>
 
       <mat-form-field>
-        <input matInput [(ngModel)]="sku_number" placeholder="Sku#">
+        <input matInput [(ngModel)]="skunumber" placeholder="Sku#">
         <mat-hint>Optional</mat-hint>
       </mat-form-field>
 
       <mat-form-field>
-        <input matInput [(ngModel)]="case_upc_number" placeholder="Case UPC#" required>
+        <input matInput [(ngModel)]="caseupcnumber" placeholder="Case UPC#" required>
         <mat-hint>Must confirm to UPC-A standard (12 digit)</mat-hint>
       </mat-form-field>
 
       <mat-form-field>
-        <input matInput [(ngModel)]="unit_upc_number" placeholder="Unit UPC#" required>
+        <input matInput [(ngModel)]="unitupcnumber" placeholder="Unit UPC#" required>
         <mat-hint>Must confirm to UPC-A standard (12 digit)</mat-hint>
       </mat-form-field>
 
       <mat-form-field>
-        <input matInput [(ngModel)]="unit_size" placeholder="Unit Size" required>
+        <input matInput [(ngModel)]="unitsize" placeholder="Unit Size" required>
       </mat-form-field>
 
       <mat-form-field>
-        <input matInput [(ngModel)]="count_per_case" placeholder="Count Per Case" required>
+        <input matInput [(ngModel)]="countpercase" placeholder="Count Per Case" required>
       </mat-form-field>
 
       <mat-form-field>
-        <input matInput [(ngModel)]="product_line" placeholder="Product Line" required>
+        <input matInput [(ngModel)]="formula" placeholder="Formula" required>
       </mat-form-field>
 
       <mat-form-field>
-        <input matInput [(ngModel)]="ingredients" placeholder="Ingredients" required>
+        <input matInput [(ngModel)]="formulascalingfactor" placeholder="Formula Scaling Factor" required>
+        <mat-hint>Enter in this format: ingredient1,quantity1, ingredient2,quantity2, etc</mat-hint>
+      </mat-form-field>
+
+      <mat-form-field>
+        <input matInput [(ngModel)]="manufacturingrate" placeholder="Manufacturing Rate" required>
         <mat-hint>Enter in this format: ingredient1,quantity1, ingredient2,quantity2, etc</mat-hint>
       </mat-form-field>
 

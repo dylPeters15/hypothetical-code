@@ -181,7 +181,7 @@ createSku(skuname: String, skunumber: Number,
 }
 
 modifySku(oldSkuName: String, skuname: String, skunumber: number, 
-  caseupcnumber: number, unitupcnumber: number, unitsize: number, 
+  caseupcnumber: number, unitupcnumber: number, unitsize: String, 
   countpercase: number, formulanum: Number, formulascalingfactor: Number, manufacturingrate: Number, comment: String): Observable<any> {
   return this.http.post(endpoint + "skus", {
     skuname: skuname,
