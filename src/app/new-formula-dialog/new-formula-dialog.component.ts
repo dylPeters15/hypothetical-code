@@ -5,6 +5,9 @@ import {MatSnackBar} from '@angular/material';
 import {MAT_DIALOG_DATA} from '@angular/material';
 import { MatDialogConfig, MatDialog} from "@angular/material";
 import { NewFormulaIngredientDialogComponent } from '../new-formula-ingredient/new-formula-ingredient-dialog.component';
+import { ingredienttuple } from "./ingredienttuple";
+
+
 
 
 @Component({
@@ -12,12 +15,6 @@ import { NewFormulaIngredientDialogComponent } from '../new-formula-ingredient/n
   templateUrl: './new-formula-dialog.component.html',
   styleUrls: ['./new-formula-dialog.component.css']
 })
-
-class ingredienttuple {
-  static create(event: { ingredient: string; quantity: number }) {
-    return { ingredient: event.ingredient, quantity: event.quantity };
-  }
-}
 
 export class NewFormulaDialogComponent implements OnInit {
 
@@ -102,22 +99,40 @@ export class NewFormulaDialogComponent implements OnInit {
         else {
           console.log("located the ingredient. " + response);
           new_objectid = response.ObjectId;
-          const newIngredient = ingredienttuple.create({
+          let new_ingredienttuple = new ingredienttuple();
+          new_ingredienttuple.create({
             ingredient: new_objectid,
-            quantity: this.return_amount,
+            quantity: new_amount,
           });
-          this.ingredientsandquantities.push(newIngredient);
+          console.log("ingredientsandquantities: " + this.ingredientsandquantities + ", newIngredient:" + new_ingredienttuple);
+          this.ingredientsandquantities.push(new_ingredienttuple);
           console.log("ingredients and quantities are now " + this.ingredientsandquantities);
-
-          this.rest.modifyFormula(this.formulaname, this.formulaname, this.formulanumber, this.ingredientsandquantities, this.comment).subscribe(response => {
-            if (response['ok'] == 1) {
-              this.refreshData();
-            } else {
-              this.snackBar.open("Error adding ingredient.", "close", {
-                duration: 2000,
-                   });
-            }
-          });
+          if (edit == true) // we are modifying the formula
+          {
+            console.log("Modify formula");
+            this.rest.modifyFormula(this.formulaname, this.formulaname, this.formulanumber, this.ingredientsandquantities, this.comment).subscribe(response => {
+              if (response['ok'] == 1) {
+                this.refreshData();
+              } else {
+                this.snackBar.open("Error adding ingredient.", "close", {
+                  duration: 2000,
+                    });
+              }
+            });
+          }
+          else // we are adding a new formula
+          {
+            console.log("Create new formula");
+            this.rest.createFormula(this.formulaname, this.formulanumber, this.ingredientsandquantities, this.comment).subscribe(response => {
+              if (response['ok'] == 1) {
+                this.refreshData();
+              } else {
+                this.snackBar.open("Error adding ingredient.", "close", {
+                  duration: 2000,
+                    });
+              }
+            });
+          }
         }
         });
         });

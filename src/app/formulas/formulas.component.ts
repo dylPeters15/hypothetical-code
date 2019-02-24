@@ -7,6 +7,7 @@ import { NewFormulaDialogComponent } from '../new-formula-dialog/new-formula-dia
 import { AfterViewChecked } from '@angular/core';
 import { auth } from '../auth.service';
 import {ExportToCsv} from 'export-to-csv';
+import { ingredienttuple } from "../new-formula-dialog/ingredienttuple";
 
 export interface UserForTable {
   formulaname: String;
@@ -96,7 +97,8 @@ export class FormulaComponent implements OnInit {
 
   newFormulaButton()
   {
-    this.newFormula(false, "", 0, null, "");
+    let blankTuple = [];
+    this.newFormula(false, "", 0, blankTuple, "");
   }
 
   sortData() {
