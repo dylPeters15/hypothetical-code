@@ -16,7 +16,7 @@ export interface UserForTable {
   checked: boolean;
 }
 
-export class ExportableSKU {
+export class ExportableFormula {
   formulaname: String;
   formulanumber: Number;
   ingredientsandquantities: any[];
@@ -105,7 +105,7 @@ export class FormulaComponent implements OnInit {
     });
   }
 
-  deleteSkuConfirmed(formula) {
+  deleteFormulaConfirmed(formula) {
     // this.rest.sendAdminDeleteSkuRequest(sku.name).subscribe(response => {
     //   for (var i=0; i<sku.ingredientTuples.length-1; i = i+2) {
     //     this.removeIngredient(sku.ingredientTuples[i], sku.name);
@@ -120,7 +120,7 @@ export class FormulaComponent implements OnInit {
     // });
   }
 
-  modifySkuConfirmed(present_formulaname, present_formulanumber, present_ingredientsandquantities, present_comment) {
+  modifyFormulaConfirmed(present_formulaname, present_formulanumber, present_ingredientsandquantities, present_comment) {
     this.newFormula(true, present_formulaname, present_formulanumber, present_ingredientsandquantities, present_comment);
   }
 
@@ -134,8 +134,8 @@ export class FormulaComponent implements OnInit {
   }
 
   exportSelected(){
-    let exportData: ExportableSKU[] = [];
-    this.data.forEach(sku => {
+    let exportData: ExportableFormula[] = [];
+    this.data.forEach(formula => {
       if(formula.checked) {
         let formulaToExport = new ExportableFormula(formula);
         exportData.push(formulaToExport);
@@ -178,7 +178,7 @@ export class FormulaComponent implements OnInit {
     else{
       this.data.forEach(user => {
         if (user.checked) {
-          this.modifySkuConfirmed(user.name, user.skuNumber, user.caseUpcNumber, user.unitUpcNumber, user.unitSize, user.countPerCase, user.productLine, user.ingredientTuples, user.comment, user.id);
+          this.modifyFormulaConfirmed(user.formulaname, user.formulanumber, user.ingredientsandquantities, user.comment);
         }
       });
     }   
