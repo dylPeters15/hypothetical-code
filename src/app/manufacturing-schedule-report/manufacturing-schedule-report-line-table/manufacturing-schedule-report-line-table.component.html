@@ -3,35 +3,35 @@
   <ng-container matColumnDef="startDate">
     <mat-header-cell *matHeaderCellDef>Start Date</mat-header-cell>
     <mat-cell *matCellDef="let element">
-      {{element['startDate']}}
+      {{element['startdate']}}
     </mat-cell>
   </ng-container>
 
   <ng-container matColumnDef="endDate">
     <mat-header-cell *matHeaderCellDef>End Date</mat-header-cell>
     <mat-cell *matCellDef="let element">
-      {{element['endDate']}}
+      {{element['enddate']}}
     </mat-cell>
   </ng-container>
 
   <ng-container matColumnDef="duration">
     <mat-header-cell *matHeaderCellDef>Duration</mat-header-cell>
     <mat-cell *matCellDef="let element">
-      {{element['duration']}}
+      {{element['sethours']}}
     </mat-cell>
   </ng-container>
 
   <ng-container matColumnDef="skuNameNum">
     <mat-header-cell *matHeaderCellDef>SKU Name/#</mat-header-cell>
     <mat-cell *matCellDef="let element">
-      {{element['skuname']}}/{{element['skunumber']}}
+      {{element['sku']['skuname']}}/{{element['sku']['skunumber']}}
     </mat-cell>
   </ng-container>
 
   <ng-container matColumnDef="formulaNameNum">
     <mat-header-cell *matHeaderCellDef>Formula Name/#</mat-header-cell>
     <mat-cell *matCellDef="let element">
-      {{element['formulaname']}}/{{element['formulanumber']}}
+      {{element['sku']['formula']['formulaname']}}/{{element['sku']['formula']['formulanumber']}}
     </mat-cell>
   </ng-container>
 

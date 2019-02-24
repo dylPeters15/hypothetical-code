@@ -340,6 +340,7 @@ var manufacturingActivitySchema = new mongoose.Schema({
   }
 });
 manufacturingActivitySchema.plugin(uniqueValidator);
+manufacturingActivitySchema.plugin(deepPopulate);
 
 var manufacturingActivityModel = mongoose.model('activity', manufacturingActivitySchema);
 

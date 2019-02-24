@@ -7,10 +7,10 @@ function getActivity(startdate, limit) {
     return new Promise((resolve, reject) => {
         var filterSchema = {
             "startdate": {
-                "$gte": startdate
+                $gte: startdate
             }
-        }
-        database.manufacturingActivityModel.find(filterSchema).limit(limit).populate('sku').populate('line').exec(function(err,results) {
+        };
+        database.manufacturingActivityModel.find(filterSchema).limit(limit).deepPopulate('sku.formula.ingredientsandquantities.ingredient').populate('line').exec(function(err,results) {
             if(err){
                 reject(Error(err));
             }
