@@ -30,7 +30,7 @@ export class NewFormulaIngredientDialogComponent implements OnInit {
   ingredientNameList: string[] = [];
   amount: number = 0;
 
-  @ViewChild('ingredientInput') skuInput: ElementRef<HTMLInputElement>;
+  @ViewChild('ingredientInput') ingredientInput: ElementRef<HTMLInputElement>;
   @ViewChild('auto') matAutocomplete: MatAutocomplete;
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: any, private dialogRef: MatDialogRef<NewFormulaIngredientDialogComponent>, public rest:RestService, private snackBar: MatSnackBar) {
@@ -79,4 +79,56 @@ export class NewFormulaIngredientDialogComponent implements OnInit {
   addIngredient() {
     this.closeDialog()
   }
+
+  add(event: MatChipInputEvent): void {
+    // Add ingredient only when MatAutocomplete is not open
+    // To make sure this does not conflict with OptionSelected Event
+    if (!this.matAutocomplete.isOpen) {
+      const input = event.input;
+      const value = event.value;
+
+
+      // Add our ingredient
+      if ((value || '').trim()) {
+        this.selectedIngredientNames.push(value.trim());
+      }
+
+      // Reset the input value
+      if (input) {
+        input.value = '';
+      }
+
+      this.ingredientCtrl.setValue(null);
+    }
+  }
+
+  remove(ingredient: string): void {
+    const index = this.selectedIngredientNames.indexOf(ingredient);
+
+    if (index >= 0) {
+      this.selectedIngredientNames.splice(index, 1);
+    }
+  }
+
+  selected(event: MatAutocompleteSelectedEvent): void {
+    this.selectedIngredientNames.push(event.option.viewValue);
+    console.log(event.option.viewValue)
+    this.rest.getIngredients(event.option.viewValue, '', 0, 5).subscribe(response => {
+      var i;
+      for(i = 0; i<response.length; i++){
+        this.selectedIngredients.push({ingredient: response[i]['_id']})
+      }
+
+      
+    });
+    this.ingredientInput.nativeElement.value = '';
+    this.ingredientCtrl.setValue(null);
+  }
+
+  private _filter(value: string): string[] {
+    const filterValue = value.toLowerCase();
+
+    return this.ingredientNameList.filter(ingredient => ingredient.toLowerCase().indexOf(filterValue) === 0);
+  }
+
 }
