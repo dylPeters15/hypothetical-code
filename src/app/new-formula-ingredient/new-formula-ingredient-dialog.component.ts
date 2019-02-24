@@ -50,6 +50,7 @@ export class NewFormulaIngredientDialogComponent implements OnInit {
       this.dialog_title = "Modify Ingredient";
     }
     else this.dialog_title = "Add Ingredient to Formula";
+    console.log("got here mate");
     this.rest.getIngredients('','.*',0,5).subscribe(response => {
       this.ingredientList = response;
       this.ingredientList.forEach(element => {
@@ -59,17 +60,17 @@ export class NewFormulaIngredientDialogComponent implements OnInit {
   }
 
   closeDialog() {
-    this.dialogRef.close();
-    this.amount = 0;
     this.selectedIngredientNames = [];
     this.ingredientList = [];
     this.selectedIngredients = [];
-    this.ingredientNameList = [];
 
     //this.ingredientname = "abc";
     //this.amount = 5;
+    console.log("Let's send the data back! List: " + this.ingredientNameList + ". Amount: " + this.amount);
     this.dialogRef.componentInstance.ingredientNameList = this.ingredientNameList;
     this.dialogRef.componentInstance.amount = this.amount;
+    this.dialogRef.close();
+
     //this.dialogRef.close();
     //this.edit = this.data.edit;
     //this.ingredientname = this.data.present_ingredientname;
