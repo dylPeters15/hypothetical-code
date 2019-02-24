@@ -1,8 +1,10 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit, Inject, ViewChild } from '@angular/core';
 import { MatDialogRef} from "@angular/material";
 import { RestService } from '../rest.service';
 import {MatSnackBar} from '@angular/material';
 import {MAT_DIALOG_DATA} from '@angular/material';
+import { MatDialog, MatDialogConfig, MatTableDataSource,MatPaginator, MatTooltipModule} from "@angular/material";
+
 
 @Component({
   selector: 'app-new-formula-ingredient-dialog',
@@ -47,7 +49,6 @@ export class NewFormulaIngredientDialogComponent implements OnInit {
   }
 
   addIngredient() {
-    // Send the info back 
-    // generate ID
+    this.closeDialog()
   }
 }

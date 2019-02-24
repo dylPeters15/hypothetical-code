@@ -81,6 +81,7 @@ export class NewFormulaDialogComponent implements OnInit {
       var new_ingredient = this.newIngredientDialogRef.componentInstance.ingredientname;
       var new_amount = this.newIngredientDialogRef.componentInstance.amount;
       var new_objectid;
+      //console.log("okay we are back again. ingredient: " + + ", amount: " +)
 
 
       // get object id from ingredient name

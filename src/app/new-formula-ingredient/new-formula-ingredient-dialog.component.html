@@ -1,83 +1,71 @@
-<!doctype html>
-<html ng-app="ui.bootstrap.demo">
-  <head>
-    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular.js"></script>
-    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular-animate.js"></script>
-    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular-sanitize.js"></script>
-    <script src="//angular-ui.github.io/bootstrap/ui-bootstrap-tpls-2.1.3.js"></script>
-    <script src="example.js"></script>
-    <link href="//netdna.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
-  </head>
-  <body>
-      <style>
-          .typeahead-demo .custom-popup-wrapper {
-            position: absolute;
-            top: 100%;
-            left: 0;
-            z-index: 1000;
-            display: none;
-            background-color: #f9f9f9;
-          }
+<div>
+    <mat-card class="Manufactoring Goals">
+      <mat-card-header style="align-content: center; align-items: center; justify-content: center; display: grid;">
+        <mat-card-title>Manufacturing Lines</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <button mat-raised-button (click)="selectAll()"> Select All </button>
+      <button mat-raised-button (click)="deselectAll()"> Deselect All </button>
+      <button mat-raised-button (click)="deleteSelected()" style="color: white; background-color: red;" [disabled]="dataSource.data.length==0"> Delete Selected </button>
+      <!-- <button mat-raised-button (click)="modifySelected()" style="color: white; background-color: red;" [disabled]="dataSource.data.length==0"> Modify Selected </button> -->
+      <button mat-raised-button (click)="newLine()"> New Line </button>
+      <mat-form-field>
+        <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter">
+      </mat-form-field>
+      <mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+        <ng-container matColumnDef="checked">
+          <mat-header-cell *matHeaderCellDef>Selected</mat-header-cell>
+          <mat-cell *matCellDef="let element">
+            <mat-checkbox [(ngModel)]="element['checked']"></mat-checkbox>
+          </mat-cell>
+        </ng-container> 
+        <ng-container matColumnDef="linename">
+          <mat-header-cell *matHeaderCellDef>Linename</mat-header-cell>
+          <mat-cell *matCellDef="let element">{{element.linename}}</mat-cell>
+        </ng-container>
         
-          .typeahead-demo .custom-popup-wrapper > .message {
-            padding: 10px 20px;
-            border-bottom: 1px solid #ddd;
-            color: #868686;
-          }
+        <ng-container matColumnDef="shortname">
+          <mat-header-cell *matHeaderCellDef>Shortname</mat-header-cell>
+          <mat-cell *matCellDef="let element">{{element.shortname}}</mat-cell>
+        </ng-container>
+      
+        <ng-container matColumnDef="skus">
+          <mat-header-cell *matHeaderCellDef>Skus</mat-header-cell>
+          <mat-cell *matCellDef="let element"> <button mat-raised-button
+            matTooltip={{element.skus}}
+            aria-label="Button that displays all skus when focused or hovered over">
+      SKUs: {{element.skuCount}}
+    </button>
+           </mat-cell>
+        </ng-container>
+      
+        <ng-container matColumnDef="comment">
+          <mat-header-cell *matHeaderCellDef>Comment</mat-header-cell>
+          <mat-cell *matCellDef="let element">{{element.comment}}</mat-cell>
+        </ng-container>
+      
+        <ng-container matColumnDef="export">
+          <mat-header-cell *matHeaderCellDef>Export To CSV</mat-header-cell>
+          <mat-cell *matCellDef="let element">
+            <button mat-raised-button (click)="exportToCsv(element)" style="color: white; background-color: red;"> Export to CSV </button>
+          </mat-cell>
+        </ng-container>
+  
+        <ng-container matColumnDef="actions">
+          <mat-header-cell *matHeaderCellDef>Actions</mat-header-cell>
+          <mat-cell *matCellDef="let element">
+            <button mat-button (click)="modifySelected(element)" [disabled]="dataSource.data.length==0">
+              <mat-icon>edit</mat-icon> 
+            </button>
+          </mat-cell>
+          
+        </ng-container>
         
-          .typeahead-demo .custom-popup-wrapper > .dropdown-menu {
-            position: static;
-            float: none;
-            display: block;
-            min-width: 160px;
-            background-color: transparent;
-            border: none;
-            border-radius: 0;
-            box-shadow: none;
-          }
-        </style>
-        
-        
-        <script type="text/ng-template" id="customPopupTemplate.html">
-          <div class="custom-popup-wrapper"
-             ng-style="{top: position().top+'px', left: position().left+'px'}"
-             style="display: block;"
-             ng-show="isOpen() && !moveInProgress"
-             aria-hidden="{{!isOpen()}}">
-            <p class="message">select location from drop down.</p>
-        
-            <ul class="dropdown-menu" role="listbox">
-              <li class="uib-typeahead-match" ng-repeat="match in matches track by $index" ng-class="{active: isActive($index) }"
-                ng-mouseenter="selectActive($index)" ng-click="selectMatch($index)" role="option" id="{{::match.id}}">
-                <div uib-typeahead-match index="$index" match="match" query="query" template-url="templateUrl"></div>
-              </li>
-            </ul>
-          </div>
-        </script>
-
-        <div class='container-fluid typeahead-demo' ng-controller="TypeaheadCtrl">
-            <h2 mat-dialog-title align="center">Search by Ingredient Name</h2>
-            <mat-dialog-content align="center">
-            <mat-card>
-              <mat-card-content style="display: grid; width: 100%; justify-items: center;">
-                  <input type="text" ng-model="ingredient" placeholder="Search for Ingredients" uib-typeahead="ingredient for ingredients in this.rest.getIngredients($viewValue) | limitTo:8" typeahead-loading="loading ingredients" typeahead-no-results="noResults" >
-
-    <mat-form-field>
-        <input matInput [(ngModel)]="formulanumber" placeholder="Amount">
-    </mat-form-field>
-
-      <!---<p>Beans | 10 lbs <button type="submit">Edit</button><button type="submit">X</button></p> -->
-
-      </mat-card-content>
-   </mat-card>
-    </mat-dialog-content>
-    <mat-dialog-actions align="center">
-      <button class="mat-raised-button" (click)="closeDialog()">Cancel</button>
-      <button class="mat-raised-button" (click)="addIngredient()" color="primary">Add Ingredient</button>
-      </mat-dialog-actions>
-        
-        </div>
-          </body>
-        </html>
-
-
+        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+      </mat-table>
+      <mat-paginator id="elementsTablePaginator" [pageSizeOptions]="getPageSizeOptions()" showFirstLastButtons></mat-paginator>
+      
+    </mat-card-content>
+    </mat-card>
+  </div>
