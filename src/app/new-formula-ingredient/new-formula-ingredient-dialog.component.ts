@@ -5,40 +5,32 @@ import {MatSnackBar} from '@angular/material';
 import {MAT_DIALOG_DATA} from '@angular/material';
 
 @Component({
-  selector: 'app-new-formula-dialog',
-  templateUrl: './new-formula-dialog.component.html',
-  styleUrls: ['./new-formula-dialog.component.css']
+  selector: 'app-new-formula-ingredient-dialog',
+  templateUrl: './new-formula-ingredient-dialog.component.html',
+  styleUrls: ['./new-formula-ingredient-dialog.component.css']
 })
 
-export class NewFormulaDialogComponent implements OnInit {
+export class NewFormulaIngredientDialogComponent implements OnInit {
 
   dialog_title: string;
   edit: Boolean;
-  formulaname: string = '';
-  oldformulaname: string = '';
-  formulanumber: number = 0;
-  ingredientsandquantities: any[];
-  comment: string = '';
-  testArray: string[] = ["cowboy", "giraffe", "clone"];
+  ingredientname: string = '';
+  amount: number = 0;
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: any, private dialogRef: MatDialogRef<NewFormulaDialogComponent>, public rest:RestService, private snackBar: MatSnackBar) { }
+  constructor(@Inject(MAT_DIALOG_DATA) public data: any, private dialogRef: MatDialogRef<NewFormulaIngredientDialogComponent>, public rest:RestService, private snackBar: MatSnackBar) { }
 
   ngOnInit() {
 
     this.edit = this.data.edit;
-    this.formulaname = this.data.present_formulaname;
-    this.oldformulaname = this.data.present_formulaname;
-    this.formulanumber = this.data.present_formulanumber;
-    this.ingredientsandquantities = this.data.present_ingredientsandquantities;
-    this.comment = this.data.present_comment;
-    console.log("my test array is " + this.testArray);
+    this.ingredientname = this.data.present_ingredientname;
+    this.oldformulaname = this.data.present_amount;
 
     // edit == true if formula is being modified, false if a new formula is being created
     if (this.edit == true)
     {
-      this.dialog_title = "Modify Formula";
+      this.dialog_title = "Modify Ingredient";
     }
-    else this.dialog_title = "Create New Formula";
+    else this.dialog_title = "Add Ingredient to Formula";
   }
 
   closeDialog() {

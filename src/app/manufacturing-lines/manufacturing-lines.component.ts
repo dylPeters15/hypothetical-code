@@ -9,10 +9,12 @@ import {ExportToCsv} from 'export-to-csv';
 export class ManufacturingLine {
   linename: String;
   shortname: String;
-  skus: any = [];
+  skus: String;
+  skuCount: number;
   comment: String;
   checked: boolean;
-  constructor(linename, shortname, skus, comment, checked){
+  constructor(linename, shortname, skus, comment, checked, skuCount){
+    this.skuCount = skuCount;
     this.linename = linename;
     this.shortname = shortname;
     this.skus = skus;
@@ -42,13 +44,13 @@ export class ExportableLine {
 
 export class ManufacturingLinesComponent implements OnInit {
   allReplacement = 54321;
-  line:any = [];
-  displayedColumns: string[] = ['checked', 'linename', 'shortname','skus', 'comment'];
+  lines:any = [];
+  displayedColumns: string[] = ['checked', 'linename', 'shortname','skus', 'comment', 'export', 'actions'];
   data: ManufacturingLine[] = [];
   dataSource = new MatTableDataSource<ManufacturingLine>(this.data);
   @ViewChild(MatPaginator) paginator: MatPaginator;
   newDialogRef: MatDialogRef<NewLineDialogComponent>;
-
+  skuString: string = '';
   constructor(public rest:RestService, private route: ActivatedRoute, private router: Router, private snackBar: MatSnackBar, private dialog: MatDialog) {  }
 
   getPageSizeOptions() {
@@ -56,11 +58,7 @@ export class ManufacturingLinesComponent implements OnInit {
   }
 
   newLine() {
-    const dialogConfig = new MatDialogConfig();
-    this.newDialogRef = this.dialog.open(NewLineDialogComponent, dialogConfig);
-    this.newDialogRef.afterClosed().subscribe(event => {
-      this.refreshData();
-  });
+      this.newManufacturingLine(false, "","", "", "");
 }
 
   ngOnInit() {
@@ -70,24 +68,32 @@ export class ManufacturingLinesComponent implements OnInit {
 
   refreshData() {
     this.data = [];
-    // this.rest.getline().subscribe(data => {
-    //     this.line = data;
-    //     var i;
-    //     this.dataSource = new MatTableDataSource<ManufacturingGoal>(this.data);
-    //     for(i = 0; i<this.line.length; i++){
-    //       let name = this.line[i]['name'];
-    //       let skus = this.line[i]['skus'];
-    //       let quantities = this.line[i]['quantities'];
-    //       let date = this.line[i]['date'];
-    //       let currentGoal = new ManufacturingGoal(name, skus, quantities, date, false);
-    //       this.data.push(currentGoal);
-    //     }
-    //     this.data.forEach(element => {
-    //       element['checked'] = false;
-    //     });
-    //     this.dataSource = new MatTableDataSource<ManufacturingGoal>(this.data);
-    //     this.dataSource.paginator = this.paginator;
-    // })
+    this.rest.getLine('', '.*','','',5).subscribe(skus => {
+      console.log("DATA: " + JSON.stringify(skus))
+      this.lines = skus;
+      this.dataSource = new MatTableDataSource<ManufacturingLine>(this.data);
+      var i;
+      for(i = 0; i<this.lines.length; i++){
+        this.skuString = "";
+        let linename = this.lines[i]['linename'];
+        let shortname = this.lines[i]['shortname'];
+        var count = 0;
+        var j;
+        for(j = 0; j<this.lines[i]['skus'].length; j++){
+          this.skuString += this.printSKU(this.lines[i]['skus'][j]['sku']) + '\n';
+          console.log("String: " + this.skuString)
+          count++;
+        }
+        let comment = this.lines[i]['comment'];
+        let currentLine = new ManufacturingLine(linename, shortname, this.skuString, comment, false, count);
+        this.data.push(currentLine)
+      }
+      this.data.forEach(element => {
+        element['checked'] = false;
+      });
+      this.dataSource = new MatTableDataSource<ManufacturingLine>(this.data);
+      this.dataSource.paginator = this.paginator;
+    });
   }
 
   deleteSelected() {
@@ -107,6 +113,7 @@ export class ManufacturingLinesComponent implements OnInit {
       this.data = this.data.filter((value, index, arr) => {
         return value.linename != name;
       });
+      this.skuString = "";
       this.refreshData();
     });
   }
@@ -123,27 +130,47 @@ export class ManufacturingLinesComponent implements OnInit {
     });
   }
 
-  exportToCsv(goal) {
-    // let toExport: ExportableLine[] = [];
-    // const options = { 
-    //   fieldSeparator: ',',
-    //   quoteStrings: '"',
-    //   decimalSeparator: '.',
-    //   showLabels: true, 
-    //   showTitle: true,
-    //   title: 'Manufacturing Line',
-    //   useTextFile: false,
-    //   useBom: true,
-    //   headers: ["Name", "Skus", "Quantities", "Date"]
-    // };
-    // let skuString = goal.skus.toString();
-    // let quantityString = goal.quantities.toString();
+  printSKU(skuObject){
+    let sku = '';
+    sku += '<' + skuObject['skuname'] + '>: <' + skuObject['unitsize'] + '> * <' + skuObject['countpercase'] + '>';
+    return sku;
+}
+
+  exportToCsv(line) {
+    let toExport: ExportableLine[] = [];
+    const options = { 
+      fieldSeparator: ',',
+      quoteStrings: '"',
+      decimalSeparator: '.',
+      showLabels: true, 
+      showTitle: false,
+      title: 'Manufacturing Line',
+      useTextFile: false,
+      useBom: true,
+      headers: ["Linename", "Shortname", "SKUs", "Comment"]
+    };
     
-    // let goalToExport = new ExportableGoal(skuString, quantityString, goal.name, goal.date);
-    // console.log("Name: " + goalToExport.name + " SKUS: " + goalToExport.skus + " Quants: " + goalToExport.quantities + " Date: " + goalToExport.date);
-    // toExport.push(goalToExport);
-    // const csvExporter = new ExportToCsv(options);
-    // csvExporter.generateCsv(toExport);
+    let lineToExport = new ExportableLine(line.skus, line.linename, line.shortname, line.comment);
+    toExport.push(lineToExport);
+    const csvExporter = new ExportToCsv(options);
+    csvExporter.generateCsv(toExport);
   }
+
+  modifySelected(line) {
+    this.modifyManufacturingLineConfirmed(line.linename, line.shortname, line.skus, line.comment); 
+    }
+
+    modifyManufacturingLineConfirmed(present_linename, present_shortname, present_skus, present_comment) {
+      this.newManufacturingLine(true, present_linename, present_shortname, present_skus, present_comment);
+    }
+
+    newManufacturingLine(edit, present_linename, present_shortname, present_skus, present_comment) {
+      const dialogConfig = new MatDialogConfig();
+      dialogConfig.data = {edit: edit, present_linename: present_linename, present_shortname: present_shortname, present_skus:present_skus,present_comment:present_comment };
+      this.newDialogRef = this.dialog.open(NewLineDialogComponent, dialogConfig);
+      this.newDialogRef.afterClosed().subscribe(event => {
+        this.refreshData();
+      });
+    }
 
 }

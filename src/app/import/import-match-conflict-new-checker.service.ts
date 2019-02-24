@@ -72,6 +72,8 @@ export class ImportMatchConflictNewCheckerService {
 
   private checkSKUMatchConflictNew(sku, toReturn): Promise<any> {
     return new Promise((resolve, reject) => {
+      console.log(sku);
+      // this.rest.getSkus(sku['skuname'],"$a", sku['skunumber'], -1, -1, "-1", 1).subscribe(response => { HOW IT WAS
       this.rest.getSkus(sku['skuname'], sku['skunumber'], -1, -1, "-1", 1).subscribe(response => {
         if (response.length == 0) {
           toReturn['new'].push(sku);
@@ -126,6 +128,7 @@ export class ImportMatchConflictNewCheckerService {
             resolve(toReturn);
           }
         }).catch(err => {
+          console.log('error here')
           reject(Error(err));
         });
       });
@@ -144,7 +147,7 @@ export class ImportMatchConflictNewCheckerService {
       }
       ingredients.forEach(ingredient => {
         //do processing here
-        this.rest.getIngredients(ingredient['ingredientname'], ingredient['ingredientnumber'], 1).subscribe(response => {
+        this.rest.getIngredients(ingredient['ingredientname'],"", ingredient['ingredientnumber'], 1).subscribe(response => {
           if (response.length == 0) {
             toReturn['new'].push(ingredient);
           } else {
@@ -187,7 +190,7 @@ export class ImportMatchConflictNewCheckerService {
       }
       productLines.forEach(productLine => {
         //do processing here
-        this.rest.getProductLines(productLine['Name'], 1).subscribe(result => {
+        this.rest.getProductLines(productLine['Name'], "", 1).subscribe(result => {
           if (result.length == 0) {
             toReturn['new'].push(productLine);
           } else {
@@ -334,7 +337,7 @@ export class ImportMatchConflictNewCheckerService {
               }
             }
           } else {
-            this.rest.getIngredients("", ingredientnum, 1).subscribe(response => {
+            this.rest.getIngredients("","", ingredientnum, 1).subscribe(response => {
               if (response.length == 0) {
                 reject(Error("Could not find ingredient " + ingredientnum + " for formula " + formula['formulaname']));
               } else {
@@ -366,7 +369,7 @@ export class ImportMatchConflictNewCheckerService {
         });
       }
       sku['manufacturinglines'].forEach(shortname => {
-        this.rest.getLine("",shortname,1).subscribe(mlResponse => {
+        this.rest.getLine("","",shortname,"",1).subscribe(mlResponse => {
           console.log(mlResponse);
           if (mlResponse.length == 1) {
             numMLsChecked++;

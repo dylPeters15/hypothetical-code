@@ -394,17 +394,18 @@ deleteGoal(goalname: String): Observable<any> {
   }
 
   ///////////////////// Manufacturing Lines /////////////////////
-  getLine(linename: String, shortname: String, limit: number): Observable<any> {
-    console.log(linename);
-    console.log(shortname);
+  getLine(linename: String, linenameregex: String, shortname: String, shortnameregex: String, limit: number): Observable<any> {
     return this.http.get(endpoint + 'manufacturing-lines', this.generateHeader({
       linename: linename,
+      linenameregex: linenameregex,
       shortname: shortname,
+      shortnameregex: shortnameregex,
       limit: limit
     }));
   }
 
   createLine(linename: String, shortname: String, skus: [], comment: String): Observable<any> {
+    console.log("REST: " + JSON.stringify(skus))
     return this.http.put(endpoint + 'manufacturing-lines', {
       linename: linename,
       shortname: shortname,
@@ -413,11 +414,12 @@ deleteGoal(goalname: String): Observable<any> {
     });
   }
 
-  modifyLine(linename: String, newlinename: String, shortname: String, skus: []): Observable<any> {
+  modifyLine(linename: String, newlinename: String, shortname: String, skus: [], comment: String): Observable<any> {
     return this.http.post(endpoint + 'manufacturing-lines', {
       linename: newlinename,
       shortname: shortname,
-      skus: skus
+      skus: skus,
+      comment: comment
     }, this.generateHeader({
       linename: linename
     }));
