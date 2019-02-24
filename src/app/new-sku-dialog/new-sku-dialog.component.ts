@@ -14,14 +14,14 @@ export class NewSkuDialogComponent implements OnInit {
   dialog_title: String;
   edit: Boolean;
   skuname: String = '';
-  skunumber: Number = 0;
-  caseupcnumber: Number = 0;
-  unitupcnumber: Number = 0;
+  skunumber: number = 0;
+  caseupcnumber: number = 0;
+  unitupcnumber: number = 0;
   unitsize: String = '';
-  countpercase: Number = 0;
+  countpercase: number = 0;
   formula: any = null;
-  formulascalingfactor: Number = 0;
-  manufacturingrate: Number = 0;
+  formulascalingfactor: number = 0;
+  manufacturingrate: number = 0;
   comment: String = '';
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: any, private dialogRef: MatDialogRef<NewSkuDialogComponent>, public rest:RestService, private snackBar: MatSnackBar) { }
@@ -67,49 +67,26 @@ export class NewSkuDialogComponent implements OnInit {
   createSku() {
     // generate ID
     console.log("we in here now, and edit is: " + this.edit);
-    console.log(this.ingredients);
-    for (var i=0; i<this.ingredients.length; i = i+1) {
-      console.log('ingredients at index i', this.ingredients[i])
-    }
     if (this.edit == false)
     {
       console.log("We're creating a new sku");
-      for (var i=0; i<this.ingredients.length-1; i = i+2) {
-        this.addIngredient(this.ingredients[i], this.name);
+      this.rest.createSku(this.skuname, this.skunumber, this.caseupcnumber, this.unitupcnumber, this.unitsize, this.countpercase, this.formula, this.formulascalingfactor, this.manufacturingrate, this.comment).subscribe(response => {
+        if (response['success']) {
+               this.snackBar.open("Successfully created sku " + this.skuname + ".", "close", {
+                 duration: 2000,
+               });
+             } else {
+               this.snackBar.open("Error creating user " + this.skuname + ". Please refresh and try again.", "close", {
+                 duration: 2000,
+               });
+             }
+             this.closeDialog();
+           });
       }
-      this.rest.createSku()
 
-
-
-      createSku(skuname: String, skunumber: number, 
-        caseupcnumber: number, unitupcnumber: number, unitsize: number, 
-        countpercase: number, formulanum: Number, formulascalingfactor: Number, manufacturingrate: Number, comment: String): Observable<any> {
-
-
-
-      // this.rest.adminCreateSku(this.name, this.sku_number, this.case_upc_number, this.unit_upc_number, this.unit_size, this.count_per_case, this.product_line, this.ingredients_by_id, this.comment, id).subscribe(response => {
-        
-      //   if (response['success']) {
-      //     this.snackBar.open("Successfully created sku " + this.name + ".", "close", {
-      //       duration: 2000,
-      //     });
-      //   } else {
-      //     this.snackBar.open("Error creating user " + this.name + ". Please refresh and try again.", "close", {
-      //       duration: 2000,
-      //     });
-      //   }
-      //   this.closeDialog();
-      // });
-    }
     else{
-      console.log("We're modifying a sku", this.ingredients);
-      for (var i=0; i<this.ingredients.length-1; i = i+2) {
-        this.addIngredient(this.ingredients[i], this.name);
-        console.log('ingredient array pre push', this.ingredients_by_id)
-        this.ingredients_by_id.push(this.ingredients[i+1]);
-        console.log('ingredient array new', this.ingredients_by_id);
-      }
-      // this.rest.modifySkuRequest(this.name, this.sku_number, this.case_upc_number, this.unit_upc_number, this.unit_size, this.count_per_case, this.product_line, this.ingredients_by_id, this.comment, this.current_id).subscribe(response => {
+      console.log("We're modifying a sku");
+      this.rest.modifySku(this.name, this.sku_number, this.case_upc_number, this.unit_upc_number, this.unit_size, this.count_per_case, this.product_line, this.ingredients_by_id, this.comment, this.current_id).subscribe(response => {
         
       //   if (response['success']) {
       //     this.snackBar.open("Successfully modifyed sku " + this.name + ".", "close", {

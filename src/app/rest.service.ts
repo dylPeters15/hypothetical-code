@@ -162,9 +162,9 @@ export class RestService {
   }));
 }
 
-createSku(skuname: String, skunumber: number, 
-  caseupcnumber: number, unitupcnumber: number, unitsize: number, 
-  countpercase: number, formulanum: Number, formulascalingfactor: Number, manufacturingrate: Number, comment: String): Observable<any> {
+createSku(skuname: String, skunumber: Number, 
+  caseupcnumber: Number, unitupcnumber: Number, unitsize: String, 
+  countpercase: Number, formulanum: Number, formulascalingfactor: Number, manufacturingrate: Number, comment: String): Observable<any> {
   return this.http.put(endpoint + "skus", {
     skuname: skuname,
     skunumber: skunumber,
