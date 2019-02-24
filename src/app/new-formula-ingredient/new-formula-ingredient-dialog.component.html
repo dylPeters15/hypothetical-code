@@ -56,36 +56,24 @@
         </script>
 
         <div class='container-fluid typeahead-demo' ng-controller="TypeaheadCtrl">
-            <h2 mat-dialog-title align="center">{{ dialog_title }}</h2>
+            <h2 mat-dialog-title align="center">Search by Ingredient Name</h2>
             <mat-dialog-content align="center">
             <mat-card>
               <mat-card-content style="display: grid; width: 100%; justify-items: center;">
-            <input type="text" ng-model="ingredientname" placeholder="Search for Ingredients" uib-typeahead="name as state.name for state in statesWithFlags | filter:{name:$viewValue}" typeahead-popup-template-url="customPopupTemplate.html" class="form-control">
+                  <input type="text" ng-model="ingredient" placeholder="Search for Ingredients" uib-typeahead="ingredient for ingredients in getIngredients($viewValue) | limitTo:8" typeahead-loading="loading ingredients" typeahead-no-results="noResults" class="form-control">
 
-
-
-     <h4>Search by Ingredient Name</h4>
-            <input type="text" ng-model="ingredientname" placeholder="Search for Ingredients" ng-model-options="modelOptions" uib-typeahead="state for ingredientname in ingredients | filter:$viewValue | limitTo:8" class="form-control">
-      
     <mat-form-field>
         <input matInput [(ngModel)]="formulanumber" placeholder="Amount">
     </mat-form-field>
 
       <!---<p>Beans | 10 lbs <button type="submit">Edit</button><button type="submit">X</button></p> -->
 
-      <mat-dialog-actions align="center">
-        <button class="mat-raised-button" (click)="closeDialog()">Add Ingredient</button>
-      </mat-dialog-actions>
-
-      <mat-form-field>
-        <input matInput [(ngModel)]="comment" placeholder="Additional Comments">
-      </mat-form-field>
       </mat-card-content>
    </mat-card>
     </mat-dialog-content>
     <mat-dialog-actions align="center">
       <button class="mat-raised-button" (click)="closeDialog()">Cancel</button>
-      <button class="mat-raised-button" (click)="createFormula()" [disabled]="username==''" color="primary">Create</button>
+      <button class="mat-raised-button" (click)="createFormula()" [disabled]="username==''" color="primary">Add Ingredient</button>
       </mat-dialog-actions>
         
         </div>

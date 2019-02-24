@@ -88,7 +88,7 @@ export class FormulaComponent implements OnInit {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.data = {edit: edit, present_formulaname: present_formulaname, present_formulanumber: present_formulanumber, present_ingredientsandquantities: present_ingredientsandquantities, present_comment:present_comment};
     //console.log('formulas ingredient data', present_ingredientTuples)
-    this.newDialogRef = this.dialog.open(NewFormulaDialogComponent, {panelClass: 'my-panel'});
+    this.newDialogRef = this.dialog.open(NewFormulaDialogComponent, dialogConfig);
     this.newDialogRef.afterClosed().subscribe(event => {
       this.refreshData();
     });
