@@ -33,6 +33,9 @@ export class ManufacturingScheduleReportLineTableComponent implements OnInit, Co
         element['startdate'] = new Date(element['startdate']);
         element['enddate'] = this.calculateEndDate(new Date(element['startdate']), element['sethours']);
       });
+      this.tableData = this.tableData.filter((value,index,array) => {
+        return value['enddate'] <= this._value['endDate'];
+      });
     });
   }
 
