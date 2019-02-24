@@ -59,6 +59,8 @@ export class NewFormulaDialogComponent implements OnInit {
     
   }
 
+
+
   closeDialog() {
     this.dialogRef.close();
     this.edit = this.data.edit;
@@ -69,15 +71,46 @@ export class NewFormulaDialogComponent implements OnInit {
     this.comment = this.data.present_comment;
   }
 
+
   addIngredientToFormula(edit, ingredientname, amount) {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.data = {edit: edit, present_name: ingredientname, present_amount: amount};
     this.newIngredientDialogRef = this.dialog.open(NewFormulaIngredientDialogComponent, dialogConfig);
     this.newIngredientDialogRef.afterClosed().subscribe(event => {
-      this.refreshData();
-    });
+      // grab the new formula values
+      var new_ingredient = this.newIngredientDialogRef.componentInstance.ingredientname;
+      var new_amount = this.newIngredientDialogRef.componentInstance.amount;
+      var new_objectid;
 
-  }
+
+      // get object id from ingredient name
+      this.rest.getIngredients(new_ingredient,"", 0, 1).subscribe(response => {
+        if (response.length == 0) {
+          this.snackBar.open("Error adding ingredient.", "close", {
+            duration: 2000,
+               });
+        } 
+        else {
+          new_objectid = response.ObjectId;
+          const newIngredient = ingredienttuple.create({
+            ingredient: new_objectid,
+            quantity: new_amount,
+          });
+          this.ingredientsandquantities.push(newIngredient);
+          this.rest.modifyFormula(this.formulaname, this.formulaname, this.formulanumber, this.ingredientsandquantities, this.comment).subscribe(response => {
+            if (response['ok'] == 1) {
+              this.refreshData();
+            } else {
+              this.snackBar.open("Error adding ingredient.", "close", {
+                duration: 2000,
+                   });
+            }
+          });
+        }
+        });
+        });
+      }
+
 
   addIngredientButton() {
       this.addIngredientToFormula(false, "", 0);

@@ -36,6 +36,10 @@ export class NewFormulaIngredientDialogComponent implements OnInit {
   }
 
   closeDialog() {
+    this.ingredientname = "abc";
+    this.amount = 5;
+    this.dialogRef.componentInstance.ingredientname = this.ingredientname;
+    this.dialogRef.componentInstance.amount = this.amount;
     this.dialogRef.close();
     this.edit = this.data.edit;
     this.ingredientname = this.data.present_ingredientname;
