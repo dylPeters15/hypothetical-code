@@ -1,5 +1,6 @@
 import { Component, OnInit, forwardRef } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { ManufacturingScheduleReportCalculatorService } from '../manufacturing-schedule-report-calculator.service';
 
 @Component({
   selector: 'app-manufacturing-schedule-report-ingredient-table',
@@ -13,13 +14,15 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 })
 export class ManufacturingScheduleReportIngredientTableComponent implements OnInit, ControlValueAccessor {
 
-  constructor() { }
+  constructor(public calc: ManufacturingScheduleReportCalculatorService) { }
 
   ngOnInit() {
   }
 
   refreshData(): void {
-
+    this.calc.getIngredients(this._value['selectedLine'], this._value['startDate'], this._value['endDate']).then(result => {
+      this.tableData = result;
+    });
   }
 
   _value = '';
