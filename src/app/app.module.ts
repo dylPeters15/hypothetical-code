@@ -37,6 +37,7 @@ import { NewSkuDialogComponent } from './new-sku-dialog/new-sku-dialog.component
 import { NewIngredientDialogComponent } from './new-ingredient-dialog/new-ingredient-dialog.component';
 import { NewProductLineDialogComponent } from './new-product-line-dialog/new-product-line-dialog.component';
 import { ProductLineTablesComponent } from './product-line/product-line-tables.component';
+import {ManufacturingGoalsTablesComponent} from './enable-goals-dialog/manufacturing-goals-tables-component'
 import { MoreInfoDialogComponent } from './more-info-dialog/more-info-dialog.component';
 import { PasswordConfirmationDialogComponent } from './password-confirmation-dialog/password-confirmation-dialog.component'; 
 import { PrivacyPolicyDialogComponent } from './footer/privacy-policy-dialog/privacy-policy-dialog.component';
@@ -59,7 +60,8 @@ import { DeleteProductLineDialogComponent } from './delete-product-line-dialog/d
 import { ManufacturingScheduleReportComponent } from './manufacturing-schedule-report/manufacturing-schedule-report.component';
 import {MatDatepickerModule} from '@angular/material/datepicker';
 import { ManufacturingScheduleReportLineTableComponent } from './manufacturing-schedule-report/manufacturing-schedule-report-line-table/manufacturing-schedule-report-line-table.component';
-import { ManufacturingScheduleReportIngredientTableComponent } from './manufacturing-schedule-report/manufacturing-schedule-report-ingredient-table/manufacturing-schedule-report-ingredient-table.component'; 
+import { ManufacturingScheduleReportIngredientTableComponent } from './manufacturing-schedule-report/manufacturing-schedule-report-ingredient-table/manufacturing-schedule-report-ingredient-table.component';
+import { EnableGoalsDialogComponent } from './enable-goals-dialog/enable-goals-dialog.component'; 
 
 
 const appRoutes: Routes = [
@@ -73,6 +75,7 @@ const appRoutes: Routes = [
   { path: 'ingredient-dependency-report', component: IngredientDependencyComponent, data: { title: 'Ingredient Dependency Report' }, canActivate: [UserRouteGuardService] },
   { path: 'manufacturing-goal', component: ManufacturingGoalsComponent, data: { title: 'Manufacturing Goals' }, canActivate: [UserRouteGuardService] },
   { path: 'manufacturing-lines', component: ManufacturingLinesComponent, data: { title: 'Manufacturing Lines' }, canActivate: [UserRouteGuardService] },
+  { path: 'manufacturing-schedule', component: ManufacturingScheduleComponent, data: { title: 'Manufacturing Lines' }, canActivate: [UserRouteGuardService] },
   { path: 'manufacturing-schedule-report', component: ManufacturingScheduleReportComponent, data: { title: 'Manufacturing Schedule Report' }, canActivate: [UserRouteGuardService] },
   { path: 'ingredient', component: IngredientComponent, data: { title: 'Ingredients' }, canActivate: [UserRouteGuardService] },
   { path: 'sku', component: SkuComponent, data: { title: 'SKUs' }, canActivate: [UserRouteGuardService] },
@@ -99,6 +102,7 @@ const appRoutes: Routes = [
     NewIngredientDialogComponent,
     NewProductLineDialogComponent,
     ProductLineTablesComponent,
+    ManufacturingGoalsTablesComponent,
     MoreInfoDialogComponent,
     ManufacturingCalculatorComponent,
     IngredientDependencyComponent,
@@ -123,6 +127,7 @@ const appRoutes: Routes = [
     ManufacturingScheduleReportComponent,
     ManufacturingScheduleReportLineTableComponent,
     ManufacturingScheduleReportIngredientTableComponent,
+    EnableGoalsDialogComponent,
   ],
   imports: [
     BrowserModule,
@@ -153,6 +158,6 @@ const appRoutes: Routes = [
   ],
   providers: [],
   bootstrap: [AppComponent],
-  entryComponents: [DeleteProductLineDialogComponent, UserNotificationDialogComponent, NewUserDialogComponent, PasswordConfirmationDialogComponent, PrivacyPolicyDialogComponent, TermsAndConditionsDialogComponent, MoreInfoDialogComponent, NewSkuDialogComponent, NewIngredientDialogComponent, NewGoalDialogComponent, NewProductLineDialogComponent, ConfirmActionDialogComponent, ImportPreviewDialogComponent, NewLineDialogComponent]
+  entryComponents: [DeleteProductLineDialogComponent, UserNotificationDialogComponent, NewUserDialogComponent, PasswordConfirmationDialogComponent, PrivacyPolicyDialogComponent, TermsAndConditionsDialogComponent, MoreInfoDialogComponent, NewSkuDialogComponent, NewIngredientDialogComponent, NewGoalDialogComponent, NewProductLineDialogComponent, ConfirmActionDialogComponent, ImportPreviewDialogComponent, NewLineDialogComponent, EnableGoalsDialogComponent]
 })
 export class AppModule { }

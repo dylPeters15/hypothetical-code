@@ -2,17 +2,18 @@ const database = require('./database.js');
 
    
 function getGoals(username, enabled, goalname, goalnameregex, limit) {
-    username = username || "";
+    username = username || null;
     goalname = goalname || "";
-    goalnameregex = goalnameregex || "$a";
+    goalnameregex = goalnameregex || "";
     limit = limit || database.defaultSearchLimit;
     return new Promise((resolve, reject) => {
         var filterSchema = {
             $or: [
+                {enabled: enabled},
                 {owner: username},
                 {goalname: goalname},
-                {goalname: {$regex: goalnameregex}},
-                {enabled: enabled}
+                {goalname: {$regex: goalnameregex}}
+
             ]
         }
         database.goalsModel.find(filterSchema).limit(limit).deepPopulate('activities.activity.sku.formula.ingredientsandquantities.ingredient').exec(function(err,results) {
@@ -29,7 +30,6 @@ function getGoals(username, enabled, goalname, goalnameregex, limit) {
 }
 
 function createGoal(goalObject) {
-    console.log("GOAL: " + JSON.stringify(goalObject))
     return new Promise((resolve, reject) => {
         let goal = new database.goalsModel(goalObject);
         goal.save().then(response => {

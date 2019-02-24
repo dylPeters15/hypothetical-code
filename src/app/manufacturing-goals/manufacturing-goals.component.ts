@@ -67,29 +67,32 @@ export class ManufacturingGoalsComponent implements OnInit {
   refreshData() {
     this.data = [];
     this.rest.getUserName().then(result => {
-      this.rest.getGoals(result.toString(), "", ".*", false, 5).subscribe(data => {
-          this.goals = data;
-          var i;
-          this.dataSource = new MatTableDataSource<ManufacturingGoal>(this.data);
-          for(i = 0; i<this.goals.length; i++){
-            let name = this.goals[i]['goalname'];
-            let activities = this.goals[i]['activities'];
-            var j;
-            let activityCount = activities.length;
-            let activityString = '';
-            for(j = 0; j<activities.length; j++){
-             let currentActivity =  activities[j]['activity']
-                activityString += "SKU: " + currentActivity['sku']['skuname'] + " Hours Required: " + currentActivity['calculatedhours'] + '\n'; 
+      this.rest.getGoals(result.toString(), "", ".*", true, 5).subscribe(data => {
+        this.goals = data;
+        this.rest.getGoals(result.toString(), "", ".*", false, 5).subscribe(data => {
+            this.goals.push(data);
+            var i;
+            this.dataSource = new MatTableDataSource<ManufacturingGoal>(this.data);
+            for(i = 0; i<this.goals.length; i++){
+              let name = this.goals[i]['goalname'];
+              let activities = this.goals[i]['activities'];
+              var j;
+              let activityCount = activities.length;
+              let activityString = '';
+              for(j = 0; j<activities.length; j++){
+              let currentActivity =  activities[j]['activity']
+                  activityString += "SKU: " + currentActivity['sku']['skuname'] + " Hours Required: " + currentActivity['calculatedhours'] + '\n'; 
+              }
+              let date = this.goals[i]['date'];
+              let currentGoal = new ManufacturingGoal(name, activityString, activityCount, date, false);
+              this.data.push(currentGoal);
             }
-            let date = this.goals[i]['date'];
-            let currentGoal = new ManufacturingGoal(name, activityString, activityCount, date, false);
-            this.data.push(currentGoal);
-          }
-          this.data.forEach(element => {
-            element['checked'] = false;
-          });
-          this.dataSource = new MatTableDataSource<ManufacturingGoal>(this.data);
-          this.dataSource.paginator = this.paginator;
+            this.data.forEach(element => {
+              element['checked'] = false;
+            });
+            this.dataSource = new MatTableDataSource<ManufacturingGoal>(this.data);
+            this.dataSource.paginator = this.paginator;
+        })
       })
     })
     
