@@ -165,6 +165,7 @@ export class RestService {
 createSku(skuname: String, skunumber: Number, 
   caseupcnumber: Number, unitupcnumber: Number, unitsize: String, 
   countpercase: Number, formulanum: Number, formulascalingfactor: Number, manufacturingrate: Number, comment: String): Observable<any> {
+  console.log("here we are friendo");
   return this.http.put(endpoint + "skus", {
     skuname: skuname,
     skunumber: skunumber,

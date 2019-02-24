@@ -191,6 +191,7 @@ app.route('/skus').get((req, res) => {
         resolveError(err, res);
     });
 }).put((req, res) => {
+    console.log("ooooo and now here! we onto somethin");
     sku_utils.createSku(req.body['skuname'], req.body['skunumber'],
     req.body['caseupcnumber'], req.body['unitupcnumber'],
     req.body['unitsize'], req.body['countpercase'], req.body['formulanum'], req.body['formulascalingfactor'], req.body['manufacturingrate'], req.body['comment']).then(response => {
