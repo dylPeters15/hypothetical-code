@@ -46,8 +46,7 @@ export class IngredientDependencyComponent implements OnInit {
       this.data = response;
       console.log(response);
       response.forEach(ingredient => {
-        console.log(ingredient)
-        this.rest.getFormulas("", -1, ingredient['ingredientnumber'], 10).subscribe(formulaResponse => {
+        this.rest.getFormulas("", -1, ingredient['_id'], 10).subscribe(formulaResponse => {
           if (formulaResponse) {
             console.log(formulaResponse)
           }

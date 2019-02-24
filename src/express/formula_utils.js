@@ -12,15 +12,17 @@ function getFormulas(formulaname, formulanumber, ingredient, limit) {
             $or: [
                 { formulaname: formulaname },
                 { formulanumber: formulanumber },
-                { ingredient: ingredient }
+                // { ingredientsandquantities: { "$in" : [ingredient]} },
+                { "ingredientsandquantities.ingredient" : ingredient}
             ]
         }
-        database.formulaModel.find(filterSchema).limit(limit).populate('ingredientsandquantities.ingredient').exec((err, formulas) => {
-            if (err) {
-                reject(Error(err));
-                return;
-            }
-            resolve(formulas);
+        database.formulaModel.find(filterSchema).limit(limit).populate('ingredientsandquantities.ingredient').exec(function(err, formulas) {
+            if(formulas != undefined && formulas != null){
+                resolve(formulas);
+              }
+              else {
+                  reject(Error(err));
+              }  
         });
     });
 }

@@ -268,6 +268,7 @@ var formulaSchema = new mongoose.Schema({
   }
 });
 formulaSchema.plugin(uniqueValidator);
+formulaSchema.plugin(deepPopulate);
 
 var formulaModel = mongoose.model('formula', formulaSchema);
 
