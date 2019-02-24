@@ -193,6 +193,44 @@ export class ImportUploadService {
                 console.log("SKUs", skus);
                 this.rest.modifyProductLine(sku['productline'], sku['productline'], skus).subscribe(modifyPLResponse => {
                   if (modifyPLResponse['ok'] == 1) {
+
+                    var numMLsProcessed = 0;
+                    for (let ml of sku['manufacturinglines']) {
+                      this.rest.getLine(ml, "$a", ml, "", 1).subscribe(mlResponse => {
+                        if (mlResponse.length == 0) {
+                          reject(Error("Could not find manufacturing line " + ml + " for SKU " + sku['skuname']));
+                        } else {
+                          var containsSKU = false;
+                          for (let currentSKU of mlResponse[0]['skus']) {
+                            if (currentSKU['skuname'] == sku['skuname']) {
+                              containsSKU = true;
+                            }
+                          }
+                          if (containsSKU) {
+                            numMLsProcessed++;
+                            if (numMLsProcessed >= sku['manufacturinglines'].length) {
+                              resolve();
+                            }
+                          } else {
+                            mlResponse[0]['skus'].push({
+                              sku: createSkuResponse['_id']
+                            });
+                            this.rest.modifyLine(mlResponse[0]['linename'], mlResponse[0]['linename'], mlResponse[0]['shortname'], mlResponse[0]['skus'], mlResponse[0]['comment']).subscribe(mlCreateResponse => {
+                              if (mlCreateResponse['linename'] == mlResponse[0]['linename']) {
+                                numMLsProcessed++;
+                                if (numMLsProcessed >= sku['manufacturinglines'].length) {
+                                  resolve();
+                                }
+                              } else {
+                                reject(Error("Could not add SKU " + sku['skuname'] + " to Manufacturing Line " + mlCreateResponse['linename']));
+                              }
+                            });
+                          }
+                        }
+                      });
+                    }
+
+
                     resolve();
                   } else {
                     reject(Error("Could not modify Product Line " + sku['productline'] + " for SKU " + sku['skuname']));
