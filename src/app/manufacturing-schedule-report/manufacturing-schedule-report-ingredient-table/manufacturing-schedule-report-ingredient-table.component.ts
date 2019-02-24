@@ -20,9 +20,11 @@ export class ManufacturingScheduleReportIngredientTableComponent implements OnIn
   }
 
   refreshData(): void {
-    this.calc.getIngredients(this._value['selectedLine'], this._value['startDate'], this._value['endDate']).then(result => {
-      this.tableData = result;
-    });
+    if (this._value && this._value['selectedLine'] && this._value['startDate'] && this._value['endDate']) {
+      this.calc.getIngredients(this._value['selectedLine'], this._value['startDate'], this._value['endDate']).then(result => {
+        this.tableData = result;
+      });
+    }
   }
 
   _value = '';
