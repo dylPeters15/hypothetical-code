@@ -9,39 +9,27 @@ import {MAT_DIALOG_DATA} from '@angular/material';
   templateUrl: './new-formula-dialog.component.html',
   styleUrls: ['./new-formula-dialog.component.css']
 })
+
+//   displayedColumns: string[] = ['checked', 'formulaname', 'formulanumber','ingredientsandquantities', 'comment'];
+
 export class NewFormulaDialogComponent implements OnInit {
 
   dialog_title: String;
   edit: Boolean;
-  skuname: String = '';
-  oldskuname: String = '';
-  skunumber: number = 0;
-  caseupcnumber: number = 0;
-  unitupcnumber: number = 0;
-  unitsize: String = '';
-  countpercase: number = 0;
-  formula: any = null;
-  formulascalingfactor: number = 0;
-  manufacturingrate: number = 0;
+  formulaname: String = '';
+  oldformulaname: String = '';
+  ingredientsandquantities: number = 0;
   comment: String = '';
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: any, private dialogRef: MatDialogRef<NewSkuDialogComponent>, public rest:RestService, private snackBar: MatSnackBar) { }
+  constructor(@Inject(MAT_DIALOG_DATA) public data: any, private dialogRef: MatDialogRef<NewFormulaDialogComponent>, public rest:RestService, private snackBar: MatSnackBar) { }
 
   ngOnInit() {
 
     this.edit = this.data.edit;
-    this.skuname = this.data.present_name;
-    this.oldskuname = this.data.present_name;
-    this.skunumber = this.data.present_skuNumber;
-    this.caseupcnumber = this.data.present_caseUpcNumber;
-    this.unitupcnumber = this.data.present_unitUpcNumber;
-    this.unitsize = this.data.present_unitSize;
-    this.countpercase = this.data.present_countPerCase;
-    this.formula = this.data.present_formula;
-    this.formulascalingfactor = this.data.present_formulascalingfactor;
-    this.manufacturingrate = this.data.present_manufacturingrate;
-    this.comment = this.data.comment;
-
+    this.formulaname = this.data.present_formulaname;
+    this.oldformulaname = this.data.present_formulaname;
+    this.ingredientsandquantities = this.data.present_ingredientsandquantities;
+    this.comment = this.data.present_comment;
 
     // edit == true if sku is being modified, false if a new sku is being created
     if (this.edit == true)
@@ -54,17 +42,10 @@ export class NewFormulaDialogComponent implements OnInit {
   closeDialog() {
     this.dialogRef.close();
     this.edit = this.data.edit;
-    this.skuname = this.data.present_name;
-    this.oldskuname = this.data.present_name;
-    this.skunumber = this.data.present_skuNumber;
-    this.caseupcnumber = this.data.present_caseUpcNumber;
-    this.unitupcnumber = this.data.present_unitUpcNumber;
-    this.unitsize = this.data.present_unitSize;
-    this.countpercase = this.data.present_countPerCase;
-    this.formula = this.data.present_formula;
-    this.formulascalingfactor = this.data.present_formulascalingfactor;
-    this.manufacturingrate = this.data.present_manufacturingrate;
-    this.comment = this.data.comment;
+    this.formulaname = this.data.present_formulaname;
+    this.oldformulaname = this.data.present_formulaname;
+    this.ingredientsandquantities = this.data.present_ingredientsandquantities;
+    this.comment = this.data.present_comment;
   }
 
   createSku() {

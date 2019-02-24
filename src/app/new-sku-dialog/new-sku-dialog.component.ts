@@ -40,7 +40,7 @@ export class NewSkuDialogComponent implements OnInit {
     this.formula = this.data.present_formula;
     this.formulascalingfactor = this.data.present_formulascalingfactor;
     this.manufacturingrate = this.data.present_manufacturingrate;
-    this.comment = this.data.comment;
+    this.comment = this.data.present_comment;
 
 
     // edit == true if sku is being modified, false if a new sku is being created
@@ -64,7 +64,7 @@ export class NewSkuDialogComponent implements OnInit {
     this.formula = this.data.present_formula;
     this.formulascalingfactor = this.data.present_formulascalingfactor;
     this.manufacturingrate = this.data.present_manufacturingrate;
-    this.comment = this.data.comment;
+    this.comment = this.data.present_comment;
   }
 
   createSku() {

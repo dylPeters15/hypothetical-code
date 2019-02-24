@@ -13,6 +13,7 @@ export interface UserForTable {
   formulanumber: Number;
   ingredientsandquantities: Array;
   comment: String;
+  checked: boolean;
 }
 
 export class ExportableSKU {
@@ -100,11 +101,11 @@ export class FormulaComponent implements OnInit {
 
   sortData() {
     this.data.sort((a,b) => {
-      return a.name > b.name ? 1 : -1;
+      return a.formulaname > b.formulaname ? 1 : -1;
     });
   }
 
-  deleteSkuConfirmed(sku) {
+  deleteSkuConfirmed(formula) {
     // this.rest.sendAdminDeleteSkuRequest(sku.name).subscribe(response => {
     //   for (var i=0; i<sku.ingredientTuples.length-1; i = i+2) {
     //     this.removeIngredient(sku.ingredientTuples[i], sku.name);
@@ -135,9 +136,9 @@ export class FormulaComponent implements OnInit {
   exportSelected(){
     let exportData: ExportableSKU[] = [];
     this.data.forEach(sku => {
-      if(sku.checked) {
-        let skuToExport = new ExportableSKU(sku);
-        exportData.push(skuToExport);
+      if(formula.checked) {
+        let formulaToExport = new ExportableFormula(formula);
+        exportData.push(formulaToExport);
       }
     });
       const options = { 
