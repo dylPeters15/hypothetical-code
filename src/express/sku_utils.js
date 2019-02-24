@@ -145,7 +145,7 @@ function modifySku(oldName, name, number, case_upc, unit_upc, unit_size, count, 
 function deleteSku(skuName) {
     return new Promise(function (resolve, reject) {
         const filterschema = {
-            name: skuName
+            skuname: skuName
         };
         database.skuModel.deleteOne(filterschema, (err, response) => {
             if (err) {

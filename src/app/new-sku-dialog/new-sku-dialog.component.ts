@@ -13,7 +13,7 @@ export class NewSkuDialogComponent implements OnInit {
 
   dialog_title: String;
   edit: Boolean;
-  skuname: String = '';
+  skuname: String = 'what';
   oldskuname: String = '';
   skunumber: number = 0;
   caseupcnumber: number = 0;
@@ -46,9 +46,14 @@ export class NewSkuDialogComponent implements OnInit {
     // edit == true if sku is being modified, false if a new sku is being created
     if (this.edit == true)
     {
+      console.log("setting sku to modify");
       this.dialog_title = "Modify Sku";
     }
-    else this.dialog_title = "Create New Sku!!!";
+    else 
+    {
+      console.log("setting sku to new");
+      this.dialog_title = "Create New Sku!!!";
+    }
   }
 
   closeDialog() {

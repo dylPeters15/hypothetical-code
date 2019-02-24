@@ -202,7 +202,7 @@ modifySku(oldskuname: String, skuname: String, skunumber: number,
 
 deleteSku(skuName: String): Observable<any> {
   return this.http.delete(endpoint + "skus", this.generateHeader({
-    skuName: skuName,
+    skuname: skuName,
   }));
 }
 
