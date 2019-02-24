@@ -1,15 +1,15 @@
 <div>
-  <mat-card class="IngredientInventory">
+  <mat-card class="Ingredients">
       <mat-card-header style="align-content: center; align-items: center; justify-content: center; display: grid;">
           <mat-card-title>Ingredients</mat-card-title>
       </mat-card-header>
       <mat-card-content>
         <button mat-raised-button *ngIf="admin" (click)="selectAll()"> Select All </button>
         <button mat-raised-button *ngIf="admin" (click)="deselectAll()"> Deselect All </button>
-        <button mat-raised-button *ngIf="admin" (click)="deleteSelected()" style="color: white; background-color: red;" [disabled]="dataSource.data.length==0"> Delete Selected </button>
-        <button mat-raised-button *ngIf="admin" (click)="modifySelected()" style="color: white; background-color: red;" [disabled]="dataSource.data.length==0"> Modify Selected </button>
-        <button mat-raised-button *ngIf="admin" (click)="exportSelected()" style="color: white; background-color: red;" [disabled]="dataSource.data.length==0"> Export Selected To CSV </button>
-        <button mat-raised-button *ngIf="admin" (click)="newIngredientButton()"> New Ingredient </button>      
+        <button mat-raised-button *ngIf="admin" (click)="newIngredient()"> New Ingredient </button>      
+        <!-- <button mat-raised-button *ngIf="admin" (click)="modifySelected()" > Modify Selected </button> -->
+        <button mat-raised-button *ngIf="admin" (click)="deleteSelected()" color="warn" > Delete Selected </button>
+        <button mat-raised-button *ngIf="admin" (click)="exportSelected()" > Export Selected To CSV </button>
         <mat-form-field>
           <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter">
         </mat-form-field>
@@ -22,38 +22,38 @@
             </mat-cell>
           </ng-container>
         
-          <ng-container matColumnDef="name">
+          <ng-container matColumnDef="ingredientname">
             <mat-header-cell *matHeaderCellDef mat-sort-header>Name</mat-header-cell>
             <mat-cell *matCellDef="let ingredient">
-              {{ingredient['name']}}
+              {{ingredient['ingredientname']}}
             </mat-cell>
           </ng-container>
         
-          <ng-container matColumnDef="number">
-            <mat-header-cell *matHeaderCellDef mat-sort-header> Ingredient #</mat-header-cell>
+          <ng-container matColumnDef="ingredientnumber">
+            <mat-header-cell *matHeaderCellDef mat-sort-header> Ingr#</mat-header-cell>
             <mat-cell *matCellDef="let ingredient">
-              {{ingredient['number']}}
+              {{ingredient['ingredientnumber']}}
             </mat-cell>
           </ng-container>
         
-          <ng-container matColumnDef="vendorInformation">
+          <ng-container matColumnDef="vendorinformation">
             <mat-header-cell *matHeaderCellDef mat-sort-header>Vendor Information</mat-header-cell>
             <mat-cell *matCellDef="let ingredient">
-              {{ingredient['vendorInformation']}}
+              {{ingredient['vendorinformation']}}
             </mat-cell>
           </ng-container>
         
-          <ng-container matColumnDef="packageSize">
+          <ng-container matColumnDef="packagesize">
             <mat-header-cell *matHeaderCellDef mat-sort-header>Package Size</mat-header-cell>
             <mat-cell *matCellDef="let ingredient">
-              {{ingredient['packageSize']}}
+              {{ingredient['amount']}} {{ingredient['unitofmeasure']}}
             </mat-cell>
           </ng-container>
         
-          <ng-container matColumnDef="costPerPackage">
+          <ng-container matColumnDef="costperpackage">
             <mat-header-cell *matHeaderCellDef mat-sort-header>Cost Per Package (USD)</mat-header-cell>
             <mat-cell *matCellDef="let ingredient">
-              ${{ingredient['costPerPackage']}}
+              ${{ingredient['costperpackage']}}
             </mat-cell>
           </ng-container>
         
@@ -68,6 +68,15 @@
             <mat-header-cell *matHeaderCellDef mat-sort-header>Actions</mat-header-cell>
             <mat-cell *matCellDef="let ingredient">
               <button mat-raised-button (click)="deleteIngredient(element['name'])" style="color: white; background-color: red;"> Delete ingredient </button>
+            </mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="modify">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Actions</mat-header-cell>
+            <mat-cell *matCellDef="let ingredient">
+                <button mat-button *ngIf="admin" (click)="modifyIngredient(ingredient)" > 
+                  <mat-icon>edit</mat-icon>
+                </button>
             </mat-cell>
           </ng-container>
         

@@ -208,126 +208,146 @@ deleteSku(skuName: String): Observable<any> {
 }
 
 
-  ///////////////////// ingredients /////////////////////
-  getIngredients(ingredientname: String, ingredientnumber: number, limit: number): Observable<any> {
-    return this.http.get(endpoint + "ingredients", this.generateHeader({
-      ingredientname: ingredientname,
-      ingredientnumber: JSON.stringify(ingredientnumber),
-      limit: limit
-    }));
-  }
+///////////////////// ingredients /////////////////////
+getIngredients(ingredientname: String, ingredientnameregex: String, ingredientnumber: number, limit: number): Observable<any> {
+  return this.http.get(endpoint + "ingredients", this.generateHeader({
+    ingredientname: ingredientname,
+    ingredientnameregex: ingredientnameregex,
+    ingredientnumber: JSON.stringify(ingredientnumber),
+    limit: limit
+  }));
+}
 
-  createIngredient(ingredientname: String, ingredientnumber: number, 
-    vendorinformation: String, unitofmeasure: String, amount: number, 
-    costperpackage: number, comment: String): Observable<any> {
-    return this.http.put(endpoint + "ingredients", {
-      ingredientname: ingredientname,
+createIngredient(ingredientname: String, ingredientnumber: number, 
+  vendorinformation: String, unitofmeasure: String, amount: number, 
+  costperpackage: number, comment: String): Observable<any> {
+  return this.http.put(endpoint + "ingredients", {
+    ingredientname: ingredientname,
+    ingredientnumber: ingredientnumber,
+    vendorinformation: vendorinformation,
+    unitofmeasure: unitofmeasure,
+    amount: amount,
+    costperpackage: costperpackage,
+    comment: comment
+  },
+  this.generateHeader());
+}
+
+modifyIngredient(ingredientname: String,  newingredientname: String, 
+  ingredientnumber: number, vendorinformation: String, unitofmeasure: String, 
+  amount: number, costperpackage: number, comment: String): Observable<any> {
+  return this.http.post(endpoint + "ingredients", {
+    $set: {
+      ingredientname: newingredientname,
       ingredientnumber: ingredientnumber,
       vendorinformation: vendorinformation,
       unitofmeasure: unitofmeasure,
       amount: amount,
       costperpackage: costperpackage,
-      comment: comment
-    },
-    this.generateHeader());
-  }
+      comment: comment||""
+    }
+  },
+  this.generateHeader({
+    ingredientname: ingredientname
+  }));
+}
 
-  modifyIngredient(ingredientname: String,  newingredientname: String, 
-    ingredientnumber: number, vendorinformation: String, unitofmeasure: String, 
-    amount: number, costperpackage: number, comment: String): Observable<any> {
-    return this.http.post(endpoint + "ingredients", {
-      $set: {
-        ingredientname: newingredientname,
-        ingredientnumber: ingredientnumber,
-        vendorinformation: vendorinformation,
-        unitofmeasure: unitofmeasure,
-        amount: amount,
-        costperpackage: costperpackage,
-        comment: comment||""
-      }
-    },
-    this.generateHeader({
-      ingredientname: ingredientname
-    }));
-  }
-
-  deleteIngredient(ingredientname: String): Observable<any> {
-    return this.http.delete(endpoint + "ingredients", this.generateHeader({
-      ingredientname: ingredientname,
-    }));
-  }
+deleteIngredient(ingredientname: String): Observable<any> {
+  return this.http.delete(endpoint + "ingredients", this.generateHeader({
+    ingredientname: ingredientname,
+  }));
+}
 
 
-  ///////////////////// product lines /////////////////////
-  getProductLines(productlinename: String, limit: number): Observable<any> {
-    return this.http.get(endpoint + "product_lines", this.generateHeader({
-      productlinename: productlinename,
-      limit: JSON.stringify(limit)
-    }));
-  }
+///////////////////// product lines /////////////////////
+getProductLines(productlinename: String, productlinenameregex: String, limit: number): Observable<any> {
+  return this.http.get(endpoint + "product_lines", this.generateHeader({
+    productlinename: productlinename,
+    productlinenameregex: productlinenameregex,
+    limit: JSON.stringify(limit)
+  }));
+}
 
-  createProductLine(productlinename: String, skus: []): Observable<any> {
-    return this.http.put(endpoint + "product_lines", {
-      productlinename: productlinename,
-      skus: skus
-    },
-    this.generateHeader());
-  }
+createProductLine(productlinename: String, skus: any[]): Observable<any> {
+  return this.http.put(endpoint + "product_lines", {
+    productlinename: productlinename,
+    skus: skus
+  },
+  this.generateHeader());
+}
 
-  modifyProductLine(productlinename: String,  newproductlinename: String, skus: [], ): Observable<any> {
-    return this.http.post(endpoint + "product_lines", {
-      $set: {
-        productlinename: newproductlinename,
-        skus: skus
-      }
-    },
+modifyProductLine(productlinename: String,  newproductlinename: String, skus: any[], ): Observable<any> {
+  return this.http.post(endpoint + 'product_lines', {
+    productlinename: newproductlinename||"",
+    skus: skus||[]
+  },
     this.generateHeader({
       productlinename: productlinename
     }));
-  }
+}
 
-  deleteProductLine(productlinename: String): Observable<any> {
-    return this.http.delete(endpoint + "product_line", this.generateHeader({
-      productlinename: productlinename
-    }));
-  }
+deleteProductLine(productlinename: String): Observable<any> {
+  return this.http.delete(endpoint + "product_lines", this.generateHeader({
+    productlinename: productlinename
+  }));
+}
 
-  ///////////////////// Manufacturing Goals /////////////////////
-  getGoals(username: String,  goalname: String, enabled: boolean, limit: number): Observable<any> {
-    return this.http.get(endpoint + "manufacturing-goals", this.generateHeader({
-      owner: username,
-      enabled: enabled,
-      goalname: goalname,
-      limit: limit
-    }));
-  }
+///////////////////// Manufacturing Goals /////////////////////
+getGoals(username: String,  goalname: String, goalnameregex: String, enabled: boolean, limit: number): Observable<any> {
+  return this.http.get(endpoint + "manufacturing-goals", this.generateHeader({
+    owner: username,
+    enabled: enabled,
+    goalname: goalname,
+    goalnameregex: goalnameregex,
+    limit: limit
+  }));
+}
 
-  createGoal(goalname: String, activities: [], date: Date, enabled: boolean) : Observable<any>{
-    return this.http.put(endpoint + 'manufacturing-goals',{
-      owner: auth.getUsername,
-      goalname: name,
-      activities: activities,
-      date: date,
-      enabled: enabled
-    }, this.generateHeader());
-  }
+getUserName(){
+  return new Promise((resolve, reject) => {
+    this.getUsers(auth.getUsername(), "",null, null, null).subscribe(response =>{
+      setTimeout(function() {
+        resolve(response[0]['_id']);;
+      }, 1000);
+  });
+});
+}
 
-  modifyGoal(goalname: String, newgoalname: String, activities: [], date:Date, enabled: boolean): Observable<any> {
-    return this.http.post(endpoint + "manufacturing-goals", {
-      goalname: newgoalname,
-      activities: activities,
-      enabled: enabled
-    },
-    this.generateHeader({
-      goalname: goalname
-    }));
-  }
 
-  deleteGoal(goalname: String): Observable<any> {
-    return this.http.delete(endpoint + "manufacturing-goals", this.generateHeader({
-      goalname: goalname
-    }));
-  }
+
+createGoal(goalname: String, activities: [], date: Date, enabled: boolean) : Promise<any>{
+  return new Promise((resolve, reject) => {
+    this.getUserName().then(id => {
+      this.http.put(endpoint + 'manufacturing-goals',{
+        owner: id.toString(),
+        goalname: goalname,
+        activities: activities,
+        date: date,
+        enabled: enabled
+      }, this.generateHeader()).subscribe(response => {
+        resolve(response);
+      });
+    });
+  });
+  
+}
+
+modifyGoal(goalname: String, newgoalname: String, activities: [], date:Date, enabled: boolean): Observable<any> {
+  return this.http.post(endpoint + "manufacturing-goals", {
+    goalname: newgoalname,
+    activities: activities,
+    enabled: enabled
+  },
+  this.generateHeader({
+    goalname: goalname
+  }));
+}
+
+deleteGoal(goalname: String): Observable<any> {
+  return this.http.delete(endpoint + "manufacturing-goals", this.generateHeader({
+    goalname: goalname
+  }));
+}
 
 
   ///////////////////// Manufacturing Activities /////////////////////

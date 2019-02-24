@@ -3,7 +3,7 @@ table {
 }
 
 button {
-  margin: 16px 8px;
+  margin: 4px 2px;
 }
 
 .mat-card {
@@ -13,4 +13,9 @@ button {
 .mat-cell, .mat-footer-cell, .mat-header-cell {
   min-width: 100px;
   
+}
+
+._ngcontent-c1 {
+  height: 100%;
+  overflow: hidden;
 }

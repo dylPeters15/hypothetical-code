@@ -151,9 +151,7 @@ app.route('/ingredients').get((req, res) => {
     ingredient_utils.getIngredients(req.headers['ingredientname'], req.headers['ingredientnameregex'], JSON.parse(req.headers['ingredientnumber']), req.headers['limit']).then(ingredients => {
         res.send(ingredients);
     }).catch(err => {
-        res.send({
-            err:""+err
-        });
+        resolveError(err, res);
     });
 }).put((req, res) => {
     ingredient_utils.createIngredient(req.body['ingredientname'], req.body['ingredientnumber'],
@@ -161,25 +159,19 @@ app.route('/ingredients').get((req, res) => {
     req.body['costperpackage'], req.body['comment']).then(response => {
         res.send(response);
     }).catch(err => {
-        res.send({
-            err:""+err
-        });
+        resolveError(err, res);
     });
 }).post((req, res) => {
     ingredient_utils.modifyIngredient(req.headers['ingredientname'], req.body).then(response => {
         res.send(response);
     }).catch(err => {
-        res.send({
-            err:""+err
-        });
+        resolveError(err, res);
     });
 }).delete((req, res) => {
     ingredient_utils.deleteIngredient(req.headers['ingredientname']).then(response => {
         res.send(response);
     }).catch(err => {
-        res.send({
-            err:""+err
-        });
+        resolveError(err, res);
     });
 });
 

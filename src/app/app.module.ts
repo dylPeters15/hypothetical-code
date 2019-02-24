@@ -12,7 +12,7 @@ import { HomeComponent } from './home/home.component';
 import { SkuInventoryComponent } from './sku-inventory/sku-inventory.component';
 import { FormulaComponent } from './formulas/formulas.component';
 import { ProductLineInventoryComponent } from './product-line-inventory/product-line.component';
-import { IngredientInventoryComponent } from './ingredient-inventory/ingredient-inventory.component';
+import { IngredientComponent } from './ingredient/ingredient.component';
 import { LoginComponent } from './login/login.component';
 import { NavigationComponent } from './navigation/navigation.component';
 import { UserRouteGuardService } from './user-route-guard.service';
@@ -65,7 +65,7 @@ const appRoutes: Routes = [
   { path: 'ingredient-dependency-report', component: IngredientDependencyComponent, data: { title: 'Ingredient Dependency Report' }, canActivate: [UserRouteGuardService] },
   { path: 'manufacturing-goal', component: ManufacturingGoalsComponent, data: { title: 'Manufacturing Goals' }, canActivate: [UserRouteGuardService] },
   { path: 'manufacturing-lines', component: ManufacturingLinesComponent, data: { title: 'Manufacturing Lines' }, canActivate: [UserRouteGuardService] },
-  { path: 'ingredient-inventory', component: IngredientInventoryComponent, data: { title: 'Ingredient Inventory' }, canActivate: [UserRouteGuardService] },
+  { path: 'ingredient', component: IngredientComponent, data: { title: 'Ingredients' }, canActivate: [UserRouteGuardService] },
   { path: 'sku-inventory', component: SkuInventoryComponent, data: { title: 'SKU Inventory' }, canActivate: [UserRouteGuardService] },
   { path: 'formulas', component: FormulaComponent, data: { title: 'Formulas' }, canActivate: [UserRouteGuardService] },
   { path: 'product-line-inventory', component: ProductLineInventoryComponent, data: { title: 'Product Line Inventory' }, canActivate: [UserRouteGuardService] },
@@ -87,7 +87,7 @@ const appRoutes: Routes = [
     SkuInventoryComponent,
     FormulaComponent,
     ProductLineInventoryComponent,
-    IngredientInventoryComponent,
+    IngredientComponent,
     NewSkuDialogComponent,
     NewFormulaDialogComponent,
     NewIngredientDialogComponent,
