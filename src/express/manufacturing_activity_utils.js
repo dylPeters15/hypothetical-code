@@ -10,7 +10,7 @@ function getActivity(startdate, limit) {
                 $gte: startdate
             }
         };
-        database.manufacturingActivityModel.find(filterSchema).limit(limit).populate('sku').populate('line').exec(function(err,results) {
+        database.manufacturingActivityModel.find(filterSchema).limit(limit).deepPopulate('sku.formula.ingredients.ingredient').populate('line').exec(function(err,results) {
             if(err){
                 reject(Error(err));
             }

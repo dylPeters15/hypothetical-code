@@ -26,7 +26,15 @@ export class ManufacturingScheduleReportLineTableComponent implements OnInit, Co
         return value['line']['linename'] == this._value['selectedLine'];
       });
       console.log("Table data: ", this.tableData);
+      this.tableData.forEach(element => {
+        element['sethours'] = element['sethours']||element['calculatedhours'];
+        element['enddate'] = this.calculateEndDate(new Date(element['startdate']), element['sethours']);
+      });
     });
+  }
+
+  calculateEndDate(startDate: Date, hours: Number): Date {
+    return new Date();
   }
   
   _value = '';
