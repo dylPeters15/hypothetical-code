@@ -296,7 +296,7 @@ deleteSku(skuName: String): Observable<any> {
   getGoals(username: String,  goalname: String, goalnameregex: String, enabled: boolean, limit: number): Observable<any> {
     return this.http.get(endpoint + "manufacturing-goals", this.generateHeader({
       owner: username,
-      enabled: enabled,
+      enabled: JSON.stringify(enabled),
       goalname: goalname,
       goalnameregex: goalnameregex,
       limit: limit
@@ -308,7 +308,7 @@ deleteSku(skuName: String): Observable<any> {
       this.getUsers(auth.getUsername(), "",null, null, null).subscribe(response =>{
         setTimeout(function() {
           resolve(response[0]['_id']);;
-        }, 1000);
+        }, 300);
     });
   });
   }
