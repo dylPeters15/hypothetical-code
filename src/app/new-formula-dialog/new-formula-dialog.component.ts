@@ -10,16 +10,15 @@ import {MAT_DIALOG_DATA} from '@angular/material';
   styleUrls: ['./new-formula-dialog.component.css']
 })
 
-//   displayedColumns: string[] = ['checked', 'formulaname', 'formulanumber','ingredientsandquantities', 'comment'];
-
 export class NewFormulaDialogComponent implements OnInit {
 
-  dialog_title: String;
+  dialog_title: string;
   edit: Boolean;
-  formulaname: String = '';
-  oldformulaname: String = '';
-  ingredientsandquantities: number = 0;
-  comment: String = '';
+  formulaname: string = '';
+  oldformulaname: string = '';
+  formulanumber: number = 0;
+  ingredientsandquantities: any[];
+  comment: string = '';
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: any, private dialogRef: MatDialogRef<NewFormulaDialogComponent>, public rest:RestService, private snackBar: MatSnackBar) { }
 
@@ -28,15 +27,16 @@ export class NewFormulaDialogComponent implements OnInit {
     this.edit = this.data.edit;
     this.formulaname = this.data.present_formulaname;
     this.oldformulaname = this.data.present_formulaname;
+    this.formulanumber = this.data.present_formulanumber;
     this.ingredientsandquantities = this.data.present_ingredientsandquantities;
     this.comment = this.data.present_comment;
 
-    // edit == true if sku is being modified, false if a new sku is being created
+    // edit == true if formula is being modified, false if a new formula is being created
     if (this.edit == true)
     {
-      this.dialog_title = "Modify Sku";
+      this.dialog_title = "Modify Formula";
     }
-    else this.dialog_title = "Create New Sku";
+    else this.dialog_title = "Create New Formula";
   }
 
   closeDialog() {
@@ -44,23 +44,24 @@ export class NewFormulaDialogComponent implements OnInit {
     this.edit = this.data.edit;
     this.formulaname = this.data.present_formulaname;
     this.oldformulaname = this.data.present_formulaname;
+    this.formulanumber = this.data.present_formulanumber;
     this.ingredientsandquantities = this.data.present_ingredientsandquantities;
     this.comment = this.data.present_comment;
   }
 
-  createSku() {
+  createFormula() {
     // generate ID
     console.log("we in here now, and edit is: " + this.edit);
     if (this.edit == false)
     {
-      console.log("We're creating a new sku");
-      this.rest.createSku(this.skuname, this.skunumber, this.caseupcnumber, this.unitupcnumber, this.unitsize, this.countpercase, this.formula, this.formulascalingfactor, this.manufacturingrate, this.comment).subscribe(response => {
+      console.log("We're creating a new formula");
+      this.rest.createFormula(this.formulaname, this.formulanumber, this.ingredientsandquantities, this.comment).subscribe(response => {
         if (response['success']) {
-               this.snackBar.open("Successfully created sku " + this.skuname + ".", "close", {
+               this.snackBar.open("Successfully created formula " + this.formulaname + ".", "close", {
                  duration: 2000,
                });
              } else {
-               this.snackBar.open("Error creating user " + this.skuname + ". Please refresh and try again.", "close", {
+               this.snackBar.open("Error creating formula " + this.formulaname + ". Please refresh and try again.", "close", {
                  duration: 2000,
                });
              }
@@ -69,15 +70,14 @@ export class NewFormulaDialogComponent implements OnInit {
       }
 
     else{
-      console.log("We're modifying a sku");
-      this.rest.modifySku(this.oldskuname, this.skuname, this.skunumber, this.caseupcnumber, this.unitupcnumber, this.unitsize, this.countpercase, this.formula, this.formulascalingfactor, this.manufacturingrate, this.comment).subscribe(response => {
-        
+      console.log("We're modifying a formuka");
+      this.rest.modifyFormula(this.oldformulaname, this.formulaname, this.formulanumber, this.ingredientsandquantities, this.comment).subscribe(response => {
          if (response['success']) {
-           this.snackBar.open("Successfully modifyed sku with old name " + this.oldskuname + " and new name " + this.skuname + ".", "close", {
+           this.snackBar.open("Successfully modifyed formula " + this.formulaname + ".", "close", {
              duration: 2000,
            });
          } else {
-           this.snackBar.open("Error modifying sku with old name " + this.oldskuname + " and new name " + this.skuname + ". Please refresh and try again.", "close", {
+           this.snackBar.open("Error modifying formula " + this.formulaname + ". Please refresh and try again.", "close", {
              duration: 2000,
            });
          }

@@ -1,8 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { NewSkuDialogComponent } from './new-formula-dialog.component';
+import { NewFormulaDialogComponent } from './new-formula-dialog.component';
 
-describe('NewSkuDialogComponent', () => {
+describe('NewFOrmulaDialogComponent', () => {
   let component: NewFormulaDialogComponent;
   let fixture: ComponentFixture<NewFormulaDialogComponent>;
 

@@ -11,7 +11,7 @@ import {ExportToCsv} from 'export-to-csv';
 export interface UserForTable {
   formulaname: String;
   formulanumber: Number;
-  ingredientsandquantities: Array;
+  ingredientsandquantities: any[];
   comment: String;
   checked: boolean;
 }
@@ -19,7 +19,7 @@ export interface UserForTable {
 export class ExportableSKU {
   formulaname: String;
   formulanumber: Number;
-  ingredientsandquantities: Array;
+  ingredientsandquantities: any[];
   comment: String;
   constructor(userForTable){
     this.formulaname = userForTable.formulaname;

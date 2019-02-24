@@ -196,7 +196,7 @@ modifySku(oldskuname: String, skuname: String, skunumber: number,
     comment: comment
   },
   this.generateHeader({
-    skuname: oldSkuName
+    skuname: oldskuname
   }));
 }
 

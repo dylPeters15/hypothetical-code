@@ -92,11 +92,11 @@ export class NewSkuDialogComponent implements OnInit {
       this.rest.modifySku(this.oldskuname, this.skuname, this.skunumber, this.caseupcnumber, this.unitupcnumber, this.unitsize, this.countpercase, this.formula, this.formulascalingfactor, this.manufacturingrate, this.comment).subscribe(response => {
         
          if (response['success']) {
-           this.snackBar.open("Successfully modifyed sku with old name " + this.oldskuname + " and new name " + this.skuname + ".", "close", {
+           this.snackBar.open("Successfully modifyed sku " + this.skuname + ".", "close", {
              duration: 2000,
            });
          } else {
-           this.snackBar.open("Error modifying sku with old name " + this.oldskuname + " and new name " + this.skuname + ". Please refresh and try again.", "close", {
+           this.snackBar.open("Error modifying sku " + this.skuname + ". Please refresh and try again.", "close", {
              duration: 2000,
            });
          }
