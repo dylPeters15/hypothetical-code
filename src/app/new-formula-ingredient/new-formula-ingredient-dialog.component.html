@@ -63,14 +63,13 @@
             <input type="text" ng-model="ingredientname" placeholder="Search for Ingredients" uib-typeahead="name as state.name for state in statesWithFlags | filter:{name:$viewValue}" typeahead-popup-template-url="customPopupTemplate.html" class="form-control">
 
 
-      <mat-form-field>
-        <input matInput [(ngModel)]="formulanumber" placeholder="Formula #">
-      </mat-form-field>
 
-     <h4>ngModelOptions support</h4>
-            <pre>Model: {{ngModelOptionsSelected | json}}</pre>
-            <input type="text" ng-model="ngModelOptionsSelected" ng-model-options="modelOptions" uib-typeahead="state for state in states | filter:$viewValue | limitTo:8" class="form-control">
+     <h4>Search by Ingredient Name</h4>
+            <input type="text" ng-model="ingredientname" placeholder="Search for Ingredients" ng-model-options="modelOptions" uib-typeahead="state for ingredientname in ingredients | filter:$viewValue | limitTo:8" class="form-control">
       
+    <mat-form-field>
+        <input matInput [(ngModel)]="formulanumber" placeholder="Amount">
+    </mat-form-field>
 
       <!---<p>Beans | 10 lbs <button type="submit">Edit</button><button type="submit">X</button></p> -->
 

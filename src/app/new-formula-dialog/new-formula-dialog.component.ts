@@ -4,7 +4,7 @@ import { RestService } from '../rest.service';
 import {MatSnackBar} from '@angular/material';
 import {MAT_DIALOG_DATA} from '@angular/material';
 import { MatDialogConfig, MatDialog} from "@angular/material";
-import { NewFormulaIngredientDialogComponent } from '../new-formula-ingredient-dialog/new-formula-ingredient-dialog.component';
+import { NewFormulaIngredientDialogComponent } from '../new-formula-ingredient/new-formula-ingredient-dialog.component';
 
 
 @Component({
@@ -24,7 +24,6 @@ export class NewFormulaDialogComponent implements OnInit {
   comment: string = '';
   testArray: string[] = ["cowboy", "giraffe", "clone"];
   newIngredientDialogRef: MatDialogRef<NewFormulaIngredientDialogComponent>;
-
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: any, private dialogRef: MatDialogRef<NewFormulaDialogComponent>, public rest:RestService, private snackBar: MatSnackBar,  private dialog: MatDialog) { }
 
