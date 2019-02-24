@@ -10,6 +10,7 @@ import { CustomMaterialModule } from "./core/material.module";
 import { FooterComponent } from './footer/footer.component';
 import { HomeComponent } from './home/home.component';
 import { SkuInventoryComponent } from './sku-inventory/sku-inventory.component';
+import { FormulaComponent } from './formulas/formulas.component';
 import { ProductLineInventoryComponent } from './product-line-inventory/product-line.component';
 import { IngredientInventoryComponent } from './ingredient-inventory/ingredient-inventory.component';
 import { LoginComponent } from './login/login.component';
@@ -32,6 +33,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { UserManagementComponent } from './user-management/user-management.component';
 import { NewUserDialogComponent } from './new-user-dialog/new-user-dialog.component';
 import { NewSkuDialogComponent } from './new-sku-dialog/new-sku-dialog.component';
+import { NewFormulaDialogComponent } from './new-formula-dialog/new-formula-dialog.component';
 import { NewIngredientDialogComponent } from './new-ingredient-dialog/new-ingredient-dialog.component';
 import { NewProductLineDialogComponent } from './new-product-line-dialog/new-product-line-dialog.component';
 import { MoreInfoDialogComponent } from './more-info-dialog/more-info-dialog.component';
@@ -65,7 +67,7 @@ const appRoutes: Routes = [
   { path: 'manufacturing-lines', component: ManufacturingLinesComponent, data: { title: 'Manufacturing Lines' }, canActivate: [UserRouteGuardService] },
   { path: 'ingredient-inventory', component: IngredientInventoryComponent, data: { title: 'Ingredient Inventory' }, canActivate: [UserRouteGuardService] },
   { path: 'sku-inventory', component: SkuInventoryComponent, data: { title: 'SKU Inventory' }, canActivate: [UserRouteGuardService] },
-  { path: 'formula', component: SkuInventoryComponent, data: { title: 'SKU Inventory' }, canActivate: [UserRouteGuardService] },
+  { path: 'formula', component: FormulaComponent, data: { title: 'Formulas' }, canActivate: [UserRouteGuardService] },
   { path: 'product-line-inventory', component: ProductLineInventoryComponent, data: { title: 'Product Line Inventory' }, canActivate: [UserRouteGuardService] },
   { path: 'import', component: ImportComponent, data: { title: 'Import' }, canActivate: [AdminRouteGuardService] },
   { path: 'logout', component: LogoutComponent, data: { title: "Logout" }, canActivate: [UserRouteGuardService] },
@@ -83,9 +85,11 @@ const appRoutes: Routes = [
     AccountSettingsComponent,
     UserNotificationDialogComponent,
     SkuInventoryComponent,
+    FormulaComponent,
     ProductLineInventoryComponent,
     IngredientInventoryComponent,
     NewSkuDialogComponent,
+    NewFormulaDialogComponent,
     NewIngredientDialogComponent,
     NewProductLineDialogComponent,
     MoreInfoDialogComponent,
@@ -134,6 +138,6 @@ const appRoutes: Routes = [
   ],
   providers: [],
   bootstrap: [AppComponent],
-  entryComponents: [UserNotificationDialogComponent, NewUserDialogComponent, PasswordConfirmationDialogComponent, PrivacyPolicyDialogComponent, TermsAndConditionsDialogComponent, MoreInfoDialogComponent, NewSkuDialogComponent, NewIngredientDialogComponent, NewGoalDialogComponent, NewProductLineDialogComponent, ConfirmActionDialogComponent, ImportPreviewDialogComponent, NewLineDialogComponent]
+  entryComponents: [UserNotificationDialogComponent, NewUserDialogComponent, PasswordConfirmationDialogComponent, PrivacyPolicyDialogComponent, TermsAndConditionsDialogComponent, MoreInfoDialogComponent, NewSkuDialogComponent, NewFormulaDialogComponent, NewIngredientDialogComponent, NewGoalDialogComponent, NewProductLineDialogComponent, ConfirmActionDialogComponent, ImportPreviewDialogComponent, NewLineDialogComponent]
 })
 export class AppModule { }
