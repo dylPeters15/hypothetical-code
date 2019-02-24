@@ -3,6 +3,9 @@ import { MatDialogRef} from "@angular/material";
 import { RestService } from '../rest.service';
 import {MatSnackBar} from '@angular/material';
 import {MAT_DIALOG_DATA} from '@angular/material';
+import { MatDialogConfig, MatDialog} from "@angular/material";
+import { NewFormulaIngredientDialogComponent } from '../new-formula-ingredient-dialog/new-formula-ingredient-dialog.component';
+
 
 @Component({
   selector: 'app-new-formula-dialog',
@@ -20,8 +23,10 @@ export class NewFormulaDialogComponent implements OnInit {
   ingredientsandquantities: any[];
   comment: string = '';
   testArray: string[] = ["cowboy", "giraffe", "clone"];
+  newIngredientDialogRef: MatDialogRef<NewFormulaIngredientDialogComponent>;
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: any, private dialogRef: MatDialogRef<NewFormulaDialogComponent>, public rest:RestService, private snackBar: MatSnackBar) { }
+
+  constructor(@Inject(MAT_DIALOG_DATA) public data: any, private dialogRef: MatDialogRef<NewFormulaDialogComponent>, public rest:RestService, private snackBar: MatSnackBar,  private dialog: MatDialog) { }
 
   ngOnInit() {
 
@@ -41,6 +46,20 @@ export class NewFormulaDialogComponent implements OnInit {
     else this.dialog_title = "Create New Formula";
   }
 
+  refreshData() {
+    // this.rest.getSkus().subscribe(response => {
+    //   this.data = response;
+    //   this.data.forEach(user => {
+    //     user['checked'] = false;
+    //   });
+    //   console.log(this.data);
+    //   this.dataSource =  new MatTableDataSource<UserForTable>(this.data);
+    //   this.dataSource.sort = this.sort;
+    // this.dataSource.paginator = this.paginator;
+    // });
+    
+  }
+
   closeDialog() {
     this.dialogRef.close();
     this.edit = this.data.edit;
@@ -51,7 +70,14 @@ export class NewFormulaDialogComponent implements OnInit {
     this.comment = this.data.present_comment;
   }
 
-  
+  addIngredientToFormula() {
+    const dialogConfig = new MatDialogConfig();
+    this.newIngredientDialogRef = this.dialog.open(NewFormulaIngredientDialogComponent, dialogConfig);
+    this.newIngredientDialogRef.afterClosed().subscribe(event => {
+      this.refreshData();
+    });
+
+  }
 
   createFormula() {
     // generate ID

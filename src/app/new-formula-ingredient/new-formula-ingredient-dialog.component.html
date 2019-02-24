@@ -1,18 +1,76 @@
-<h2 mat-dialog-title align="center">{{ dialog_title }}</h2>
-<mat-dialog-content align="center">
-  <mat-card>
-    <mat-card-content style="display: grid; width: 100%; justify-items: center;">
-      <mat-form-field>
-        <input matInput [(ngModel)]="formulaname" placeholder="Name" required>
-      </mat-form-field>
+<!doctype html>
+<html ng-app="ui.bootstrap.demo">
+  <head>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular-animate.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular-sanitize.js"></script>
+    <script src="//angular-ui.github.io/bootstrap/ui-bootstrap-tpls-2.1.3.js"></script>
+    <script src="example.js"></script>
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+  </head>
+  <body>
+      <style>
+          .typeahead-demo .custom-popup-wrapper {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            z-index: 1000;
+            display: none;
+            background-color: #f9f9f9;
+          }
+        
+          .typeahead-demo .custom-popup-wrapper > .message {
+            padding: 10px 20px;
+            border-bottom: 1px solid #ddd;
+            color: #868686;
+          }
+        
+          .typeahead-demo .custom-popup-wrapper > .dropdown-menu {
+            position: static;
+            float: none;
+            display: block;
+            min-width: 160px;
+            background-color: transparent;
+            border: none;
+            border-radius: 0;
+            box-shadow: none;
+          }
+        </style>
+        
+        
+        <script type="text/ng-template" id="customPopupTemplate.html">
+          <div class="custom-popup-wrapper"
+             ng-style="{top: position().top+'px', left: position().left+'px'}"
+             style="display: block;"
+             ng-show="isOpen() && !moveInProgress"
+             aria-hidden="{{!isOpen()}}">
+            <p class="message">select location from drop down.</p>
+        
+            <ul class="dropdown-menu" role="listbox">
+              <li class="uib-typeahead-match" ng-repeat="match in matches track by $index" ng-class="{active: isActive($index) }"
+                ng-mouseenter="selectActive($index)" ng-click="selectMatch($index)" role="option" id="{{::match.id}}">
+                <div uib-typeahead-match index="$index" match="match" query="query" template-url="templateUrl"></div>
+              </li>
+            </ul>
+          </div>
+        </script>
+
+        <div class='container-fluid typeahead-demo' ng-controller="TypeaheadCtrl">
+            <h2 mat-dialog-title align="center">{{ dialog_title }}</h2>
+            <mat-dialog-content align="center">
+            <mat-card>
+              <mat-card-content style="display: grid; width: 100%; justify-items: center;">
+            <input type="text" ng-model="ingredientname" placeholder="Search for Ingredients" uib-typeahead="name as state.name for state in statesWithFlags | filter:{name:$viewValue}" typeahead-popup-template-url="customPopupTemplate.html" class="form-control">
+
 
       <mat-form-field>
         <input matInput [(ngModel)]="formulanumber" placeholder="Formula #">
       </mat-form-field>
 
-      <div *ngFor="let item of testArray">
-        <p>Beans | {{item}} <button type="submit">Edit</button><button type="submit">X</button></p>
-     </div>
+     <h4>ngModelOptions support</h4>
+            <pre>Model: {{ngModelOptionsSelected | json}}</pre>
+            <input type="text" ng-model="ngModelOptionsSelected" ng-model-options="modelOptions" uib-typeahead="state for state in states | filter:$viewValue | limitTo:8" class="form-control">
+      
 
       <!---<p>Beans | 10 lbs <button type="submit">Edit</button><button type="submit">X</button></p> -->
 
@@ -23,10 +81,16 @@
       <mat-form-field>
         <input matInput [(ngModel)]="comment" placeholder="Additional Comments">
       </mat-form-field>
-    </mat-card-content>
-  </mat-card>
-</mat-dialog-content>
-<mat-dialog-actions align="center">
-  <button class="mat-raised-button" (click)="closeDialog()">Cancel</button>
-  <button class="mat-raised-button" (click)="createFormula()" [disabled]="username==''" color="primary">Create</button>
-</mat-dialog-actions>
+      </mat-card-content>
+   </mat-card>
+    </mat-dialog-content>
+    <mat-dialog-actions align="center">
+      <button class="mat-raised-button" (click)="closeDialog()">Cancel</button>
+      <button class="mat-raised-button" (click)="createFormula()" [disabled]="username==''" color="primary">Create</button>
+      </mat-dialog-actions>
+        
+        </div>
+          </body>
+        </html>
+
+
