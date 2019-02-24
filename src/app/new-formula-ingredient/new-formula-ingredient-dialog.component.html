@@ -60,7 +60,7 @@
             <mat-dialog-content align="center">
             <mat-card>
               <mat-card-content style="display: grid; width: 100%; justify-items: center;">
-                  <input type="text" ng-model="ingredient" placeholder="Search for Ingredients" uib-typeahead="ingredient for ingredients in getIngredients($viewValue) | limitTo:8" typeahead-loading="loading ingredients" typeahead-no-results="noResults" class="form-control">
+                  <input type="text" ng-model="ingredient" placeholder="Search for Ingredients" uib-typeahead="ingredient for ingredients in this.rest.getIngredients($viewValue) | limitTo:8" typeahead-loading="loading ingredients" typeahead-no-results="noResults" >
 
     <mat-form-field>
         <input matInput [(ngModel)]="formulanumber" placeholder="Amount">
@@ -73,7 +73,7 @@
     </mat-dialog-content>
     <mat-dialog-actions align="center">
       <button class="mat-raised-button" (click)="closeDialog()">Cancel</button>
-      <button class="mat-raised-button" (click)="createFormula()" [disabled]="username==''" color="primary">Add Ingredient</button>
+      <button class="mat-raised-button" (click)="addIngredient()" color="primary">Add Ingredient</button>
       </mat-dialog-actions>
         
         </div>
