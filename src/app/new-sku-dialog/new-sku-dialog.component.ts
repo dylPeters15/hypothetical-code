@@ -48,7 +48,7 @@ export class NewSkuDialogComponent implements OnInit {
     {
       this.dialog_title = "Modify Sku";
     }
-    else this.dialog_title = "Create New Sku";
+    else this.dialog_title = "Create New Sku!!!";
   }
 
   closeDialog() {

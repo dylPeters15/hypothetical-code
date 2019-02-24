@@ -8,37 +8,43 @@ import { AfterViewChecked } from '@angular/core';
 import { auth } from '../auth.service';
 import {ExportToCsv} from 'export-to-csv';
 
+// skuname', 'skunumber','caseupcnumber', 'unitupcnumber', 'unitsize', 'countpercase', 'formula', 'formulascalingfactor', "manufacturingrate", "comment"
+
 export interface UserForTable {
-  name: String;
-  skuNumber: Number;
-  caseUpcNumber: String;
-  unitUpcNumber: String;
-  unitSize: String;
-  countPerCase: Number;
-  productLine: String;
-  ingredientTuples: [];
+  skuname: String;
+  skunumber: Number;
+  caseupcnumber: Number;
+  unitupcnumber: Number;
+  unitsize: String;
+  countpercase: Number;
+  formula: any;
+  formulascalingfactor: Number;
+  manufacturingrate: Number;
   comment: String;
-  id: Number;
   checked: boolean;
 }
 
 export class ExportableSKU {
-  skuNumber: Number;
-  name: String;
-  caseUpcNumber: String;
-  unitUpcNumber: String;
-  unitSize: String;
-  countPerCase: Number;
-  productLine: String;
+  skuname: String;
+  skunumber: Number;
+  caseupcnumber: Number;
+  unitupcnumber: Number;
+  unitsize: String;
+  countpercase: Number;
+  formula: any;
+  formulascalingfactor: Number;
+  manufacturingrate: Number;
   comment: String;
   constructor(userForTable){
-    this.skuNumber = userForTable.skuNumber;
-    this.name = userForTable.name;
-    this.caseUpcNumber = userForTable.caseUpcNumber;
-    this.unitUpcNumber = userForTable.unitUpcNumber;
-    this.unitSize = userForTable.unitSize;
-    this.countPerCase = userForTable.countPerCase;
-    this.productLine = userForTable.productLine;
+    this.skunumber = userForTable.skunumber;
+    this.skuname = userForTable.skuname;
+    this.caseupcnumber = userForTable.caseupcnumber;
+    this.unitupcnumber = userForTable.unitupcnumber;
+    this.unitsize = userForTable.unitsize;
+    this.countpercase = userForTable.countpercase;
+    this.formula = userForTable.formula;
+    this.formulascalingfactor = userForTable.formulascalingfactor;
+    this.manufacturingrate = userForTable.manufacturingrate;
     this.comment = userForTable.comment;
   }
 }
@@ -100,7 +106,7 @@ export class SkuInventoryComponent  implements OnInit {
   newSku(edit, skuname, skunumber, caseupcnumber, unitupcnumber, unitsize, countpercase, formula, formulascalingfactor, manufacturingrate, comment) {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.data = {edit: edit, present_name: skuname, present_skuNumber: skunumber, present_caseUpcNumber: caseupcnumber, present_unitUpcNumber: unitupcnumber, present_unitSize:unitsize, present_countPerCase:countpercase, present_formula:formula,present_formulascalingfactor:formulascalingfactor, present_manufacturingrate:manufacturingrate, present_comment:comment};
-    this.newDialogRef = this.dialog.open(NewSkuDialogComponent, {panelClass: 'my-panel'});
+    this.newDialogRef = this.dialog.open(NewSkuDialogComponent, dialogConfig);
     this.newDialogRef.afterClosed().subscribe(event => {
       this.refreshData();
     });
@@ -113,7 +119,7 @@ export class SkuInventoryComponent  implements OnInit {
 
   sortData() {
     this.data.sort((a,b) => {
-      return a.name > b.name ? 1 : -1;
+      return a.skuname > b.skuname ? 1 : -1;
     });
   }
 
@@ -190,7 +196,7 @@ export class SkuInventoryComponent  implements OnInit {
     else{
       this.data.forEach(user => {
         if (user.checked) {
-          this.modifySkuConfirmed(user.name, user.skuNumber, user.caseUpcNumber, user.unitUpcNumber, user.unitSize, user.countPerCase, user.productLine, user.ingredientTuples, user.comment, user.id);
+          this.modifySkuConfirmed(user.skuname, user.skunumber, user.caseupcnumber, user.unitupcnumber, user.unitsize, user.countpercase, user.formula, user.formulascalingfactor, user.manufacturingrate, user.comment);
         }
       });
     }   

@@ -3,7 +3,7 @@ import { RestService } from '../rest.service';
 import {MatSnackBar} from '@angular/material';
 import { MatDialogRef, MatDialog, MatSort, MatDialogConfig, MatTableDataSource, MatPaginator } from "@angular/material";
 import { MoreInfoDialogComponent } from '../more-info-dialog/more-info-dialog.component';
-import { NewSkuDialogComponent } from '../new-sku-dialog/new-sku-dialog.component';
+import { NewFormulaDialogComponent } from '../new-formula-dialog/new-formula-dialog.component';
 import { AfterViewChecked } from '@angular/core';
 import { auth } from '../auth.service';
 import {ExportToCsv} from 'export-to-csv';
@@ -45,7 +45,7 @@ export class FormulaComponent implements OnInit {
   displayedColumns: string[] = ['checked', 'formulaname', 'formulanumber','ingredientsandquantities', 'comment'];
   data: UserForTable[] = [];
   dialogRef: MatDialogRef<MoreInfoDialogComponent>;
-  newDialogRef: MatDialogRef<NewSkuDialogComponent>;
+  newDialogRef: MatDialogRef<NewFormulaDialogComponent>;
   dataSource =  new MatTableDataSource<UserForTable>(this.data);
   admin: boolean = false;
   @ViewChild(MatPaginator) paginator: MatPaginator;
