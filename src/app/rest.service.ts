@@ -164,7 +164,7 @@ deleteFormula(sku: number, ingredient: number): Observable<any> {
 }
 
 createSku(skuname: String, skunumber: number, 
-  caseupcnumber: number, unitupcnumber: number, unitsize: number, 
+  caseupcnumber: number, unitupcnumber: number, unitsize: string, 
   countpercase: number, formulanum: Number, formulascalingfactor: Number, manufacturingrate: Number, comment: String): Observable<any> {
   return this.http.put(endpoint + "skus", {
     skuname: skuname,
@@ -182,7 +182,7 @@ createSku(skuname: String, skunumber: number,
 }
 
 modifySku(oldSkuName: String, skuname: String, skunumber: number, 
-  caseupcnumber: number, unitupcnumber: number, unitsize: number, 
+  caseupcnumber: number, unitupcnumber: number, unitsize: string, 
   countpercase: number, formulanum: Number, formulascalingfactor: Number, manufacturingrate: Number, comment: String): Observable<any> {
   return this.http.post(endpoint + "skus", {
     skuname: skuname,

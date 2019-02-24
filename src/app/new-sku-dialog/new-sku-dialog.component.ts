@@ -18,7 +18,7 @@ export class NewSkuDialogComponent implements OnInit {
   skunumber: number = 0;
   caseupcnumber: number = 0;
   unitupcnumber: number = 0;
-  unitsize: String = '';
+  unitsize: string = '';
   countpercase: number = 0;
   formula: any = null;
   formulascalingfactor: number = 0;

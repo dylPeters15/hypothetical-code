@@ -2,14 +2,6 @@
 <mat-dialog-content align="center">
   <mat-card>
     <mat-card-content style="display: grid; width: 100%; justify-items: center;">
-      <mat-form-field>
-        <input matInput [(ngModel)]="linename" placeholder="Linename" required>
-      </mat-form-field>
-
-      <mat-form-field>
-        <input matInput [(ngModel)]="shortname" placeholder="shortname">
-        <mat-hint>Enter Shortname (no spaces)</mat-hint>
-      </mat-form-field>
 
       <mat-form-field class="example-chip-list">
         <mat-chip-list #chipList>
@@ -22,8 +14,8 @@
             <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
           </mat-chip>
           <input
-            placeholder="New ingredient..."
-            #skuInput
+            placeholder="Search for ingredient..."
+            #ingredientInput
             [formControl]="ingredientCtrl"
             [matAutocomplete]="auto"
             [matChipInputFor]="chipList"
@@ -32,20 +24,19 @@
             (matChipInputTokenEnd)="add($event)">
         </mat-chip-list>
         <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
-          <mat-option *ngFor="let ingredient of filteredIngredients | async" [value]="sku">
-            {{sku}}
+          <mat-option *ngFor="let ingredient of filteredIngredients | async" [value]="ingredient">
+            {{ingredient}}
           </mat-option>
         </mat-autocomplete>
       </mat-form-field>
 
       <mat-form-field>
-        <input matInput [(ngModel)]="comment" placeholder="comment" required>
-        <mat-hint>Enter a comment...</mat-hint>
+        <input matInput [(ngModel)]="amount" placeholder="Amount" required>
       </mat-form-field>
     </mat-card-content>
   </mat-card>
 </mat-dialog-content>
 <mat-dialog-actions align="center">
   <button class="mat-raised-button" (click)="closeDialog()">Cancel</button>
-  <button class="mat-raised-button" (click)="createLine()" [disabled]="username==''" color="primary">Create</button>
+  <button class="mat-raised-button" (click)="addIngredient()" [disabled]="username==''" color=orange >Add Ingredient</button>
 </mat-dialog-actions>

@@ -78,7 +78,8 @@ export class NewFormulaDialogComponent implements OnInit {
     this.newIngredientDialogRef = this.dialog.open(NewFormulaIngredientDialogComponent, dialogConfig);
     this.newIngredientDialogRef.afterClosed().subscribe(event => {
       // grab the new formula values
-      var new_ingredient = this.newIngredientDialogRef.componentInstance.ingredientNameList;
+      var new_ingredient_list = this.newIngredientDialogRef.componentInstance.ingredientNameList;
+      var new_ingredient = new_ingredient_list[0];
       var new_amount = this.newIngredientDialogRef.componentInstance.amount;
       var new_objectid;
       //console.log("okay we are back again. ingredient: " + + ", amount: " +)
