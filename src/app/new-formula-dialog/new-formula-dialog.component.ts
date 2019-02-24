@@ -13,95 +13,95 @@ export class NewFormulaDialogComponent implements OnInit {
 
   dialog_title: String;
   edit: Boolean;
-  formulaname: String = '';
-  formulanumber: Number = 0;
-  ingredientsandquantities: String = '';
+  skuname: String = '';
+  oldskuname: String = '';
+  skunumber: number = 0;
+  caseupcnumber: number = 0;
+  unitupcnumber: number = 0;
+  unitsize: String = '';
+  countpercase: number = 0;
+  formula: any = null;
+  formulascalingfactor: number = 0;
+  manufacturingrate: number = 0;
   comment: String = '';
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: any, private dialogRef: MatDialogRef<NewFormulaDialogComponent>, public rest:RestService, private snackBar: MatSnackBar) { }
+  constructor(@Inject(MAT_DIALOG_DATA) public data: any, private dialogRef: MatDialogRef<NewSkuDialogComponent>, public rest:RestService, private snackBar: MatSnackBar) { }
 
   ngOnInit() {
-    this.edit = this.data.edit;
-    this.formulaname = this.data.present_formulaname;
-    this.formulanumber = this.data.present_formulanumber;
-    this.ingredientsandquantities = this.data.present_ingredientsandquantities;
-    this.comment = this.data.present_comment;
 
-    // edit == true if formula is being modified, false if a new sku is being created
+    this.edit = this.data.edit;
+    this.skuname = this.data.present_name;
+    this.oldskuname = this.data.present_name;
+    this.skunumber = this.data.present_skuNumber;
+    this.caseupcnumber = this.data.present_caseUpcNumber;
+    this.unitupcnumber = this.data.present_unitUpcNumber;
+    this.unitsize = this.data.present_unitSize;
+    this.countpercase = this.data.present_countPerCase;
+    this.formula = this.data.present_formula;
+    this.formulascalingfactor = this.data.present_formulascalingfactor;
+    this.manufacturingrate = this.data.present_manufacturingrate;
+    this.comment = this.data.comment;
+
+
+    // edit == true if sku is being modified, false if a new sku is being created
     if (this.edit == true)
     {
-      this.dialog_title = "Modify Formula";
+      this.dialog_title = "Modify Sku";
     }
-    else this.dialog_title = "Create New Formula";
+    else this.dialog_title = "Create New Sku";
   }
 
   closeDialog() {
     this.dialogRef.close();
     this.edit = this.data.edit;
-    this.formulaname = this.data.present_formulaname;
-    this.formulanumber = this.data.present_formulanumber;
-    this.ingredientsandquantities = this.data.present_ingredientsandquantities;
-    this.comment = this.data.present_comment;
+    this.skuname = this.data.present_name;
+    this.oldskuname = this.data.present_name;
+    this.skunumber = this.data.present_skuNumber;
+    this.caseupcnumber = this.data.present_caseUpcNumber;
+    this.unitupcnumber = this.data.present_unitUpcNumber;
+    this.unitsize = this.data.present_unitSize;
+    this.countpercase = this.data.present_countPerCase;
+    this.formula = this.data.present_formula;
+    this.formulascalingfactor = this.data.present_formulascalingfactor;
+    this.manufacturingrate = this.data.present_manufacturingrate;
+    this.comment = this.data.comment;
   }
 
-  createFormula() {
+  createSku() {
     // generate ID
     console.log("we in here now, and edit is: " + this.edit);
     if (this.edit == false)
     {
-      this.rest.adminCreateSku(this.name, this.sku_number, this.case_upc_number, this.unit_upc_number, this.unit_size, this.count_per_case, this.product_line, this.ingredients_by_id, this.comment, id).subscribe(response => {
-        
+      console.log("We're creating a new sku");
+      this.rest.createSku(this.skuname, this.skunumber, this.caseupcnumber, this.unitupcnumber, this.unitsize, this.countpercase, this.formula, this.formulascalingfactor, this.manufacturingrate, this.comment).subscribe(response => {
         if (response['success']) {
-           this.snackBar.open("Successfully created sku " + this.name + ".", "close", {
+               this.snackBar.open("Successfully created sku " + this.skuname + ".", "close", {
+                 duration: 2000,
+               });
+             } else {
+               this.snackBar.open("Error creating user " + this.skuname + ". Please refresh and try again.", "close", {
+                 duration: 2000,
+               });
+             }
+             this.closeDialog();
+           });
+      }
+
+    else{
+      console.log("We're modifying a sku");
+      this.rest.modifySku(this.oldskuname, this.skuname, this.skunumber, this.caseupcnumber, this.unitupcnumber, this.unitsize, this.countpercase, this.formula, this.formulascalingfactor, this.manufacturingrate, this.comment).subscribe(response => {
+        
+         if (response['success']) {
+           this.snackBar.open("Successfully modifyed sku with old name " + this.oldskuname + " and new name " + this.skuname + ".", "close", {
              duration: 2000,
            });
          } else {
-           this.snackBar.open("Error creating user " + this.name + ". Please refresh and try again.", "close", {
+           this.snackBar.open("Error modifying sku with old name " + this.oldskuname + " and new name " + this.skuname + ". Please refresh and try again.", "close", {
              duration: 2000,
-          });
+           });
          }
          this.closeDialog();
        });
     }
-    else{
-      console.log("We're modifying a sku", this.ingredients);
-      for (var i=0; i<this.ingredients.length-1; i = i+2) {
-        this.addIngredient(this.ingredients[i], this.name);
-        console.log('ingredient array pre push', this.ingredients_by_id)
-        this.ingredients_by_id.push(this.ingredients[i+1]);
-        console.log('ingredient array new', this.ingredients_by_id);
-      }
-      // this.rest.modifySkuRequest(this.name, this.sku_number, this.case_upc_number, this.unit_upc_number, this.unit_size, this.count_per_case, this.product_line, this.ingredients_by_id, this.comment, this.current_id).subscribe(response => {
-        
-      //   if (response['success']) {
-      //     this.snackBar.open("Successfully modifyed sku " + this.name + ".", "close", {
-      //       duration: 2000,
-      //     });
-      //   } else {
-      //     this.snackBar.open("Error modifying sku " + this.name + ". Please refresh and try again.", "close", {
-      //       duration: 2000,
-      //     });
-      //   }
-      //   this.closeDialog();
-      // });
-    }
-  }
-
-  addIngredient(ingredient, sku) {
-    let newSkus;
-    const ingredientNumber = Number(ingredient)
-    console.log(ingredient, Number(ingredient))
-    // this.rest.getIngredientByNumber(ingredient).subscribe(response => {
-    //   console.log("Ingredient skus", response.skus)
-    //   newSkus = response.skus
-    //   console.log("new skus", newSkus)
-    //   newSkus.push(sku);
-    //   console.log("new skus", newSkus)
-    //   this.rest.addIngredientSku(ingredient, newSkus).subscribe(response => {
-    //     console.log("New ingredient data", response)
-    //   });
-
-    //   this.ingredients_by_id.push(response.id);
-    // });
   }
 }

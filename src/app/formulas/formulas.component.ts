@@ -9,36 +9,21 @@ import { auth } from '../auth.service';
 import {ExportToCsv} from 'export-to-csv';
 
 export interface UserForTable {
-  name: String;
-  skuNumber: Number;
-  caseUpcNumber: String;
-  unitUpcNumber: String;
-  unitSize: String;
-  countPerCase: Number;
-  productLine: String;
-  ingredientTuples: [];
+  formulaname: String;
+  formulanumber: Number;
+  ingredientsandquantities: Array;
   comment: String;
-  id: Number;
-  checked: boolean;
 }
 
 export class ExportableSKU {
-  skuNumber: Number;
-  name: String;
-  caseUpcNumber: String;
-  unitUpcNumber: String;
-  unitSize: String;
-  countPerCase: Number;
-  productLine: String;
+  formulaname: String;
+  formulanumber: Number;
+  ingredientsandquantities: Array;
   comment: String;
   constructor(userForTable){
-    this.skuNumber = userForTable.skuNumber;
-    this.name = userForTable.name;
-    this.caseUpcNumber = userForTable.caseUpcNumber;
-    this.unitUpcNumber = userForTable.unitUpcNumber;
-    this.unitSize = userForTable.unitSize;
-    this.countPerCase = userForTable.countPerCase;
-    this.productLine = userForTable.productLine;
+    this.formulaname = userForTable.formulaname;
+    this.formulanumber = userForTable.formulanumber;
+    this.ingredientsandquantities = userForTable.ingredientsandquantities;
     this.comment = userForTable.comment;
   }
 }
@@ -52,7 +37,7 @@ export class ExportableSKU {
     templateUrl: './formulas.component.html',
     styleUrls: ['./formulas.component.css']
   })
-export class FormulaComponent  implements OnInit {
+export class FormulaComponent implements OnInit {
 
   constructor(public rest:RestService, private snackBar: MatSnackBar, private dialog: MatDialog) { }
   allReplacement = 54321;
@@ -110,7 +95,7 @@ export class FormulaComponent  implements OnInit {
 
   newFormulaButton()
   {
-    this.newFormula(false, "", 0, "", "", "", 0, "", [], "", 0);
+    this.newFormula(false, "", 0, null, "");
   }
 
   sortData() {
@@ -134,15 +119,15 @@ export class FormulaComponent  implements OnInit {
     // });
   }
 
-  modifySkuConfirmed(present_name, present_skuNumber, present_caseUpcNumber, present_unitUpcNumber,present_unitSize,present_countPerCase,present_productLine,present_ingredientTuples, present_comment, present_id) {
-    this.newSku(true, present_name, present_skuNumber, present_caseUpcNumber, present_unitUpcNumber, present_unitSize, present_countPerCase, present_productLine, present_ingredientTuples, present_comment, present_id);
+  modifySkuConfirmed(present_formulaname, present_formulanumber, present_ingredientsandquantities, present_comment) {
+    this.newFormula(true, present_formulaname, present_formulanumber, present_ingredientsandquantities, present_comment);
   }
 
   deleteSelected() {
     const dialogConfig = new MatDialogConfig();
-    this.data.forEach(sku => {
-      if (sku.checked) {
-        this.deleteSkuConfirmed(sku);
+    this.data.forEach(formula => {
+      if (formula.checked) {
+        this.deleteFormulaConfirmed(formula);
       }
     });
   }
