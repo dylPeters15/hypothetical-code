@@ -113,7 +113,7 @@ app.route('/users').get((req, res) => {
 ///////////////////// formulas /////////////////////
 
 app.route('/formulas').get((req, res) => {
-    formula_utils.getFormulas(req.headers['formulaname'], JSON.parse(req.headers['formulanumber']), JSON.parse(req.headers['sku']), JSON.parse(req.headers['ingredient']), JSON.parse(req.headers['limit'])).then(formulas => {
+    formula_utils.getFormulas(req.headers['formulaname'], JSON.parse(req.headers['formulanumber']), JSON.parse(req.headers['ingredient']), JSON.parse(req.headers['limit'])).then(formulas => {
         res.send(formulas);
     }).catch(err => {
         resolveError(err, res);

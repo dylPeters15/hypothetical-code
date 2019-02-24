@@ -75,7 +75,7 @@ export class IngredientComponent  implements OnInit {
 
   refreshData(filterQueryData?) {
     filterQueryData = filterQueryData ? ".*"+filterQueryData+".*" : ".*"+this.filterQuery+".*"; //this returns things that have the pattern anywhere in the string
-    this.rest.getIngredients("", filterQueryData, 0, this.paginator.pageSize*10).subscribe(response => {
+    this.rest.getIngredients("", filterQueryData, -1, this.paginator.pageSize*10).subscribe(response => {
       this.data = response;
       this.data.forEach(user => {
         user['checked'] = false;

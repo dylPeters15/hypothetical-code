@@ -8,10 +8,10 @@ import { AfterViewChecked } from '@angular/core';
 
 export interface IngredientDependencyData {
   // completion: boolean;
-  ingredientName: string;
-  ingredientNumber: number;
-  numberSKUs: number;
-  SKUs: string;
+  ingredientname: string;
+  ingredientnumber: number;
+  numberskus: number;
+  skus: string[];
 }
  
 @Component({
@@ -27,6 +27,7 @@ export class IngredientDependencyComponent implements OnInit {
   dialogRef: MatDialogRef<MoreInfoDialogComponent>;
   newDialogRef: MatDialogRef<NewIngredientDialogComponent>;
   dataSource =  new MatTableDataSource<IngredientDependencyData>(this.data);
+  filterQuery: string = "";
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
@@ -39,18 +40,28 @@ export class IngredientDependencyComponent implements OnInit {
     return [5, 10, 20, this.allReplacement];
   }
 
-  refreshData() {
-    // this.rest.getIngredients().subscribe(response => {
-    //   this.data = response;
-    //   console.log(this.data);
-    //   this.dataSource.sort = this.sort;
-    //   this.dataSource =  new MatTableDataSource<IngredientDependencyData>(this.data);
-    //   this.dataSource.paginator = this.paginator;
-    // });
+  refreshData(filterQueryData?) {
+    filterQueryData = filterQueryData ? ".*"+filterQueryData+".*" : ".*"+this.filterQuery+".*"; //this returns things that have the pattern anywhere in the string  
+    this.rest.getIngredients("", filterQueryData, 0, this.paginator.pageSize*10).subscribe(response => {
+      this.data = response;
+      console.log(response);
+      response.forEach(ingredient => {
+        console.log(ingredient)
+        this.rest.getFormulas("", -1, ingredient['ingredientnumber'], 10).subscribe(formulaResponse => {
+          if (formulaResponse) {
+            console.log(formulaResponse)
+          }
+          
+        });
+      });
+      // this.dataSource.sort = this.sort;
+      // this.dataSource =  new MatTableDataSource<IngredientDependencyData>(this.data);
+      // this.dataSource.paginator = this.paginator;
+    });
     
   }
 
-  applyFilter(filterValue: string) {
-    this.dataSource.filter = filterValue.trim().toLowerCase();
-  }
+  // applyFilter(filterValue: string) {
+  //   this.dataSource.filter = filterValue.trim().toLowerCase();
+  // }
 }

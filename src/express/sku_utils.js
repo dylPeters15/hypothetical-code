@@ -70,7 +70,7 @@ function createSku(name, number, case_upc, unit_upc, unit_size, count, formulanu
                     }
                     // newingredientnumber = ingredientnumber || Number(response);
 
-                    formula_utils.getFormulas("",formulanum,null,null,1).then(response => {
+                    formula_utils.getFormulas("",formulanum,null,1).then(response => {
                         if (response.length == 0) {
                             reject(Error("Could not find formula " + formulanum + " for SKU " + name));
                         } else {
@@ -110,7 +110,7 @@ function createSku(name, number, case_upc, unit_upc, unit_size, count, formulanu
 function modifySku(oldName, name, number, case_upc, unit_upc, unit_size, count, formulanum, formulascalingfactor, manufacturingrate, comment) {
 
     return new Promise(function (resolve, reject) {
-        formula_utils.getFormulas("",formulanum,null,null,1).then(response => {
+        formula_utils.getFormulas("",formulanum,null,1).then(response => {
             if (response.length == 0) {
                 reject(Error("Could not find formula " + formulanum + " for SKU " + name));
             } else {
