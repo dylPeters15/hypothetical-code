@@ -114,7 +114,7 @@ export class SkuInventoryComponent  implements OnInit {
 
   newSkuButton()
   {
-    this.newSku(false, "", 0, 0, 0, "", 0, null, 0, 0, "");
+    this.newSku(false, "", null, null, null, "", null, null, null, null, "");
   }
 
   sortData() {
