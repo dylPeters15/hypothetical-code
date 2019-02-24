@@ -91,35 +91,17 @@ export class NewSkuDialogComponent implements OnInit {
       console.log("We're modifying a sku");
       this.rest.modifySku(this.oldskuname, this.skuname, this.skunumber, this.caseupcnumber, this.unitupcnumber, this.unitsize, this.countpercase, this.formula, this.formulascalingfactor, this.manufacturingrate, this.comment).subscribe(response => {
         
-      //   if (response['success']) {
-      //     this.snackBar.open("Successfully modifyed sku " + this.name + ".", "close", {
-      //       duration: 2000,
-      //     });
-      //   } else {
-      //     this.snackBar.open("Error modifying sku " + this.name + ". Please refresh and try again.", "close", {
-      //       duration: 2000,
-      //     });
-      //   }
-      //   this.closeDialog();
-      // });
+         if (response['success']) {
+           this.snackBar.open("Successfully modifyed sku with old name " + this.oldskuname + " and new name " + this.skuname + ".", "close", {
+             duration: 2000,
+           });
+         } else {
+           this.snackBar.open("Error modifying sku with old name " + this.oldskuname + " and new name " + this.skuname + ". Please refresh and try again.", "close", {
+             duration: 2000,
+           });
+         }
+         this.closeDialog();
+       });
     }
-  }
-
-  addIngredient(ingredient, sku) {
-    let newSkus;
-    const ingredientNumber = Number(ingredient)
-    console.log(ingredient, Number(ingredient))
-    // this.rest.getIngredientByNumber(ingredient).subscribe(response => {
-    //   console.log("Ingredient skus", response.skus)
-    //   newSkus = response.skus
-    //   console.log("new skus", newSkus)
-    //   newSkus.push(sku); 
-    //   console.log("new skus", newSkus)
-    //   this.rest.addIngredientSku(ingredient, newSkus).subscribe(response => {
-    //     console.log("New ingredient data", response)
-    //   });
-
-    //   this.ingredients_by_id.push(response.id);
-    // });
   }
 }
