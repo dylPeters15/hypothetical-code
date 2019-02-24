@@ -25,6 +25,7 @@ export class ManufacturingScheduleReportLineTableComponent implements OnInit, Co
       this.tableData = response.filter((value,index,array) => {
         return value['line']['linename'] == this._value['selectedLine'];
       });
+      console.log("Table data: ", this.tableData);
     });
   }
   
