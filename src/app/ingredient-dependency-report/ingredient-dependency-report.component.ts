@@ -5,8 +5,25 @@ import { MatDialogRef, MatDialog, MatSort, MatTableDataSource, MatPaginator } fr
 import { MoreInfoDialogComponent } from '../more-info-dialog/more-info-dialog.component';
 import { NewIngredientDialogComponent } from '../new-ingredient-dialog/new-ingredient-dialog.component';
 import { AfterViewChecked } from '@angular/core';
+import {ExportToCsv} from 'export-to-csv';
 
 export class IngredientDependencyData {
+  // completion: boolean;
+  ingredientname: string;
+  ingredientnumber: number;
+  numberskus: number;
+  skus: string[];
+  checked: boolean;
+  constructor(ingredientname, ingredientnumber, numberskus, skus) {
+    this.ingredientname = ingredientname;
+    this.ingredientnumber = ingredientnumber;
+    this.numberskus = numberskus;
+    this.skus = skus;
+    this.checked = false;
+  }
+}
+
+export class ExportableIngredientDependency {
   // completion: boolean;
   ingredientname: string;
   ingredientnumber: number;
@@ -27,7 +44,7 @@ export class IngredientDependencyData {
 })
 export class IngredientDependencyComponent implements OnInit {
   allReplacement = 54321;
-  displayedColumns: string[] = ['ingredientName', 'ingredientNumber', 'numberSKUs', 'SKUs'];
+  displayedColumns: string[] = ['checked', 'ingredientName', 'ingredientNumber', 'numberSKUs', 'SKUs'];
   constructor(public rest:RestService, private snackBar: MatSnackBar, private dialog: MatDialog) { }
   data: IngredientDependencyData[] = [];
   dialogRef: MatDialogRef<MoreInfoDialogComponent>;
@@ -47,6 +64,7 @@ export class IngredientDependencyComponent implements OnInit {
   }
 
   refreshData(filterQueryData?) {
+    this.data = []
     filterQueryData = filterQueryData ? ".*"+filterQueryData+".*" : ".*"+this.filterQuery+".*"; //this returns things that have the pattern anywhere in the string  
     var numingredients;
     var thisobject = this;
@@ -58,7 +76,7 @@ export class IngredientDependencyComponent implements OnInit {
         response.forEach(ingredient => {
           thisobject.formulaSearch(ingredient).then(function( skuArray) {
             console.log("final: ", skuArray)
-            let currentIngredient = new IngredientDependencyData(ingredient['ingredientname'], ingredient['ingredientnumber'], skuArray.length, skuArray);
+            let currentIngredient = new IngredientDependencyData(ingredient['ingredientname'], ingredient['ingredientnumber'], 0, skuArray);
             thisobject.data.push(currentIngredient);
             ingredientsvisited ++;
 
@@ -115,7 +133,9 @@ export class IngredientDependencyComponent implements OnInit {
         thisobject.rest.getSkus("", "", -1, -1, -1, formula['_id'], 10).subscribe(skus => {
           total += skus.length;
           skus.forEach(sku => {
-            skuArray.push(sku['skuname']);
+            let skuInfo = " " + sku['skuname'] + ": " + sku['unitsize'] + " * " 
+            + sku['countpercase'] + " (" + sku['skunumber'] + ")\n"
+            skuArray.push(skuInfo);
             console.log('pushed: ', skuArray)
           })
           resolve(skus.length);
@@ -126,5 +146,71 @@ export class IngredientDependencyComponent implements OnInit {
         resolve(skuArray);
       }
     })
+  }
+
+  deselectAll() {
+    this.data.forEach(ingredient => {
+      ingredient.checked = false;
+    });
+  }
+
+  ngAfterViewChecked() {
+    const matOptions = document.querySelectorAll('mat-option');
+   
+   
+    // If the replacement element was found...
+    if (matOptions) {
+      const matOptionsLen = matOptions.length;
+      // We'll iterate the array backwards since the allReplacement should be at the end of the array
+      for (let i = matOptionsLen - 1; i >= 0; i--) {
+        const matOption = matOptions[i];
+   
+        // Store the span in a variable for re-use
+        const span = matOption.querySelector('span.mat-option-text');
+        // If the spans innerHTML string value is the same as the allReplacement variables string value...
+        if ('' + span.innerHTML === '' + this.allReplacement) {
+          // Change the span text to "All"
+          span.innerHTML = 'All';
+          break;
+        }
+      }
+    }
+  }
+
+  selectAll() {
+    var lowerIndex = this.paginator.pageSize * this.paginator.pageIndex;
+    var upperIndex = this.paginator.pageSize * (this.paginator.pageIndex+1);
+    if (this.data.length < upperIndex) {
+      upperIndex = this.data.length;
+    }
+    this.deselectAll();
+    for (var i = lowerIndex; i < upperIndex; i=i+1) {
+      this.data[i].checked = true;
+    }
+  }
+
+  exportSelected(){
+    let exportData: ExportableIngredientDependency[] = [];
+    this.data.forEach(ingredient => {
+      if(ingredient.checked) {
+        let ingredientToExport = new ExportableIngredientDependency(ingredient.ingredientname, 
+          ingredient.ingredientnumber, ingredient.numberskus, ingredient.skus);
+        exportData.push(ingredientToExport);
+      }
+    });
+      const options = { 
+        fieldSeparator: ',',
+        filename: 'ingredients',
+        quoteStrings: '',
+        decimalSeparator: '.',
+        showLabels: true, 
+        showTitle: false,
+        title: 'Ingredients',
+        useTextFile: false,
+        useBom: true,
+        headers: ["Ingredient Name","Ingr#","Number Of Skus", "Skus"]
+      };
+      const csvExporter = new ExportToCsv(options);
+      csvExporter.generateCsv(exportData);
   }
 }

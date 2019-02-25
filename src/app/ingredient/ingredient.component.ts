@@ -209,10 +209,6 @@ export class IngredientComponent  implements OnInit {
       this.data[i].checked = true;
     }
   }
-
-  applyFilter(filterValue: string) {
-    this.dataSource.filter = filterValue.trim().toLowerCase();
-  }
   
   ngAfterViewChecked() {
     const matOptions = document.querySelectorAll('mat-option');
@@ -247,7 +243,7 @@ export class IngredientComponent  implements OnInit {
     });
       const options = { 
         fieldSeparator: ',',
-        filename: 'ingredients',
+        filename: 'ingredientdependencies',
         quoteStrings: '',
         decimalSeparator: '.',
         showLabels: true, 
