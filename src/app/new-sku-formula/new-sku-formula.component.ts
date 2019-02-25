@@ -22,23 +22,25 @@ export class NewSkuFormulaComponent implements OnInit {
   removeable = true;
   addOnBlue = true;
   seperatorKeysCodes: number[] = [ENTER, COMMA]
-  ingredientCtrl = new FormControl();
-  filteredIngredients: Observable<String[]>;
+  formulaCtrl = new FormControl();
+  filterFormulas: Observable<String[]>;
+  formulaNameList: string[] = [];
+
+
   selectedIngredientNames: string[] = [];
   selectedIngredients: any = [];
   ingredientList: any = [];
-  ingredientNameList: string[] = [];
   ingredientName: string;
   amount: number = 0;
   ingredientsandquantities: any[];
 
-  @ViewChild('ingredientInput') ingredientInput: ElementRef<HTMLInputElement>;
+  @ViewChild('formulaInput') formulaInput: ElementRef<HTMLInputElement>;
   @ViewChild('auto') matAutocomplete: MatAutocomplete;
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: any, private dialogRef: MatDialogRef<NewSkuFormulaComponent>, public rest:RestService, private snackBar: MatSnackBar) {
-    this.filteredIngredients = this.ingredientCtrl.valueChanges.pipe(
+    this.filterFormulas = this.formulaCtrl.valueChanges.pipe(
       startWith(null),
-      map((ingredient: string | null) => ingredient ? this._filter(ingredient) : this.ingredientNameList.slice()));
+      map((formula: string | null) => formula ? this._filter(formula) : this.formulaNameList.slice()));
    }
 
   ngOnInit() {
@@ -50,9 +52,9 @@ export class NewSkuFormulaComponent implements OnInit {
     // edit == true if formula is being modified, false if a new formula is being created
     if (this.edit == true)
     {
-      this.dialog_title = "Modify Ingredient";
+      this.dialog_title = "Change SKU's Formula";
     }
-    else this.dialog_title = "Add Ingredient to Formula";
+    else this.dialog_title = "Add SKU's Formula";
 
     this.rest.getIngredients('','.*',0,5).subscribe(response => {
       this.ingredientList = response;
