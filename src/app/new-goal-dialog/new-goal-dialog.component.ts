@@ -43,6 +43,7 @@ export class NewGoalDialogComponent implements OnInit {
   displayableActivities: any = [];
   activityIds: any = [];
   date: Date;
+  dateCtrl: FormControl;
   skuList: any = [];
   skuNameList: string[] = [];
   edit: Boolean;
@@ -58,18 +59,33 @@ export class NewGoalDialogComponent implements OnInit {
 
   ngOnInit() {
     this.edit = this.data.edit;
-    this.name = this.data.present_name;
-    // this.selectedSkus = this.data.present_skus;
-    this.date = this.data.present_date;
-    console.log("EDIT: " + this.edit)
-    // edit == true if goal is being modified, false if a new sku is being created
-    if (this.edit == true)
-    {
+    if(this.edit == true){
+      this.name = this.data.present_name;
+      this.displayableActivities = this.data.present_activities;
+      
+      if(this.displayableActivities.length> 0){
+        this.rest.getActivities(null, 100).subscribe(response => {
+          response.forEach(activityInDatabase => {
+            this.displayableActivities.forEach(element => {
+              console.log("Act: " + activityInDatabase['sku']['skuname'])
+              console.log("ELEMENT:" + element.skuname)
+              if(activityInDatabase['sku']['skuname'] == element.skuname && activityInDatabase['calculatedhours'] == Number(element.hours)){
+                this.activityIds.push({activity: activityInDatabase['_id']})
+              }
+            })
+            });
+      
+        })
+      }
+      console.log("Array: " + JSON.stringify(this.displayableActivities))
+     
       this.dialog_title = "Modify Manufacturing Goal";
     }
     else {
       this.dialog_title = "Create New Manufacturing Goal";
     }
+    this.date = new Date(this.data.present_date);
+    this.dateCtrl = new FormControl(this.date)
     this.rest.getSkus('', '.*',0,0,0,'',5).subscribe(response => {
         this.skuList = response;
         this.skuList.forEach(element => {
@@ -86,18 +102,26 @@ export class NewGoalDialogComponent implements OnInit {
     this.skuNameList = [];
     this.shortname = '';
     this.date = null;
+    this.quantity = null;
   }
 
   addActivity(){
     var hours = this.quantity/this.currentSku['manufacturingrate'];
     let newActivity = new DisplayableActivity(hours, this.currentSku['skuname']);
+    
     this.displayableActivities.push(newActivity);
+    
+    console.log("ACTIVITES: " + JSON.stringify(this.displayableActivities))
     this.rest.createActivity(this.currentSku['_id'], this.quantity, hours, null,new Date(),null).subscribe(response => {
       this.activityIds.push({activity: response['_id']});
+      console.log("IDS: " + JSON.stringify(this.activityIds))
       this.snackBar.open("Successfully created Activity: " + this.currentSku['skuname'] + ".", "close", {
               duration: 2000,
             });
+      this.skuCtrl.setValue(null);
+      this.quantity = null;
     });
+
   }
 
   createGoal() {
@@ -152,5 +176,20 @@ export class NewGoalDialogComponent implements OnInit {
 
   addDate(type:string, event: MatDatepickerInputEvent<Date>){
     this.date = event.value;
+  }
+
+  deleteActivity(activity){
+    this.rest.getActivities(null, 100).subscribe(response => {
+      response.forEach(activityInDatabase => {
+        if(activityInDatabase['sku']['skuname'] == activity.skuname && activityInDatabase['calculatedhours'] == activity.hours){
+          this.rest.deleteActivity(activityInDatabase['sku'], activityInDatabase['numcases'], activityInDatabase['calculatedhours'],activityInDatabase['startdate']).subscribe(response => {
+           let toRemoveActivity =  this.displayableActivities.indexOf(activity);
+           let toRemoveID = this.activityIds.indexOf({activity: activityInDatabase['_id']})
+            this.activityIds.splice(toRemoveID,1);
+           this.displayableActivities.splice(toRemoveActivity, 1);
+          })
+        }
+      })
+    })
   }
 }

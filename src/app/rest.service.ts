@@ -392,14 +392,12 @@ deleteGoal(goalname: String): Observable<any> {
     }, this.generateHeader());
   }
 
-  deleteActivity(sku: number, numcases: number, calculatedhours: number, sethours: number, startdate: Date, line: number){
+  deleteActivity(sku: string, numcases: number, calculatedhours: number, startdate: Date){
     return this.http.delete(endpoint + "manufacturing-activities", this.generateHeader({
       sku: sku,
-      numcases: numcases,
-      calculatedhours: calculatedhours,
-      sethours: sethours,
-      startdate: startdate,
-      line: line
+      numcases: numcases.toString(),
+      calculatedhours: calculatedhours.toString(),
+      startdate: startdate.toString()
     }));
   }
 
