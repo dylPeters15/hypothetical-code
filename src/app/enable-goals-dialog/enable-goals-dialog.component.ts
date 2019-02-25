@@ -47,7 +47,7 @@ export class EnableGoalsDialogComponent implements OnInit {
 
   refreshData() {
     this.rest.getUserName().then(result => {
-      this.rest.getGoals(result.toString(), "", "", true, 5).subscribe(goals => {
+      this.rest.getGoals("", "", ".*", true, 5).subscribe(goals => {
         let enabledGoalsList = [];
         let disabledGoalsList = [];
         goals.forEach(goal => {
