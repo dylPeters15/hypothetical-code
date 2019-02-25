@@ -23,7 +23,8 @@ export class NewSkuFormulaComponent implements OnInit {
   addOnBlue = true;
   seperatorKeysCodes: number[] = [ENTER, COMMA]
   formulaCtrl = new FormControl();
-  filterFormulas: Observable<String[]>;
+  filteredFormulas: Observable<String[]>;
+  selectedFormulaNames: string[] = [];
   formulaNameList: string[] = [];
   formulaList: any = [];
   formulaName: string;
@@ -34,7 +35,7 @@ export class NewSkuFormulaComponent implements OnInit {
   @ViewChild('auto') matAutocomplete: MatAutocomplete;
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: any, private dialogRef: MatDialogRef<NewSkuFormulaComponent>, public rest:RestService, private snackBar: MatSnackBar) {
-    this.filterFormulas = this.formulaCtrl.valueChanges.pipe(
+    this.filteredFormulas = this.formulaCtrl.valueChanges.pipe(
       startWith(null),
       map((formula: string | null) => formula ? this._filter(formula) : this.formulaNameList.slice()));
    }
@@ -54,13 +55,15 @@ export class NewSkuFormulaComponent implements OnInit {
     this.rest.getFormulas('',0,0,5,'.*').subscribe(response => {
       this.formulaList = response;
       this.formulaList.forEach(element => {
-        this.formulaNameList.push(element.formulaName)
+        this.formulaNameList.push(element.formulaname)
       });
     });
   }
 
   closeDialog() {
     this.formulaList = [];
+    this.selectedFormulaNames = [];
+
     //this.amount = 5;
     console.log("Let's send the data back! new ingredient: " + this.formulaName + ". Amount: " + this.scalingFactor);
     this.dialogRef.componentInstance.formulaName = this.formulaName;
@@ -87,6 +90,7 @@ export class NewSkuFormulaComponent implements OnInit {
       // Add our formula
       if ((value || '').trim()) {
         this.formulaName = value.trim();
+        this.selectedFormulaNames.push(value.trim());
       }
 
       // Reset the input value
@@ -100,10 +104,17 @@ export class NewSkuFormulaComponent implements OnInit {
 
   remove(formula: string): void {
     this.formulaName = "";
+    const index = this.selectedFormulaNames.indexOf(formula);
+
+    if (index >= 0) {
+      this.selectedFormulaNames.splice(index, 1);
+    }
   }
   
   selected(event: MatAutocompleteSelectedEvent): void {
     this.formulaName = event.option.viewValue;
+    this.selectedFormulaNames.push(event.option.viewValue);
+
     this.rest.getFormulas(event.option.viewValue, 0,0,5).subscribe(response => {
       var i;
       for(i = 0; i<response.length; i++){
