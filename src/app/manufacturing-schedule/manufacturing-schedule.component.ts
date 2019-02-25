@@ -8,7 +8,7 @@ import { MatDialogRef, MatDialog, MatDialogConfig, MatTableDataSource,MatPaginat
 import {ExportToCsv} from 'export-to-csv';
 import {CdkDragDrop, moveItemInArray, transferArrayItem} from '@angular/cdk/drag-drop';
 
-export class DataForTable{
+export class DataForGoalsTable{
   goalname: string;
   activities: [];
   constructor(goalname, activities){
@@ -16,6 +16,18 @@ export class DataForTable{
     this.activities = activities;
   }
 }
+
+export class DataForLinesTable{
+  shortname: string;
+  activities: [];
+  constructor(shortname, activities){
+    this.shortname = shortname;
+    this.activities = activities;
+  }
+}
+
+
+
 
 @Component({
   selector: 'app-manufacturing-schedule',
@@ -25,10 +37,12 @@ export class DataForTable{
 export class ManufacturingScheduleComponent implements OnInit {
   enableGoalsDialogRef: MatDialogRef<EnableGoalsDialogComponent>;
   modifyActivityDialogRef: MatDialogRef<ModifyActivityDialogComponent>;
-  data: DataForTable[] = [];
-  dataSource = new MatTableDataSource<DataForTable>(this.data);
+  goalsData: DataForGoalsTable[] = [];
+  goalsDataSource = new MatTableDataSource<DataForGoalsTable>(this.goalsData);
   startDate: Date = new Date();
   endDate: Date = new Date(new Date().setUTCFullYear(new Date().getUTCFullYear()+1));
+  linesData: DataForLinesTable[] =[];
+  linesDataSource = new MatTableDataSource<DataForLinesTable>(this.linesData);
 
   constructor(public rest:RestService, private route: ActivatedRoute, private router: Router, private snackBar: MatSnackBar, private dialog: MatDialog) { }
 
@@ -40,7 +54,7 @@ export class ManufacturingScheduleComponent implements OnInit {
 
 
   refreshData() {
-    this.data = [];
+    this.goalsData = [];
     this.rest.getUserName().then(result => {
         this.rest.getGoals(result.toString(), "", "", true, 5).subscribe(goals => {
           goals.forEach(goal => {
@@ -48,19 +62,17 @@ export class ManufacturingScheduleComponent implements OnInit {
             if(goal['enabled']){
             goal['activities'].forEach(activity => {
               activityList.push(activity['activity'])
-            })
-            
-                
-            let goalTable = new DataForTable(goal['goalname'], activityList)
-            this.data.push(goalTable)
+            })                            
+            let goalTable = new DataForGoalsTable(goal['goalname'], activityList)
+            this.goalsData.push(goalTable)
             }
-
-            
         });
-        this.dataSource = new MatTableDataSource<DataForTable>(this.data);
-  
+        this.goalsDataSource = new MatTableDataSource<DataForGoalsTable>(this.goalsData);
       });
-    
+  })
+  this.linesData = [];
+  this.rest.getLine('','.*','','.*',100).subscribe(response => {
+    console.log("RESPONSE: " + JSON.stringify(response))
   })
 }
   modifySelectedActivity(activity) {
