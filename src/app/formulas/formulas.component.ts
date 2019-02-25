@@ -73,7 +73,6 @@ export class FormulaComponent implements OnInit {
       this.dataSource.sort = this.sort;
       this.dataSource.paginator = this.paginator;
     });
-
   }
 
   seeInfo(type, content) {

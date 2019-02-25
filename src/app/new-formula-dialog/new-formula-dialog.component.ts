@@ -25,7 +25,10 @@ export class NewFormulaDialogComponent implements OnInit {
   formulanumber: number = 0;
   ingredientsandquantities: any[];
   comment: string = '';
-  testArray: string[] = ["cowboy", "giraffe", "clone"];
+
+  arrayIngredients: any[];
+  arrayQuantity: any[];
+
   newIngredientDialogRef: MatDialogRef<NewFormulaIngredientDialogComponent>;
   ingredientNameList: any[];
   return_amount: number = 0;
@@ -40,7 +43,11 @@ export class NewFormulaDialogComponent implements OnInit {
     this.formulanumber = this.data.present_formulanumber;
     this.ingredientsandquantities = this.data.present_ingredientsandquantities;
     this.comment = this.data.present_comment;
-    console.log("my test array is " + this.testArray);
+    //console.log("my test array is " + this.testArray);
+    for(let i=0; i<this.ingredientsandquantities.length; i++){
+      this.arrayIngredients.push(this.ingredientsandquantities[i].ingredient);
+      this.arrayQuantity.push(this.ingredientsandquantities[i].quantity);
+    }
 
     // edit == true if formula is being modified, false if a new formula is being created
     if (this.edit == true)
@@ -76,7 +83,7 @@ export class NewFormulaDialogComponent implements OnInit {
 
   addIngredientToFormula(edit, ingredientname, amount) {
     const dialogConfig = new MatDialogConfig();
-    dialogConfig.data = {edit: edit, present_name: ingredientname, present_amount: amount};
+    dialogConfig.data = {edit: edit, present_name: ingredientname, present_amount: amount, present_ingredientsandquantities: this.ingredientsandquantities};
     this.newIngredientDialogRef = this.dialog.open(NewFormulaIngredientDialogComponent, dialogConfig);
     //this.newIngredientDialogRef.componentInstance.amount = this.return_amount;
     //this.newIngredientDialogRef.componentInstance.ingredientNameList = this.ingredientNameList;

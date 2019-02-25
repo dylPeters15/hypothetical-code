@@ -29,6 +29,7 @@ export class NewFormulaIngredientDialogComponent implements OnInit {
   ingredientList: any = [];
   ingredientNameList: string[] = [];
   amount: number = 0;
+  ingredientsandquantities: any[];
 
   @ViewChild('ingredientInput') ingredientInput: ElementRef<HTMLInputElement>;
   @ViewChild('auto') matAutocomplete: MatAutocomplete;
@@ -43,6 +44,7 @@ export class NewFormulaIngredientDialogComponent implements OnInit {
 
     this.edit = this.data.edit;
     this.amount = this.data.present_amount;
+    this.ingredientsandquantities = this.data.present_ingredientsandquantities;
 
     // edit == true if formula is being modified, false if a new formula is being created
     if (this.edit == true)
@@ -50,7 +52,7 @@ export class NewFormulaIngredientDialogComponent implements OnInit {
       this.dialog_title = "Modify Ingredient";
     }
     else this.dialog_title = "Add Ingredient to Formula";
-    console.log("got here mate");
+
     this.rest.getIngredients('','.*',0,5).subscribe(response => {
       this.ingredientList = response;
       this.ingredientList.forEach(element => {
