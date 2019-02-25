@@ -1,20 +1,21 @@
 const database = require('./database.js');
+const mongoose = require('mongoose');
 
 function getFormulas(formulaname, formulanumber, ingredient, limit) {
-
-    formulaname = formulaname||"";
-    formulanumber = formulanumber||-1;
-    ingredient = ingredient||-1;
-    limit = limit || database.defaultSearchLimit;
-    console.log(ingredient)
     return new Promise((resolve, reject) => {
+        console.log(ingredient)
+        var orClause = [];
+        if (formulaname) {
+            orClause.push({ formulaname: formulaname });
+        }
+        if (formulanumber) {
+            orClause.push({ formulanumber: formulanumber });
+        }
+        if (ingredient > 0) {
+            orClause.push({ "ingredientsandquantities.ingredient" : ingredient});
+        }
         var filterSchema = {
-            $or: [
-                { formulaname: formulaname },
-                { formulanumber: formulanumber },
-                // { ingredientsandquantities: { "$in" : [ingredient]} },
-                { "ingredientsandquantities.ingredient" : ingredient}
-            ]
+            $or: orClause
         }
         database.formulaModel.find(filterSchema).limit(limit).populate('ingredientsandquantities.ingredient').exec(function(err, formulas) {
             if(formulas != undefined && formulas != null){
