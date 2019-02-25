@@ -61,9 +61,23 @@ export class ManufacturingLinesTableComponent implements ControlValueAccessor {
                         event.container.data,
                         event.previousIndex,
                         event.currentIndex);
-        // console.log('previous container id',event.previousContainer.id)
-        // console.log('container id',event.container.id)
-        // console.log('container skus',event.container.data)
+        console.log('previous container id',event.previousContainer.id)
+        console.log('container id',event.container.id)
+        console.log('container skus',event.container.data)
+        let activitiesOnLine = event.container.data;
+        this.rest.getLine('','',event.container.id, event.container.id, 1).subscribe(response => {
+          let currentLine = response[0];
+          console.log("LINE: " + JSON.stringify(currentLine))
+          activitiesOnLine.forEach(activity => {
+            console.log(JSON.stringify(activity))
+            this.rest.modifyActivity(activity['sku']['_id'], activity['sku']['_id'], activity['numcases'],activity['calculatedhours'],activity['sethours'], activity['startdate'], currentLine['_id']).subscribe(response => {
+              console.log("Adding activity " + activity['sku']['skuname'] + " to line " + event.container.id)
+              console.log("RESPONSE: " + JSON.stringify(response))
+            })
+          })
+          
+        })
+        
         // this.updateProductLine(event.previousContainer.id, 
         //     event.previousContainer.id, event.previousContainer.data)
         // this.updateProductLine(event.container.id,
