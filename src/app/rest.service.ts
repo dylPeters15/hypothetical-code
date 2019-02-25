@@ -126,7 +126,7 @@ getFormulas(formulaname: string, formulanumber: number, ingredient: number, limi
     formulanameregex: formulanameregex||"$a",
     formulanumber: JSON.stringify(formulanumber||0),
     sku: JSON.stringify(sku||0),
-    ingredient: ""+(ingredient||0),
+    ingredient: (ingredient||"")+"",
     limit: JSON.stringify(limit||20)
   };
 

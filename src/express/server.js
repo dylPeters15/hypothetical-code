@@ -113,8 +113,8 @@ app.route('/users').get((req, res) => {
 ///////////////////// formulas /////////////////////
 
 app.route('/formulas').get((req, res) => {
-    console.log("rest api invoked.");
-    formula_utils.getFormulas(req.headers['formulaname'], req.headers['formulanameregex'], JSON.parse(req.headers['formulanumber']), JSON.parse(req.headers['sku']), JSON.parse(req.headers['ingredient']), JSON.parse(req.headers['limit'])).then(formulas => {
+    console.log("rest api invoked.", req.headers);
+    formula_utils.getFormulas(req.headers['formulaname'], req.headers['formulanameregex'], JSON.parse(req.headers['formulanumber']), req.headers['ingredient'], JSON.parse(req.headers['limit'])).then(formulas => {
         res.send(formulas);
     }).catch(err => {
         resolveError(err, res);
