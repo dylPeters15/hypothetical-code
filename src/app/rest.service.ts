@@ -112,7 +112,7 @@ export class RestService {
   }
 
 ///////////////////// formulas /////////////////////
-getFormulas(formulaname: string, formulanumber: number, sku: number, ingredient: number, limit: number, formulanameregex?: string): Observable<any> {
+getFormulas(formulaname: string, formulanumber: number, ingredient: number, limit: number, formulanameregex?: string, sku?: number): Observable<any> {
   console.log("limit", limit);
   return this.http.get(endpoint + "formulas", this.generateHeader({
     formulaname: formulaname,
@@ -140,7 +140,7 @@ modifyFormula(oldname: string, formulaname: string, formulanumber: number, ingre
     formulaname: formulaname,
     formulanumber: formulanumber,
     ingredientsandquantities: ingredientsandquantities,
-    comment: comment
+    comment: comment||""
   },
   this.generateHeader({
     formulaname: oldname

@@ -65,7 +65,7 @@ export class FormulaComponent implements OnInit {
 
   refreshData(filterQueryData?) {
     filterQueryData = filterQueryData ? ".*"+filterQueryData+".*" : ".*"+this.filterQuery+".*"; //this returns things that have the pattern anywhere in the string
-    this.rest.getFormulas("", null, null, null, this.paginator.pageSize*10,filterQueryData).subscribe(response => {
+    this.rest.getFormulas("", null, null, this.paginator.pageSize*10,filterQueryData, null).subscribe(response => {
       console.log("in formula: ", response);
       this.data = response;
       this.data.forEach(user => {
