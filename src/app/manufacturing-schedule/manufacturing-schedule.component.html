@@ -8,9 +8,9 @@
         <button mat-raised-button (click)="openEnableGoalsDialog()"> Enable/Disable Goals </button>
     </div>
     <div class="manufacturing-lines-container">
-        <div *ngFor="let line of linesDataSource['data']">
+        <ng-container *ngFor="let line of linesDataSource['data']">
             <app-manufacturing-lines-table class="lines" [(ngModel)]="line"></app-manufacturing-lines-table>
-        </div>
+        </ng-container>
     </div>
     
 </div>
