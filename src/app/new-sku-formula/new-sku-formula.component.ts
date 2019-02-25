@@ -25,11 +25,11 @@ export class NewSkuFormulaComponent implements OnInit {
   formulaCtrl = new FormControl();
   filterFormulas: Observable<String[]>;
   formulaNameList: string[] = [];
+  formulaList: any = [];
 
 
   selectedIngredientNames: string[] = [];
   selectedIngredients: any = [];
-  ingredientList: any = [];
   ingredientName: string;
   amount: number = 0;
   ingredientsandquantities: any[];
@@ -56,10 +56,10 @@ export class NewSkuFormulaComponent implements OnInit {
     }
     else this.dialog_title = "Add SKU's Formula";
 
-    this.rest.getIngredients('','.*',0,5).subscribe(response => {
-      this.ingredientList = response;
-      this.ingredientList.forEach(element => {
-        this.ingredientNameList.push(element.ingredientname)
+    this.rest.getFormulas('','.*',0,5).subscribe(response => {
+      this.formulaList = response;
+      this.formulaList.forEach(element => {
+        this.formulaNameList.push(element.ingredientname)
       });
     });
   }
