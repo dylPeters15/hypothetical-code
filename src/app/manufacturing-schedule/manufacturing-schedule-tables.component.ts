@@ -2,9 +2,9 @@ import { Component, Input, forwardRef, Inject } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import {CdkDragDrop, moveItemInArray, transferArrayItem} from '@angular/cdk/drag-drop';
 import { RestService } from '../rest.service';
-import { MatDialog, MatDialogRef, MatTableDataSource, MatPaginator } from "@angular/material";
-import {NewProductLineDialogComponent } from '../new-product-line-dialog/new-product-line-dialog.component';
-import {MatIconModule} from '@angular/material/icon'
+import { MatDialog, MatDialogRef, MatDialogConfig, MatTableDataSource, MatPaginator } from "@angular/material";
+import { ModifyActivityDialogComponent } from '../modify-activity-dialog/modify-activity-dialog.component'
+
 
 const customValueProvider = {
   provide: NG_VALUE_ACCESSOR,
@@ -20,6 +20,8 @@ const customValueProvider = {
 })
 export class ManufactoringScheduleTableComponent implements ControlValueAccessor {
 
+
+  modifyActivityDialogRef: MatDialogRef<ModifyActivityDialogComponent>;
   constructor(public rest: RestService, public dialog: MatDialog) { }
   _value = '';
   stringified = '';
@@ -44,7 +46,20 @@ export class ManufactoringScheduleTableComponent implements ControlValueAccessor
     this.stringified = JSON.stringify(event.target.value);
     this.propagateChange(event.target.value);
   }
-  
+
+  modifySelectedActivity(activity) {
+    this.modifyManufacturingActivityConfirmed(activity); 
+    }
+
+    modifyManufacturingActivityConfirmed(activity) {
+      const dialogConfig = new MatDialogConfig();
+      dialogConfig.data = {activity: activity};
+      this.modifyActivityDialogRef = this.dialog.open(ModifyActivityDialogComponent, dialogConfig);
+      this.modifyActivityDialogRef.afterClosed().subscribe(event => {
+        // this.refreshData();
+      });
+    }
+
   drop(event: CdkDragDrop<string[]>) {
     console.log('previous container id',event.previousContainer)
     console.log('container id',event.container)
