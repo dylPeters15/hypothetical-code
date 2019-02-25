@@ -1,7 +1,8 @@
 
 <div class="manufacturing-schedule-container">
     <div class="manufacturing-goals-container">
-        <div cdkDropListGroup class='manufacturing-goals-list'>
+        <!-- <div cdkDropListGroup class='manufacturing-goals-list'> -->
+        <div class='manufacturing-goals-list'>
             <div *ngFor="let goals of goalsDataSource['data']">
                 <app-manufacturing-schedule-tables class="goals" [(ngModel)]="goals"></app-manufacturing-schedule-tables>
             </div>

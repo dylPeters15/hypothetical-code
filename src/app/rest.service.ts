@@ -383,6 +383,7 @@ deleteSku(skuName: String): Observable<any> {
   }
 
   modifyActivity(sku: string, newsku: string, numcases: number, calculatedhours: number, sethours: number, startdate: Date, line: number){
+    console.log("rest set", sethours)
     return this.http.post(endpoint + 'manufacturing-activities',{
       sku: newsku,
       numcases: numcases,
