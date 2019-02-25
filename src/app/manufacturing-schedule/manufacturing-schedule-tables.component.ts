@@ -56,7 +56,7 @@ export class ManufactoringScheduleTableComponent implements ControlValueAccessor
       dialogConfig.data = {activity: activity};
       this.modifyActivityDialogRef = this.dialog.open(ModifyActivityDialogComponent, dialogConfig);
       this.modifyActivityDialogRef.afterClosed().subscribe(event => {
-        // this.refreshData();
+        // ngOnInit();
       });
     }
 

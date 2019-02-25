@@ -10,7 +10,7 @@
         class="activity-list"
         (cdkDropListDropped)="drop($event)">
         <div class="example-box" *ngFor="let activity of _value['activities']" cdkDrag>
-            SKU: {{activity['sku']['skuname']}} Hours Required: {{activity['calculatedhours']}}          
+            SKU: {{activity['sku']['skuname']}} Hours Required: {{activity['sethours'] != null ? activity['sethours'] : activity['calculatedhours']}}          
             <button mat-button (click)="modifySelectedActivity(activity)" >
                 <mat-icon>edit</mat-icon> 
             </button>
