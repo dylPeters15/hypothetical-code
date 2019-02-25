@@ -62,7 +62,9 @@ export class ManufacturingScheduleComponent implements OnInit {
             if(goal['enabled']){
             goal['activities'].forEach(activity => {
               activityList.push(activity['activity'])
-            })                            
+            })
+            
+                
             let goalTable = new DataForGoalsTable(goal['goalname'], activityList)
             this.goalsData.push(goalTable)
             }
