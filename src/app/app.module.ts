@@ -58,6 +58,7 @@ import { ManufacturingLinesComponent } from './manufacturing-lines/manufacturing
 import { ManufacturingScheduleComponent } from './manufacturing-schedule/manufacturing-schedule.component';
 import { DeleteProductLineDialogComponent } from './delete-product-line-dialog/delete-product-line-dialog.component';
 import { ManufacturingScheduleReportComponent } from './manufacturing-schedule-report/manufacturing-schedule-report.component';
+import { ManufactoringScheduleTableComponent } from './manufacturing-schedule/manufacturing-schedule-tables.component';
 import {MatDatepickerModule} from '@angular/material/datepicker';
 import { ManufacturingScheduleReportLineTableComponent } from './manufacturing-schedule-report/manufacturing-schedule-report-line-table/manufacturing-schedule-report-line-table.component';
 import { ManufacturingScheduleReportIngredientTableComponent } from './manufacturing-schedule-report/manufacturing-schedule-report-ingredient-table/manufacturing-schedule-report-ingredient-table.component';
@@ -130,6 +131,7 @@ const appRoutes: Routes = [
     ManufacturingScheduleReportIngredientTableComponent,
     EnableGoalsDialogComponent,
     ModifyActivityDialogComponent,
+    ManufactoringScheduleTableComponent
   ],
   imports: [
     BrowserModule,
