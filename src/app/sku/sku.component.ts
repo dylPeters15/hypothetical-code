@@ -80,16 +80,16 @@ export class SkuComponent  implements OnInit {
   }
 
   refreshData() {
-    // this.rest.getSkus().subscribe(response => {
-    //   this.data = response;
-    //   this.data.forEach(user => {
-    //     user['checked'] = false;
-    //   });
-    //   console.log(this.data);
-    //   this.dataSource =  new MatTableDataSource<UserForTable>(this.data);
-    //   this.dataSource.sort = this.sort;
-    // this.dataSource.paginator = this.paginator;
-    // });
+    this.rest.getSkus("",".*",null,null,null,"",100).subscribe(response => {
+      this.data = response;
+      this.data.forEach(user => {
+        user['checked'] = false;
+      });
+      console.log(this.data);
+      this.dataSource =  new MatTableDataSource<UserForTable>(this.data);
+      this.dataSource.sort = this.sort;
+    this.dataSource.paginator = this.paginator;
+    });
     
   }
 
