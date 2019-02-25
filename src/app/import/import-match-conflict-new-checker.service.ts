@@ -73,7 +73,7 @@ export class ImportMatchConflictNewCheckerService {
   private checkSKUMatchConflictNew(sku, toReturn): Promise<any> {
     return new Promise((resolve, reject) => {
       console.log(sku);
-      this.rest.getSkus(sku['skuname'],"$a", sku['skunumber'], -1, -1, "-1", 1).subscribe(response => {
+      this.rest.getSkus(sku['skuname'],"$a", sku['skunumber'], 100, 100, "", 1).subscribe(response => {
         if (response.length == 0) {
           toReturn['new'].push(sku);
           resolve();
@@ -252,7 +252,7 @@ export class ImportMatchConflictNewCheckerService {
 
   private checkFormulaMatchConflictNew(formula, toReturn): Promise<any> {
     return new Promise((resolve, reject) => {
-      this.rest.getFormulas(formula['formulaname'], null, null, 1).subscribe(response => {
+      this.rest.getFormulas(formula['formulaname'], formula['formulanumber'], null, 1).subscribe(response => {
         if (response.length == 0) {
           toReturn['new'].push(formula);
           resolve();
