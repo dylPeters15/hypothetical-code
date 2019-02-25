@@ -121,7 +121,8 @@ getFormulas(formulaname: string, formulanumber: number, sku: number, ingredient:
   }));
 }
 
-createFormula(formulaname: string, formulanumber: number, ingredientsandquantities: any[], comment: string): Observable<any> {
+createFormula(formulaname: String, formulanumber: Number, ingredientsandquantities: any[], comment: String): Observable<any> {
+  console.log("in the rest api!");
   return this.http.put(endpoint + "formulas", {
     formulaname: formulaname,
     formulanumber: formulanumber,
@@ -136,7 +137,7 @@ modifyFormula(oldname: string, formulaname: string, formulanumber: number, ingre
     formulaname: formulaname,
     formulanumber: formulanumber,
     ingredientsandquantities: ingredientsandquantities,
-    comment: comment||""
+    comment: comment
   },
   this.generateHeader({
     formulaname: oldname

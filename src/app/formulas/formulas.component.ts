@@ -9,7 +9,7 @@ import { auth } from '../auth.service';
 import {ExportToCsv} from 'export-to-csv';
 import { ingredienttuple } from "../new-formula-dialog/ingredienttuple";
 
-export interface UserForTable {
+export interface FormulaForTable {
   formulaname: String;
   formulanumber: Number;
   ingredientsandquantities: any[];
@@ -22,11 +22,11 @@ export class ExportableFormula {
   formulanumber: Number;
   ingredientsandquantities: any[];
   comment: String;
-  constructor(userForTable){
-    this.formulaname = userForTable.formulaname;
-    this.formulanumber = userForTable.formulanumber;
-    this.ingredientsandquantities = userForTable.ingredientsandquantities;
-    this.comment = userForTable.comment;
+  constructor(FormulaForTable){
+    this.formulaname = FormulaForTable.formulaname;
+    this.formulanumber = FormulaForTable.formulanumber;
+    this.ingredientsandquantities = FormulaForTable.ingredientsandquantities;
+    this.comment = FormulaForTable.comment;
   }
 }
 
@@ -44,10 +44,10 @@ export class FormulaComponent implements OnInit {
   constructor(public rest:RestService, private snackBar: MatSnackBar, private dialog: MatDialog) { }
   allReplacement = 54321;
   displayedColumns: string[] = ['checked', 'formulaname', 'formulanumber','ingredientsandquantities', 'comment'];
-  data: UserForTable[] = [];
+  data: FormulaForTable[] = [];
   dialogRef: MatDialogRef<MoreInfoDialogComponent>;
   newDialogRef: MatDialogRef<NewFormulaDialogComponent>;
-  dataSource =  new MatTableDataSource<UserForTable>(this.data);
+  dataSource =  new MatTableDataSource<FormulaForTable>(this.data);
   admin: boolean = false;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
@@ -61,18 +61,19 @@ export class FormulaComponent implements OnInit {
     return [5, 10, 20, this.allReplacement];
   }
 
-  refreshData() {
-    // this.rest.getSkus().subscribe(response => {
-    //   this.data = response;
-    //   this.data.forEach(user => {
-    //     user['checked'] = false;
-    //   });
-    //   console.log(this.data);
-    //   this.dataSource =  new MatTableDataSource<UserForTable>(this.data);
-    //   this.dataSource.sort = this.sort;
-    // this.dataSource.paginator = this.paginator;
-    // });
-    
+  refreshData(filterQueryData?) {
+    //filterQueryData = filterQueryData ? ".*"+filterQueryData+".*" : ".*"+this.filterQuery+".*"; //this returns things that have the pattern anywhere in the string
+    this.rest.getFormulas("", 1, 1, 1, this.paginator.pageSize*10).subscribe(response => {
+      this.data = response;
+      this.data.forEach(user => {
+        user['checked'] = false;
+      });
+      console.log(this.data);
+      this.dataSource =  new MatTableDataSource<FormulaForTable>(this.data);
+      this.dataSource.sort = this.sort;
+      this.dataSource.paginator = this.paginator;
+    });
+
   }
 
   seeInfo(type, content) {

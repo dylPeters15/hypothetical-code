@@ -86,8 +86,7 @@ export class NewFormulaDialogComponent implements OnInit {
       var new_ingredient = new_ingredient_list[0];
       var new_amount = this.newIngredientDialogRef.componentInstance.amount;
       var new_objectid;
-      console.log("okay we are back again. ingredients: " + new_ingredient_list + ", amount: " +  new_amount);
-
+      console.log("okay we are back again. ingredient: " + new_ingredient + ", amount: " +  new_amount);
 
       // get object id from ingredient name
       this.rest.getIngredients(new_ingredient,"", 0, 1).subscribe(response => {
@@ -98,41 +97,18 @@ export class NewFormulaDialogComponent implements OnInit {
         } 
         else {
           console.log("located the ingredient. " + response);
-          new_objectid = response.ObjectId;
+          new_objectid = response[0]['_id'];
+          console.log("mah object id fam " + new_objectid);
           let new_ingredienttuple = new ingredienttuple();
-          new_ingredienttuple.create({
-            ingredient: new_objectid,
-            quantity: new_amount,
-          });
+          //new_ingredienttuple.create({
+          //  ingredient: new_objectid,
+          //  quantity: new_amount,
+         // });
+          new_ingredienttuple.ingredient = new_objectid;
+          new_ingredienttuple.quantity = new_amount;
           console.log("ingredientsandquantities: " + this.ingredientsandquantities + ", newIngredient:" + new_ingredienttuple);
           this.ingredientsandquantities.push(new_ingredienttuple);
           console.log("ingredients and quantities are now " + this.ingredientsandquantities);
-          if (edit == true) // we are modifying the formula
-          {
-            console.log("Modify formula");
-            this.rest.modifyFormula(this.formulaname, this.formulaname, this.formulanumber, this.ingredientsandquantities, this.comment).subscribe(response => {
-              if (response['ok'] == 1) {
-                this.refreshData();
-              } else {
-                this.snackBar.open("Error adding ingredient.", "close", {
-                  duration: 2000,
-                    });
-              }
-            });
-          }
-          else // we are adding a new formula
-          {
-            console.log("Create new formula");
-            this.rest.createFormula(this.formulaname, this.formulanumber, this.ingredientsandquantities, this.comment).subscribe(response => {
-              if (response['ok'] == 1) {
-                this.refreshData();
-              } else {
-                this.snackBar.open("Error adding ingredient.", "close", {
-                  duration: 2000,
-                    });
-              }
-            });
-          }
         }
         });
         });
@@ -148,13 +124,19 @@ export class NewFormulaDialogComponent implements OnInit {
     console.log("we in here now, and edit is: " + this.edit);
     if (this.edit == false)
     {
-      console.log("We're creating a new formula");
+      console.log("We're creating a new formula.");
+      console.log("name: " + this.formulaname);
+      console.log("formulanumber: " + this.formulanumber);
+      console.log("ingredientsandquantities: " + this.ingredientsandquantities);
+      console.log("comment: " + this.comment);
+
       this.rest.createFormula(this.formulaname, this.formulanumber, this.ingredientsandquantities, this.comment).subscribe(response => {
-        if (response['success']) {
+        if (response['_id']) {
                this.snackBar.open("Successfully created formula " + this.formulaname + ".", "close", {
                  duration: 2000,
                });
              } else {
+               console.log("something went very wrong. response: " + response.data);
                this.snackBar.open("Error creating formula " + this.formulaname + ". Please refresh and try again.", "close", {
                  duration: 2000,
                });
@@ -178,5 +160,6 @@ export class NewFormulaDialogComponent implements OnInit {
          this.closeDialog();
        });
     }
+    this.refreshData();
   }
 }

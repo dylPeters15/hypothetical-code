@@ -1,6 +1,5 @@
-
-import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
-import { MatDialogRef} from "@angular/material";
+import { Component, OnInit, ElementRef, ViewChild, Inject } from '@angular/core';
+import { MatDialogRef, MAT_DIALOG_DATA} from "@angular/material";
 import { RestService } from '../rest.service';
 import {MatSnackBar, MatAutocompleteSelectedEvent, MatChipInputEvent, MatAutocomplete} from '@angular/material';
 import {FormControl} from '@angular/forms';
@@ -14,6 +13,7 @@ import {COMMA, ENTER} from '@angular/cdk/keycodes';
   styleUrls: ['./new-line-dialog.component.css']
 })
 export class NewLineDialogComponent implements OnInit {
+  dialog_title: String;
   visible = true;
   selectable = true;
   removable = true;
@@ -23,22 +23,38 @@ export class NewLineDialogComponent implements OnInit {
   filteredSkus: Observable<String[]>;
   linename: string = '';
   shortname: string = '';
+  selectedSkuNames: string[] = [];
   selectedSkus: any = [];
   comment: string = '';
   skuList: any = [];
-  skuNameList: String[] = [];
+  skuNameList: string[] = [];
+  edit: Boolean;
 
   @ViewChild('skuInput') skuInput: ElementRef<HTMLInputElement>;
   @ViewChild('auto') matAutocomplete: MatAutocomplete;
 
-  constructor(private dialogRef: MatDialogRef<NewLineDialogComponent>, public rest:RestService, private snackBar: MatSnackBar) { 
+  constructor(@Inject(MAT_DIALOG_DATA) public data: any, private dialogRef: MatDialogRef<NewLineDialogComponent>, public rest:RestService, private snackBar: MatSnackBar) { 
     this.filteredSkus = this.skuCtrl.valueChanges.pipe(
       startWith(null),
       map((sku: string | null) => sku ? this._filter(sku) : this.skuNameList.slice()));
   }
 
   ngOnInit() {
-    this.rest.getSkus('Tomato Soup',2,1395233994,163728391922,'5c6b4d269e971610f3e09f93',5).subscribe(response => {
+    this.edit = this.data.edit;
+    this.linename = this.data.present_linename;
+    this.shortname = this.data.present_shortname;
+    // this.selectedSkus = this.data.present_skus;
+    this.comment = this.data.present_comment;
+    console.log("EDIT: " + this.edit)
+    // edit == true if sku is being modified, false if a new sku is being created
+    if (this.edit == true)
+    {
+      this.dialog_title = "Modify Product Line";
+    }
+    else {
+      this.dialog_title = "Create New Product Line";
+    }
+    this.rest.getSkus('', '.*',0,0,0,'',5).subscribe(response => {
         this.skuList = response;
         this.skuList.forEach(element => {
           this.skuNameList.push(element.skuname)
@@ -49,25 +65,36 @@ export class NewLineDialogComponent implements OnInit {
   closeDialog() {
     this.dialogRef.close();
     this.linename = '';
+    this.selectedSkuNames = [];
+    this.skuList = [];
     this.selectedSkus = [];
+    this.skuNameList = [];
     this.shortname = '';
     this.comment = '';
   }
 
   createLine() {
-    this.rest.createLine(this.linename, this.shortname, this.selectedSkus, this.comment).subscribe(response => {
-      if (response['success']) {
+    if(this.edit == false){
+      this.rest.createLine(this.linename, this.shortname, this.selectedSkus, this.comment).subscribe(response => {
         this.snackBar.open("Successfully created Line: " + this.linename + ".", "close", {
           duration: 2000,
         });
-      } else {
-        console.log(response);
-        this.snackBar.open("Error creating Line: " + this.linename + ". Please refresh and try again.", "close", {
+      //   console.log(response);
+      //   this.snackBar.open("Error creating Line: " + this.linename + ". Please refresh and try again.", "close", {
+      //     duration: 2000,
+      //   });
+      // }
+        this.closeDialog();
+      });
+    }
+    else{
+      this.rest.modifyLine(this.data.present_linename, this.linename, this.shortname, this.selectedSkus, this.comment).subscribe(response => {
+        this.snackBar.open("Successfully modified Line: " + this.linename + ".", "close", {
           duration: 2000,
         });
-      }
-      this.closeDialog();
-    });
+        this.closeDialog();
+      });
+    }
   }
 
   add(event: MatChipInputEvent): void {
@@ -77,10 +104,10 @@ export class NewLineDialogComponent implements OnInit {
       const input = event.input;
       const value = event.value;
 
+
       // Add our sku
       if ((value || '').trim()) {
-        console.log("adding: " + value.trim());
-        this.selectedSkus.push(value.trim());
+        this.selectedSkuNames.push(value.trim());
       }
 
       // Reset the input value
@@ -93,15 +120,24 @@ export class NewLineDialogComponent implements OnInit {
   }
 
   remove(sku: string): void {
-    const index = this.selectedSkus.indexOf(sku);
+    const index = this.selectedSkuNames.indexOf(sku);
 
     if (index >= 0) {
-      this.selectedSkus.splice(index, 1);
+      this.selectedSkuNames.splice(index, 1);
     }
   }
 
   selected(event: MatAutocompleteSelectedEvent): void {
-    this.selectedSkus.push(event.option.viewValue);
+    this.selectedSkuNames.push(event.option.viewValue);
+    console.log(event.option.viewValue)
+    this.rest.getSkus(event.option.viewValue, '', 0,0,0,'',5).subscribe(response => {
+      var i;
+      for(i = 0; i<response.length; i++){
+        this.selectedSkus.push({sku: response[i]['_id']})
+      }
+
+      
+    });
     this.skuInput.nativeElement.value = '';
     this.skuCtrl.setValue(null);
   }
@@ -109,6 +145,6 @@ export class NewLineDialogComponent implements OnInit {
   private _filter(value: string): string[] {
     const filterValue = value.toLowerCase();
 
-    return this.skuList.filter(sku => sku.toLowerCase().indexOf(filterValue) === 0);
+    return this.skuNameList.filter(sku => sku.toLowerCase().indexOf(filterValue) === 0);
   }
 }
