@@ -3,7 +3,6 @@ import {HttpClient} from '@angular/common/http';
 import { RestService } from '../rest.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { EnableGoalsDialogComponent } from '../enable-goals-dialog/enable-goals-dialog.component'
-import { ModifyActivityDialogComponent } from '../modify-activity-dialog/modify-activity-dialog.component'
 import { MatDialogRef, MatDialog, MatDialogConfig, MatTableDataSource,MatPaginator, MatSnackBar } from "@angular/material";
 import {ExportToCsv} from 'export-to-csv';
 import {CdkDragDrop, moveItemInArray, transferArrayItem} from '@angular/cdk/drag-drop';
@@ -24,7 +23,6 @@ export class DataForGoalsTable{
 })
 export class ManufacturingScheduleComponent implements OnInit {
   enableGoalsDialogRef: MatDialogRef<EnableGoalsDialogComponent>;
-  modifyActivityDialogRef: MatDialogRef<ModifyActivityDialogComponent>;
   goalsData: DataForGoalsTable[] = [];
   goalsDataSource = new MatTableDataSource<DataForGoalsTable>(this.goalsData);
   startDate: Date = new Date();
@@ -58,26 +56,12 @@ export class ManufacturingScheduleComponent implements OnInit {
             
         });
         this.goalsDataSource = new MatTableDataSource<DataForGoalsTable>(this.goalsData);
-  
+        console.log(this.goalsDataSource)
       });
     
   })
 }
-  modifySelectedActivity(activity) {
-    this.modifyManufacturingActivityConfirmed(activity); 
-    }
-
-    modifyManufacturingActivityConfirmed(activity) {
-      const dialogConfig = new MatDialogConfig();
-      dialogConfig.data = {activity: activity};
-      this.modifyActivityDialogRef = this.dialog.open(ModifyActivityDialogComponent, dialogConfig);
-      this.modifyActivityDialogRef.afterClosed().subscribe(event => {
-        this.refreshData();
-      });
-    }
-
-
-
+  
   openEnableGoalsDialog() {
     const dialogConfig = new MatDialogConfig();
     this.enableGoalsDialogRef = this.dialog.open(EnableGoalsDialogComponent, dialogConfig);

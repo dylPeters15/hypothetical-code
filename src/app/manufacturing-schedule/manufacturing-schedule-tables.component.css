@@ -1,7 +1,8 @@
 .example-container {
-    margin: 0 25px 25px 0;
+    margin: 12px 12px 12px 0;
     display: inline-block;
     vertical-align: top;
+    width: 200px;
   }
 
 .activity-list {
