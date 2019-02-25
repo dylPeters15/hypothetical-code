@@ -4,10 +4,10 @@ import { auth } from './auth.service'
 import { Observable } from 'rxjs';
 import { start } from 'repl';
 
-const endpoint = 'https://vcm-8238.vm.duke.edu:8443/'; // Ben
+// const endpoint = 'https://vcm-8238.vm.duke.edu:8443/'; // Ben
 // const endpoint = 'https://vcm-8405.vm.duke.edu:8443/'; // Noah
 // const endpoint = 'https://vcm-8205.vm.duke.edu:8443/'; // Prod
-// const endpoint = 'https://localhost:8443/'; // localhost
+const endpoint = 'https://localhost:8443/'; // localhost
 
 @Injectable({
   providedIn: 'root'
@@ -112,11 +112,10 @@ export class RestService {
   }
 
   ///////////////////// formulas /////////////////////
-  getFormulas(formulaname: string, formulanumber: number, sku: number, ingredient: number, limit: number): Observable<any> {
+  getFormulas(formulaname: string, formulanumber: number, ingredient: number, limit: number): Observable<any> {
     return this.http.get(endpoint + "formulas", this.generateHeader({
       formulaname: formulaname,
       formulanumber: JSON.stringify(formulanumber),
-      sku: JSON.stringify(sku),
       ingredient: JSON.stringify(ingredient),
       limit: JSON.stringify(limit)
     }));
@@ -152,14 +151,15 @@ export class RestService {
   }
 
  ///////////////////// skus /////////////////////
- getSkus(skuName: String, skunameregex: String, skuNumber: number, caseUpcNumber: number, unitUpcNumber: number, formulaNumber: String, limit: number): Observable<any> {
+ getSkus(skuName: String, skunameregex: String, skuNumber: number, caseUpcNumber: number, unitUpcNumber: number, formula: String, limit: number): Observable<any> {
+   console.log("formula number rest", formula)
   return this.http.get(endpoint + "skus", this.generateHeader({
     skuname: skuName,
     skunameregex: skunameregex,
     skunumber: JSON.stringify(skuNumber),
     caseupcnumber: JSON.stringify(caseUpcNumber),
     unitupcnumber: JSON.stringify(unitUpcNumber),
-    formulanumber: formulaNumber,
+    formula: formula,
     limit: JSON.stringify(limit)
   }));
 }

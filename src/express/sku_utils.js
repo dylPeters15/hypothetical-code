@@ -2,14 +2,15 @@ const database = require('./database.js');
 const formula_utils = require('./formula_utils.js');
 
 
-function getSkus(skuname, skunameregex, skunumber, caseupcnumber, unitupcnumber, formulanumber, limit) {
+function getSkus(skuname, skunameregex, skunumber, caseupcnumber, unitupcnumber, formula, limit) {
     skuname = skuname || "";
     skunameregex = skunameregex || "$a";
     skunumber = skunumber || -1;
     caseupcnumber = caseupcnumber || -1;
     unitupcnumber = unitupcnumber || -1;
-    formulanumber = formulanumber || "";
+    formula = formula || "";
     limit = (limit != 0) ? limit : database.defaultSearchLimit;
+    console.log("formula ", formula)
     return new Promise(function (resolve, reject) {
         const filterSchema = {
             $or: [
@@ -18,7 +19,7 @@ function getSkus(skuname, skunameregex, skunumber, caseupcnumber, unitupcnumber,
                 { skunumber: skunumber },
                 { caseupcnumber: caseupcnumber },
                 { unitupcnumber: unitupcnumber },
-                { formulanumber: formulanumber },
+                { formula: formula },
 
             ]
         }
@@ -70,7 +71,7 @@ function createSku(name, number, case_upc, unit_upc, unit_size, count, formulanu
                     }
                     // newingredientnumber = ingredientnumber || Number(response);
 
-                    formula_utils.getFormulas("",formulanum,null,null,1).then(response => {
+                    formula_utils.getFormulas("",formulanum,null,1).then(response => {
                         if (response.length == 0) {
                             reject(Error("Could not find formula " + formulanum + " for SKU " + name));
                         } else {
@@ -110,7 +111,7 @@ function createSku(name, number, case_upc, unit_upc, unit_size, count, formulanu
 function modifySku(oldName, name, number, case_upc, unit_upc, unit_size, count, formulanum, formulascalingfactor, manufacturingrate, comment) {
 
     return new Promise(function (resolve, reject) {
-        formula_utils.getFormulas("",formulanum,null,null,1).then(response => {
+        formula_utils.getFormulas("",formulanum,null,1).then(response => {
             if (response.length == 0) {
                 reject(Error("Could not find formula " + formulanum + " for SKU " + name));
             } else {

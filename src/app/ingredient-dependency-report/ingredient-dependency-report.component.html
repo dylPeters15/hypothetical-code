@@ -5,28 +5,28 @@
       </mat-card-header>
       <mat-card-content>
         <mat-form-field>
-          <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter">
+          <input matInput placeholder="Filter" [(ngModel)]="filterQuery" (ngModelChange)="refreshData($event)">
         </mat-form-field>
         <table mat-table [dataSource]="dataSource" matSort (matSortChange)="sortData($event)" class="mat-elevation-z8">
         
           <ng-container matColumnDef="ingredientName">
             <th mat-header-cell *matHeaderCellDef mat-sort-header> Ingredient Name </th>
-            <td mat-cell *matCellDef="let ingredient"> {{ingredient.name}} </td>
+            <td mat-cell *matCellDef="let ingredient"> {{ingredient.ingredientname}} </td>
           </ng-container>
 
           <ng-container matColumnDef="ingredientNumber">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header> Ingredient Number </th>
-            <td mat-cell *matCellDef="let ingredient"> {{ingredient.number}} </td>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Ingr# </th>
+            <td mat-cell *matCellDef="let ingredient"> {{ingredient.ingredientnumber}} </td>
           </ng-container>
         
           <ng-container matColumnDef="numberSKUs">
             <th mat-header-cell *matHeaderCellDef mat-sort-header> Number of SKUs </th>
-            <td mat-cell *matCellDef="let ingredient"> {{ingredient.skus.length}} </td>
+            <td mat-cell *matCellDef="let ingredient" > {{ingredient.skus.length}} </td>
           </ng-container>
         
           <ng-container matColumnDef="SKUs">
             <th mat-header-cell *matHeaderCellDef mat-sort-header> SKUs </th>
-            <td mat-cell *matCellDef="let ingredient"> {{ingredient.skus}} </td>
+            <td mat-cell *matCellDef="let ingredient" > {{ingredient.skus.toString()}} </td>
           </ng-container>
         
           <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
