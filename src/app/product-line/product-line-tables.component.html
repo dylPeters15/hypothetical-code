@@ -1,8 +1,12 @@
 <div class="example-container">
-  <button mat-button (click)="modifyName($event)">
+  <button mat-button (click)="modifyName($event)" *ngIf="admin">
      {{_value['productlinename']}} <mat-icon>edit</mat-icon> 
     </button> 
-  <div
+
+  <h2 *ngIf="!admin">
+    {{_value['productlinename']}}
+  </h2> 
+  <div *ngIf="admin"
     cdkDropList
     [id]="_value['productlinename']"
     #productLineList="cdkDropList"
@@ -10,5 +14,9 @@
     class="example-list"
     (cdkDropListDropped)="drop($event)">
     <div class="example-box" *ngFor="let item of _value['skus']" cdkDrag>{{item['sku']['skuname']}}</div>
+  </div>
+  <div *ngIf="!admin"
+  class="example-list">
+    <div class="example-box" *ngFor="let item of _value['skus']">{{item['sku']['skuname']}}</div>
   </div>
 </div>

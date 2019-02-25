@@ -4,9 +4,9 @@
           <mat-card-title>Formulas</mat-card-title>
       </mat-card-header>
       <mat-card-content>
-          <button mat-raised-button *ngIf="admin" (click)="selectAll()" style="color: white; background-color: green;"> Select All </button>
-          <button mat-raised-button *ngIf="admin" (click)="deselectAll()" style="color: white; background-color: green;" > Deselect All </button>
-          <button mat-raised-button *ngIf="admin" (click)="exportSelected()" style="color: white; background-color: green;" > Export Selected </button>
+          <button mat-raised-button (click)="selectAll()" style="color: white; background-color: green;"> Select All </button>
+          <button mat-raised-button (click)="deselectAll()" style="color: white; background-color: green;" > Deselect All </button>
+          <button mat-raised-button (click)="exportSelected()" style="color: white; background-color: green;" > Export Selected </button>
           <button mat-raised-button *ngIf="admin" (click)="deleteSelected()" style="color: white; background-color: red;" > Delete Selected </button>
           <button mat-raised-button *ngIf="admin" (click)="modifySelected()" style="color: white; background-color: red;" > Modify Selected </button>
           <button mat-raised-button *ngIf="admin" (click)="newFormulaButton()" style="color: white; background-color: orange;" > New Formula </button>          

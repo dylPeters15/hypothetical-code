@@ -1,10 +1,11 @@
-import { Component, Input, forwardRef, Inject } from '@angular/core';
+import { Component, Input, forwardRef, Inject, OnInit } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import {CdkDragDrop, moveItemInArray, transferArrayItem} from '@angular/cdk/drag-drop';
 import { RestService } from '../rest.service';
 import { MatDialog, MatDialogRef, MatTableDataSource, MatPaginator } from "@angular/material";
 import {NewProductLineDialogComponent } from '../new-product-line-dialog/new-product-line-dialog.component';
 import {MatIconModule} from '@angular/material/icon'
+import { auth } from '../auth.service';
 
 const customValueProvider = {
   provide: NG_VALUE_ACCESSOR,
@@ -18,9 +19,16 @@ const customValueProvider = {
   styleUrls: ['./product-line-tables.component.css'],
   providers: [customValueProvider]
 })
-export class ProductLineTablesComponent implements ControlValueAccessor {
+export class ProductLineTablesComponent implements ControlValueAccessor, OnInit {
+
+  admin: boolean = false;
 
   constructor(public rest: RestService, public dialog: MatDialog) { }
+
+  ngOnInit() {
+    this.admin = auth.isAuthenticatedForAdminOperation();
+  }
+
   _value = '';
   stringified = '';
 

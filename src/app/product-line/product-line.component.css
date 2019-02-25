@@ -11,6 +11,7 @@
 
 button {
 margin: 4px 2px;
+max-width: 100px;
 }
 
 table {
