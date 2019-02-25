@@ -79,4 +79,15 @@ export class ImportPreviewDialogComponent implements OnInit {
     return true;
   }
 
+  conflictsExist(): boolean {
+    return this.conflictsExistInSection('ingredients') || 
+    this.conflictsExistInSection('formulas') || 
+    this.conflictsExistInSection('skus') || 
+    this.conflictsExistInSection('productlines');
+  }
+
+  conflictsExistInSection(section): boolean {
+    return this.data[section]['conflicts'].length > 0;
+  }
+
 }

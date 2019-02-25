@@ -27,6 +27,8 @@ export class ManufacturingScheduleComponent implements OnInit {
   modifyActivityDialogRef: MatDialogRef<ModifyActivityDialogComponent>;
   data: DataForTable[] = [];
   dataSource = new MatTableDataSource<DataForTable>(this.data);
+  startDate: Date = new Date();
+  endDate: Date = new Date(new Date().setUTCFullYear(new Date().getUTCFullYear()+1));
 
   constructor(public rest:RestService, private route: ActivatedRoute, private router: Router, private snackBar: MatSnackBar, private dialog: MatDialog) { }
 

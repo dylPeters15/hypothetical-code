@@ -44,18 +44,36 @@ export class NewLineDialogComponent implements OnInit {
     this.edit = this.data.edit;
     this.linename = this.data.present_linename;
     this.shortname = this.data.present_shortname;
-    // this.selectedSkus = this.data.present_skus;
+
+
     this.comment = this.data.present_comment;
-    console.log("EDIT: " + this.edit)
     // edit == true if sku is being modified, false if a new sku is being created
     if (this.edit == true)
     {
+      if(this.data.present_skus != ""){
+        let skusArray = this.data.present_skus.split(',');
+        skusArray.forEach(skuString => {
+          let colonIndex = skuString.indexOf(':');
+          let sku = skuString.substring(0,colonIndex);
+          
+          this.selectedSkuNames.push(sku);
+          this.rest.getSkus(sku,sku,0,0,0,'',100).subscribe(response=>{
+            if(response[0] != undefined){
+              let currentSku = response[0];
+              console.log("SKU: " + JSON.stringify(currentSku))
+              this.selectedSkus.push({sku: currentSku['_id']});
+            }
+          })
+      });
+      }
+    
+     
       this.dialog_title = "Modify Product Line";
     }
     else {
       this.dialog_title = "Create New Product Line";
     }
-    this.rest.getSkus('', '.*',0,0,0,'',5).subscribe(response => {
+    this.rest.getSkus('', '.*',0,0,0,'',100).subscribe(response => {
         this.skuList = response;
         this.skuList.forEach(element => {
           this.skuNameList.push(element.skuname)
@@ -89,6 +107,7 @@ export class NewLineDialogComponent implements OnInit {
       });
     }
     else{
+      console.log("SKUS: " + JSON.stringify(this.selectedSkus))
       this.rest.modifyLine(this.data.present_linename, this.linename, this.shortname, this.selectedSkus, this.comment).subscribe(response => {
         this.snackBar.open("Successfully modified Line: " + this.linename + ".", "close", {
           duration: 2000,
@@ -122,15 +141,23 @@ export class NewLineDialogComponent implements OnInit {
 
   remove(sku: string): void {
     const index = this.selectedSkuNames.indexOf(sku);
-
     if (index >= 0) {
       this.selectedSkuNames.splice(index, 1);
     }
+    this.rest.getSkus(sku, sku, 0,0,0,'',100).subscribe(response => {
+      if(response != undefined){
+        console.log(this.selectedSkus)
+        const skuIndex = this.selectedSkus.indexOf(response[0]['_id']);
+        this.selectedSkus.splice(skuIndex,1);
+      }
+
+    });
+
+
   }
 
   selected(event: MatAutocompleteSelectedEvent): void {
     this.selectedSkuNames.push(event.option.viewValue);
-    console.log(event.option.viewValue)
     this.rest.getSkus(event.option.viewValue, '', 0,0,0,'',5).subscribe(response => {
       var i;
       for(i = 0; i<response.length; i++){
