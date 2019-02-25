@@ -26,12 +26,11 @@ export class NewFormulaDialogComponent implements OnInit {
   ingredientsandquantities: any[];
   comment: string = '';
 
-  arrayIngredients: any[];
-  arrayQuantity: any[];
+  arrayIngredients: any[] = [];
+  arrayQuantity: any[] = [];
 
   newIngredientDialogRef: MatDialogRef<NewFormulaIngredientDialogComponent>;
-  ingredientNameList: any[];
-  return_amount: number = 0;
+
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: any, private dialogRef: MatDialogRef<NewFormulaDialogComponent>, public rest:RestService, private snackBar: MatSnackBar,  private dialog: MatDialog) { }
 
@@ -58,17 +57,14 @@ export class NewFormulaDialogComponent implements OnInit {
   }
 
   refreshData() {
-    // this.rest.getSkus().subscribe(response => {
-    //   this.data = response;
-    //   this.data.forEach(user => {
-    //     user['checked'] = false;
-    //   });
-    //   console.log(this.data);
-    //   this.dataSource =  new MatTableDataSource<UserForTable>(this.data);
-    //   this.dataSource.sort = this.sort;
-    // this.dataSource.paginator = this.paginator;
-    // });
-    
+    console.log("refreshing the data");
+    this.arrayIngredients = [];
+    this.arrayQuantity = [];
+    for(let i=0; i<this.ingredientsandquantities.length; i++){
+      this.arrayIngredients.push(this.ingredientsandquantities[i].ingredient);
+      this.arrayQuantity.push(this.ingredientsandquantities[i].quantity);
+      console.log("array of index " + i + ": " +  this.arrayIngredients[i] + ", " + this.arrayQuantity[i]);
+    }
   }
 
   closeDialog() {
@@ -89,8 +85,7 @@ export class NewFormulaDialogComponent implements OnInit {
     //this.newIngredientDialogRef.componentInstance.ingredientNameList = this.ingredientNameList;
     this.newIngredientDialogRef.afterClosed().subscribe(event => {
       // grab the new formula values
-      var new_ingredient_list = this.newIngredientDialogRef.componentInstance.ingredientNameList;
-      var new_ingredient = new_ingredient_list[0];
+      var new_ingredient = this.newIngredientDialogRef.componentInstance.ingredientName;
       var new_amount = this.newIngredientDialogRef.componentInstance.amount;
       var new_objectid;
       console.log("okay we are back again. ingredient: " + new_ingredient + ", amount: " +  new_amount);
@@ -113,12 +108,15 @@ export class NewFormulaDialogComponent implements OnInit {
          // });
           new_ingredienttuple.ingredient = new_objectid;
           new_ingredienttuple.quantity = new_amount;
-          console.log("ingredientsandquantities: " + this.ingredientsandquantities + ", newIngredient:" + new_ingredienttuple);
+          console.log("We are adding a new ingredient tuple with name " + new_ingredient + " and amount " + new_ingredienttuple.quantity);
           this.ingredientsandquantities.push(new_ingredienttuple);
           console.log("ingredients and quantities are now " + this.ingredientsandquantities);
         }
+        this.refreshData();
         });
+        
         });
+        
       }
 
 

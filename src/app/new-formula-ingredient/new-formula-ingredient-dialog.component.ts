@@ -28,6 +28,7 @@ export class NewFormulaIngredientDialogComponent implements OnInit {
   selectedIngredients: any = [];
   ingredientList: any = [];
   ingredientNameList: string[] = [];
+  ingredientName: string;
   amount: number = 0;
   ingredientsandquantities: any[];
 
@@ -68,8 +69,8 @@ export class NewFormulaIngredientDialogComponent implements OnInit {
 
     //this.ingredientname = "abc";
     //this.amount = 5;
-    console.log("Let's send the data back! List: " + this.ingredientNameList + ". Amount: " + this.amount);
-    this.dialogRef.componentInstance.ingredientNameList = this.ingredientNameList;
+    console.log("Let's send the data back! new ingredient: " + this.ingredientName + ". Amount: " + this.amount);
+    this.dialogRef.componentInstance.ingredientName = this.ingredientName;
     this.dialogRef.componentInstance.amount = this.amount;
     this.dialogRef.close();
 
@@ -116,13 +117,12 @@ export class NewFormulaIngredientDialogComponent implements OnInit {
   selected(event: MatAutocompleteSelectedEvent): void {
     this.selectedIngredientNames.push(event.option.viewValue);
     console.log(event.option.viewValue)
+    this.ingredientName = event.option.viewValue;
     this.rest.getIngredients(event.option.viewValue, '', 0, 5).subscribe(response => {
       var i;
       for(i = 0; i<response.length; i++){
         this.selectedIngredients.push({ingredient: response[i]['_id']})
       }
-
-      
     });
     this.ingredientInput.nativeElement.value = '';
     this.ingredientCtrl.setValue(null);

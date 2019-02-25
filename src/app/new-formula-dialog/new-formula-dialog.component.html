@@ -20,9 +20,12 @@
         <button class="mat-raised-button" (click)="addIngredientButton()">Add Ingredient</button>
       </mat-dialog-actions>
 
-      <mat-form-field>
-        <input matInput [(ngModel)]="comment" placeholder="Additional Comments">
-      </mat-form-field>
+      <br> 
+      <br> 
+
+
+        <textarea rows="5" cols="50" style="border:inset 4px orange;" matInput [(ngModel)]="comment" placeholder="Additional Comments"> </textarea>
+
     </mat-card-content>
   </mat-card>
 </mat-dialog-content>
