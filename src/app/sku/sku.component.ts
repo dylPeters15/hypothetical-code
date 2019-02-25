@@ -255,4 +255,13 @@ export class SkuComponent  implements OnInit {
     }
   }
 
+  noneSelected(): boolean {
+    for (var i = 0; i < this.data.length; i++) {
+      if (this.data[i].checked) {
+        return false;
+      }
+    }
+    return true;
+  }
+
 }
