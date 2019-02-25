@@ -26,11 +26,13 @@ export class NewSkuFormulaComponent implements OnInit {
   filterFormulas: Observable<String[]>;
   formulaNameList: string[] = [];
   formulaList: any = [];
+  formulaName: string;
+  formulaId: any;
 
 
-  selectedIngredientNames: string[] = [];
+
+
   selectedIngredients: any = [];
-  ingredientName: string;
   amount: number = 0;
   ingredientsandquantities: any[];
 
@@ -65,14 +67,11 @@ export class NewSkuFormulaComponent implements OnInit {
   }
 
   closeDialog() {
-    this.selectedIngredientNames = [];
-    this.ingredientList = [];
-    this.selectedIngredients = [];
-
+    this.formulaList = [];
     //this.ingredientname = "abc";
     //this.amount = 5;
-    console.log("Let's send the data back! new ingredient: " + this.ingredientName + ". Amount: " + this.amount);
-    this.dialogRef.componentInstance.ingredientName = this.ingredientName;
+    console.log("Let's send the data back! new ingredient: " + this.formulaName + ". Amount: " + this.amount);
+    this.dialogRef.componentInstance.formulaName = this.formulaName;
     this.dialogRef.componentInstance.amount = this.amount;
     this.dialogRef.close();
 
@@ -96,7 +95,7 @@ export class NewSkuFormulaComponent implements OnInit {
 
       // Add our ingredient
       if ((value || '').trim()) {
-        this.selectedIngredientNames.push(value.trim());
+        this.formulaName = value.trim();
       }
 
       // Reset the input value
@@ -104,30 +103,24 @@ export class NewSkuFormulaComponent implements OnInit {
         input.value = '';
       }
 
-      this.ingredientCtrl.setValue(null);
+      this.formulaCtrl.setValue(null);
     }
   }
 
   remove(ingredient: string): void {
-    const index = this.selectedIngredientNames.indexOf(ingredient);
-
-    if (index >= 0) {
-      this.selectedIngredientNames.splice(index, 1);
-    }
+    this.formulaName = "";
   }
 
   selected(event: MatAutocompleteSelectedEvent): void {
-    this.selectedIngredientNames.push(event.option.viewValue);
-    console.log(event.option.viewValue)
-    this.ingredientName = event.option.viewValue;
-    this.rest.getIngredients(event.option.viewValue, '', 0, 5).subscribe(response => {
+    this.formulaName = event.option.viewValue;
+    this.rest.getFormulas(event.option.viewValue, '', 0, 5).subscribe(response => {
       var i;
       for(i = 0; i<response.length; i++){
-        this.selectedIngredients.push({ingredient: response[i]['_id']})
+        this.formulaId = {formula: response[i]['_id']};
       }
     });
-    this.ingredientInput.nativeElement.value = '';
-    this.ingredientCtrl.setValue(null);
+    this.formulaInput.nativeElement.value = '';
+    this.formulaCtrl.setValue(null);
   }
 
   private _filter(value: string): string[] {
