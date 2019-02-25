@@ -70,17 +70,12 @@ export class IngredientDependencyComponent implements OnInit {
     var thisobject = this;
     var promise3 = new Promise(function(resolve, reject) {
       thisobject.rest.getIngredients("", filterQueryData, 0, thisobject.paginator.pageSize*10).subscribe(response => {
-        console.log(response);
-        
         var ingredientsvisited = 0;
         response.forEach(ingredient => {
           thisobject.formulaSearch(ingredient).then(function( skuArray) {
-            console.log("final: ", skuArray)
             let currentIngredient = new IngredientDependencyData(ingredient['ingredientname'], ingredient['ingredientnumber'], 0, skuArray);
             thisobject.data.push(currentIngredient);
-            ingredientsvisited ++;
-
-            console.log("ingredientsvisited", ingredientsvisited) 
+            ingredientsvisited ++; 
             if (ingredientsvisited == response.length) {
               resolve();
             }
@@ -109,13 +104,10 @@ export class IngredientDependencyComponent implements OnInit {
     return new Promise(function(resolve, reject) {
       thisobject.rest.getFormulas("", -1, ingredient['_id'], 10).subscribe(formulas => {
         if (formulas) {
-          total = formulas.length;
-          console.log(formulas)
-          
+          total = formulas.length
         }
         thisobject.skuSearch(formulas, skuArray, total).then(() => {
           if (numberProcessed >= total) {
-            console.log('total', total)
             resolve(skuArray)
           } 
         })  
@@ -129,7 +121,6 @@ export class IngredientDependencyComponent implements OnInit {
     return new Promise(function(resolve, reject) {
       var formulasvisited = 0;
       formulas.forEach(formula => {
-        console.log(formula['_id'])
         thisobject.rest.getSkus("", "", -1, -1, -1, formula['_id'], 10).subscribe(skus => {
           total += skus.length;
           skus.forEach(sku => {
