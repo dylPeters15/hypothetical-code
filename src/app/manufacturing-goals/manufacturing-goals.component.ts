@@ -171,5 +171,16 @@ export class ManufacturingGoalsComponent implements OnInit {
     modifyManufacturingGoal(present_goalname, present_activities, present_date) {
       this.newManufacturingGoal(true, present_goalname, present_activities, present_date);
     }
+  
+
+
+  noneSelected(): boolean {
+    for (var i = 0; i < this.data.length; i++) {
+      if (this.data[i].checked) {
+        return false;
+      }
+    }
+    return true;
+  }
 
 }
