@@ -18,7 +18,7 @@ function getSkus(skuname, skunameregex, skunumber, caseupcnumber, unitupcnumber,
             { caseupcnumber: caseupcnumber },
             { unitupcnumber: unitupcnumber }
         ]
-        if (formula > 0) {
+        if (formula != "" && formula != undefined) {
             orClause.push({ formula: formula });
         }
         const filterSchema = {

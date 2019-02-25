@@ -103,6 +103,7 @@ export class IngredientDependencyComponent implements OnInit {
     var numberProcessed = 100;
     return new Promise(function(resolve, reject) {
       thisobject.rest.getFormulas("", -1, ingredient['_id'], 10).subscribe(formulas => {
+        console.log("formulas", formulas)
         if (formulas) {
           total = formulas.length
         }
@@ -122,6 +123,7 @@ export class IngredientDependencyComponent implements OnInit {
       var formulasvisited = 0;
       formulas.forEach(formula => {
         thisobject.rest.getSkus("", "", -1, -1, -1, formula['_id'], 10).subscribe(skus => {
+          console.log("skus", skus)
           total += skus.length;
           skus.forEach(sku => {
             let skuInfo = " " + sku['skuname'] + ": " + sku['unitsize'] + " * " 

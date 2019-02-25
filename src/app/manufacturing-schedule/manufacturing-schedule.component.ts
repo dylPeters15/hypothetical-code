@@ -8,7 +8,7 @@ import { MatDialogRef, MatDialog, MatDialogConfig, MatTableDataSource,MatPaginat
 import {ExportToCsv} from 'export-to-csv';
 import {CdkDragDrop, moveItemInArray, transferArrayItem} from '@angular/cdk/drag-drop';
 
-export class DataForTable{
+export class DataForGoalsTable{
   goalname: string;
   activities: [];
   constructor(goalname, activities){
@@ -25,8 +25,8 @@ export class DataForTable{
 export class ManufacturingScheduleComponent implements OnInit {
   enableGoalsDialogRef: MatDialogRef<EnableGoalsDialogComponent>;
   modifyActivityDialogRef: MatDialogRef<ModifyActivityDialogComponent>;
-  data: DataForTable[] = [];
-  dataSource = new MatTableDataSource<DataForTable>(this.data);
+  goalsData: DataForGoalsTable[] = [];
+  dataSource = new MatTableDataSource<DataForGoalsTable>(this.goalsData);
 
   constructor(public rest:RestService, private route: ActivatedRoute, private router: Router, private snackBar: MatSnackBar, private dialog: MatDialog) { }
 
@@ -38,7 +38,7 @@ export class ManufacturingScheduleComponent implements OnInit {
 
 
   refreshData() {
-    this.data = [];
+    this.goalsData = [];
     this.rest.getUserName().then(result => {
         this.rest.getGoals(result.toString(), "", "", true, 5).subscribe(goals => {
           goals.forEach(goal => {
@@ -49,13 +49,13 @@ export class ManufacturingScheduleComponent implements OnInit {
             })
             
                 
-            let goalTable = new DataForTable(goal['goalname'], activityList)
-            this.data.push(goalTable)
+            let goalTable = new DataForGoalsTable(goal['goalname'], activityList)
+            this.goalsData.push(goalTable)
             }
 
             
         });
-        this.dataSource = new MatTableDataSource<DataForTable>(this.data);
+        this.dataSource = new MatTableDataSource<DataForGoalsTable>(this.goalsData);
   
       });
     
