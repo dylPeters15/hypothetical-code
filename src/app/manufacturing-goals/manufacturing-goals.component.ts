@@ -76,16 +76,20 @@ export class ManufacturingGoalsComponent implements OnInit {
             for(i = 0; i<this.goals.length; i++){
               let name = this.goals[i]['goalname'];
               let activities = this.goals[i]['activities'];
-              var j;
-              let activityCount = activities.length;
-              let activityString = '';
-              for(j = 0; j<activities.length; j++){
-              let currentActivity =  activities[j]['activity']
-                  activityString += "SKU: " + currentActivity['sku']['skuname'] + " Hours Required: " + currentActivity['calculatedhours'] + '\n'; 
+              if(activities != undefined){
+                var j;
+                let activityCount = activities.length;
+                let activityString = '';
+                for(j = 0; j<activities.length; j++){
+                let currentActivity =  activities[j]['activity']
+                    activityString += "SKU: " + currentActivity['sku']['skuname'] + " Hours Required: " + currentActivity['calculatedhours'] + '\n'; 
+                }
+                let date = this.goals[i]['date'];
+                let currentGoal = new ManufacturingGoal(name, activityString, activityCount, date, false);
+                this.data.push(currentGoal);
               }
-              let date = this.goals[i]['date'];
-              let currentGoal = new ManufacturingGoal(name, activityString, activityCount, date, false);
-              this.data.push(currentGoal);
+              
+         
             }
             this.data.forEach(element => {
               element['checked'] = false;
