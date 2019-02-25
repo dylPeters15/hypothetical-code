@@ -2,6 +2,7 @@
 .ng-star-inserted {
     width: 100%;
     display: inline-block;
+    padding: 2px;
   }
   
   button {
@@ -17,4 +18,12 @@
     width: calc(100% - 220px);
     float: left;
     padding-left: 20px;
+    flex-direction: row;
+    display: flex;
+  }
+
+  .manufacturing-lines-container[_ngcontent-c10] {
+    width: 200px;
+    float: left;
+    padding-right: 10px;
   }
