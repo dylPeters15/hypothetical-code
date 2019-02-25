@@ -6,6 +6,7 @@ import { EnableGoalsDialogComponent } from '../enable-goals-dialog/enable-goals-
 import { ModifyActivityDialogComponent } from '../modify-activity-dialog/modify-activity-dialog.component'
 import { MatDialogRef, MatDialog, MatDialogConfig, MatTableDataSource,MatPaginator, MatSnackBar } from "@angular/material";
 import {ExportToCsv} from 'export-to-csv';
+import {CdkDragDrop, moveItemInArray, transferArrayItem} from '@angular/cdk/drag-drop';
 
 export class DataForTable{
   goalname: string;
@@ -81,5 +82,16 @@ export class ManufacturingScheduleComponent implements OnInit {
     this.enableGoalsDialogRef.afterClosed().subscribe(event => {
       this.refreshData();
     });
+  }
+
+  drop(event: CdkDragDrop<string[]>) {
+    if (event.previousContainer === event.container) {
+      moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
+    } else {
+      transferArrayItem(event.previousContainer.data,
+                        event.container.data,
+                        event.previousIndex,
+                        event.currentIndex);
+    }
   }
 }
