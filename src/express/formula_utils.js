@@ -12,7 +12,7 @@ function getFormulas(formulaname, formulanameregex, formulanumber, ingredient, l
         if (formulanumber) {
             orClause.push({ formulanumber: formulanumber });
         }
-        if (ingredient > 100) {
+        if (ingredient != "" && ingredient != undefined) {
             orClause.push({ "ingredientsandquantities.ingredient" : ingredient});
         }
         if(formulanameregex) {

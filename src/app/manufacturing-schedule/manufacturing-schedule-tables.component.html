@@ -1,0 +1,19 @@
+<div class="example-container">
+    <h3>{{_value['goalname']}} </h3>
+    
+    
+    <div
+        cdkDropList
+        [id]="_value['goalname']"
+        #activityList="cdkDropList"
+        [cdkDropListData]="_value['activities']"
+        class="activity-list"
+        (cdkDropListDropped)="drop($event)">
+        <div class="example-box" *ngFor="let activity of _value['activities']" cdkDrag>
+            SKU: {{activity['sku']['skuname']}} Hours Required: {{activity['calculatedhours']}}          
+            <button mat-button (click)="modifySelectedActivity(activity)" >
+                <mat-icon>edit</mat-icon> 
+            </button>
+        </div>
+    </div>
+</div>
