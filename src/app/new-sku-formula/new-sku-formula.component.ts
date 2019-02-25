@@ -42,7 +42,7 @@ export class NewSkuFormulaComponent implements OnInit {
   ngOnInit() {
 
     this.edit = this.data.edit;
-    this.scalingFactor = this.data.present_amount;
+    this.scalingFactor = this.data.scalingFactor;
 
     // edit == true if formula is being modified, false if a new formula is being created
     if (this.edit == true)

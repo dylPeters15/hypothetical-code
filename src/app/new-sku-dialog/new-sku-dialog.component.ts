@@ -4,6 +4,8 @@ import { MatDialogConfig, MatDialog} from "@angular/material";
 import { RestService } from '../rest.service';
 import {MatSnackBar} from '@angular/material';
 import {MAT_DIALOG_DATA} from '@angular/material';
+import { NewSkuFormulaComponent } from '../new-sku-formula/new-sku-formula.component';
+
 
 @Component({
   selector: 'app-new-sku-dialog',
@@ -25,8 +27,12 @@ export class NewSkuDialogComponent implements OnInit {
   formulascalingfactor: number = 0;
   manufacturingrate: number = 0;
   comment: String = '';
+  
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: any, private dialogRef: MatDialogRef<NewSkuDialogComponent>, public rest:RestService, private snackBar: MatSnackBar) { }
+  newFormulaDialogRef: MatDialogRef<NewSkuFormulaComponent>;
+
+
+  constructor(@Inject(MAT_DIALOG_DATA) public data: any, private dialogRef: MatDialogRef<NewSkuDialogComponent>, public rest:RestService, private snackBar: MatSnackBar, private dialog: MatDialog) { }
 
   ngOnInit() {
 
@@ -73,42 +79,33 @@ export class NewSkuDialogComponent implements OnInit {
     this.comment = this.data.present_comment;
   }
 
-  addFormulaToSku(edit, formulaname, sclaingFactor) {
+  //.formulaName = this.formulaName;
+  //this.dialogRef.componentInstance.scalingFactor 
+
+  addFormulaToSku(edit, formulaname, scalingFactor) {
     const dialogConfig = new MatDialogConfig();
-    dialogConfig.data = {edit: edit, present_name: ingredientname, present_amount: amount, present_ingredientsandquantities: this.ingredientsandquantities};
-    this.newIngredientDialogRef = this.dialog.open(NewFormulaIngredientDialogComponent, dialogConfig);
+    dialogConfig.data = {edit: edit, present_name: formulaname, present_scalingFactor: scalingFactor};
+    this.newFormulaDialogRef = this.dialog.open(NewSkuFormulaComponent, dialogConfig);
     //this.newIngredientDialogRef.componentInstance.amount = this.return_amount;
     //this.newIngredientDialogRef.componentInstance.ingredientNameList = this.ingredientNameList;
-    this.newIngredientDialogRef.afterClosed().subscribe(event => {
+    this.newFormulaDialogRef.afterClosed().subscribe(event => {
       // grab the new formula values
-      var new_ingredient = this.newIngredientDialogRef.componentInstance.ingredientName;
-      var new_amount = this.newIngredientDialogRef.componentInstance.amount;
+      var new_formula = this.newFormulaDialogRef.componentInstance.formulaName;
+      var new_scalingfactor = this.newFormulaDialogRef.componentInstance.scalingFactor;
       var new_objectid;
-      console.log("okay we are back again. ingredient: " + new_ingredient + ", amount: " +  new_amount);
 
-      // get object id from ingredient name
-      this.rest.getIngredients(new_ingredient,"", 0, 1).subscribe(response => {
+      // get object id from formula name
+      this.rest.getFormulas(new_formula,0, 0, 1).subscribe(response => {
         if (response.length == 0) {
-          this.snackBar.open("Error adding ingredient.", "close", {
+          this.snackBar.open("Error adding formula. Please refresh and try again", "close", {
             duration: 2000,
                });
         } 
         else {
-          console.log("located the ingredient. " + response);
           new_objectid = response[0]['_id'];
-          console.log("mah object id fam " + new_objectid);
-          let new_ingredienttuple = new ingredienttuple();
-          //new_ingredienttuple.create({
-          //  ingredient: new_objectid,
-          //  quantity: new_amount,
-         // });
-          new_ingredienttuple.ingredient = new_objectid;
-          new_ingredienttuple.quantity = new_amount;
-          console.log("We are adding a new ingredient tuple with name " + new_ingredient + " and amount " + new_ingredienttuple.quantity);
-          this.ingredientsandquantities.push(new_ingredienttuple);
-          console.log("ingredients and quantities are now " + this.ingredientsandquantities);
+          this.formula = new_objectid;
+          this.formulascalingfactor = new_scalingfactor;
         }
-        this.refreshData();
         });
         
         });
