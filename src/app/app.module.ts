@@ -11,8 +11,10 @@ import { FooterComponent } from './footer/footer.component';
 import { HomeComponent } from './home/home.component';
 import { SkuComponent } from './sku/sku.component';
 import { ProductLineComponent } from './product-line/product-line.component';
+import { FormulaComponent } from './formulas/formulas.component';
 import { IngredientComponent } from './ingredient/ingredient.component';
 import { LoginComponent } from './login/login.component';
+import {MatTooltipModule} from '@angular/material/tooltip'
 import { NavigationComponent } from './navigation/navigation.component';
 import { UserRouteGuardService } from './user-route-guard.service';
 import { AdminRouteGuardService } from './admin-route-guard.service';
@@ -21,7 +23,6 @@ import { LogoutComponent } from './logout/logout.component';
 import {MatSelectModule} from '@angular/material/select';
 import {MatIconModule, MatIcon} from '@angular/material/icon';
 import {MatChipsModule} from '@angular/material/chips';
-import {MatTooltipModule} from '@angular/material/tooltip'
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import { AccountSettingsComponent } from './account-settings/account-settings.component';
 import { UserNotificationDialogComponent } from './user-notification-dialog/user-notification-dialog.component';
@@ -34,6 +35,8 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { UserManagementComponent } from './user-management/user-management.component';
 import { NewUserDialogComponent } from './new-user-dialog/new-user-dialog.component';
 import { NewSkuDialogComponent } from './new-sku-dialog/new-sku-dialog.component';
+import {NewFormulaIngredientDialogComponent} from './new-formula-ingredient/new-formula-ingredient-dialog.component';
+import { NewFormulaDialogComponent } from './new-formula-dialog/new-formula-dialog.component';
 import { NewIngredientDialogComponent } from './new-ingredient-dialog/new-ingredient-dialog.component';
 import { NewProductLineDialogComponent } from './new-product-line-dialog/new-product-line-dialog.component';
 import { ProductLineTablesComponent } from './product-line/product-line-tables.component';
@@ -64,6 +67,7 @@ import { ManufacturingScheduleReportLineTableComponent } from './manufacturing-s
 import { ManufacturingScheduleReportIngredientTableComponent } from './manufacturing-schedule-report/manufacturing-schedule-report-ingredient-table/manufacturing-schedule-report-ingredient-table.component';
 import { EnableGoalsDialogComponent } from './enable-goals-dialog/enable-goals-dialog.component';
 import { ModifyActivityDialogComponent } from './modify-activity-dialog/modify-activity-dialog.component'; 
+import { ManufacturingLinesTableComponent } from './manufacturing-schedule/manufacturing-lines-table.component';
 
 
 const appRoutes: Routes = [
@@ -81,6 +85,7 @@ const appRoutes: Routes = [
   { path: 'manufacturing-schedule-report', component: ManufacturingScheduleReportComponent, data: { title: 'Manufacturing Schedule Report' }, canActivate: [UserRouteGuardService] },
   { path: 'ingredient', component: IngredientComponent, data: { title: 'Ingredients' }, canActivate: [UserRouteGuardService] },
   { path: 'sku', component: SkuComponent, data: { title: 'SKUs' }, canActivate: [UserRouteGuardService] },
+  { path: 'formulas', component: FormulaComponent, data: { title: 'Formulas' }, canActivate: [UserRouteGuardService] },
   { path: 'product-line', component: ProductLineComponent, data: { title: 'Product Lines' }, canActivate: [UserRouteGuardService] },
   { path: 'import', component: ImportComponent, data: { title: 'Import' }, canActivate: [AdminRouteGuardService] },
   { path: 'logout', component: LogoutComponent, data: { title: "Logout" }, canActivate: [UserRouteGuardService] },
@@ -100,7 +105,10 @@ const appRoutes: Routes = [
     SkuComponent,
     ProductLineComponent,
     IngredientComponent,
+    FormulaComponent,
     NewSkuDialogComponent,
+    NewFormulaDialogComponent,
+    NewFormulaIngredientDialogComponent,
     NewIngredientDialogComponent,
     NewProductLineDialogComponent,
     ProductLineTablesComponent,
@@ -131,7 +139,8 @@ const appRoutes: Routes = [
     ManufacturingScheduleReportIngredientTableComponent,
     EnableGoalsDialogComponent,
     ModifyActivityDialogComponent,
-    ManufactoringScheduleTableComponent
+    ManufactoringScheduleTableComponent,
+    ManufacturingLinesTableComponent
   ],
   imports: [
     BrowserModule,
@@ -162,6 +171,8 @@ const appRoutes: Routes = [
   ],
   providers: [],
   bootstrap: [AppComponent],
-  entryComponents: [DeleteProductLineDialogComponent, UserNotificationDialogComponent, NewUserDialogComponent, PasswordConfirmationDialogComponent, PrivacyPolicyDialogComponent, TermsAndConditionsDialogComponent, MoreInfoDialogComponent, NewSkuDialogComponent, NewIngredientDialogComponent, NewGoalDialogComponent, NewProductLineDialogComponent, ConfirmActionDialogComponent, ImportPreviewDialogComponent, NewLineDialogComponent, EnableGoalsDialogComponent, ModifyActivityDialogComponent]
+  entryComponents: [DeleteProductLineDialogComponent, UserNotificationDialogComponent, NewUserDialogComponent, PasswordConfirmationDialogComponent, PrivacyPolicyDialogComponent, TermsAndConditionsDialogComponent, MoreInfoDialogComponent, NewSkuDialogComponent, NewFormulaDialogComponent, NewFormulaIngredientDialogComponent, NewIngredientDialogComponent, NewGoalDialogComponent, NewProductLineDialogComponent, ConfirmActionDialogComponent, ImportPreviewDialogComponent, NewLineDialogComponent, EnableGoalsDialogComponent, ModifyActivityDialogComponent]
 })
-export class AppModule { }
+export class AppModule { 
+  
+}

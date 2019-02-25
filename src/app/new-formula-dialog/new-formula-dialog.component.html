@@ -1,0 +1,35 @@
+<h2 mat-dialog-title align="center">{{ dialog_title }}</h2>
+<mat-dialog-content align="center">
+  <mat-card>
+    <mat-card-content style="display: grid; width: 100%; justify-items: center;">
+      <mat-form-field>
+        <input matInput [(ngModel)]="formulaname" placeholder="Name" required>
+      </mat-form-field>
+
+      <mat-form-field>
+        <input matInput [(ngModel)]="formulanumber" placeholder="Formula #">
+      </mat-form-field>
+
+      <div *ngFor="let item of arrayIngredients">
+        <p>{{item}} | {{arrayQuantity[$index]}} <button type="submit">Edit</button><button type="submit">X</button></p>
+     </div>
+
+      <!---<p>Beans | 10 lbs <button type="submit">Edit</button><button type="submit">X</button></p> -->
+
+      <mat-dialog-actions align="center">
+        <button class="mat-raised-button" (click)="addIngredientButton()">Add Ingredient</button>
+      </mat-dialog-actions>
+
+      <br> 
+      <br> 
+
+
+        <textarea rows="5" cols="50" style="border:inset 4px orange;" matInput [(ngModel)]="comment" placeholder="Additional Comments"> </textarea>
+
+    </mat-card-content>
+  </mat-card>
+</mat-dialog-content>
+<mat-dialog-actions align="center">
+  <button class="mat-raised-button" (click)="closeDialog()">Cancel</button>
+  <button class="mat-raised-button" (click)="createFormula()" [disabled]="username==''" color="primary">Create</button>
+</mat-dialog-actions>

@@ -113,13 +113,15 @@ app.route('/users').get((req, res) => {
 ///////////////////// formulas /////////////////////
 
 app.route('/formulas').get((req, res) => {
-    formula_utils.getFormulas(req.headers['formulaname'], JSON.parse(req.headers['formulanumber']), JSON.parse(req.headers['ingredient']), JSON.parse(req.headers['limit'])).then(formulas => {
+    console.log("rest api invoked.");
+    formula_utils.getFormulas(req.headers['formulaname'], req.headers['formulanameregex'], JSON.parse(req.headers['formulanumber']), JSON.parse(req.headers['sku']), JSON.parse(req.headers['ingredient']), JSON.parse(req.headers['limit'])).then(formulas => {
         res.send(formulas);
     }).catch(err => {
         resolveError(err, res);
     });
 }).put((req, res) => {
-    formula_utils.createFormula(req.body).then(response => {
+    formula_utils.createFormula(req.body['formulaname'], req.body['formulanumber'],
+    req.body['ingredientsandquantities'], req.body['comment']).then(response => {
         res.send(response);
     }).catch(err => {
         resolveError(err, res);
@@ -169,12 +171,14 @@ app.route('/ingredients').get((req, res) => {
 
 ///////////////////// skus /////////////////////
 app.route('/skus').get((req, res) => {
+    console.log(req.headers);
     sku_utils.getSkus(req.headers['skuname'], req.headers['skunameregex'], Number(req.headers['skunumber']), Number(req.headers['caseupcnumber']), Number(req.headers['unitupcnumber']), req.headers['formula'], Number(req.headers['limit'])).then(skus => {
         res.send(skus);
     }).catch(err => {
         resolveError(err, res);
     });
 }).put((req, res) => {
+    console.log("ooooo and now here! we onto somethin");
     sku_utils.createSku(req.body['skuname'], req.body['skunumber'],
     req.body['caseupcnumber'], req.body['unitupcnumber'],
     req.body['unitsize'], req.body['countpercase'], req.body['formulanum'], req.body['formulascalingfactor'], req.body['manufacturingrate'], req.body['comment']).then(response => {
@@ -255,7 +259,7 @@ app.route('/manufacturing-lines').get((req, res) => {
 
 ///////////////////// Manufacturing Activity /////////////////////
 app.route('/manufacturing-activities').get((req, res) => {
-    activity_utils.getActivity(new Date(JSON.parse(req.headers['startdate'])),req.headers['limit']).then(activities => {
+    activity_utils.getActivity(new Date(JSON.parse(req.headers['startdate'])),req.headers['limit'], req.headers['line']).then(activities => {
         res.send(activities);
     }).catch(err => {
         resolveError(err, res);

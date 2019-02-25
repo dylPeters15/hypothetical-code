@@ -1,0 +1,8 @@
+<h2> {{_value['shortname']}}</h2>
+<mat-list>
+    <mat-list-item *ngFor="let activity of _value['activities']">
+      <div ng-if="activitiesExist">
+          SKU: {{activity['sku']['skuname']}} Hours Required: {{activity['calculatedhours']}}
+      </div>
+      </mat-list-item>
+</mat-list>

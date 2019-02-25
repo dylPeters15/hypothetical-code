@@ -22,68 +22,75 @@
               </mat-cell>
             </ng-container>
           
-            <ng-container matColumnDef="name">
+            <ng-container matColumnDef="skuname">
               <mat-header-cell *matHeaderCellDef mat-sort-header>Name</mat-header-cell>
               <mat-cell *matCellDef="let sku">
-                {{sku['name']}}
+                {{sku['skuname']}}
               </mat-cell>
             </ng-container>
-          
-            <ng-container matColumnDef="skuNumber">
+
+            <ng-container matColumnDef="skunumber">
               <mat-header-cell *matHeaderCellDef mat-sort-header>SKU#</mat-header-cell>
               <mat-cell *matCellDef="let sku">
-                {{sku['skuNumber']}}
+                {{sku['skunumber']}}
               </mat-cell>
             </ng-container>
           
-            <ng-container matColumnDef="caseUpcNumber">
+            <ng-container matColumnDef="caseupcnumber">
               <mat-header-cell *matHeaderCellDef mat-sort-header>Case UPC#</mat-header-cell>
               <mat-cell *matCellDef="let sku">
-                {{sku['caseUpcNumber']}}
+                {{sku['caseupcnumber']}}
               </mat-cell>
             </ng-container>
           
-            <ng-container matColumnDef="unitUpcNumber">
+            <ng-container matColumnDef="unitupcnumber">
               <mat-header-cell *matHeaderCellDef mat-sort-header>Unit UPC#</mat-header-cell>
               <mat-cell *matCellDef="let sku">
-                {{sku['unitUpcNumber']}}
+                {{sku['unitupcnumber']}}
               </mat-cell>
             </ng-container>
           
-            <ng-container matColumnDef="unitSize">
+            <ng-container matColumnDef="unitsize">
               <mat-header-cell *matHeaderCellDef mat-sort-header>Unit size</mat-header-cell>
               <mat-cell *matCellDef="let sku">
-                {{sku['unitSize']}}
+                {{sku['unitsize']}}
               </mat-cell>
             </ng-container>
           
-            <ng-container matColumnDef="countPerCase">
+            <ng-container matColumnDef="countpercase">
                 <mat-header-cell *matHeaderCellDef mat-sort-header>Count per case</mat-header-cell>
                 <mat-cell *matCellDef="let sku">
-                  {{sku['countPerCase']}}
+                  {{sku['countpercase']}}
                 </mat-cell>
               </ng-container>
           
-              <ng-container matColumnDef="productLine">
-                  <mat-header-cell *matHeaderCellDef mat-sort-header>Product line</mat-header-cell>
+              <ng-container matColumnDef="formula">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header>Formula</mat-header-cell>
                   <mat-cell *matCellDef="let sku">
-                    {{sku['productLine']}}
+                    {{sku['formula']}}
                   </mat-cell>
                 </ng-container>
           
-                <ng-container matColumnDef="ingredientTuples">
-                    <mat-header-cell *matHeaderCellDef mat-sort-header>Ingredients</mat-header-cell>
-                    <mat-cell *matCellDef="let sku">
-                      {{sku['ingredientTuples']}}
-                    </mat-cell>
-                  </ng-container>
+            <ng-container matColumnDef="formulascalingfactor">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Formula Scaling Factor</mat-header-cell>
+                <mat-cell *matCellDef="let sku">
+                    {{sku['formulascalingfactor']}}
+                </mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="manufacturingrate">
+              <mat-header-cell *matHeaderCellDef mat-sort-header>Manufacturing Rate</mat-header-cell>
+              <mat-cell *matCellDef="let sku">
+                  {{sku['manufacturingrate']}}
+              </mat-cell>
+          </ng-container>
           
-                <ng-container matColumnDef="comment">
-                    <mat-header-cell *matHeaderCellDef mat-sort-header>Comment</mat-header-cell>
-                    <mat-cell *matCellDef="let sku">
-                      {{sku['comment']}}
-                    </mat-cell>
-                  </ng-container>
+            <ng-container matColumnDef="comment">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Comment</mat-header-cell>
+                <mat-cell *matCellDef="let sku">
+                    {{sku['comment']}}
+                </mat-cell>
+            </ng-container>
           
             <ng-container matColumnDef="actions">
               <mat-header-cell *matHeaderCellDef mat-sort-header>Actions</mat-header-cell>
