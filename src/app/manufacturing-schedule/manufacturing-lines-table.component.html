@@ -9,21 +9,20 @@
         [cdkDropListData]="_value['activities']"
         class="activity-list"
         (cdkDropListDropped)="drop($event)">
-        <div class="dateInfo">
-            <div class="startDate">
-                {{_value['activities']}}
-            </div>
-        </div>
         <div class="example-box" *ngFor="let activity of _value['activities']" cdkDrag>
             <div class="dateInfo">
                 <div class="startDate">
-                    {{activity['startDate']}}
+                    {{startDate}}
                 </div>
                 <div class="endDate">
-                    {{activity['startDate']}}
+                    {{endDate}}
                 </div>
             </div>
-            SKU: {{activity['sku']['skuname']}} Hours Required: {{activity['calculatedhours']}}          
+            <div>
+                SKU: {{activity['sku']['skuname']}} Hours Required: {{activity['calculatedhours']}}          
+       
+            </div>
+            <!-- SKU: {{activity['sku']['skuname']}} Hours Required: {{activity['calculatedhours']}}           -->
         </div>
     </div>
 </div>

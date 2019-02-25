@@ -14,6 +14,10 @@ const customValueProvider = {
   multi: true
 };
 
+
+var moment = require('moment');
+require('moment-weekday-calc');
+
 @Component({
   selector: 'app-manufacturing-lines-table',
   templateUrl: './manufacturing-lines-table.component.html',
@@ -24,6 +28,10 @@ export class ManufacturingLinesTableComponent implements ControlValueAccessor {
   _value = '';
   stringified = '';
   activitiesExist: boolean = false;
+  startDate = new Date();
+  endDate = new Date();
+  startDateString = '';
+  endDateString = '';
   constructor(public rest: RestService, public dialog: MatDialog) { }
 
 
@@ -85,6 +93,7 @@ export class ManufacturingLinesTableComponent implements ControlValueAccessor {
               console.log("Adding activity " + activity['sku']['skuname'] + " to line " + event.container.id)
               console.log("RESPONSE: " + JSON.stringify(response))
             })
+            this.calculateEndDate(activity);
           })
           
         })
@@ -94,6 +103,32 @@ export class ManufacturingLinesTableComponent implements ControlValueAccessor {
         // this.updateProductLine(event.container.id,
         //     event.container.id, event.container.data);
     }
+  }
+
+  calculateEndDate(activity) {
+    
+    let initialEndDate = activity['startdate'] + new Date((activity['sethours'] / 10));
+    var duration = moment().isoWeekdayCalc(activity['startdate'],initialEndDate,[1,2,3,4,5]);
+    if (duration > (initialEndDate-activity['startdate'])) {
+      this.endDate = new Date(Math.floor(duration - (initialEndDate-activity['startdate']) + (activity['sethours'] / 10)))
+    }
+    else {
+      this.endDate = new Date(duration + activity['startdate'])
+    }
+    this.startDate = new Date(activity['startdate'])
+    this.startDate.toDateString();
+    this.endDate.toDateString();
+
+    // var month = this.startDate.getUTCMonth() + 1; //months from 1-12
+    // var day = this.startDate.getUTCDate();
+    // var year = this.startDate.getUTCFullYear();
+    // this.startDateString = year + "/" + month + "/" + day;
+
+    // var month2 = this.endDate.getUTCMonth() + 1; //months from 1-12
+    // var day2 = this.endDate.getUTCDate();
+    // var year2 = this.endDate.getUTCFullYear();
+    // this.endDateString = year2 + "/" + month2 + "/" + day2;
+    // console.log(this.endDateString)
   }
 
   updateActivity(activity, line) {
