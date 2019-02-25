@@ -76,7 +76,7 @@ export class IngredientDependencyComponent implements OnInit {
     
     });
     promise3.then(() => {
-      console.log('data sent')
+      console.log('data sent', this.data)
       this.dataSource.sort = this.sort;
       this.dataSource =  new MatTableDataSource<IngredientDependencyData>(this.data);
       this.dataSource.paginator = this.paginator;
