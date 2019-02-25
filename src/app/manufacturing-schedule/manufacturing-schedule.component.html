@@ -1,14 +1,11 @@
 
-
-<div *ngFor="let goals of dataSource['data']">
-    <h1>{{goals['goalname']}} </h1>
-<mat-list>
-    <mat-list-item *ngFor="let activity of goals['activities']">
-      SKU: {{activity['sku']['skuname']}} Hours Required: {{activity['calculatedhours']}}          
-       <button mat-button (click)="modifySelectedActivity(activity)" [disabled]="dataSource.data.length==0">
-        <mat-icon>edit</mat-icon> 
-      </button>
-      </mat-list-item>
-</mat-list>
+<div class="manufacturing-schedule-container">
+    <div class="manufacturing-goals-container">
+        <div cdkDropListGroup class='manufacturing-goals-list'>
+            <div *ngFor="let goals of dataSource['data']">
+                <app-manufacturing-schedule-tables class="goals" [(ngModel)]="goals"></app-manufacturing-schedule-tables>
+            </div>
+        </div>
+        <button mat-raised-button (click)="openEnableGoalsDialog()"> Enable/Disable Goals </button>
+    </div>
 </div>
-<button mat-raised-button (click)="openEnableGoalsDialog()"> Enable/Disable Goals </button>

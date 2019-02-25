@@ -1,7 +1,7 @@
 <h2 mat-dialog-title align="center">Import Preview</h2>
 <mat-dialog-content align="center">
   <p>Please preview changes then press "Import" to import.</p>
-  <mat-radio-group>
+  <mat-radio-group *ngIf="conflictsExist()">
     <mat-radio-button value="allOld" [checked]="areAllOldSelected()" (click)="selectAllOld()">Select All Old Records</mat-radio-button>
     <mat-radio-button value="allNew" [checked]="areAllNewSelected()" (click)="selectAllNew()">Select All New Records</mat-radio-button>
   </mat-radio-group>
