@@ -71,19 +71,20 @@ export class ManufacturingLinesTableComponent implements ControlValueAccessor {
     }
   }
 
-//   updateProductLine(oldname, newname, skus) {
-//     return new Promise((resolve, reject) => {
-//     this.rest.modifyProductLine(oldname,
-//         newname, skus).subscribe(modifyPLResponse => {
-//             if (modifyPLResponse['ok'] == 1) {
-//                 console.log('success')
-//                 resolve();
-//             } else {
-//                 console.log('failure')
-//                 reject(Error("Could not modify Product Line " + oldname));
-//             }     
-//         });
-//     });
-//   }
+  updateActivity(activity, shortname) {
+    return new Promise((resolve, reject) => {
+      this.rest.modifyActivity(activity['sku']['_id'], activity['sku']['_id'], 
+      activity['numcases'], activity['calculatedhours'], 
+      activity['sethours'], activity['startdate'], shortname).subscribe(modifyPLResponse => {
+        if (modifyPLResponse['ok'] == 1) {
+            console.log('success')
+            resolve();
+        } else {
+            console.log('failure')
+            reject(Error("Could not modify Activity " + activity));
+        }     
+    });
+  });
+}
 
 }

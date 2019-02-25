@@ -83,6 +83,7 @@ export class ManufacturingScheduleComponent implements OnInit {
         let newLine = new DataForLinesTable(currentLineName, currentActivities);
         this.linesData.push(newLine);
       })
+      console.log(this.linesData)
       this.linesDataSource = new MatTableDataSource<DataForLinesTable>(this.linesData);
     })
     
