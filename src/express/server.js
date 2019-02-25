@@ -113,6 +113,7 @@ app.route('/users').get((req, res) => {
 ///////////////////// formulas /////////////////////
 
 app.route('/formulas').get((req, res) => {
+    console.log("rest api invoked.");
     formula_utils.getFormulas(req.headers['formulaname'], req.headers['formulanameregex'], JSON.parse(req.headers['formulanumber']), JSON.parse(req.headers['sku']), JSON.parse(req.headers['ingredient']), JSON.parse(req.headers['limit'])).then(formulas => {
         res.send(formulas);
     }).catch(err => {
@@ -170,6 +171,7 @@ app.route('/ingredients').get((req, res) => {
 
 ///////////////////// skus /////////////////////
 app.route('/skus').get((req, res) => {
+    console.log(req.headers);
     sku_utils.getSkus(req.headers['skuname'], req.headers['skunameregex'], Number(req.headers['skunumber']), Number(req.headers['caseupcnumber']), Number(req.headers['unitupcnumber']), req.headers['formula'], Number(req.headers['limit'])).then(skus => {
         res.send(skus);
     }).catch(err => {

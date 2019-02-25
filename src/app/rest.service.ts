@@ -114,14 +114,25 @@ export class RestService {
 ///////////////////// formulas /////////////////////
 getFormulas(formulaname: string, formulanumber: number, ingredient: number, limit: number, formulanameregex?: string, sku?: number): Observable<any> {
   console.log("limit", limit);
-  return this.http.get(endpoint + "formulas", this.generateHeader({
-    formulaname: formulaname,
-    formulanameregex: formulanameregex,
-    formulanumber: JSON.stringify(formulanumber),
-    sku: JSON.stringify(sku),
-    ingredient: JSON.stringify(ingredient),
-    limit: JSON.stringify(limit)
-  }));
+  console.log("formulaname",formulaname);
+  console.log("formulanumber",formulanumber);
+  console.log("ingredient",ingredient);
+  console.log("limit",limit);
+  console.log("formulanameregex",formulanameregex);
+  console.log("sku",sku);
+
+  var header = {
+    formulaname: formulaname||"",
+    formulanameregex: formulanameregex||"$a",
+    formulanumber: JSON.stringify(formulanumber||0),
+    sku: JSON.stringify(sku||0),
+    ingredient: ""+(ingredient||0),
+    limit: JSON.stringify(limit||20)
+  };
+
+  console.log("Header: ",header);
+
+  return this.http.get(endpoint + "formulas", this.generateHeader(header));
 }
 
 createFormula(formulaname: String, formulanumber: Number, ingredientsandquantities: any[], comment: String): Observable<any> {
