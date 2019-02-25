@@ -80,13 +80,8 @@ export class IngredientDependencyComponent implements OnInit {
               resolve();
             }
           }) 
-          
         })
-        
-        
       });
-    
-    
     });
     promise3.then(() => {
       console.log('data sent', this.data)

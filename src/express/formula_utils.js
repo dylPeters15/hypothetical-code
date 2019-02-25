@@ -11,7 +11,7 @@ function getFormulas(formulaname, formulanumber, ingredient, limit) {
         if (formulanumber) {
             orClause.push({ formulanumber: formulanumber });
         }
-        if (ingredient > 0) {
+        if (ingredient != "" && ingredient != undefined) {
             orClause.push({ "ingredientsandquantities.ingredient" : ingredient});
         }
         var filterSchema = {

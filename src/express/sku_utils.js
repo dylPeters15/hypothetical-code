@@ -10,7 +10,6 @@ function getSkus(skuname, skunameregex, skunumber, caseupcnumber, unitupcnumber,
         caseupcnumber = caseupcnumber || -1;
         unitupcnumber = unitupcnumber || -1;
         limit = (limit != 0) ? limit : database.defaultSearchLimit;
-        console.log("formula ", formula)
         var orClause = [
             { skuname: skuname },
             { skuname: {$regex: skunameregex }},
@@ -18,7 +17,7 @@ function getSkus(skuname, skunameregex, skunumber, caseupcnumber, unitupcnumber,
             { caseupcnumber: caseupcnumber },
             { unitupcnumber: unitupcnumber }
         ]
-        if (formula > 0) {
+        if (formula != "" && formula != undefined) {
             orClause.push({ formula: formula });
         }
         const filterSchema = {

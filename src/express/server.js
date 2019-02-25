@@ -255,7 +255,7 @@ app.route('/manufacturing-lines').get((req, res) => {
 
 ///////////////////// Manufacturing Activity /////////////////////
 app.route('/manufacturing-activities').get((req, res) => {
-    activity_utils.getActivity(new Date(JSON.parse(req.headers['startdate'])),req.headers['limit']).then(activities => {
+    activity_utils.getActivity(new Date(JSON.parse(req.headers['startdate'])),req.headers['limit'], req.headers['line']).then(activities => {
         res.send(activities);
     }).catch(err => {
         resolveError(err, res);
