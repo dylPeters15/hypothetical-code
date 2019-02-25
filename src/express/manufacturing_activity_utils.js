@@ -43,7 +43,7 @@ function modifyActivity(sku, numcases, calculatedhours, startdate, newActivityOb
     console.log("NEW OBJ: " + JSON.stringify(newActivityObject))
     return new Promise((resolve, reject) => {
         var filterSchema = {
-            'sku.$oid': sku,
+            sku: sku,
             numcases: numcases,
             calculatedhours: calculatedhours,
             startdate: startdate
