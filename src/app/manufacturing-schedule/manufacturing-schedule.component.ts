@@ -7,13 +7,17 @@ import { ModifyActivityDialogComponent } from '../modify-activity-dialog/modify-
 import { MatDialogRef, MatDialog, MatDialogConfig, MatTableDataSource,MatPaginator, MatSnackBar } from "@angular/material";
 import {ExportToCsv} from 'export-to-csv';
 
-export class DataForTable{
+export class DataForGoalsTable{
   goalname: string;
   activities: [];
   constructor(goalname, activities){
     this.goalname = goalname;
     this.activities = activities;
   }
+}
+
+export class DataForLineTable{
+
 }
 
 @Component({
@@ -24,41 +28,33 @@ export class DataForTable{
 export class ManufacturingScheduleComponent implements OnInit {
   enableGoalsDialogRef: MatDialogRef<EnableGoalsDialogComponent>;
   modifyActivityDialogRef: MatDialogRef<ModifyActivityDialogComponent>;
-  data: DataForTable[] = [];
-  dataSource = new MatTableDataSource<DataForTable>(this.data);
+  goalsData: DataForGoalsTable[] = [];
+  goalsDataSource = new MatTableDataSource<DataForGoalsTable>(this.goalsData);
 
   constructor(public rest:RestService, private route: ActivatedRoute, private router: Router, private snackBar: MatSnackBar, private dialog: MatDialog) { }
 
   ngOnInit() {
     this.refreshData();
-
-
   }
 
 
   refreshData() {
-    this.data = [];
+    this.goalsData = [];
     this.rest.getUserName().then(result => {
         this.rest.getGoals(result.toString(), "", "", true, 5).subscribe(goals => {
           goals.forEach(goal => {
             let activityList = [];
             if(goal['enabled']){
-            goal['activities'].forEach(activity => {
+              goal['activities'].forEach(activity => {
               activityList.push(activity['activity'])
-            })
-            
-                
-            let goalTable = new DataForTable(goal['goalname'], activityList)
-            this.data.push(goalTable)
-            }
-
-            
+            })                            
+            let goalTable = new DataForGoalsTable(goal['goalname'], activityList)
+            this.goalsData.push(goalTable)
+          }
         });
-        this.dataSource = new MatTableDataSource<DataForTable>(this.data);
-  
+        this.goalsDataSource = new MatTableDataSource<DataForGoalsTable>(this.goalsData);  
       });
-    
-  })
+    })
 }
   modifySelectedActivity(activity) {
     this.modifyManufacturingActivityConfirmed(activity); 
