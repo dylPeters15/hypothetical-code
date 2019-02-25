@@ -1,0 +1,18 @@
+<h2 mat-dialog-title align="center">Modify Activity for SKU: {{activityName}}</h2>
+<mat-card>
+    <mat-card-content style="display: grid; width: 100%; justify-items: center;">
+    <mat-list>
+      <mat-list-item align="center"> Calculated Hours: {{calculatedHours}}</mat-list-item>
+    </mat-list>
+    <mat-card-content style="display: grid; width: 100%; justify-items: center;">
+      <mat-form-field>
+        <input matInput [(ngModel)]="setHours" placeholder="Manually Set Hours" required>
+      </mat-form-field>
+      <mat-dialog-actions align="center">
+          <button class="mat-raised-button" (click)="closeDialog()">Cancel</button>
+          <button class="mat-raised-button" (click)="modifyActivity()" [disabled]="username==''" color="primary">Update</button>
+        </mat-dialog-actions>
+        </mat-card-content>
+    </mat-card-content>
+</mat-card>
+

@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 var Schema = mongoose.Schema,
   ObjectId = Schema.ObjectId;
 const uniqueValidator = require('mongoose-unique-validator');
+var deepPopulate = require('mongoose-deep-populate')(mongoose);
 
 const serverName = '127.0.0.1:27017';
 const dbName = 'hypothetical-code-db';
@@ -205,8 +206,10 @@ var manufacturingGoalsSchema = new mongoose.Schema({
     unique: false
   },
   activities: [{
-    type: ObjectId,
-    ref: 'activity'
+    activity:{
+      type: ObjectId,
+      ref: 'activity'
+    }
   }],
   date: {
     type: Date,
@@ -216,7 +219,8 @@ var manufacturingGoalsSchema = new mongoose.Schema({
   owner: {
     type: ObjectId,
     ref: 'user',
-    required: true
+    required: true,
+    unique: false
   },
   enabled: {
     type: Boolean,
@@ -226,6 +230,7 @@ var manufacturingGoalsSchema = new mongoose.Schema({
 });
 manufacturingGoalsSchema.index({ owner: 1, goalname: 1 }, { unique: true }); //the combination of owner and goal name should be unique
 manufacturingGoalsSchema.plugin(uniqueValidator);
+manufacturingGoalsSchema.plugin(deepPopulate);
 
 var goalsModel = mongoose.model('goal', manufacturingGoalsSchema);
 
@@ -263,6 +268,7 @@ var formulaSchema = new mongoose.Schema({
   }
 });
 formulaSchema.plugin(uniqueValidator);
+formulaSchema.plugin(deepPopulate);
 
 var formulaModel = mongoose.model('formula', formulaSchema);
 
@@ -335,6 +341,7 @@ var manufacturingActivitySchema = new mongoose.Schema({
   }
 });
 manufacturingActivitySchema.plugin(uniqueValidator);
+manufacturingActivitySchema.plugin(deepPopulate);
 
 var manufacturingActivityModel = mongoose.model('activity', manufacturingActivitySchema);
 
@@ -348,5 +355,6 @@ module.exports = {
   formulaModel: formulaModel,
   manufacturingLineModel: manufacturingLineModel,
   manufacturingActivityModel: manufacturingActivityModel,
-  dropDatabase: dropDatabase
+  dropDatabase: dropDatabase,
+  deepPopulate: deepPopulate
 };

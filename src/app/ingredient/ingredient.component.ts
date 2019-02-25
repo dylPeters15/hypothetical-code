@@ -80,7 +80,6 @@ export class IngredientComponent  implements OnInit {
       this.data.forEach(user => {
         user['checked'] = false;
       });
-      console.log(this.data);
       this.dataSource =  new MatTableDataSource<IngredientForTable>(this.data);
       this.dataSource.sort = this.sort;
     this.dataSource.paginator = this.paginator;
@@ -206,6 +205,15 @@ export class IngredientComponent  implements OnInit {
 
   applyFilter(filterValue: string) {
     this.dataSource.filter = filterValue.trim().toLowerCase();
+    var lowerIndex = this.paginator.pageSize * this.paginator.pageIndex;
+    var upperIndex = this.paginator.pageSize * (this.paginator.pageIndex+1);
+    if (this.data.length < upperIndex) {
+      upperIndex = this.data.length;
+    }
+    this.deselectAll();
+    for (var i = lowerIndex; i < upperIndex; i=i+1) {
+      this.data[i].checked = true;
+    }
   }
   
   ngAfterViewChecked() {
@@ -241,7 +249,7 @@ export class IngredientComponent  implements OnInit {
     });
       const options = { 
         fieldSeparator: ',',
-        filename: 'ingredients',
+        filename: 'ingredientdependencies',
         quoteStrings: '',
         decimalSeparator: '.',
         showLabels: true, 

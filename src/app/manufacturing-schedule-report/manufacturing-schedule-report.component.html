@@ -1,0 +1,48 @@
+<mat-card style="height: 100%;">
+  <mat-card-header style="align-content: center; align-items: center; justify-content: center; display: grid;">
+    <mat-card-title style="text-align:center;">
+      Manufacturing Schedule Report
+    </mat-card-title>
+    <mat-card-subtitle style="text-align:center;">
+      View manufacturing schedule for a specific manufacturing line.
+    </mat-card-subtitle>
+  </mat-card-header>
+
+  <br>
+  <mat-divider></mat-divider>
+  <br>
+
+  <mat-card-actions style="width:100%;text-align: center;">
+    <mat-form-field>
+      <mat-select placeholder="Select a Manufacturing Line" [(ngModel)]="options['selectedLine']"
+        (selectionChange)="selectionChange()">
+        <mat-option *ngFor="let line of lines" [value]="line.linename">
+          {{line.linename}} ({{line.shortname}})
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field>
+      <input matInput [matDatepicker]="startpicker" placeholder="Choose a start date" [(ngModel)]="options['startDate']"
+        (dateChange)="selectionChange()">
+      <mat-datepicker-toggle matSuffix [for]="startpicker"></mat-datepicker-toggle>
+      <mat-datepicker #startpicker></mat-datepicker>
+    </mat-form-field>
+
+    <mat-form-field>
+      <input matInput [matDatepicker]="endpicker" placeholder="Choose an end date" [(ngModel)]="options['endDate']"
+        (dateChange)="selectionChange()">
+      <mat-datepicker-toggle matSuffix [for]="endpicker"></mat-datepicker-toggle>
+      <mat-datepicker #endpicker></mat-datepicker>
+    </mat-form-field>
+  </mat-card-actions>
+
+  <mat-card-content style="width:100%;height:100%;">
+    <app-manufacturing-schedule-report-line-table style="float:left;width:45%;text-align:center;" [(ngModel)]="options">
+    </app-manufacturing-schedule-report-line-table>
+    <mat-divider [vertical]="true" style="width: 10%;height: 1px;float:left;"></mat-divider>
+    <app-manufacturing-schedule-report-ingredient-table style="float:left;width:45%;text-align:center;" [(ngModel)]="options">
+    </app-manufacturing-schedule-report-ingredient-table>
+  </mat-card-content>
+
+</mat-card>

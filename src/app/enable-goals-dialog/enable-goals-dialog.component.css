@@ -1,0 +1,9 @@
+/* .product-line-container {
+  width: 33%;
+  display: inline-block;
+} */
+
+.ng-star-inserted {
+    width: 50%;
+    display: inline-block;
+  }

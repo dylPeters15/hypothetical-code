@@ -53,11 +53,11 @@ export class ExportableSKU {
  * @title Table dynamically changing the columns displayed
  */
 @Component({
-    selector: 'app-sku-inventory',
-    templateUrl: './sku-inventory.component.html',
-    styleUrls: ['./sku-inventory.component.css']
+    selector: 'app-sku',
+    templateUrl: './sku.component.html',
+    styleUrls: ['./sku.component.css']
   })
-export class SkuInventoryComponent  implements OnInit {
+export class SkuComponent  implements OnInit {
 
   constructor(public rest:RestService, private snackBar: MatSnackBar, private dialog: MatDialog) { }
   allReplacement = 54321;

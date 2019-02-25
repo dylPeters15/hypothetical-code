@@ -4,6 +4,7 @@ const crypto = require('crypto');
 const ingredientUtils = require('./ingredient_utils.js')
 const formulaUtils = require('./formula_utils.js')
 const skuUtils = require('./sku_utils.js')
+const productLineUtils = require('./product_line_utils.js')
 const serverName = '127.0.0.1:27017';
 const dbName = 'hypothetical-code-db';
 const connectionString = `mongodb://${serverName}/${dbName}`;
@@ -17,7 +18,7 @@ mongoose.connect(connectionString)
     });
 
 function initializeUsers() {
-    
+
 }
 
 // let db = database_library.Database;
@@ -65,7 +66,7 @@ let testIngredient = ingredientUtils.createIngredient('salt', 1, 'salty', 'g', 5
 //     console.log(err)
 // });
 // console.log(saltIng._id)
-let testFormula = new database_library.formulaModel({
+let testFormula = {
     formulaname: 'formula1',
     formulanumber: '1',
     ingredientsandquantities: [{
@@ -73,7 +74,7 @@ let testFormula = new database_library.formulaModel({
         quantity: 5
     }],
     comment: 'work'
-})
+}
 formulaUtils.createFormula(testFormula)
 let testSku = new database_library.skuModel({
     skuname: 'Tomato Soup',
@@ -86,19 +87,26 @@ let testSku = new database_library.skuModel({
     formulascalingfactor: 1.5,
     manufacturingrate: 2,
     comment: 'Enjoy this lovely can of tomato soup!'
-  });
-  
-    testSku.save().then(
-            doc => {
-                console.log(doc);
-            }
-        ).catch(
-            err => {
-                console.log(err);
-            }
-        );
+});
+
+testSku.save().then(
+    doc => {
+        console.log(doc);
+    }
+).catch(
+    err => {
+        console.log(err);
+    }
+);
 
 
+
+
+let testProductLine = new database_library.productLineModel({
+    productlinename: 'Soups',
+    skus: [testSku]
+})
+productLineUtils.createProductLine(testProductLine)
 //   testSku.save().then(
 //       doc => {
 //           console.log(doc);

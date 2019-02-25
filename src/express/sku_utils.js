@@ -2,18 +2,27 @@ const database = require('./database.js');
 const formula_utils = require('./formula_utils.js');
 
 
-function getSkus(skuname, skunumber, caseupcnumber, unitupcnumber, formulanumber, limit) {
-
+function getSkus(skuname, skunameregex, skunumber, caseupcnumber, unitupcnumber, formula, limit) {
     return new Promise(function (resolve, reject) {
+        skuname = skuname || "";
+        skunameregex = skunameregex || "$a";
+        skunumber = skunumber || -1;
+        caseupcnumber = caseupcnumber || -1;
+        unitupcnumber = unitupcnumber || -1;
+        limit = (limit != 0) ? limit : database.defaultSearchLimit;
+        console.log("formula ", formula)
+        var orClause = [
+            { skuname: skuname },
+            { skuname: {$regex: skunameregex }},
+            { skunumber: skunumber },
+            { caseupcnumber: caseupcnumber },
+            { unitupcnumber: unitupcnumber }
+        ]
+        if (formula > 0) {
+            orClause.push({ formula: formula });
+        }
         const filterSchema = {
-            $or: [
-                { skuname: skuname },
-                { skunumber: skunumber },
-                { caseupcnumber: caseupcnumber },
-                { unitupcnumber: unitupcnumber },
-                { formulanumber: formulanumber },
-                { skuname: { $regex: /skuname/ } }
-            ]
+            $or: orClause
         }
         database.skuModel.find(filterSchema).limit(limit).populate('formula').exec((err, skus) => {
             if (err) {
@@ -26,11 +35,12 @@ function getSkus(skuname, skunumber, caseupcnumber, unitupcnumber, formulanumber
 
 }
 
+
+
 function createSku(name, number, case_upc, unit_upc, unit_size, count, formulanum, formulascalingfactor, manufacturingrate, comment) {
     console.log("lets make us a sku");
     return new Promise(function (resolve, reject) {
         createUniqueSkuNumber().then(response => {
-            console.log("SKU Num: ", response);
             var newSkuNumber;
 
             if (number == null) {
@@ -42,7 +52,6 @@ function createSku(name, number, case_upc, unit_upc, unit_size, count, formulanu
             // newingredientnumber = ingredientnumber || Number(response);
 
             createUniqueCaseUpcNumber().then(response => {
-                console.log("UPC Num: ", response);
                 var newCaseUpcNumber;
 
                 if (case_upc == null) {
@@ -54,7 +63,6 @@ function createSku(name, number, case_upc, unit_upc, unit_size, count, formulanu
                 // newingredientnumber = ingredientnumber || Number(response);
 
                 response = createUnitUpcNumber();
-                    console.log("UPC Num: ", response);
                     var newUnitUpcNumber;
 
                     if (unit_upc == null) {
@@ -65,7 +73,7 @@ function createSku(name, number, case_upc, unit_upc, unit_size, count, formulanu
                     }
                     // newingredientnumber = ingredientnumber || Number(response);
 
-                    formula_utils.getFormulas("",formulanum,null,null,1).then(response => {
+                    formula_utils.getFormulas("",formulanum,null,1).then(response => {
                         if (response.length == 0) {
                             reject(Error("Could not find formula " + formulanum + " for SKU " + name));
                         } else {
@@ -105,7 +113,7 @@ function createSku(name, number, case_upc, unit_upc, unit_size, count, formulanu
 function modifySku(oldName, name, number, case_upc, unit_upc, unit_size, count, formulanum, formulascalingfactor, manufacturingrate, comment) {
 
     return new Promise(function (resolve, reject) {
-        formula_utils.getFormulas("",formulanum,null,null,1).then(response => {
+        formula_utils.getFormulas("",formulanum,null,1).then(response => {
             if (response.length == 0) {
                 reject(Error("Could not find formula " + formulanum + " for SKU " + name));
             } else {
@@ -212,6 +220,12 @@ function createUnitUpcNumber() {
     newUnitUpcNumber = Math.round(Math.random() * 10000000000);
     firstDigitOption1 = Number("1" + newUnitUpcNumber); // Case upc number must start with a 0,1,6,7,8, or 8. For random generated, just let it equal 1.
     return(firstDigitOption1);
+}
+
+function printSKU(skuObject){
+    let skuString = '';
+    skuString += '<' + skuObject['skuname'] + '>: <' + skuObject['unitsize'] + '> * <' + skuObject['countpercase'] + '>';
+    return skuString;
 }
 
 

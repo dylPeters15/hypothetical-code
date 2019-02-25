@@ -6,16 +6,16 @@ function getActivity(startdate, limit) {
     limit = limit || database.defaultSearchLimit;
     return new Promise((resolve, reject) => {
         var filterSchema = {
-            "created_on": {
-                "$gte": startdate
+            "startdate": {
+                $gte: startdate
             }
-        }
-        database.manufacturingLineModel.find(filterSchema).limit(limit).toArray(function(err,results) {
-            if(results.length > 0){
-              resolve(results);
+        };
+        database.manufacturingActivityModel.find(filterSchema).limit(limit).deepPopulate('sku.formula.ingredientsandquantities.ingredient').populate('line').exec(function(err,results) {
+            if(err){
+                reject(Error(err));
             }
             else {
-                reject(Error(err));
+                resolve(results);
             }  
         });
     })
@@ -34,21 +34,21 @@ function createActivity(activityObject) {
     });
 }
 
-function modifyActivity(sku, numcases, calculatedhours, sethours, startdate, line, newActivityObject) {
+function modifyActivity(sku, numcases, calculatedhours, startdate, newActivityObject) {
+    console.log("NEW OBJ: " + JSON.stringify(newActivityObject))
     return new Promise((resolve, reject) => {
         var filterSchema = {
             sku: sku,
             numcases: numcases,
             calculatedhours: calculatedhours,
-            sethours: sethours,
-            startdate: startdate,
-            line: line
+            startdate: startdate
         }
         database.manufacturingActivityModel.updateOne(filterSchema, newActivityObject, (err, response) => {
             if (err) {
                 reject(Error(err));
                 return
             }
+            console.log("RES: " + JSON.stringify(response))
             resolve(response);
         });
     });

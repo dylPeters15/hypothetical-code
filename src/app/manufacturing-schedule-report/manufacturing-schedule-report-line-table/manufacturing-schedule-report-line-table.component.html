@@ -1,0 +1,47 @@
+<mat-table [dataSource]="tableData" class="mat-elevation-z8">
+
+  <ng-container matColumnDef="startDate">
+    <mat-header-cell *matHeaderCellDef>Start Date</mat-header-cell>
+    <mat-cell *matCellDef="let element">
+      {{element['startdate']}}
+    </mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="endDate">
+    <mat-header-cell *matHeaderCellDef>End Date</mat-header-cell>
+    <mat-cell *matCellDef="let element">
+      {{element['enddate']}}
+    </mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="duration">
+    <mat-header-cell *matHeaderCellDef>Duration</mat-header-cell>
+    <mat-cell *matCellDef="let element">
+      {{element['sethours']}}
+    </mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="skuNameNum">
+    <mat-header-cell *matHeaderCellDef>SKU Name/#</mat-header-cell>
+    <mat-cell *matCellDef="let element">
+      {{element['sku']['skuname']}}/{{element['sku']['skunumber']}}
+    </mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="formulaNameNum">
+    <mat-header-cell *matHeaderCellDef>Formula Name/#</mat-header-cell>
+    <mat-cell *matCellDef="let element">
+      {{element['sku']['formula']['formulaname']}}/{{element['sku']['formula']['formulanumber']}}
+    </mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="numCases">
+    <mat-header-cell *matHeaderCellDef>Number of Cases</mat-header-cell>
+    <mat-cell *matCellDef="let element">
+      {{element['numcases']}}
+    </mat-cell>
+  </ng-container>
+
+  <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+  <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+</mat-table>

@@ -1,4 +1,4 @@
-<h2 mat-dialog-title align="center">Create New Manufacturing Goal</h2>
+<h2 mat-dialog-title align="center">{{dialog_title}}</h2>
 <mat-dialog-content align="center">
   <mat-card>
     <mat-card-content style="display: grid; width: 100%; justify-items: center;">
@@ -6,19 +6,32 @@
         <input matInput [(ngModel)]="name" placeholder="Name" required>
       </mat-form-field>
 
-      <mat-form-field>
-        <input matInput [(ngModel)]="skus" placeholder="skus">
-        <mat-hint>Enter SKU #s, separated by commas</mat-hint>
+      <mat-list>
+        <mat-list-item *ngFor="let activity of displayableActivities">
+          SKU: {{activity.skuname}}: {{activity.hours}} Hours
+          </mat-list-item>
+        </mat-list>
+
+      <div class="activities">
+      <mat-form-field class="left">
+        <input #skuInput type="text" placeholder="Enter a SKU name" matInput [formControl]="skuCtrl" [matAutocomplete]="auto">
+               <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
+          <mat-option *ngFor="let sku of filteredSkus | async" [value]="sku">
+            {{sku}}
+          </mat-option>
+        </mat-autocomplete>
       </mat-form-field>
+      <mat-form-field class="right">
+        <input matInput [(ngModel)]="quantity" placeholder="Quantity" required>
+      </mat-form-field>
+    </div>
+    <button class="mat-raised-button" (click)="addActivity()">Add Activity</button>
 
       <mat-form-field>
-        <input matInput [(ngModel)]="quantities" placeholder="quantities" required>
-        <mat-hint>Enter desired case numbers for the SKUs, separated by commas</mat-hint>
-      </mat-form-field>
-
-      <mat-form-field>
-        <input matInput [(ngModel)]="date" placeholder="date" required>
-        <mat-hint>Enter a date in MM/DD/YYYY format</mat-hint>
+        <input matInput [matDatepicker]="picker" placeholder="Choose the goal's Deadline"
+        (dateInput)="addDate('input', $event)" (dateChange)="addDate('change', $event)">
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
       </mat-form-field>
     </mat-card-content>
   </mat-card>

@@ -29,7 +29,15 @@
         <mat-cell *matCellDef="let element">{{element.shortname}}</mat-cell>
       </ng-container>
     
-
+      <ng-container matColumnDef="skus">
+        <mat-header-cell *matHeaderCellDef>Skus</mat-header-cell>
+        <mat-cell *matCellDef="let element"> <button mat-raised-button
+          matTooltip={{element.skus}}
+          aria-label="Button that displays all skus when focused or hovered over">
+    SKUs: {{element.skuCount}}
+  </button>
+         </mat-cell>
+      </ng-container>
     
       <ng-container matColumnDef="comment">
         <mat-header-cell *matHeaderCellDef>Comment</mat-header-cell>

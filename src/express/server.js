@@ -10,7 +10,8 @@ const ingredient_utils = require('./ingredient_utils.js');
 const line_utils = require('./manufacturing_line_utils');
 const activity_utils = require('./manufacturing_activity_utils');
 const product_line_utils = require('./product_line_utils.js');
-const sku_utils = require('./sku_utils.js')
+const sku_utils = require('./sku_utils.js');
+const goals_utils = require('./manufacturing_goals_utils.js')
 
 const app = express();
 const corsOptions = {
@@ -62,9 +63,7 @@ app.route('/login').get((req, res) => {
                     resolveError(err, res);
                 });
             } else {
-                res.send({
-                    err: "Incorrect username or password"
-                });
+                resolveError("Incorrect username or password", res);
             }
         }).catch(err => {
             resolveError(err, res);
@@ -81,6 +80,7 @@ app.route('/users').get((req, res) => {
         var usersToSend = [];
         for (var i = 0; i < users.length; i=i+1) {
             usersToSend.push({
+                _id: users[i]._id,
                 username: users[i].username,
                 admin: users[i].admin,
                 localuser: users[i].localuser
@@ -113,7 +113,6 @@ app.route('/users').get((req, res) => {
 ///////////////////// formulas /////////////////////
 
 app.route('/formulas').get((req, res) => {
-    console.log("hey", req.headers);
     formula_utils.getFormulas(req.headers['formulaname'], req.headers['formulanameregex'], JSON.parse(req.headers['formulanumber']), JSON.parse(req.headers['sku']), JSON.parse(req.headers['ingredient']), JSON.parse(req.headers['limit'])).then(formulas => {
         res.send(formulas);
     }).catch(err => {
@@ -171,7 +170,7 @@ app.route('/ingredients').get((req, res) => {
 
 ///////////////////// skus /////////////////////
 app.route('/skus').get((req, res) => {
-    sku_utils.getSkus(req.headers['skuname'], Number(req.headers['skunumber']), Number(req.headers['caseupcnumber']), Number(req.headers['unitupcnumber']), Number(req.headers['limit'])).then(skus => {
+    sku_utils.getSkus(req.headers['skuname'], req.headers['skunameregex'], Number(req.headers['skunumber']), Number(req.headers['caseupcnumber']), Number(req.headers['unitupcnumber']), req.headers['formula'], Number(req.headers['limit'])).then(skus => {
         res.send(skus);
     }).catch(err => {
         resolveError(err, res);
@@ -186,8 +185,6 @@ app.route('/skus').get((req, res) => {
         resolveError(err, res);
     });
 }).post((req, res) => {
-    
-    console.log(req.body);
     sku_utils.modifySku(req.headers['skuname'], req.body['skuname'], req.body['skunumber'],
     req.body['caseupcnumber'], req.body['unitupcnumber'],
     req.body['unitsize'], req.body['countpercase'], req.body['formulanum'], req.body['formulascalingfactor'], req.body['manufacturingrate'], req.body['comment']).then(response => {
@@ -205,36 +202,28 @@ app.route('/skus').get((req, res) => {
 
 ///////////////////// Manufacturing Goals /////////////////////
 app.route('/manufacturing-goals').get((req, res) => {
-    goals_utils.getGoals(req.headers['username'],req.headers['goalname'],req.headers['goalnameregex'], req.headers['limit']).then(formulas => {
+    goals_utils.getGoals(req.headers['owner'],Boolean(req.headers['enabled']), req.headers['goalname'],req.headers['goalnameregex'], req.headers['limit']).then(formulas => {
         res.send(formulas);
     }).catch(err => {
-        res.send({
-            err:err
-        });
+        resolveError(err, res);
     });
 }).put((req, res) => {
     goals_utils.createGoal(req.body).then(response => {
         res.send(response);
     }).catch(err => {
-        res.send({
-            err:err
-        });
+        resolveError(err, res);
     });
 }).post((req, res) => {
     goals_utils.modifyGoal(req.headers['goalname'], req.body).then(response => {
         res.send(response);
     }).catch(err => {
-        res.send({
-            err:err
-        });
+        resolveError(err, res);
     });
 }).delete((req, res) => {
     goals_utils.deleteGoal(req.headers['goalname']).then(response => {
         res.send(response);
     }).catch(err => {
-        res.send({
-            err:err
-        });
+        resolveError(err, res);
     });
 });
 
@@ -268,36 +257,28 @@ app.route('/manufacturing-lines').get((req, res) => {
 
 ///////////////////// Manufacturing Activity /////////////////////
 app.route('/manufacturing-activities').get((req, res) => {
-    activity_utils.getActivity(req.headers['startdate'],req.headers['limit']).then(formulas => {
-        res.send(formulas);
+    activity_utils.getActivity(new Date(JSON.parse(req.headers['startdate'])),req.headers['limit']).then(activities => {
+        res.send(activities);
     }).catch(err => {
-        res.send({
-            err:err
-        });
+        resolveError(err, res);
     });
 }).put((req, res) => {
     activity_utils.createActivity(req.body).then(response => {
         res.send(response);
     }).catch(err => {
-        res.send({
-            err:err
-        });
+        resolveError(err, res);
     });
 }).post((req, res) => {
-    activity_utils.modifyActivity(req.headers['sku'], req.headers['numcases'],req.headers['calculatedhours'],req.headers['sethours'], req.headers['line'], req.headers['startdate'],req.body).then(response => {
+    activity_utils.modifyActivity(req.header['sku'],Number(req.headers['numcases']), Number(req.headers['calculatedhours']), new Date(req.headers['startdate']), req.body).then(response => {
         res.send(response);
     }).catch(err => {
-        res.send({
-            err:err
-        });
+        resolveError(err, res);
     });
 }).delete((req, res) => {
     activity_utils.deleteActivity(req.headers['sku'], req.headers['numcases'],req.headers['calculatedhours'],req.headers['sethours'], req.headers['line'], req.headers['startdate']).then(response => {
         res.send(response);
     }).catch(err => {
-        res.send({
-            err:err
-        });
+        resolveError(err, res);
     });
 });
 ///////////////////// product lines /////////////////////
@@ -316,7 +297,9 @@ app.route('/product_lines').get((req, res) => {
 }).post((req, res) => {
     product_line_utils.modifyProductLine(req.headers['productlinename'], req.body).then(response => {
         res.send(response);
+        console.log('sent')
     }).catch(err => {
+        console.log('error');
         resolveError(err, res);
     });
 }).delete((req, res) => {

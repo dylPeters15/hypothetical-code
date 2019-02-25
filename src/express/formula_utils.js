@@ -1,4 +1,5 @@
 const database = require('./database.js');
+const mongoose = require('mongoose');
 
 function getFormulas(formulaname, formulanameregex, formulanumber, ingredient, limit) {
     return new Promise((resolve, reject) => {

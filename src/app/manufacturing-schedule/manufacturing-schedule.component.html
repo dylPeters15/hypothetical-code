@@ -1,0 +1,29 @@
+
+
+<div *ngFor="let goals of dataSource['data']" style="width:40%;float: left;">
+    <h1>{{goals['goalname']}} </h1>
+<mat-list>
+    <mat-list-item *ngFor="let activity of goals['activities']">
+      SKU: {{activity['sku']['skuname']}} Hours Required: {{activity['calculatedhours']}}          
+       <button mat-button (click)="modifySelectedActivity(activity)" [disabled]="dataSource.data.length==0">
+        <mat-icon>edit</mat-icon> 
+      </button>
+      </mat-list-item>
+</mat-list>
+</div>
+<div style="width:60%;float: left;">
+  <mat-form-field>
+    <input matInput [matDatepicker]="startpicker" placeholder="Choose a start date" [(ngModel)]="startDate"
+      (dateChange)="selectionChange()">
+    <mat-datepicker-toggle matSuffix [for]="startpicker"></mat-datepicker-toggle>
+    <mat-datepicker #startpicker></mat-datepicker>
+  </mat-form-field>
+
+  <mat-form-field>
+    <input matInput [matDatepicker]="endpicker" placeholder="Choose an end date" [(ngModel)]="endDate"
+      (dateChange)="selectionChange()">
+    <mat-datepicker-toggle matSuffix [for]="endpicker"></mat-datepicker-toggle>
+    <mat-datepicker #endpicker></mat-datepicker>
+  </mat-form-field>
+</div>
+<button mat-raised-button (click)="openEnableGoalsDialog()"> Enable/Disable Goals </button>

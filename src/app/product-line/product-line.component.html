@@ -1,0 +1,13 @@
+<button mat-raised-button (click)="openDialog()" color="primary"> New </button>
+<button mat-raised-button (click)="deleteProductLine()" color="warn">Delete</button>
+<mat-form-field>
+  <input matInput placeholder="Filter" [(ngModel)]="filterQuery" (ngModelChange)="refreshData($event)">
+</mat-form-field>
+
+<div cdkDropListGroup class='product-line-container'>
+  <div *ngFor="let productLine of dataSource['data']">
+    <app-product-line-tables class="productLines" [(ngModel)]="productLine"></app-product-line-tables>
+  </div>
+</div>
+
+
