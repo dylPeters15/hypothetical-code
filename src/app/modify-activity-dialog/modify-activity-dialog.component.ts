@@ -49,8 +49,10 @@ export class ModifyActivityDialogComponent implements OnInit {
   modifyActivity() {
     let activity = this.data['activity'];
     console.log("ACTIVITY: " + JSON.stringify(activity))
-      this.rest.modifyActivity(activity['sku']['_id'],activity['sku']['_id'],activity['numcases'],activity['calculatedhours'], Number(this.setHours),activity['startdate'],activity['line']).subscribe(response => {
+      console.log(this.setHours)
+      this.rest.modifyActivity(activity['sku']['_id'],activity['sku']['_id'],activity['numcases'],activity['calculatedhours'], this.setHours,activity['startdate'],activity['line']).subscribe(response => {
         console.log("EDITED: " + JSON.stringify(response))
+        console.log(activity)
         this.snackBar.open("Successfully modified Activity for SKU: " + activity['sku']['skuname'] + ".", "close", {
           duration: 2000,
         });
