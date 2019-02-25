@@ -1,5 +1,5 @@
-<button mat-raised-button (click)="deleteProductLine()" color="warn">Delete</button>
-<button mat-raised-button (click)="openDialog()" color="primary"> New </button>
+<button mat-raised-button (click)="deleteProductLine()" color="warn" *ngIf="admin" >Delete</button>
+<button mat-raised-button (click)="openDialog()" color="primary" *ngIf="admin" > New </button>
 <mat-form-field>
   <input matInput placeholder="Filter" [(ngModel)]="filterQuery" (ngModelChange)="refreshData($event)">
 </mat-form-field>
