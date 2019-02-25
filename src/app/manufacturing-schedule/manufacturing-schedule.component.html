@@ -1,11 +1,14 @@
-
 <div class="manufacturing-schedule-container">
     <div class="manufacturing-goals-container">
         <div cdkDropListGroup class='manufacturing-goals-list'>
-            <div *ngFor="let goals of dataSource['data']">
+            <div *ngFor="let goals of goalsDataSource['data']">
                 <app-manufacturing-schedule-tables class="goals" [(ngModel)]="goals"></app-manufacturing-schedule-tables>
             </div>
         </div>
         <button mat-raised-button (click)="openEnableGoalsDialog()"> Enable/Disable Goals </button>
+    </div>
+
+    <div *ngFor="let line of linesDataSource['data']">
+        <app-manufacturing-lines-table class="lines" [(ngModel)]="line"></app-manufacturing-lines-table>
     </div>
 </div>

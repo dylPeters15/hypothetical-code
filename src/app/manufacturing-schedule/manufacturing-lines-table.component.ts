@@ -5,6 +5,7 @@ import { RestService } from '../rest.service';
 import { MatDialog, MatDialogRef, MatTableDataSource, MatPaginator } from "@angular/material";
 import {NewProductLineDialogComponent } from '../new-product-line-dialog/new-product-line-dialog.component';
 import {MatIconModule} from '@angular/material/icon'
+import { __values } from 'tslib';
 
 const customValueProvider = {
   provide: NG_VALUE_ACCESSOR,
@@ -13,16 +14,17 @@ const customValueProvider = {
 };
 
 @Component({
-  selector: 'app-manufacturing-schedule-tables',
-  templateUrl: './manufacturing-schedule-tables.component.html',
-  styleUrls: ['./manufacturing-schedule-tables.component.css'],
+  selector: 'app-manufacturing-lines-table',
+  templateUrl: './manufacturing-lines-table.component.html',
+  styleUrls: ['./manufacturing-lines-table.component.css'],
   providers: [customValueProvider]
 })
 export class ManufacturingLinesTableComponent implements ControlValueAccessor {
-
-  constructor(public rest: RestService, public dialog: MatDialog) { }
   _value = '';
   stringified = '';
+  activitiesExist: boolean = false;
+  constructor(public rest: RestService, public dialog: MatDialog) { }
+
 
   propagateChange: any = () => { };
 
@@ -32,6 +34,10 @@ export class ManufacturingLinesTableComponent implements ControlValueAccessor {
     if (value) {
       this._value = value;
       this.stringified = JSON.stringify(value);
+      console.log("STRING: " + this._value['activities'].length)
+      if(this._value['activities'].length > 1){
+        this.activitiesExist = true;
+      }
     }
   }
 

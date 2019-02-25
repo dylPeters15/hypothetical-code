@@ -4,7 +4,7 @@ import { RestService } from '../rest.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { EnableGoalsDialogComponent } from '../enable-goals-dialog/enable-goals-dialog.component'
 import { ModifyActivityDialogComponent } from '../modify-activity-dialog/modify-activity-dialog.component'
-import { MatDialogRef, MatDialog, MatDialogConfig, MatTableDataSource,MatPaginator, MatSnackBar } from "@angular/material";
+import { MatDialogRef, MatDialog, MatDialogConfig, MatTableDataSource,MatPaginator, MatSnackBar, MatTab } from "@angular/material";
 import {ExportToCsv} from 'export-to-csv';
 import {CdkDragDrop, moveItemInArray, transferArrayItem} from '@angular/cdk/drag-drop';
 
@@ -72,7 +72,21 @@ export class ManufacturingScheduleComponent implements OnInit {
   })
   this.linesData = [];
   this.rest.getLine('','.*','','.*',100).subscribe(response => {
-    console.log("RESPONSE: " + JSON.stringify(response))
+    response.forEach(line => {
+      var currentLineName = line['shortname'];
+      let currentActivities = [];
+      this.rest.getActivities(null,100,line['_id']).subscribe(activities => {
+        console.log("ACT Lnght: " + activities.length)
+        if(activities.length > 0){
+          currentActivities.push(activities);
+        }
+        let newLine = new DataForLinesTable(currentLineName, currentActivities);
+        this.linesData.push(newLine);
+      })
+      this.linesDataSource = new MatTableDataSource<DataForLinesTable>(this.linesData);
+    })
+    
+
   })
 }
   modifySelectedActivity(activity) {

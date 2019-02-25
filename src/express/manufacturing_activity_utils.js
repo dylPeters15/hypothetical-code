@@ -2,20 +2,18 @@ const database = require('./database.js');
 
    
 function getActivity(startdate, limit, line) {
-    startdate = startdate || "";
-    limit = limit || database.defaultSearchLimit;
-    var orClause = [];
-    if(line != null){
-        orClause.push({line: line})
+    var clause = [];
+    if(startdate){
+        clause.push({ "startdate": {$gte: startdate} });
     }
-    orClause.push({
-        "startdate": {
-            $gte: startdate
-        }
-    });
+    limit = limit || database.defaultSearchLimit;
+    
+    if(line){
+        clause.push({line: line})
+    }
     return new Promise((resolve, reject) => {
         var filterSchema ={
-            $or: orClause
+            clause
         } 
         database.manufacturingActivityModel.find(filterSchema).limit(limit).deepPopulate('sku.formula.ingredientsandquantities.ingredient').populate('line').exec(function(err,results) {
             if(err){
