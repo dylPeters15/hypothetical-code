@@ -251,13 +251,22 @@ export class ImportUploadService {
       var numToComplete = 5;
       console.log("OLDSKU",oldsku);
       console.log("NEWSKU:",newsku);
-      this.rest.modifySku(oldsku['skuname'], newsku['skuname'], newsku['skunumber'], newsku['caseupcnumber'], newsku['unitupcnumber'], ""+newsku['unitsize'], newsku['countpercase'], newsku['formula'], newsku['formulascalingfactor'], newsku['manufacturingrate'], newsku['comment']).subscribe(response => {
-        if (response['ok'] == 1) {
-          resolve();
+      this.rest.getFormulas("",newsku['formula'],0,1).subscribe(formulas => {
+        if (formulas.length == 0) {
+          reject(Error("Could not get formula " + newsku['formula'] + " for SKU " + newsku['skuname']));
         } else {
-          reject(Error("Could not update sku " + oldsku['skuname']));
+          console.log("Formula: ",formulas[0]);
+          this.rest.modifySku(oldsku['skuname'], newsku['skuname'], newsku['skunumber'], newsku['caseupcnumber'], newsku['unitupcnumber'], ""+newsku['unitsize'], newsku['countpercase'], newsku['formula'], newsku['formulascalingfactor'], newsku['manufacturingrate'], newsku['comment']).subscribe(response => {
+            if (response['ok'] == 1) {
+              resolve();
+            } else {
+              console.log(response);
+              reject(Error("Could not update sku " + oldsku['skuname']));
+            }
+          });
         }
       });
+      
     });
   }
 
