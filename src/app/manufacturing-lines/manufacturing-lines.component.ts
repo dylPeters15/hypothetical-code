@@ -69,7 +69,6 @@ export class ManufacturingLinesComponent implements OnInit {
   refreshData() {
     this.data = [];
     this.rest.getLine('', '.*','','',5).subscribe(skus => {
-      console.log("DATA: " + JSON.stringify(skus))
       this.lines = skus;
       this.dataSource = new MatTableDataSource<ManufacturingLine>(this.data);
       var i;
@@ -80,10 +79,10 @@ export class ManufacturingLinesComponent implements OnInit {
         var count = 0;
         var j;
         for(j = 0; j<this.lines[i]['skus'].length; j++){
-          this.skuString += this.printSKU(this.lines[i]['skus'][j]['sku']) + '\n';
-          console.log("String: " + this.skuString)
+          this.skuString += this.printSKU(this.lines[i]['skus'][j]['sku']);
           count++;
         }
+        this.skuString = this.skuString.substring(0,this.skuString.length-1);
         let comment = this.lines[i]['comment'];
         let currentLine = new ManufacturingLine(linename, shortname, this.skuString, comment, false, count);
         this.data.push(currentLine)
@@ -132,7 +131,7 @@ export class ManufacturingLinesComponent implements OnInit {
 
   printSKU(skuObject){
     let sku = '';
-    sku += '<' + skuObject['skuname'] + '>: <' + skuObject['unitsize'] + '> * <' + skuObject['countpercase'] + '>';
+    sku += skuObject['skuname'] + ': ' + skuObject['unitsize'] + ' * ' + skuObject['countpercase'] + ',';
     return sku;
 }
 

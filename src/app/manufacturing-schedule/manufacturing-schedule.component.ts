@@ -26,7 +26,9 @@ export class ManufacturingScheduleComponent implements OnInit {
   enableGoalsDialogRef: MatDialogRef<EnableGoalsDialogComponent>;
   modifyActivityDialogRef: MatDialogRef<ModifyActivityDialogComponent>;
   goalsData: DataForGoalsTable[] = [];
-  dataSource = new MatTableDataSource<DataForGoalsTable>(this.goalsData);
+  goalsDataSource = new MatTableDataSource<DataForGoalsTable>(this.goalsData);
+  startDate: Date = new Date();
+  endDate: Date = new Date(new Date().setUTCFullYear(new Date().getUTCFullYear()+1));
 
   constructor(public rest:RestService, private route: ActivatedRoute, private router: Router, private snackBar: MatSnackBar, private dialog: MatDialog) { }
 
@@ -55,7 +57,7 @@ export class ManufacturingScheduleComponent implements OnInit {
 
             
         });
-        this.dataSource = new MatTableDataSource<DataForGoalsTable>(this.goalsData);
+        this.goalsDataSource = new MatTableDataSource<DataForGoalsTable>(this.goalsData);
   
       });
     
