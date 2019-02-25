@@ -10,4 +10,11 @@
 
   .manufacturing-goals-container {
     width: 200px;
+    float: left
+  }
+
+  .manufacturing-lines-container {
+    width: calc(100% - 220px);
+    float: left;
+    padding-left: 20px;
   }
