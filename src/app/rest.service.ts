@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { auth } from './auth.service'
 import { Observable } from 'rxjs';
+import { start } from 'repl';
 
 const endpoint = 'https://vcm-8238.vm.duke.edu:8443/'; // Ben
 // const endpoint = 'https://vcm-8405.vm.duke.edu:8443/'; // Noah
@@ -381,7 +382,7 @@ deleteSku(skuName: String): Observable<any> {
     }));
   }
 
-  modifyActivity(sku: number, newsku: number, numcases: number, calculatedhours: number, sethours: number, startdate: Date, line: number){
+  modifyActivity(sku: string, newsku: string, numcases: number, calculatedhours: number, sethours: number, startdate: Date, line: number){
     return this.http.post(endpoint + 'manufacturing-activities',{
       sku: newsku,
       numcases: numcases,
@@ -390,7 +391,10 @@ deleteSku(skuName: String): Observable<any> {
       startdate: startdate,
       line: line
     }, this.generateHeader({
-      sku: sku
+      sku: sku,
+      numcases: numcases.toString(),
+      calculatedhours: calculatedhours.toString(),
+      startdate: startdate.toString()
     }))
   }
 

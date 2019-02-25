@@ -27,7 +27,7 @@ export class DataForTable {
 export class EnableGoalsDialogComponent implements OnInit {
 
   allReplacement = 54321;
-  constructor(public rest: RestService, private snackBar: MatSnackBar, private dialog: MatDialog, public router: Router) { }
+  constructor(public rest: RestService, private snackBar: MatSnackBar, private dialog: MatDialog, public router: Router, private dialogRef: MatDialogRef<EnableGoalsDialogComponent>) { }
   @ViewChild(MatPaginator) paginator: MatPaginator;
   filterQuery: string = "";
   data: DataForTable[] = [];
@@ -63,7 +63,7 @@ export class EnableGoalsDialogComponent implements OnInit {
           let disabledGoalsTable = new DataForTable("Disabled", disabledGoalsList)
           this.data.push(disabledGoalsTable)
           this.dataSource = new MatTableDataSource<DataForTable>(this.data);
-          console.log(this.dataSource.data)
+
       });
 
     });
@@ -80,44 +80,8 @@ export class EnableGoalsDialogComponent implements OnInit {
     }
   }
 
-  // openDialog() {
-  //   const dialogRef = this.dialog.open(NewProductLineDialogComponent, {
-  //     width: '250px',
-  //     data: {}
-  //   });
-  //   dialogRef.afterClosed().subscribe(result => {
-  //     console.log('The dialog was closed');
-  //     if (result) {
-  //       this.data['productlinename'] = result;
-  //       return new Promise((resolve, reject) => {
-  //         this.rest.createProductLine(result, []).subscribe(results => {
-  //           if (results != null) {
-  //             console.log(results)
-  //           }
-  //           this.refreshData();
-  //           resolve();
-  //         })
-  //       })
-  //     }
-  //   });
-  // }
 
-  // deleteProductLine() {
-  //   const dialogRef = this.dialog.open(DeleteProductLineDialogComponent, {
-  //       width: '250px',
-  //       data: this.dataSource.data,
-  //       disableClose: true
-  //     });
-  
-  //     dialogRef.afterClosed().subscribe(result => {
-  //       console.log('The dialog was closed');
-  //       this.refreshData();
-  //     });
-  // }
-
-  // sortData() {
-  //   this.data.sort((a, b) => {
-  //     return a.productlinename > b.productlinename ? 1 : -1;
-  //   });
-  // }
+  closeDialog() {
+    this.dialogRef.close();
+  }
 }

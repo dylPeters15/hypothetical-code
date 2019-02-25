@@ -61,7 +61,8 @@ import { ManufacturingScheduleReportComponent } from './manufacturing-schedule-r
 import {MatDatepickerModule} from '@angular/material/datepicker';
 import { ManufacturingScheduleReportLineTableComponent } from './manufacturing-schedule-report/manufacturing-schedule-report-line-table/manufacturing-schedule-report-line-table.component';
 import { ManufacturingScheduleReportIngredientTableComponent } from './manufacturing-schedule-report/manufacturing-schedule-report-ingredient-table/manufacturing-schedule-report-ingredient-table.component';
-import { EnableGoalsDialogComponent } from './enable-goals-dialog/enable-goals-dialog.component'; 
+import { EnableGoalsDialogComponent } from './enable-goals-dialog/enable-goals-dialog.component';
+import { ModifyActivityDialogComponent } from './modify-activity-dialog/modify-activity-dialog.component'; 
 
 
 const appRoutes: Routes = [
@@ -128,6 +129,7 @@ const appRoutes: Routes = [
     ManufacturingScheduleReportLineTableComponent,
     ManufacturingScheduleReportIngredientTableComponent,
     EnableGoalsDialogComponent,
+    ModifyActivityDialogComponent,
   ],
   imports: [
     BrowserModule,
@@ -158,6 +160,6 @@ const appRoutes: Routes = [
   ],
   providers: [],
   bootstrap: [AppComponent],
-  entryComponents: [DeleteProductLineDialogComponent, UserNotificationDialogComponent, NewUserDialogComponent, PasswordConfirmationDialogComponent, PrivacyPolicyDialogComponent, TermsAndConditionsDialogComponent, MoreInfoDialogComponent, NewSkuDialogComponent, NewIngredientDialogComponent, NewGoalDialogComponent, NewProductLineDialogComponent, ConfirmActionDialogComponent, ImportPreviewDialogComponent, NewLineDialogComponent, EnableGoalsDialogComponent]
+  entryComponents: [DeleteProductLineDialogComponent, UserNotificationDialogComponent, NewUserDialogComponent, PasswordConfirmationDialogComponent, PrivacyPolicyDialogComponent, TermsAndConditionsDialogComponent, MoreInfoDialogComponent, NewSkuDialogComponent, NewIngredientDialogComponent, NewGoalDialogComponent, NewProductLineDialogComponent, ConfirmActionDialogComponent, ImportPreviewDialogComponent, NewLineDialogComponent, EnableGoalsDialogComponent, ModifyActivityDialogComponent]
 })
 export class AppModule { }
