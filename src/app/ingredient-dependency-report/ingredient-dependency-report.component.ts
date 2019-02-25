@@ -133,7 +133,9 @@ export class IngredientDependencyComponent implements OnInit {
         thisobject.rest.getSkus("", "", -1, -1, -1, formula['_id'], 10).subscribe(skus => {
           total += skus.length;
           skus.forEach(sku => {
-            skuArray.push(sku['skuname']);
+            let skuInfo = " " + sku['skuname'] + ": " + sku['unitsize'] + " * " 
+            + sku['countpercase'] + " (" + sku['skunumber'] + ")\n"
+            skuArray.push(skuInfo);
             console.log('pushed: ', skuArray)
           })
           resolve(skus.length);
