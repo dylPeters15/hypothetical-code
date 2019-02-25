@@ -20,7 +20,7 @@ function getFormulas(formulaname, formulanameregex, formulanumber, ingredient, l
         }
         var filterSchema = {
             $or: orClause
-        }
+        } 
         console.log(filterSchema);
         database.formulaModel.find(filterSchema).limit(limit).populate('ingredientsandquantities.ingredient').exec(function(err, formulas) {
             if(formulas != undefined && formulas != null){
@@ -49,8 +49,6 @@ function createFormula(newFormulaObject) {
 
 function createFormula(formulaname, formulanumber, 
     ingredientsandquantities, comment) {
-
-    console.log("Now we in here");
     
     return new Promise(function (resolve, reject) {
         createUniqueFormulaNumber().then(response => {

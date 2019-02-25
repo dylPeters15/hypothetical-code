@@ -6,6 +6,7 @@ import { EnableGoalsDialogComponent } from '../enable-goals-dialog/enable-goals-
 import { MatDialogRef, MatDialog, MatDialogConfig, MatTableDataSource,MatPaginator, MatSnackBar } from "@angular/material";
 import {ExportToCsv} from 'export-to-csv';
 import {CdkDragDrop, moveItemInArray, transferArrayItem} from '@angular/cdk/drag-drop';
+import { DisplayableActivity } from '../new-goal-dialog/new-goal-dialog.component';
 
 var moment = require('moment');
 require('moment-weekday-calc');
@@ -66,7 +67,9 @@ export class ManufacturingScheduleComponent implements OnInit {
             let activityList = [];
             if(goal['enabled']){
             goal['activities'].forEach(activity => {
-              activityList.push(activity['activity'])
+              if(activity['activity']['line'] == null || activity['activity']['line'] == undefined){
+                activityList.push(activity['activity'])
+              }
             })
             let goalTable = new DataForGoalsTable(goal['goalname'], activityList)
             this.goalsData.push(goalTable)
@@ -83,12 +86,14 @@ export class ManufacturingScheduleComponent implements OnInit {
       let currentActivities = [];
       this.rest.getActivities(null,100,line['_id']).subscribe(activities => {
         if(activities.length > 0){
-          currentActivities.push(activities);
+          activities.forEach(activity => {
+            currentActivities.push(activity);
+          })
+          
         }
         let newLine = new DataForLinesTable(currentLineName, currentActivities);
         this.linesData.push(newLine);
       })
-      console.log(this.linesData)
       this.linesDataSource = new MatTableDataSource<DataForLinesTable>(this.linesData);
     })
   })

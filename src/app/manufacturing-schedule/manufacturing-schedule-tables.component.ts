@@ -61,9 +61,9 @@ export class ManufactoringScheduleTableComponent implements ControlValueAccessor
     }
 
   drop(event: CdkDragDrop<string[]>) {
-    console.log('previous container id',event.previousContainer)
-    console.log('container id',event.container)
-    console.log('container data',event.container.data)
+    // console.log('previous container id',event.previousContainer)
+    // console.log('container id',event.container)
+    // console.log('container data',event.container.data)
     if (event.previousContainer === event.container) {
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
     } else {

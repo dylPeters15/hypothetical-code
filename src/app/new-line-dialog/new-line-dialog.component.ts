@@ -67,10 +67,10 @@ export class NewLineDialogComponent implements OnInit {
       }
     
      
-      this.dialog_title = "Modify Product Line";
+      this.dialog_title = "Modify Manufacturing Line";
     }
     else {
-      this.dialog_title = "Create New Product Line";
+      this.dialog_title = "Create New Manufacturing Line";
     }
     this.rest.getSkus('', '.*',0,0,0,'',100).subscribe(response => {
         this.skuList = response;
@@ -92,26 +92,28 @@ export class NewLineDialogComponent implements OnInit {
   }
 
   createLine() {
-    if(this.edit == false){
-      this.rest.createLine(this.linename, this.shortname, this.selectedSkus, this.comment).subscribe(response => {
-        this.snackBar.open("Successfully created Line: " + this.linename + ".", "close", {
-          duration: 2000,
+    if (this.linename!='' && this.shortname!='') {
+      if(this.edit == false){
+        this.rest.createLine(this.linename, this.shortname, this.selectedSkus, this.comment).subscribe(response => {
+          this.snackBar.open("Successfully created Line: " + this.linename + ".", "close", {
+            duration: 2000,
+          });
+        //   console.log(response);
+        //   this.snackBar.open("Error creating Line: " + this.linename + ". Please refresh and try again.", "close", {
+        //     duration: 2000,
+        //   });
+        // }
+          this.closeDialog();
         });
-      //   console.log(response);
-      //   this.snackBar.open("Error creating Line: " + this.linename + ". Please refresh and try again.", "close", {
-      //     duration: 2000,
-      //   });
-      // }
-        this.closeDialog();
-      });
-    }
-    else{
-      this.rest.modifyLine(this.data.present_linename, this.linename, this.shortname, this.selectedSkus, this.comment).subscribe(response => {
-        this.snackBar.open("Successfully modified Line: " + this.linename + ".", "close", {
-          duration: 2000,
+      }
+      else{
+        this.rest.modifyLine(this.data.present_linename, this.linename, this.shortname, this.selectedSkus, this.comment).subscribe(response => {
+          this.snackBar.open("Successfully modified Line: " + this.linename + ".", "close", {
+            duration: 2000,
+          });
+          this.closeDialog();
         });
-        this.closeDialog();
-      });
+      }
     }
   }
 

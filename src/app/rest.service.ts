@@ -4,10 +4,10 @@ import { auth } from './auth.service'
 import { Observable } from 'rxjs';
 import { start } from 'repl';
 
-// const endpoint = 'https://vcm-8238.vm.duke.edu:8443/'; // Ben
+const endpoint = 'https://vcm-8238.vm.duke.edu:8443/'; // Ben
 // const endpoint = 'https://vcm-8405.vm.duke.edu:8443/'; // Noah
 // const endpoint = 'https://vcm-8205.vm.duke.edu:8443/'; // Prod
-const endpoint = 'https://localhost:8443/'; // localhost
+// const endpoint = 'https://localhost:8443/'; // localhost
 
 @Injectable({
   providedIn: 'root'
@@ -403,7 +403,7 @@ deleteGoal(goalname: String): Observable<any> {
     }));
   }
 
-  modifyActivity(sku: string, newsku: string, numcases: number, calculatedhours: number, sethours: number, startdate: Date, line: number){
+  modifyActivity(sku: string, newsku: string, numcases: number, calculatedhours: number, sethours: number, startdate: Date, line: string){
     console.log("rest set", sethours)
     return this.http.post(endpoint + 'manufacturing-activities',{
       sku: newsku,

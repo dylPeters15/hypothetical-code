@@ -22,5 +22,11 @@ import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material';
     onNoClick() {
       this.dialogRef.close();
     }
+
+    createProductLine() {
+      if (this.data.productlinename) {
+        this.dialogRef.close(this.data.productlinename);
+      }
+    }
   
   }
