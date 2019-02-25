@@ -1,4 +1,3 @@
-
 import { Component, OnInit, ElementRef, ViewChild, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA} from "@angular/material";
 import { RestService } from '../rest.service';
@@ -107,7 +106,6 @@ export class NewLineDialogComponent implements OnInit {
       });
     }
     else{
-      console.log("SKUS: " + JSON.stringify(this.selectedSkus))
       this.rest.modifyLine(this.data.present_linename, this.linename, this.shortname, this.selectedSkus, this.comment).subscribe(response => {
         this.snackBar.open("Successfully modified Line: " + this.linename + ".", "close", {
           duration: 2000,

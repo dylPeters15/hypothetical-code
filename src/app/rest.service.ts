@@ -4,10 +4,10 @@ import { auth } from './auth.service'
 import { Observable } from 'rxjs';
 import { start } from 'repl';
 
-const endpoint = 'https://vcm-8238.vm.duke.edu:8443/'; // Ben
-// const endpoint = 'https://vcm-8405.vm.duke.edu:8443/'; // Noah
+// const endpoint = 'https://vcm-8238.vm.duke.edu:8443/'; // Ben
+const endpoint = 'https://vcm-8405.vm.duke.edu:8443/'; // Noah
 // const endpoint = 'https://vcm-8205.vm.duke.edu:8443/'; // Prod
-// const endpoint = 'https://localhost:8443/'; // localhost
+//const endpoint = 'https://localhost:8443/'; // localhost
 
 @Injectable({
   providedIn: 'root'
@@ -111,44 +111,59 @@ export class RestService {
     }));
   }
 
-  ///////////////////// formulas /////////////////////
-  getFormulas(formulaname: string, formulanumber: number, ingredient: number, limit: number): Observable<any> {
-    return this.http.get(endpoint + "formulas", this.generateHeader({
-      formulaname: formulaname,
-      formulanumber: JSON.stringify(formulanumber),
-      ingredient: JSON.stringify(ingredient),
-      limit: JSON.stringify(limit)
-    }));
-  }
+///////////////////// formulas /////////////////////
+getFormulas(formulaname: string, formulanumber: number, ingredient: number, limit: number, formulanameregex?: string, sku?: number): Observable<any> {
+  console.log("limit", limit);
+  console.log("formulaname",formulaname);
+  console.log("formulanumber",formulanumber);
+  console.log("ingredient",ingredient);
+  console.log("limit",limit);
+  console.log("formulanameregex",formulanameregex);
+  console.log("sku",sku);
 
-  createFormula(formulaname: string, formulanumber: number, ingredientsandquantities: any[], comment: string): Observable<any> {
-    return this.http.put(endpoint + "formulas", {
-      formulaname: formulaname,
-      formulanumber: formulanumber,
-      ingredientsandquantities: ingredientsandquantities,
-      comment: comment
-    },
-    this.generateHeader());
-  }
+  var header = {
+    formulaname: formulaname||"",
+    formulanameregex: formulanameregex||"$a",
+    formulanumber: JSON.stringify(formulanumber||0),
+    sku: JSON.stringify(sku||0),
+    ingredient: ""+(ingredient||0),
+    limit: JSON.stringify(limit||20)
+  };
 
-  modifyFormula(oldname: string, formulaname: string, formulanumber: number, ingredientsandquantities: any[], comment: string): Observable<any> {
-    return this.http.post(endpoint + "formulas", {
-      formulaname: formulaname,
-      formulanumber: formulanumber,
-      ingredientsandquantities: ingredientsandquantities,
-      comment: comment||""
-    },
-    this.generateHeader({
-      formulaname: oldname
-    }));
-  }
+  console.log("Header: ",header);
 
-  deleteFormula(sku: number, ingredient: number): Observable<any> {
-    return this.http.delete(endpoint + "formulas", this.generateHeader({
-      sku: sku,
-      ingredient: ingredient
-    }));
-  }
+  return this.http.get(endpoint + "formulas", this.generateHeader(header));
+}
+
+createFormula(formulaname: String, formulanumber: Number, ingredientsandquantities: any[], comment: String): Observable<any> {
+  console.log("in the rest api!");
+  return this.http.put(endpoint + "formulas", {
+    formulaname: formulaname,
+    formulanumber: formulanumber,
+    ingredientsandquantities: ingredientsandquantities,
+    comment: comment
+  },
+  this.generateHeader());
+}
+
+modifyFormula(oldname: string, formulaname: string, formulanumber: number, ingredientsandquantities: any[], comment: string): Observable<any> {
+  return this.http.post(endpoint + "formulas", {
+    formulaname: formulaname,
+    formulanumber: formulanumber,
+    ingredientsandquantities: ingredientsandquantities,
+    comment: comment||""
+  },
+  this.generateHeader({
+    formulaname: oldname
+  }));
+}
+
+deleteFormula(sku: number, ingredient: number): Observable<any> {
+  return this.http.delete(endpoint + "formulas", this.generateHeader({
+    sku: sku,
+    ingredient: ingredient
+  }));
+}
 
  ///////////////////// skus /////////////////////
  getSkus(skuName: String, skunameregex: String, skuNumber: number, caseUpcNumber: number, unitUpcNumber: number, formula: String, limit: number): Observable<any> {
@@ -165,7 +180,7 @@ export class RestService {
 }
 
 createSku(skuname: String, skunumber: number, 
-  caseupcnumber: number, unitupcnumber: number, unitsize: number, 
+  caseupcnumber: number, unitupcnumber: number, unitsize: string, 
   countpercase: number, formulanum: Number, formulascalingfactor: Number, manufacturingrate: Number, comment: String): Observable<any> {
   return this.http.put(endpoint + "skus", {
     skuname: skuname,
@@ -183,7 +198,7 @@ createSku(skuname: String, skunumber: number,
 }
 
 modifySku(oldSkuName: String, skuname: String, skunumber: number, 
-  caseupcnumber: number, unitupcnumber: number, unitsize: number, 
+  caseupcnumber: number, unitupcnumber: number, unitsize: string, 
   countpercase: number, formulanum: Number, formulascalingfactor: Number, manufacturingrate: Number, comment: String): Observable<any> {
   return this.http.post(endpoint + "skus", {
     skuname: skuname,
@@ -219,45 +234,45 @@ deleteSku(skuName: String): Observable<any> {
     }));
   }
 
-  createIngredient(ingredientname: String, ingredientnumber: number, 
-    vendorinformation: String, unitofmeasure: String, amount: number, 
-    costperpackage: number, comment: String): Observable<any> {
-    return this.http.put(endpoint + "ingredients", {
-      ingredientname: ingredientname,
+createIngredient(ingredientname: String, ingredientnumber: number, 
+  vendorinformation: String, unitofmeasure: String, amount: number, 
+  costperpackage: number, comment: String): Observable<any> {
+  return this.http.put(endpoint + "ingredients", {
+    ingredientname: ingredientname,
+    ingredientnumber: ingredientnumber,
+    vendorinformation: vendorinformation,
+    unitofmeasure: unitofmeasure,
+    amount: amount,
+    costperpackage: costperpackage,
+    comment: comment
+  },
+  this.generateHeader());
+}
+
+modifyIngredient(ingredientname: String,  newingredientname: String, 
+  ingredientnumber: number, vendorinformation: String, unitofmeasure: String, 
+  amount: number, costperpackage: number, comment: String): Observable<any> {
+  return this.http.post(endpoint + "ingredients", {
+    $set: {
+      ingredientname: newingredientname,
       ingredientnumber: ingredientnumber,
       vendorinformation: vendorinformation,
       unitofmeasure: unitofmeasure,
       amount: amount,
       costperpackage: costperpackage,
-      comment: comment
-    },
-    this.generateHeader());
-  }
+      comment: comment||""
+    }
+  },
+  this.generateHeader({
+    ingredientname: ingredientname
+  }));
+}
 
-  modifyIngredient(ingredientname: String,  newingredientname: String, 
-    ingredientnumber: number, vendorinformation: String, unitofmeasure: String, 
-    amount: number, costperpackage: number, comment: String): Observable<any> {
-    return this.http.post(endpoint + "ingredients", {
-      $set: {
-        ingredientname: newingredientname,
-        ingredientnumber: ingredientnumber,
-        vendorinformation: vendorinformation,
-        unitofmeasure: unitofmeasure,
-        amount: amount,
-        costperpackage: costperpackage,
-        comment: comment||""
-      }
-    },
-    this.generateHeader({
-      ingredientname: ingredientname
-    }));
-  }
-
-  deleteIngredient(ingredientname: String): Observable<any> {
-    return this.http.delete(endpoint + "ingredients", this.generateHeader({
-      ingredientname: ingredientname,
-    }));
-  }
+deleteIngredient(ingredientname: String): Observable<any> {
+  return this.http.delete(endpoint + "ingredients", this.generateHeader({
+    ingredientname: ingredientname,
+  }));
+}
 
 
   ///////////////////// product lines /////////////////////
@@ -345,11 +360,13 @@ deleteSku(skuName: String): Observable<any> {
     }));
   }
 
-  deleteGoal(goalname: String): Observable<any> {
-    return this.http.delete(endpoint + "manufacturing-goals", this.generateHeader({
-      goalname: goalname
-    }));
-  }
+
+
+deleteGoal(goalname: String): Observable<any> {
+  return this.http.delete(endpoint + "manufacturing-goals", this.generateHeader({
+    goalname: goalname
+  }));
+}
 
 
   ///////////////////// Manufacturing Activities /////////////////////
@@ -411,6 +428,7 @@ deleteSku(skuName: String): Observable<any> {
   }
 
   createLine(linename: String, shortname: String, skus: [], comment: String): Observable<any> {
+    console.log("REST: " + JSON.stringify(skus))
     return this.http.put(endpoint + 'manufacturing-lines', {
       linename: linename,
       shortname: shortname,

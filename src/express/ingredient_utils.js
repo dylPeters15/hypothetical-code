@@ -48,6 +48,7 @@ function createIngredient(ingredientname, ingredientnumber,
                 comment: comment
             });
             ingredient.save().then(result => {
+                console.log("result: " + result);
                 resolve(result);
             }).catch(err => {
                 reject(Error(err));

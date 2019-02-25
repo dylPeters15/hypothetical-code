@@ -3,74 +3,58 @@ import { RestService } from '../rest.service';
 import {MatSnackBar} from '@angular/material';
 import { MatDialogRef, MatDialog, MatSort, MatDialogConfig, MatTableDataSource, MatPaginator } from "@angular/material";
 import { MoreInfoDialogComponent } from '../more-info-dialog/more-info-dialog.component';
-import { NewSkuDialogComponent } from '../new-sku-dialog/new-sku-dialog.component';
+import { NewFormulaDialogComponent } from '../new-formula-dialog/new-formula-dialog.component';
 import { AfterViewChecked } from '@angular/core';
 import { auth } from '../auth.service';
 import {ExportToCsv} from 'export-to-csv';
+import { ingredienttuple } from "../new-formula-dialog/ingredienttuple";
 
-// skuname', 'skunumber','caseupcnumber', 'unitupcnumber', 'unitsize', 'countpercase', 'formula', 'formulascalingfactor', "manufacturingrate", "comment"
-
-export interface UserForTable {
-  skuname: String;
-  skunumber: Number;
-  caseupcnumber: Number;
-  unitupcnumber: Number;
-  unitsize: String;
-  countpercase: Number;
-  formula: any;
-  formulascalingfactor: Number;
-  manufacturingrate: Number;
+export interface FormulaForTable {
+  formulaname: String;
+  formulanumber: Number;
+  ingredientsandquantities: any[];
   comment: String;
   checked: boolean;
 }
 
-export class ExportableSKU {
-  skuname: String;
-  skunumber: Number;
-  caseupcnumber: Number;
-  unitupcnumber: Number;
-  unitsize: String;
-  countpercase: Number;
-  formula: any;
-  formulascalingfactor: Number;
-  manufacturingrate: Number;
+export class ExportableFormula {
+  formulaname: String;
+  formulanumber: Number;
+  ingredientsandquantities: any[];
   comment: String;
-  constructor(userForTable){
-    this.skunumber = userForTable.skunumber;
-    this.skuname = userForTable.skuname;
-    this.caseupcnumber = userForTable.caseupcnumber;
-    this.unitupcnumber = userForTable.unitupcnumber;
-    this.unitsize = userForTable.unitsize;
-    this.countpercase = userForTable.countpercase;
-    this.formula = userForTable.formula;
-    this.formulascalingfactor = userForTable.formulascalingfactor;
-    this.manufacturingrate = userForTable.manufacturingrate;
-    this.comment = userForTable.comment;
+  constructor(FormulaForTable){
+    this.formulaname = FormulaForTable.formulaname;
+    this.formulanumber = FormulaForTable.formulanumber;
+    this.ingredientsandquantities = FormulaForTable.ingredientsandquantities;
+    this.comment = FormulaForTable.comment;
   }
 }
+
 
 /**
  * @title Table dynamically changing the columns displayed
  */
 @Component({
-    selector: 'app-sku',
-    templateUrl: './sku.component.html',
-    styleUrls: ['./sku.component.css']
+    selector: 'app-formulas',
+    templateUrl: './formulas.component.html',
+    styleUrls: ['./formulas.component.css']
   })
-export class SkuComponent  implements OnInit {
+export class FormulaComponent implements OnInit {
 
   constructor(public rest:RestService, private snackBar: MatSnackBar, private dialog: MatDialog) { }
   allReplacement = 54321;
-  displayedColumns: string[] = ['checked', 'skuname', 'skunumber','caseupcnumber', 'unitupcnumber', 'unitsize', 'countpercase', 'formula', 'formulascalingfactor', "manufacturingrate", "comment"];
-  data: UserForTable[] = [];
+  displayedColumns: string[] = ['checked', 'formulaname', 'formulanumber','ingredientsandquantities', 'comment'];
+  data: FormulaForTable[] = [];
   dialogRef: MatDialogRef<MoreInfoDialogComponent>;
-  newDialogRef: MatDialogRef<NewSkuDialogComponent>;
-  dataSource =  new MatTableDataSource<UserForTable>(this.data);
+  newDialogRef: MatDialogRef<NewFormulaDialogComponent>;
+  dataSource =  new MatTableDataSource<FormulaForTable>(this.data);
   admin: boolean = false;
+  filterQuery: string = "";
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
   ngOnInit() {
+    this.paginator.pageSize = 5;
     this.admin = auth.isAuthenticatedForAdminOperation();
     this.refreshData();
   }
@@ -79,18 +63,19 @@ export class SkuComponent  implements OnInit {
     return [5, 10, 20, this.allReplacement];
   }
 
-  refreshData() {
-    // this.rest.getSkus().subscribe(response => {
-    //   this.data = response;
-    //   this.data.forEach(user => {
-    //     user['checked'] = false;
-    //   });
-    //   console.log(this.data);
-    //   this.dataSource =  new MatTableDataSource<UserForTable>(this.data);
-    //   this.dataSource.sort = this.sort;
-    // this.dataSource.paginator = this.paginator;
-    // });
-    
+  refreshData(filterQueryData?) {
+    filterQueryData = filterQueryData ? ".*"+filterQueryData+".*" : ".*"+this.filterQuery+".*"; //this returns things that have the pattern anywhere in the string
+    this.rest.getFormulas("", null, null, this.paginator.pageSize*10,filterQueryData, null).subscribe(response => {
+      console.log("in formula: ", response);
+      this.data = response;
+      this.data.forEach(user => {
+        user['checked'] = false;
+      });
+      console.log(this.data);
+      this.dataSource =  new MatTableDataSource<FormulaForTable>(this.data);
+      this.dataSource.sort = this.sort;
+      this.dataSource.paginator = this.paginator;
+    });
   }
 
   seeInfo(type, content) {
@@ -103,27 +88,29 @@ export class SkuComponent  implements OnInit {
   }
 
   // edit
-  newSku(edit, skuname, skunumber, caseupcnumber, unitupcnumber, unitsize, countpercase, formula, formulascalingfactor, manufacturingrate, comment) {
+  newFormula(edit, present_formulaname, present_formulanumber, present_ingredientsandquantities, present_comment) {
     const dialogConfig = new MatDialogConfig();
-    dialogConfig.data = {edit: edit, present_name: skuname, present_skuNumber: skunumber, present_caseUpcNumber: caseupcnumber, present_unitUpcNumber: unitupcnumber, present_unitSize:unitsize, present_countPerCase:countpercase, present_formula:formula,present_formulascalingfactor:formulascalingfactor, present_manufacturingrate:manufacturingrate, present_comment:comment};
-    this.newDialogRef = this.dialog.open(NewSkuDialogComponent, dialogConfig);
+    dialogConfig.data = {edit: edit, present_formulaname: present_formulaname, present_formulanumber: present_formulanumber, present_ingredientsandquantities: present_ingredientsandquantities, present_comment:present_comment};
+    //console.log('formulas ingredient data', present_ingredientTuples)
+    this.newDialogRef = this.dialog.open(NewFormulaDialogComponent, dialogConfig);
     this.newDialogRef.afterClosed().subscribe(event => {
       this.refreshData();
     });
   }
 
-  newSkuButton()
+  newFormulaButton()
   {
-    this.newSku(false, "", null, null, null, "", null, null, null, null, "");
+    let blankTuple = [];
+    this.newFormula(false, "", 0, blankTuple, "");
   }
 
   sortData() {
     this.data.sort((a,b) => {
-      return a.skuname > b.skuname ? 1 : -1;
+      return a.formulaname > b.formulaname ? 1 : -1;
     });
   }
 
-  deleteSkuConfirmed(sku) {
+  deleteFormulaConfirmed(formula) {
     // this.rest.sendAdminDeleteSkuRequest(sku.name).subscribe(response => {
     //   for (var i=0; i<sku.ingredientTuples.length-1; i = i+2) {
     //     this.removeIngredient(sku.ingredientTuples[i], sku.name);
@@ -138,25 +125,25 @@ export class SkuComponent  implements OnInit {
     // });
   }
 
-  modifySkuConfirmed(present_name, present_skuNumber, present_caseUpcNumber, present_unitUpcNumber,present_unitSize,present_countPerCase,present_productLine,present_ingredientTuples, present_comment, present_id) {
-    this.newSku(true, present_name, present_skuNumber, present_caseUpcNumber, present_unitUpcNumber, present_unitSize, present_countPerCase, present_productLine, present_ingredientTuples, present_comment, present_id);
+  modifyFormulaConfirmed(present_formulaname, present_formulanumber, present_ingredientsandquantities, present_comment) {
+    this.newFormula(true, present_formulaname, present_formulanumber, present_ingredientsandquantities, present_comment);
   }
 
   deleteSelected() {
     const dialogConfig = new MatDialogConfig();
-    this.data.forEach(sku => {
-      if (sku.checked) {
-        this.deleteSkuConfirmed(sku);
+    this.data.forEach(formula => {
+      if (formula.checked) {
+        this.deleteFormulaConfirmed(formula);
       }
     });
   }
 
   exportSelected(){
-    let exportData: ExportableSKU[] = [];
-    this.data.forEach(sku => {
-      if(sku.checked) {
-        let skuToExport = new ExportableSKU(sku);
-        exportData.push(skuToExport);
+    let exportData: ExportableFormula[] = [];
+    this.data.forEach(formula => {
+      if(formula.checked) {
+        let formulaToExport = new ExportableFormula(formula);
+        exportData.push(formulaToExport);
       }
     });
       const options = { 
@@ -196,7 +183,7 @@ export class SkuComponent  implements OnInit {
     else{
       this.data.forEach(user => {
         if (user.checked) {
-          this.modifySkuConfirmed(user.skuname, user.skunumber, user.caseupcnumber, user.unitupcnumber, user.unitsize, user.countpercase, user.formula, user.formulascalingfactor, user.manufacturingrate, user.comment);
+          this.modifyFormulaConfirmed(user.formulaname, user.formulanumber, user.ingredientsandquantities, user.comment);
         }
       });
     }   

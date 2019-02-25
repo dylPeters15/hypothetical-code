@@ -360,7 +360,7 @@ export class ImportMatchConflictNewCheckerService {
       var numMLsChecked = 0;
       // if (sku['manufacturinglines'].length == 0) {
         console.log(sku['formula'])
-        this.rest.getFormulas("", sku['formula'], -1, 1).subscribe(formulaResponse => {
+        this.rest.getFormulas("", sku['formula'], 0, 1).subscribe(formulaResponse => {
           console.log(formulaResponse)
           if (formulaResponse.length == 1 || this.arrayContainsObjectWithKeyVal(formulas, 'formulanumber', sku['formula'])) {
             resolve();
@@ -375,7 +375,8 @@ export class ImportMatchConflictNewCheckerService {
           if (mlResponse.length == 1) {
             numMLsChecked++;
             if (numMLsChecked >= sku['manufacturinglines'].length) {
-              this.rest.getFormulas("", sku['formula'], -1, 1).subscribe(formulaResponse => {
+              this.rest.getFormulas("", sku['formula'], 0, 1).subscribe(formulaResponse => {
+                console.log(formulaResponse);
                 if (formulaResponse.length == 1 || this.arrayContainsObjectWithKeyVal(formulas, 'formulanumber', sku['formula'])) {
                   resolve();
                 } else {

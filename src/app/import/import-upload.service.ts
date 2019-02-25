@@ -178,7 +178,7 @@ export class ImportUploadService {
   private importSKU(sku): Promise<any> {
     return new Promise((resolve, reject) => {
       console.log("SKU: ", sku);
-      this.rest.createSku(sku['skuname'], sku['skunumber'], sku['caseupcnumber'], sku['unitupcnumber'], sku['unitsize'], sku['countpercase'], sku['formula'], sku['formulascalingfactor'], sku['manufacturingrate'], sku['comment']).subscribe(createSkuResponse => {
+      this.rest.createSku(sku['skuname'], sku['skunumber'], sku['caseupcnumber'], sku['unitupcnumber'], ""+sku['unitsize'], sku['countpercase'], sku['formula'], sku['formulascalingfactor'], sku['manufacturingrate'], sku['comment']).subscribe(createSkuResponse => {
         if (createSkuResponse['skuname'] == sku['skuname']) {
           this.rest.getProductLines(sku['productline'],"", 1).subscribe
             (getPLResponse => {
@@ -251,7 +251,7 @@ export class ImportUploadService {
       var numToComplete = 5;
       console.log("OLDSKU",oldsku);
       console.log("NEWSKU:",newsku);
-      this.rest.modifySku(oldsku['skuname'], newsku['skuname'], newsku['skunumber'], newsku['caseupcnumber'], newsku['unitupcnumber'], newsku['unitsize'], newsku['countpercase'], newsku['formula'], newsku['formulascalingfactor'], newsku['manufacturingrate'], newsku['comment']).subscribe(response => {
+      this.rest.modifySku(oldsku['skuname'], newsku['skuname'], newsku['skunumber'], newsku['caseupcnumber'], newsku['unitupcnumber'], ""+newsku['unitsize'], newsku['countpercase'], newsku['formula'], newsku['formulascalingfactor'], newsku['manufacturingrate'], newsku['comment']).subscribe(response => {
         if (response['ok'] == 1) {
           resolve();
         } else {

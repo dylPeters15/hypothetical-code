@@ -37,6 +37,7 @@ function getSkus(skuname, skunameregex, skunumber, caseupcnumber, unitupcnumber,
 
 
 function createSku(name, number, case_upc, unit_upc, unit_size, count, formulanum, formulascalingfactor, manufacturingrate, comment) {
+    console.log("lets make us a sku");
     return new Promise(function (resolve, reject) {
         createUniqueSkuNumber().then(response => {
             var newSkuNumber;
@@ -71,7 +72,7 @@ function createSku(name, number, case_upc, unit_upc, unit_size, count, formulanu
                     }
                     // newingredientnumber = ingredientnumber || Number(response);
 
-                    formula_utils.getFormulas("",formulanum,null,1).then(response => {
+                    formula_utils.getFormulas("","$a",formulanum,null,1).then(response => {
                         if (response.length == 0) {
                             reject(Error("Could not find formula " + formulanum + " for SKU " + name));
                         } else {
@@ -152,7 +153,7 @@ function modifySku(oldName, name, number, case_upc, unit_upc, unit_size, count, 
 function deleteSku(skuName) {
     return new Promise(function (resolve, reject) {
         const filterschema = {
-            name: skuName
+            skuname: skuName
         };
         database.skuModel.deleteOne(filterschema, (err, response) => {
             if (err) {
