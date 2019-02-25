@@ -60,7 +60,6 @@ export class IngredientComponent  implements OnInit {
   dataSource =  new MatTableDataSource<IngredientForTable>(this.data);
   admin: boolean = false;
   filterQuery: string = "";
-  
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
@@ -76,6 +75,7 @@ export class IngredientComponent  implements OnInit {
   refreshData(filterQueryData?) {
     filterQueryData = filterQueryData ? ".*"+filterQueryData+".*" : ".*"+this.filterQuery+".*"; //this returns things that have the pattern anywhere in the string
     this.rest.getIngredients("", filterQueryData, 1, this.paginator.pageSize*10).subscribe(response => {
+      console.log("in ingredient: ", response);
       this.data = response;
       this.data.forEach(user => {
         user['checked'] = false;

@@ -113,7 +113,8 @@ app.route('/users').get((req, res) => {
 ///////////////////// formulas /////////////////////
 
 app.route('/formulas').get((req, res) => {
-    formula_utils.getFormulas(req.headers['formulaname'], JSON.parse(req.headers['formulanumber']), JSON.parse(req.headers['sku']), JSON.parse(req.headers['ingredient']), JSON.parse(req.headers['limit'])).then(formulas => {
+    console.log("hey", req.headers);
+    formula_utils.getFormulas(req.headers['formulaname'], req.headers['formulanameregex'], JSON.parse(req.headers['formulanumber']), JSON.parse(req.headers['sku']), JSON.parse(req.headers['ingredient']), JSON.parse(req.headers['limit'])).then(formulas => {
         res.send(formulas);
     }).catch(err => {
         resolveError(err, res);
@@ -121,7 +122,6 @@ app.route('/formulas').get((req, res) => {
 }).put((req, res) => {
     formula_utils.createFormula(req.body['formulaname'], req.body['formulanumber'],
     req.body['ingredientsandquantities'], req.body['comment']).then(response => {
-        console.log("at this point, repsonse is " + response.data);
         res.send(response);
     }).catch(err => {
         resolveError(err, res);
@@ -151,7 +151,6 @@ app.route('/ingredients').get((req, res) => {
     ingredient_utils.createIngredient(req.body['ingredientname'], req.body['ingredientnumber'],
     req.body['vendorinformation'], req.body['unitofmeasure'], req.body['amount'],
     req.body['costperpackage'], req.body['comment']).then(response => {
-        console.log("at this point, repsonsee is " + response.data);
         res.send(response);
     }).catch(err => {
         resolveError(err, res);

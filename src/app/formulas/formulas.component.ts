@@ -49,10 +49,12 @@ export class FormulaComponent implements OnInit {
   newDialogRef: MatDialogRef<NewFormulaDialogComponent>;
   dataSource =  new MatTableDataSource<FormulaForTable>(this.data);
   admin: boolean = false;
+  filterQuery: string = "";
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
   ngOnInit() {
+    this.paginator.pageSize = 5;
     this.admin = auth.isAuthenticatedForAdminOperation();
     this.refreshData();
   }
@@ -62,8 +64,9 @@ export class FormulaComponent implements OnInit {
   }
 
   refreshData(filterQueryData?) {
-    //filterQueryData = filterQueryData ? ".*"+filterQueryData+".*" : ".*"+this.filterQuery+".*"; //this returns things that have the pattern anywhere in the string
-    this.rest.getFormulas("", 1, 1, 1, this.paginator.pageSize*10).subscribe(response => {
+    filterQueryData = filterQueryData ? ".*"+filterQueryData+".*" : ".*"+this.filterQuery+".*"; //this returns things that have the pattern anywhere in the string
+    this.rest.getFormulas("", null, null, null, this.paginator.pageSize*10,filterQueryData).subscribe(response => {
+      console.log("in formula: ", response);
       this.data = response;
       this.data.forEach(user => {
         user['checked'] = false;

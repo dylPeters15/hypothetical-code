@@ -47,7 +47,6 @@ function createIngredient(ingredientname, ingredientnumber,
                 costperpackage: costperpackage,
                 comment: comment
             });
-            console.log("superman!");
             ingredient.save().then(result => {
                 console.log("result: " + result);
                 resolve(result);

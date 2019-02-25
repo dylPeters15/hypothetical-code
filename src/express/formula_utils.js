@@ -1,26 +1,31 @@
 const database = require('./database.js');
 
-function getFormulas(formulaname, formulanumber, sku, ingredient, limit) {
-
-    formulaname = formulaname||"";
-    formulanumber = formulanumber||-1;
-    sku = sku||-1;
-    ingredient = ingredient||-1;
-    limit = limit || database.defaultSearchLimit;
-
+function getFormulas(formulaname, formulanameregex, formulanumber, ingredient, limit) {
     return new Promise((resolve, reject) => {
-        var filterSchema = {
-            $or: [
-                { formulaname: formulaname },
-                { formulanumber: formulanumber }
-            ]
+        console.log(ingredient)
+        var orClause = [];
+        if (formulaname) {
+            orClause.push({ formulaname: formulaname });
         }
-        database.formulaModel.find(filterSchema).limit(limit).populate('ingredientsandquantities.ingredient').exec((err, formulas) => {
-            if (err) {
-                reject(Error(err));
-                return;
-            }
-            resolve(formulas);
+        if (formulanumber) {
+            orClause.push({ formulanumber: formulanumber });
+        }
+        if (ingredient > 0) {
+            orClause.push({ "ingredientsandquantities.ingredient" : ingredient});
+        }
+        if(formulanameregex) {
+            orClause.push({ formulaname: { $regex: formulanameregex }});
+        }
+        var filterSchema = {
+            $or: orClause
+        }
+        database.formulaModel.find(filterSchema).limit(limit).populate('ingredientsandquantities.ingredient').exec(function(err, formulas) {
+            if(formulas != undefined && formulas != null){
+                resolve(formulas);
+              }
+              else {
+                  reject(Error(err));
+              }  
         });
     });
 }
@@ -60,19 +65,9 @@ function createFormula(formulaname, formulanumber,
                 ingredientsandquantities: ingredientsandquantities,
                 comment: comment
             });
-            console.log("formulaname: " + formulaname);
-            console.log("formulanumber: " + formulanumber);
-            console.log("ingredientsandquantities: " + ingredientsandquantities);
-            console.log("m_quantity: " + ingredientsandquantities[0].quantity);
-            console.log("m_ingredient: " + ingredientsandquantities[0].ingredient);
-
-            console.log("comment: " + comment);
-            console.log("get ready");
-
 
             formula.save().then(result => {
                 console.log("result: " + result);
-                console.log("retuls data: " + result.data);
                 resolve(result);
             }).catch(err => {
                 reject(Error(err));

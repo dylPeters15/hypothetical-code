@@ -136,7 +136,8 @@ export class NewFormulaDialogComponent implements OnInit {
       console.log("comment: " + this.comment);
 
       this.rest.createFormula(this.formulaname, this.formulanumber, this.ingredientsandquantities, this.comment).subscribe(response => {
-        if (response['_id']) {
+        console.log("response:: ", response);
+        if (response['success']) {
                this.snackBar.open("Successfully created formula " + this.formulaname + ".", "close", {
                  duration: 2000,
                });
