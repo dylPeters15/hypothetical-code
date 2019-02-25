@@ -2,7 +2,7 @@
     <div class="startdate">
         <mat-form-field>
             <input matInput [matDatepicker]="startpicker" placeholder="Choose a start date" [(ngModel)]="startDate"
-            (dateChange)="selectionChange()">
+            (dateChange)="selectionChange($event)">
             <mat-datepicker-toggle matSuffix [for]="startpicker"></mat-datepicker-toggle>
             <mat-datepicker #startpicker></mat-datepicker>
         </mat-form-field>
