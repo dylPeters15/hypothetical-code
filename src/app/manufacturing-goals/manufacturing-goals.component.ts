@@ -2,7 +2,7 @@ import { Component, OnInit,ViewChild } from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import { RestService } from '../rest.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { NewGoalDialogComponent } from '../new-goal-dialog/new-goal-dialog.component'
+import { NewGoalDialogComponent, DisplayableActivity } from '../new-goal-dialog/new-goal-dialog.component'
 import { MatDialogRef, MatDialog, MatDialogConfig, MatTableDataSource,MatPaginator, MatSnackBar } from "@angular/material";
 import {ExportToCsv} from 'export-to-csv';
 import { auth } from '../auth.service';
@@ -81,9 +81,11 @@ export class ManufacturingGoalsComponent implements OnInit {
                 let activityCount = activities.length;
                 let activityString = '';
                 for(j = 0; j<activities.length; j++){
-                let currentActivity =  activities[j]['activity']
-                    activityString += "SKU: " + currentActivity['sku']['skuname'] + " Hours Required: " + currentActivity['calculatedhours'] + '\n'; 
+                  let currentActivity =  activities[j]['activity']
+                  let hoursString = currentActivity['sethours'] != null ? currentActivity['sethours'] : currentActivity['calculatedhours'];
+                    activityString += "SKU: " + currentActivity['sku']['skuname'] + ": Hours Required: " + hoursString + '\n'; 
                 }
+                activityString = activityString.substring(0,activityString.length-1)
                 let date = this.goals[i]['date'];
                 let currentGoal = new ManufacturingGoal(name, activityString, activityCount, date, false);
                 this.data.push(currentGoal);
@@ -165,7 +167,20 @@ export class ManufacturingGoalsComponent implements OnInit {
   }
 
   modifySelected(goal) {
-    this.modifyManufacturingGoal(goal.name, goal.activities, goal.date)
+    let displayableArray: DisplayableActivity[] = [];
+    if(goal.activities != ""){
+      let activitiesArray = goal.activities.split(':').join('\n').split('\n');
+      var i;
+      for(i = 0; i<activitiesArray.length; i+=4){
+        let currentActivity = new DisplayableActivity(activitiesArray[i+3].trim(), activitiesArray[i+1].trim())
+        if(currentActivity != null){
+          displayableArray.push(currentActivity);
+        }
+        
+      }
+    }
+   
+    this.modifyManufacturingGoal(goal.name, displayableArray, goal.date)
   }
 
     modifyManufacturingGoal(present_goalname, present_activities, present_date) {
