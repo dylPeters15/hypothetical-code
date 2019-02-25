@@ -16,6 +16,18 @@ export class DataForGoalsTable{
   }
 }
 
+export class DataForLinesTable{
+  shortname: string;
+  activities: [];
+  constructor(shortname, activities){
+    this.shortname = shortname;
+    this.activities = activities;
+  }
+}
+
+
+
+
 @Component({
   selector: 'app-manufacturing-schedule',
   templateUrl: './manufacturing-schedule.component.html',
@@ -27,6 +39,8 @@ export class ManufacturingScheduleComponent implements OnInit {
   goalsDataSource = new MatTableDataSource<DataForGoalsTable>(this.goalsData);
   startDate: Date = new Date();
   endDate: Date = new Date(new Date().setUTCFullYear(new Date().getUTCFullYear()+1));
+  linesData: DataForLinesTable[] =[];
+  linesDataSource = new MatTableDataSource<DataForLinesTable>(this.linesData);
 
   constructor(public rest:RestService, private route: ActivatedRoute, private router: Router, private snackBar: MatSnackBar, private dialog: MatDialog) { }
 
@@ -52,13 +66,27 @@ export class ManufacturingScheduleComponent implements OnInit {
             let goalTable = new DataForGoalsTable(goal['goalname'], activityList)
             this.goalsData.push(goalTable)
             }
-
-            
         });
         this.goalsDataSource = new MatTableDataSource<DataForGoalsTable>(this.goalsData);
         console.log(this.goalsDataSource)
       });
+  })
+  this.linesData = [];
+  this.rest.getLine('','.*','','.*',100).subscribe(response => {
+    response.forEach(line => {
+      var currentLineName = line['shortname'];
+      let currentActivities = [];
+      this.rest.getActivities(null,100,line['_id']).subscribe(activities => {
+        if(activities.length > 0){
+          currentActivities.push(activities);
+        }
+        let newLine = new DataForLinesTable(currentLineName, currentActivities);
+        this.linesData.push(newLine);
+      })
+      this.linesDataSource = new MatTableDataSource<DataForLinesTable>(this.linesData);
+    })
     
+
   })
 }
   

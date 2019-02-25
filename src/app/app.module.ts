@@ -64,6 +64,7 @@ import { ManufacturingScheduleReportLineTableComponent } from './manufacturing-s
 import { ManufacturingScheduleReportIngredientTableComponent } from './manufacturing-schedule-report/manufacturing-schedule-report-ingredient-table/manufacturing-schedule-report-ingredient-table.component';
 import { EnableGoalsDialogComponent } from './enable-goals-dialog/enable-goals-dialog.component';
 import { ModifyActivityDialogComponent } from './modify-activity-dialog/modify-activity-dialog.component'; 
+import { ManufacturingLinesTableComponent } from './manufacturing-schedule/manufacturing-lines-table.component';
 
 
 const appRoutes: Routes = [
@@ -131,7 +132,8 @@ const appRoutes: Routes = [
     ManufacturingScheduleReportIngredientTableComponent,
     EnableGoalsDialogComponent,
     ModifyActivityDialogComponent,
-    ManufactoringScheduleTableComponent
+    ManufactoringScheduleTableComponent,
+    ManufacturingLinesTableComponent
   ],
   imports: [
     BrowserModule,

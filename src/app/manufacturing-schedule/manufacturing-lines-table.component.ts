@@ -2,29 +2,29 @@ import { Component, Input, forwardRef, Inject } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import {CdkDragDrop, moveItemInArray, transferArrayItem} from '@angular/cdk/drag-drop';
 import { RestService } from '../rest.service';
-import { MatDialog, MatDialogRef, MatDialogConfig, MatTableDataSource, MatPaginator } from "@angular/material";
-import { ModifyActivityDialogComponent } from '../modify-activity-dialog/modify-activity-dialog.component'
-
+import { MatDialog, MatDialogRef, MatTableDataSource, MatPaginator } from "@angular/material";
+import {NewProductLineDialogComponent } from '../new-product-line-dialog/new-product-line-dialog.component';
+import {MatIconModule} from '@angular/material/icon'
+import { __values } from 'tslib';
 
 const customValueProvider = {
   provide: NG_VALUE_ACCESSOR,
-  useExisting: forwardRef(() => ManufactoringScheduleTableComponent),
+  useExisting: forwardRef(() => ManufacturingLinesTableComponent),
   multi: true
 };
 
 @Component({
-  selector: 'app-manufacturing-schedule-tables',
-  templateUrl: './manufacturing-schedule-tables.component.html',
-  styleUrls: ['./manufacturing-schedule-tables.component.css'],
+  selector: 'app-manufacturing-lines-table',
+  templateUrl: './manufacturing-lines-table.component.html',
+  styleUrls: ['./manufacturing-lines-table.component.css'],
   providers: [customValueProvider]
 })
-export class ManufactoringScheduleTableComponent implements ControlValueAccessor {
-
-
-  modifyActivityDialogRef: MatDialogRef<ModifyActivityDialogComponent>;
-  constructor(public rest: RestService, public dialog: MatDialog) { }
+export class ManufacturingLinesTableComponent implements ControlValueAccessor {
   _value = '';
   stringified = '';
+  activitiesExist: boolean = false;
+  constructor(public rest: RestService, public dialog: MatDialog) { }
+
 
   propagateChange: any = () => { };
 
@@ -34,6 +34,9 @@ export class ManufactoringScheduleTableComponent implements ControlValueAccessor
     if (value) {
       this._value = value;
       this.stringified = JSON.stringify(value);
+      if(this._value['activities'].length > 1){
+        this.activitiesExist = true;
+      }
     }
   }
 
@@ -46,20 +49,7 @@ export class ManufactoringScheduleTableComponent implements ControlValueAccessor
     this.stringified = JSON.stringify(event.target.value);
     this.propagateChange(event.target.value);
   }
-
-  modifySelectedActivity(activity) {
-    this.modifyManufacturingActivityConfirmed(activity); 
-    }
-
-    modifyManufacturingActivityConfirmed(activity) {
-      const dialogConfig = new MatDialogConfig();
-      dialogConfig.data = {activity: activity};
-      this.modifyActivityDialogRef = this.dialog.open(ModifyActivityDialogComponent, dialogConfig);
-      this.modifyActivityDialogRef.afterClosed().subscribe(event => {
-        // this.refreshData();
-      });
-    }
-
+  
   drop(event: CdkDragDrop<string[]>) {
     console.log('previous container id',event.previousContainer)
     console.log('container id',event.container)
