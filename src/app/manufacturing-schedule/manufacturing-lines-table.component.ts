@@ -6,6 +6,7 @@ import { MatDialog, MatDialogRef, MatTableDataSource, MatPaginator } from "@angu
 import {NewProductLineDialogComponent } from '../new-product-line-dialog/new-product-line-dialog.component';
 import {MatIconModule} from '@angular/material/icon'
 import { __values } from 'tslib';
+import { forEach } from '@angular/router/src/utils/collection';
 
 const customValueProvider = {
   provide: NG_VALUE_ACCESSOR,
@@ -57,6 +58,16 @@ export class ManufacturingLinesTableComponent implements ControlValueAccessor {
     if (event.previousContainer === event.container) {
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
     } else {
+      var isValid = false;
+      // let promise1 = new Promise((resolve,reject) => {
+      //   this.rest.getLine("", null, event.container.id, "", 1).subscribe((line) => {
+      //     line['skus']['_id'].forEach((sku) => {
+      //       if (sku == event.previousContainer.id) {
+      //       }
+      //     });
+      //   })
+      // })
+      console.log(event)
       transferArrayItem(event.previousContainer.data,
                         event.container.data,
                         event.previousIndex,
@@ -71,11 +82,11 @@ export class ManufacturingLinesTableComponent implements ControlValueAccessor {
     }
   }
 
-  updateActivity(activity, shortname) {
+  updateActivity(activity, line) {
     return new Promise((resolve, reject) => {
       this.rest.modifyActivity(activity['sku']['_id'], activity['sku']['_id'], 
       activity['numcases'], activity['calculatedhours'], 
-      activity['sethours'], activity['startdate'], shortname).subscribe(modifyPLResponse => {
+      activity['sethours'], activity['startdate'], line).subscribe(modifyPLResponse => {
         if (modifyPLResponse['ok'] == 1) {
             console.log('success')
             resolve();

@@ -1,5 +1,7 @@
 <div class="lines-container">
     <h3> {{_value['shortname']}}</h3>
+
+    
     <div
         cdkDropList
         [id]="_value['shortname']"
@@ -7,7 +9,20 @@
         [cdkDropListData]="_value['activities']"
         class="activity-list"
         (cdkDropListDropped)="drop($event)">
+        <div class="dateInfo">
+            <div class="startDate">
+                {{_value['activities']}}
+            </div>
+        </div>
         <div class="example-box" *ngFor="let activity of _value['activities']" cdkDrag>
+            <div class="dateInfo">
+                <div class="startDate">
+                    {{activity['startDate']}}
+                </div>
+                <div class="endDate">
+                    {{activity['startDate']}}
+                </div>
+            </div>
             SKU: {{activity['sku']['skuname']}} Hours Required: {{activity['calculatedhours']}}          
         </div>
     </div>
