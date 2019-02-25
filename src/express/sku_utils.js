@@ -3,25 +3,26 @@ const formula_utils = require('./formula_utils.js');
 
 
 function getSkus(skuname, skunameregex, skunumber, caseupcnumber, unitupcnumber, formula, limit) {
-    skuname = skuname || "";
-    skunameregex = skunameregex || "$a";
-    skunumber = skunumber || -1;
-    caseupcnumber = caseupcnumber || -1;
-    unitupcnumber = unitupcnumber || -1;
-    formula = formula || "";
-    limit = (limit != 0) ? limit : database.defaultSearchLimit;
-    console.log("formula ", formula)
     return new Promise(function (resolve, reject) {
+        skuname = skuname || "";
+        skunameregex = skunameregex || "$a";
+        skunumber = skunumber || -1;
+        caseupcnumber = caseupcnumber || -1;
+        unitupcnumber = unitupcnumber || -1;
+        limit = (limit != 0) ? limit : database.defaultSearchLimit;
+        console.log("formula ", formula)
+        var orClause = [
+            { skuname: skuname },
+            { skuname: {$regex: skunameregex }},
+            { skunumber: skunumber },
+            { caseupcnumber: caseupcnumber },
+            { unitupcnumber: unitupcnumber }
+        ]
+        if (formula > 0) {
+            orClause.push({ formula: formula });
+        }
         const filterSchema = {
-            $or: [
-                { skuname: skuname },
-                { skuname: {$regex: skunameregex }},
-                { skunumber: skunumber },
-                { caseupcnumber: caseupcnumber },
-                { unitupcnumber: unitupcnumber },
-                { formula: formula },
-
-            ]
+            $or: orClause
         }
         database.skuModel.find(filterSchema).limit(limit).populate('formula').exec((err, skus) => {
             if (err) {
