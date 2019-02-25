@@ -3,11 +3,11 @@
   <mat-card>
     <mat-card-content style="display: grid; width: 100%; justify-items: center;">
       <mat-form-field>
-        <input matInput [(ngModel)]="linename" placeholder="Linename" required>
+        <input matInput [(ngModel)]="linename" placeholder="Linename" required (keydown.enter)="createLine()">
       </mat-form-field>
 
       <mat-form-field>
-        <input matInput [(ngModel)]="shortname" placeholder="shortname">
+        <input matInput [(ngModel)]="shortname" placeholder="shortname" required (keydown.enter)="createLine()">
         <mat-hint>Enter Shortname (no spaces)</mat-hint>
       </mat-form-field>
 
@@ -39,13 +39,13 @@
       </mat-form-field>
 
       <mat-form-field>
-        <input matInput [(ngModel)]="comment" placeholder="comment" required>
+        <input matInput [(ngModel)]="comment" placeholder="comment">
         <mat-hint>Enter a comment...</mat-hint>
       </mat-form-field>
     </mat-card-content>
   </mat-card>
 </mat-dialog-content>
 <mat-dialog-actions align="center">
-  <button class="mat-raised-button" (click)="closeDialog()">Cancel</button>
-  <button class="mat-raised-button" (click)="createLine()" [disabled]="username==''" color="primary">Create</button>
+  <button mat-raised-button (click)="closeDialog()">Cancel</button>
+  <button mat-raised-button (click)="createLine()" [disabled]="linename==''||shortname==''" color="primary">Create</button>
 </mat-dialog-actions>

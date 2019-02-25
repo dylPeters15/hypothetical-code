@@ -49,4 +49,9 @@ export class NewIngredientDialogComponent implements OnInit {
   onNoClick() {
     this.dialogRef.close();
   }
+
+  shouldDisableCreateButton() {
+    return this.data.ingredientname == '' || isNaN(this.data.amount) || this.data.unitofmeasure == '' || !this.data.unitofmeasure || isNaN(this.data.costperpackage);
+  }
+
 }
