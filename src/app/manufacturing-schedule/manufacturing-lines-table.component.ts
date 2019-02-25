@@ -34,7 +34,6 @@ export class ManufacturingLinesTableComponent implements ControlValueAccessor {
     if (value) {
       this._value = value;
       this.stringified = JSON.stringify(value);
-      console.log("STRING: " + this._value['activities'].length)
       if(this._value['activities'].length > 1){
         this.activitiesExist = true;
       }

@@ -76,7 +76,6 @@ export class ManufacturingScheduleComponent implements OnInit {
       var currentLineName = line['shortname'];
       let currentActivities = [];
       this.rest.getActivities(null,100,line['_id']).subscribe(activities => {
-        console.log("ACT Lnght: " + activities.length)
         if(activities.length > 0){
           currentActivities.push(activities);
         }
@@ -91,7 +90,7 @@ export class ManufacturingScheduleComponent implements OnInit {
 }
   modifySelectedActivity(activity) {
     this.modifyManufacturingActivityConfirmed(activity); 
-    }
+  }
 
     modifyManufacturingActivityConfirmed(activity) {
       const dialogConfig = new MatDialogConfig();
