@@ -371,11 +371,14 @@ deleteGoal(goalname: String): Observable<any> {
 
   ///////////////////// Manufacturing Activities /////////////////////
   getActivities(startdate: Date, limit: number, line?: string): Observable<any> {
-    return this.http.get(endpoint + "manufacturing-activities", this.generateHeader({
+    var header = {
       startdate: JSON.stringify(startdate),
-      limit: limit, 
-      line: line
-    }));
+      limit: limit
+    };
+    if (line) {
+      header['line'] = line;
+    }
+    return this.http.get(endpoint + "manufacturing-activities", this.generateHeader(header));
   }
 
   createActivity(sku: number, numcases: number, calculatedhours: number, sethours: number, startdate: Date, line: number) : Observable<any>{
