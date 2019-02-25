@@ -1,5 +1,6 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialogRef} from "@angular/material";
+import { MatDialogConfig, MatDialog} from "@angular/material";
 import { RestService } from '../rest.service';
 import {MatSnackBar} from '@angular/material';
 import {MAT_DIALOG_DATA} from '@angular/material';
@@ -71,6 +72,53 @@ export class NewSkuDialogComponent implements OnInit {
     this.manufacturingrate = this.data.present_manufacturingrate;
     this.comment = this.data.present_comment;
   }
+
+  addFormulaToSku(edit, formulaname, sclaingFactor) {
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.data = {edit: edit, present_name: ingredientname, present_amount: amount, present_ingredientsandquantities: this.ingredientsandquantities};
+    this.newIngredientDialogRef = this.dialog.open(NewFormulaIngredientDialogComponent, dialogConfig);
+    //this.newIngredientDialogRef.componentInstance.amount = this.return_amount;
+    //this.newIngredientDialogRef.componentInstance.ingredientNameList = this.ingredientNameList;
+    this.newIngredientDialogRef.afterClosed().subscribe(event => {
+      // grab the new formula values
+      var new_ingredient = this.newIngredientDialogRef.componentInstance.ingredientName;
+      var new_amount = this.newIngredientDialogRef.componentInstance.amount;
+      var new_objectid;
+      console.log("okay we are back again. ingredient: " + new_ingredient + ", amount: " +  new_amount);
+
+      // get object id from ingredient name
+      this.rest.getIngredients(new_ingredient,"", 0, 1).subscribe(response => {
+        if (response.length == 0) {
+          this.snackBar.open("Error adding ingredient.", "close", {
+            duration: 2000,
+               });
+        } 
+        else {
+          console.log("located the ingredient. " + response);
+          new_objectid = response[0]['_id'];
+          console.log("mah object id fam " + new_objectid);
+          let new_ingredienttuple = new ingredienttuple();
+          //new_ingredienttuple.create({
+          //  ingredient: new_objectid,
+          //  quantity: new_amount,
+         // });
+          new_ingredienttuple.ingredient = new_objectid;
+          new_ingredienttuple.quantity = new_amount;
+          console.log("We are adding a new ingredient tuple with name " + new_ingredient + " and amount " + new_ingredienttuple.quantity);
+          this.ingredientsandquantities.push(new_ingredienttuple);
+          console.log("ingredients and quantities are now " + this.ingredientsandquantities);
+        }
+        this.refreshData();
+        });
+        
+        });
+        
+      }
+
+      addFormulaButton() {
+        this.addFormulaToSku(false, "", 0);
+    }
+  
 
   createSku() {
     // generate ID
