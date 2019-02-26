@@ -113,21 +113,8 @@ export class NewSkuDialogComponent implements OnInit {
   
   createSku() {
     // generate ID
-    console.log("we in here now, and edit is: " + this.edit);
     if (this.edit == false)
     {
-      console.log("We're creating a new sku. Here's what we have:");
-      console.log("skuname: " + this.skuname);
-      console.log("skunumber: " + this.skunumber);
-      console.log("caseupcnumber: " + this.caseupcnumber);
-      console.log("unitupcnumber: " + this.unitupcnumber);
-      console.log("unitsize: " + this.unitsize);
-      console.log("countpercase: " + this.countpercase);
-      console.log("formula: " + this.formula);
-      console.log("formulascalingfactor: " + this.formulascalingfactor);
-      console.log("manufacturingrate: " + this.manufacturingrate);
-      console.log("comment: " + this.comment);
-
       this.rest.createSku(this.skuname, this.skunumber, this.caseupcnumber, this.unitupcnumber, this.unitsize, this.countpercase, this.formula, this.formulascalingfactor, this.manufacturingrate, this.comment).subscribe(response => {
         if (response['success']) {
                this.snackBar.open("Successfully created sku " + this.skuname + ".", "close", {
@@ -143,7 +130,6 @@ export class NewSkuDialogComponent implements OnInit {
       }
 
     else{
-      console.log("We're modifying a sku");
       this.rest.modifySku(this.oldskuname, this.skuname, this.skunumber, this.caseupcnumber, this.unitupcnumber, this.unitsize, this.countpercase, this.formula, this.formulascalingfactor, this.manufacturingrate, this.comment).subscribe(response => {
         
          if (response['success']) {
