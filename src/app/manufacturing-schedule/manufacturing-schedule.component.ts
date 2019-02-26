@@ -55,7 +55,6 @@ export class ManufacturingScheduleComponent implements OnInit {
   ngOnInit() {
     this.refreshData();
     this.selectionChange();
-
   }
 
 

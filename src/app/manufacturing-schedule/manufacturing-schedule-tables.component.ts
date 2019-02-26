@@ -5,7 +5,15 @@ import { RestService } from '../rest.service';
 import { MatDialog, MatDialogRef, MatDialogConfig, MatTableDataSource, MatPaginator } from "@angular/material";
 import { ModifyActivityDialogComponent } from '../modify-activity-dialog/modify-activity-dialog.component'
 
+export class Activity{
+  sku: string;
+  hours: number;
 
+  constructor(sku, hours){
+    this.sku = sku;
+    this.hours = hours;
+  }
+}
 
 const customValueProvider = {
   provide: NG_VALUE_ACCESSOR,
@@ -26,6 +34,7 @@ export class ManufactoringScheduleTableComponent implements ControlValueAccessor
   constructor(public rest: RestService, public dialog: MatDialog) { }
   _value = '';
   stringified = '';
+  activityList: Activity[] = [];
 
   propagateChange: any = () => { };
 
@@ -57,7 +66,7 @@ export class ManufactoringScheduleTableComponent implements ControlValueAccessor
       dialogConfig.data = {activity: activity};
       this.modifyActivityDialogRef = this.dialog.open(ModifyActivityDialogComponent, dialogConfig);
       this.modifyActivityDialogRef.afterClosed().subscribe(event => {
-        // ngOnInit();
+       window.location.replace(window.location.href)
       });
     }
 
