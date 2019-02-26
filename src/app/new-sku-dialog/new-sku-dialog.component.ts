@@ -29,8 +29,11 @@ export class NewSkuDialogComponent implements OnInit {
   comment: String = '';
 
   formulaname: String = ''; // for displaying purposes.
-  formulaExists: Boolean = false; // for displaying purposes.
 
+  // I know this is weird with the double boolean.
+  // They are used to show/hide html content. Idk a better way to do it
+  formulaDoesNotExist: Boolean = true; // for displaying purposes.
+  formulaExists: Boolean = false; // for displaying purposes.
 
   chosen_formula: String
   chosen_scaling_factor: Number;
@@ -56,7 +59,7 @@ export class NewSkuDialogComponent implements OnInit {
     this.comment = this.data.present_comment;
 
     // update formula and scaling factor to display
-    this.formulaExists = this.formulaname != "";
+    this.formulaDoesNotExist = this.formulaname == "";
     this.chosen_formula = this.formulaname;
     this.chosen_scaling_factor = this.formulascalingfactor;
 
@@ -75,7 +78,7 @@ export class NewSkuDialogComponent implements OnInit {
 
   refreshData() {
     // update formula and scaling factor to display
-    this.formulaExists = this.formulaname != "";
+    this.formulaExists = this.formulaname == "";
     this.chosen_formula = this.formulaname;
     this.chosen_scaling_factor = this.formulascalingfactor;
   }
