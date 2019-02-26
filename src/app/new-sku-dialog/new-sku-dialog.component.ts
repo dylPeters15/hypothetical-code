@@ -77,8 +77,8 @@ export class NewSkuDialogComponent implements OnInit {
 
   refreshData() {
      // Get formula name from id
-
-     this.formulaname = this.formula['formulaname'];
+    if(this.formula == null) this.formulaname = "";
+    else this.formulaname = this.formula['formulaname'];
     
      // update formula and scaling factor to display
     this.formulaDoesNotExist = this.formulaname == "";
@@ -105,6 +105,16 @@ export class NewSkuDialogComponent implements OnInit {
 
   //.formulaName = this.formulaName;
   //this.dialogRef.componentInstance.scalingFactor 
+
+  // 
+  deleteFormula() {
+    this.rest.modifySku(this.oldskuname, this.skuname, this.skunumber, this.caseupcnumber, this.unitupcnumber, this.unitsize, this.countpercase, null, 0, this.manufacturingrate, this.comment).subscribe(response => {
+      console.log("all deleted fam"); 
+      this.formula = null;
+      this.chosen_scaling_factor = 0;
+      this.refreshData();
+    });
+  }
 
   addFormulaToSku(edit, formulaname, scalingFactor) {
     const dialogConfig = new MatDialogConfig();
