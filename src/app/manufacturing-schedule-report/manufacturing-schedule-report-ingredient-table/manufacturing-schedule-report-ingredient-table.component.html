@@ -1,6 +1,6 @@
-<mat-table [dataSource]="tableData" class="mat-elevation-z8" matSort>
+<mat-table [dataSource]="tableData" class="mat-elevation-z8" matSort (matSortChange)="sortData($event)">
 
-  <ng-container matColumnDef="ingredientNum">
+  <ng-container matColumnDef="ingredientNumber">
     <mat-header-cell *matHeaderCellDef mat-sort-header>Ingredient Number</mat-header-cell>
     <mat-cell *matCellDef="let element">
       {{element['ingredientNumber']}}
