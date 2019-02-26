@@ -150,10 +150,9 @@ modifyFormula(oldname: string, formulaname: string, formulanumber: number, ingre
   }));
 }
 
-deleteFormula(sku: number, ingredient: number): Observable<any> {
+deleteFormula(formulanumber: number): Observable<any> {
   return this.http.delete(endpoint + "formulas", this.generateHeader({
-    sku: sku,
-    ingredient: ingredient
+    formulanumber: JSON.stringify(formulanumber)
   }));
 }
 
@@ -174,7 +173,6 @@ deleteFormula(sku: number, ingredient: number): Observable<any> {
 createSku(skuname: String, skunumber: number, 
   caseupcnumber: number, unitupcnumber: number, unitsize: string, 
   countpercase: number, formulanum: Number, formulascalingfactor: Number, manufacturingrate: Number, comment: String): Observable<any> {
-    console.log("comfortably here");
   return this.http.put(endpoint + "skus", {
     skuname: skuname,
     skunumber: skunumber,

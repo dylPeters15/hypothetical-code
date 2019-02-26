@@ -96,20 +96,19 @@ function modifyFormula(formulaname, newFormulaObject) {
     });
 }
 
-function deleteFormula(sku, ingredient) {
-    return new Promise((resolve, reject) => {
-        var filterSchema = {
-            sku: sku,
-            ingredient: ingredient
-        }
-        database.formulaModel.deleteOne(filterSchema, (err, response) => {
+function deleteFormula(formulanumber) {
+    return new Promise(function (resolve, reject) {
+        const filterschema = {
+            formulanumber: formulanumber
+        };
+        database.formulaModel.deleteOne(filterschema, (err, response) => {
             if (err) {
                 reject(Error(err));
                 return
             }
             resolve(response);
         });
-    });
+    });    
 }
 
 function createUniqueFormulaNumber() {
