@@ -86,6 +86,7 @@ export class NewGoalDialogComponent implements OnInit {
       this.dialog_title = "Create New Manufacturing Goal";
     }
     this.date = new Date(this.data.present_date);
+    console.log("DATE: " + this.date.toString())
     this.dateCtrl = new FormControl(this.date)
     this.rest.getSkus('', '.*',0,0,0,'',5).subscribe(response => {
         this.skuList = response;
