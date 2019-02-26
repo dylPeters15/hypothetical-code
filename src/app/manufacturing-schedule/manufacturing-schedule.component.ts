@@ -6,10 +6,15 @@ import { EnableGoalsDialogComponent } from '../enable-goals-dialog/enable-goals-
 import { MatDialogRef, MatDialog, MatDialogConfig, MatTableDataSource,MatPaginator, MatSnackBar } from "@angular/material";
 import {ExportToCsv} from 'export-to-csv';
 import {CdkDragDrop, moveItemInArray, transferArrayItem} from '@angular/cdk/drag-drop';
+import { DisplayableActivity } from '../new-goal-dialog/new-goal-dialog.component';
+
+var moment = require('moment');
+require('moment-weekday-calc');
 
 export class DataForGoalsTable{
   goalname: string;
   activities: [];
+  id: '';
   constructor(goalname, activities){
     this.goalname = goalname;
     this.activities = activities;
@@ -19,6 +24,7 @@ export class DataForGoalsTable{
 export class DataForLinesTable{
   shortname: string;
   activities: [];
+  id: '';
   constructor(shortname, activities){
     this.shortname = shortname;
     this.activities = activities;
@@ -41,12 +47,14 @@ export class ManufacturingScheduleComponent implements OnInit {
   endDate: Date = new Date(new Date().setUTCFullYear(new Date().getUTCFullYear()+1));
   linesData: DataForLinesTable[] =[];
   linesDataSource = new MatTableDataSource<DataForLinesTable>(this.linesData);
-
+  HOURS_PER_DAY = 10;
+  numberOfDays: number;
   constructor(public rest:RestService, private route: ActivatedRoute, private router: Router, private snackBar: MatSnackBar, private dialog: MatDialog) { }
+  totalHours: number;
 
   ngOnInit() {
     this.refreshData();
-
+    this.selectionChange();
 
   }
 
@@ -59,10 +67,10 @@ export class ManufacturingScheduleComponent implements OnInit {
             let activityList = [];
             if(goal['enabled']){
             goal['activities'].forEach(activity => {
-              activityList.push(activity['activity'])
+              if(activity['activity']['line'] == null || activity['activity']['line'] == undefined){
+                activityList.push(activity['activity'])
+              }
             })
-            
-                
             let goalTable = new DataForGoalsTable(goal['goalname'], activityList)
             this.goalsData.push(goalTable)
             }
@@ -78,17 +86,19 @@ export class ManufacturingScheduleComponent implements OnInit {
       let currentActivities = [];
       this.rest.getActivities(null,100,line['_id']).subscribe(activities => {
         if(activities.length > 0){
-          currentActivities.push(activities);
+          activities.forEach(activity => {
+            currentActivities.push(activity);
+          })
+          
         }
         let newLine = new DataForLinesTable(currentLineName, currentActivities);
         this.linesData.push(newLine);
       })
-      console.log(this.linesData)
       this.linesDataSource = new MatTableDataSource<DataForLinesTable>(this.linesData);
     })
-    
-
   })
+  this.totalHours = (this.HOURS_PER_DAY * this.numberOfDays);
+
 }
   
   openEnableGoalsDialog() {
@@ -99,14 +109,20 @@ export class ManufacturingScheduleComponent implements OnInit {
     });
   }
 
-  drop(event: CdkDragDrop<string[]>) {
-    if (event.previousContainer === event.container) {
-      moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
-    } else {
-      transferArrayItem(event.previousContainer.data,
-                        event.container.data,
-                        event.previousIndex,
-                        event.currentIndex);
-    }
+  selectionChange(event?: Event) {
+    var duration = moment().isoWeekdayCalc(this.startDate,this.endDate,[1,2,3,4,5]);
+    console.log(duration)
+    this.refreshData();
   }
+
+  // drop(event: CdkDragDrop<string[]>) {
+  //   if (event.previousContainer === event.container) {
+  //     moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
+  //   } else {
+  //     transferArrayItem(event.previousContainer.data,
+  //                       event.container.data,
+  //                       event.previousIndex,
+  //                       event.currentIndex);
+  //   }
+  // }
 }

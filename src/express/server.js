@@ -271,13 +271,13 @@ app.route('/manufacturing-activities').get((req, res) => {
         resolveError(err, res);
     });
 }).post((req, res) => {
-    activity_utils.modifyActivity(req.header['sku'],Number(req.headers['numcases']), Number(req.headers['calculatedhours']), new Date(req.headers['startdate']), req.body).then(response => {
+    activity_utils.modifyActivity(req.headers['sku'],Number(req.headers['numcases']), Number(req.headers['calculatedhours']), new Date(req.headers['startdate']), req.body).then(response => {
         res.send(response);
     }).catch(err => {
         resolveError(err, res);
     });
 }).delete((req, res) => {
-    activity_utils.deleteActivity(req.headers['sku'], req.headers['numcases'],req.headers['calculatedhours'],req.headers['sethours'], req.headers['line'], req.headers['startdate']).then(response => {
+    activity_utils.deleteActivity(req.headers['sku'], Number(req.headers['numcases']),Number(req.headers['calculatedhours']), new Date(req.headers['startdate'])).then(response => {
         res.send(response);
     }).catch(err => {
         resolveError(err, res);

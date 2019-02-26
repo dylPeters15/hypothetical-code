@@ -19,7 +19,7 @@
       </mat-form-field> -->
 
       <mat-form-field>
-        <mat-select [(value)]="data['unitofmeasure']">
+        <mat-select [(value)]="data['unitofmeasure']" placeholder="Unit of Measure" required>
           <mat-option *ngFor="let unit of data['units']" [value]="unit">
             {{unit}}
           </mat-option>
@@ -43,6 +43,6 @@
   </mat-card>
 </mat-dialog-content>
 <mat-dialog-actions align="center">
-  <button class="mat-raised-button" (click)="onNoClick()">Cancel</button>
-  <button class="mat-raised-button" [mat-dialog-close]="data" cdkFocusInitial>Create</button>
+  <button mat-raised-button (click)="onNoClick()">Cancel</button>
+  <button mat-raised-button [mat-dialog-close]="data" color="primary" [disabled]="shouldDisableCreateButton()">Create</button>
 </mat-dialog-actions>

@@ -4,11 +4,11 @@
       <mat-card-title>Manufacturing Lines</mat-card-title>
   </mat-card-header>
   <mat-card-content>
-    <button mat-raised-button (click)="selectAll()"> Select All </button>
-    <button mat-raised-button (click)="deselectAll()"> Deselect All </button>
-    <button mat-raised-button (click)="deleteSelected()" style="color: white; background-color: red;" [disabled]="dataSource.data.length==0"> Delete Selected </button>
+    <button mat-raised-button (click)="selectAll()" *ngIf="admin"> Select All </button>
+    <button mat-raised-button (click)="deselectAll()" *ngIf="admin"> Deselect All </button>
+    <button mat-raised-button (click)="deleteSelected()" color="warn" [disabled]="noneSelected()" *ngIf="admin"> Delete Selected </button>
     <!-- <button mat-raised-button (click)="modifySelected()" style="color: white; background-color: red;" [disabled]="dataSource.data.length==0"> Modify Selected </button> -->
-    <button mat-raised-button (click)="newLine()"> New Line </button>
+    <button mat-raised-button (click)="newLine()" color="primary" *ngIf="admin"> New Line </button>
     <mat-form-field>
       <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter">
     </mat-form-field>
@@ -47,14 +47,14 @@
       <ng-container matColumnDef="export">
         <mat-header-cell *matHeaderCellDef>Export To CSV</mat-header-cell>
         <mat-cell *matCellDef="let element">
-          <button mat-raised-button (click)="exportToCsv(element)" style="color: white; background-color: red;"> Export to CSV </button>
+          <button mat-raised-button (click)="exportToCsv(element)"> Export to CSV </button>
         </mat-cell>
       </ng-container>
 
       <ng-container matColumnDef="actions">
         <mat-header-cell *matHeaderCellDef>Actions</mat-header-cell>
         <mat-cell *matCellDef="let element">
-          <button mat-button (click)="modifySelected(element)" [disabled]="dataSource.data.length==0">
+          <button mat-button (click)="modifySelected(element)" [disabled]="dataSource.data.length==0" color="primary">
             <mat-icon>edit</mat-icon> 
           </button>
         </mat-cell>

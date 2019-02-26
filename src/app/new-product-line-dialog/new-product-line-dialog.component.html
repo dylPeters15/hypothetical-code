@@ -1,10 +1,10 @@
-<h1 mat-dialog-title>Enter new product line name</h1>
+<h1 mat-dialog-title>Create New Product Line</h1>
 <div mat-dialog-content>
   <mat-form-field>
-    <input matInput [(ngModel)]="data['productlinename']">
+    <input matInput [(ngModel)]="data['productlinename']" placeholder="Product Line Name" cdkFocusInitial required (keydown.enter)="createProductLine()">
   </mat-form-field>
 </div>
 <div mat-dialog-actions>
-  <button mat-button (click)="onNoClick()">Cancel</button>
-  <button mat-button [mat-dialog-close]="data['productlinename']" cdkFocusInitial>Save</button>
+  <button mat-raised-button (click)="onNoClick()">Cancel</button>
+  <button mat-raised-button [mat-dialog-close]="data['productlinename']" color="primary" [disabled]="data['productlinename']==''||!data['productlinename']">Save</button>
 </div>
