@@ -58,11 +58,23 @@ export class NewSkuDialogComponent implements OnInit {
     this.manufacturingrate = this.data.present_manufacturingrate;
     this.comment = this.data.present_comment;
 
+    console.log("NOWWWWWWWWWW we modifying it");
+    console.log("name: " + this.skuname);
+    console.log("oldskuname: " + this.oldskuname);
+    console.log("skunumber: " + this.skunumber);
+    console.log("caseupcnumber: " + this.caseupcnumber);
+    console.log("unitupcnumber: " + this.unitupcnumber);
+    console.log("unitsize: " + this.unitsize);
+    console.log("countpercase: " + this.countpercase);
+    console.log("formula: " + this.formula);
+    console.log("formulascalingfactor: " + this.formulascalingfactor);
+    console.log("manufacturingrate: " + this.manufacturingrate);
+    console.log("comment: " + this.comment);
+    console.log("and done");
+
+
     // update formula and scaling factor to display
-    this.formulaDoesNotExist = this.formulaname == "";
-    this.formulaExists = !this.formulaDoesNotExist;
-    this.chosen_formula = this.formulaname;
-    this.chosen_scaling_factor = this.formulascalingfactor;
+    this.refreshData();
 
     // edit == true if sku is being modified, false if a new sku is being created
     if (this.edit == true)
@@ -77,12 +89,25 @@ export class NewSkuDialogComponent implements OnInit {
     }
   }
 
+
   refreshData() {
-    // update formula and scaling factor to display
+     // Get formula name from id
+     // get object id from formula name
+     this.formula['formulaname']
+     this.rest.getFormulas(this.formula,0, 0, 1).subscribe(response => {
+      if (response.length == 0) {
+        console.log("couldnt find it");
+      } 
+      else {
+        this.formulaname = response[0]['formulaname'];
+      }
+    
+     // update formula and scaling factor to display
     this.formulaDoesNotExist = this.formulaname == "";
     this.formulaExists = !this.formulaDoesNotExist;
     this.chosen_formula = this.formulaname;
     this.chosen_scaling_factor = this.formulascalingfactor;
+    });
   }
 
   closeDialog() {
