@@ -4,12 +4,11 @@
           <mat-card-title>Stock Keeping Units</mat-card-title>
       </mat-card-header>
       <mat-card-content>
-          <button mat-raised-button (click)="selectAll()" style="color: white; background-color: green;"> Select All </button>
-          <button mat-raised-button (click)="deselectAll()" style="color: white; background-color: green;" > Deselect All </button>
-          <button mat-raised-button (click)="exportSelected()" style="color: white; background-color: green;" > Export Selected </button>
-          <button mat-raised-button *ngIf="admin" (click)="deleteSelected()" style="color: white; background-color: red;" > Delete Selected </button>
-          <button mat-raised-button *ngIf="admin" (click)="modifySelected()" style="color: white; background-color: red;" > Modify Selected </button>
-          <button mat-raised-button *ngIf="admin" (click)="newSkuButton()" style="color: white; background-color: orange;" > New Sku </button>          
+          <button mat-raised-button *ngIf="admin" (click)="selectAll()"> Select All </button>
+          <button mat-raised-button *ngIf="admin" (click)="deselectAll()"> Deselect All </button>
+          <button mat-raised-button *ngIf="admin" (click)="exportSelected()"> Export Selected </button>
+          <button mat-raised-button *ngIf="admin" (click)="deleteSelected()" color="warn" [disabled]="noneSelected()"> Delete Selected </button>
+          <button mat-raised-button *ngIf="admin" (click)="newSkuButton()" color="primary"> New Sku </button>          
           <mat-form-field>
             <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter">
           </mat-form-field>
@@ -91,12 +90,18 @@
                     {{sku['comment']}}
                 </mat-cell>
             </ng-container>
-          
+
             <ng-container matColumnDef="actions">
-              <mat-header-cell *matHeaderCellDef mat-sort-header>Actions</mat-header-cell>
-              <mat-cell *matCellDef="let sku">
-                <button mat-raised-button (click)="deleteSku(element['name'])" style="color: white; background-color: red;"> Delete sku </button>
+              <mat-header-cell *matHeaderCellDef>Actions</mat-header-cell>
+              <mat-cell *matCellDef="let element">
+                <button mat-button (click)="modifySelected(element)" [disabled]="dataSource.data.length==0" color="primary">
+                  <mat-icon>edit</mat-icon> 
+                </button>
+                <button mat-button (click)="deleteSelected(element)" color="warn">
+                  <mat-icon>delete</mat-icon> 
+                 </button>
               </mat-cell>
+              
             </ng-container>
           
             <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
