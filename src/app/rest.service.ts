@@ -113,14 +113,6 @@ export class RestService {
 
 ///////////////////// formulas /////////////////////
 getFormulas(formulaname: string, formulanumber: number, ingredient: number, limit: number, formulanameregex?: string, sku?: number): Observable<any> {
-  console.log("limit", limit);
-  console.log("formulaname",formulaname);
-  console.log("formulanumber",formulanumber);
-  console.log("ingredient",ingredient);
-  console.log("limit",limit);
-  console.log("formulanameregex",formulanameregex);
-  console.log("sku",sku);
-
   var header = {
     formulaname: formulaname||"",
     formulanameregex: formulanameregex||"$a",
