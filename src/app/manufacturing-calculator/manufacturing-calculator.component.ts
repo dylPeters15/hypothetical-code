@@ -38,7 +38,7 @@ export class ManufacturingCalculatorComponent implements OnInit {
 
 
   getPageSizeOptions() {
-    return [5, 10, 20, this.allReplacement];
+    return [20, 50, 100, this.allReplacement];
   }
 
   ngOnInit() {

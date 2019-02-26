@@ -52,7 +52,7 @@ export class ManufacturingGoalsComponent implements OnInit {
   constructor(public rest:RestService, private route: ActivatedRoute, private router: Router, private snackBar: MatSnackBar, private dialog: MatDialog) {  }
 
   getPageSizeOptions() {
-    return [5, 10, 20, this.allReplacement];
+    return [20, 50, 100, this.allReplacement];
   }
 
   newGoal() {
