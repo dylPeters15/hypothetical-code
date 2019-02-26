@@ -42,7 +42,7 @@ export class FormulaComponent implements OnInit {
 
   constructor(public rest:RestService, private snackBar: MatSnackBar, private dialog: MatDialog) { }
   allReplacement = 54321;
-  displayedColumns: string[] = ['checked', 'formulaname', 'formulanumber','ingredientsandquantities', 'comment'];
+  displayedColumns: string[] = ['checked', 'formulaname', 'formulanumber','ingredientsandquantities', 'comment', 'actions'];
   data: FormulaForTable[] = [];
   dialogRef: MatDialogRef<MoreInfoDialogComponent>;
   newDialogRef: MatDialogRef<NewFormulaDialogComponent>;
@@ -124,8 +124,9 @@ export class FormulaComponent implements OnInit {
     // });
   }
 
-  modifyFormulaConfirmed(present_formulaname, present_formulanumber, present_ingredientsandquantities, present_comment) {
-    this.newFormula(true, present_formulaname, present_formulanumber, present_ingredientsandquantities, present_comment);
+  modifyFormulaConfirmed(formula) {
+    this.newFormula(true, formula['formulaname'], formula['formulanumber'], 
+    formula['ingredientsandquantities'], formula['comment']);
   }
 
   deleteSelected() {
@@ -159,33 +160,6 @@ export class FormulaComponent implements OnInit {
       };
       const csvExporter = new ExportToCsv(options);
       csvExporter.generateCsv(exportData);
-  }
-
-   modifySelected() {
-    const dialogConfig = new MatDialogConfig();
-    let counter: number = 0;
-    this.data.forEach(user => {
-      if (user.checked) {
-        counter++;
-      }
-    });
-    if (counter == 0) {
-      this.snackBar.open("Please select a sku to modify", "close", {
-        duration: 2000,
-      });
-    }
-    else if (counter != 1) {
-      this.snackBar.open("Please only select one sku to modify", "close", {
-        duration: 2000,
-      });
-    }
-    else{
-      this.data.forEach(user => {
-        if (user.checked) {
-          this.modifyFormulaConfirmed(user.formulaname, user.formulanumber, user.ingredientsandquantities, user.comment);
-        }
-      });
-    }   
   }
 
   removeIngredient(ingredient, sku) {

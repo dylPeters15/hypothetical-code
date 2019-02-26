@@ -54,7 +54,7 @@ export class IngredientComponent  implements OnInit {
   constructor(public rest:RestService, private snackBar: MatSnackBar, private dialog: MatDialog) { }
   allReplacement = 54321;
   displayedColumns: string[] = ['checked', 'ingredientname', 'ingredientnumber',
-    'vendorinformation', 'packagesize', 'costperpackage', 'comment', 'modify'];
+    'vendorinformation', 'packagesize', 'costperpackage', 'comment', 'actions'];
   data: IngredientForTable[] = [];
   dialogRef: MatDialogRef<MoreInfoDialogComponent>;
   newDialogRef: MatDialogRef<NewIngredientDialogComponent>;

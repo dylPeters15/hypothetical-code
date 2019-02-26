@@ -64,14 +64,14 @@
             </mat-cell>
           </ng-container>
         
-          <ng-container matColumnDef="actions">
+          <!-- <ng-container matColumnDef="actions">
             <mat-header-cell *matHeaderCellDef mat-sort-header>Actions</mat-header-cell>
             <mat-cell *matCellDef="let ingredient">
               <button mat-raised-button (click)="deleteIngredient(element['name'])" style="color: white; background-color: red;"> Delete ingredient </button>
             </mat-cell>
-          </ng-container>
+          </ng-container> -->
 
-          <ng-container matColumnDef="modify">
+          <ng-container matColumnDef="actions">
             <mat-header-cell *matHeaderCellDef mat-sort-header>Actions</mat-header-cell>
             <mat-cell *matCellDef="let ingredient">
                 <button mat-button *ngIf="admin" (click)="modifyIngredient(ingredient)" color="primary"> 
