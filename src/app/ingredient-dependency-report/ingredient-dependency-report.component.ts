@@ -63,32 +63,32 @@ export class IngredientDependencyComponent implements OnInit {
     return [5, 10, 20, this.allReplacement];
   }
 
-  refreshData(filterQueryData?) {
+  async refreshData(filterQueryData?) {
     this.data = []
-    filterQueryData = filterQueryData ? ".*"+filterQueryData+".*" : ".*"+this.filterQuery+".*"; //this returns things that have the pattern anywhere in the string  
+    filterQueryData = filterQueryData ? "(?i).*"+filterQueryData+".*" : ".*"+this.filterQuery+".*"; //this returns things that have the pattern anywhere in the string  
     var numingredients;
+    var rest = this.rest;
     var thisobject = this;
-    var promise3 = new Promise(function(resolve, reject) {
+    this.data = await new Promise(function(resolve, reject) {
+      var data = [];
       thisobject.rest.getIngredients("", filterQueryData, 0, thisobject.paginator.pageSize*10).subscribe(response => {
         var ingredientsvisited = 0;
         response.forEach(ingredient => {
           thisobject.formulaSearch(ingredient).then(function( skuArray) {
             let currentIngredient = new IngredientDependencyData(ingredient['ingredientname'], ingredient['ingredientnumber'], 0, skuArray);
-            thisobject.data.push(currentIngredient);
+            data.push(currentIngredient);
             ingredientsvisited ++; 
             if (ingredientsvisited == response.length) {
-              resolve();
+              resolve(data);
             }
           }) 
         })
       });
     });
-    promise3.then(() => {
       console.log('data sent', this.data)
       this.dataSource.sort = this.sort;
       this.dataSource =  new MatTableDataSource<IngredientDependencyData>(this.data);
       this.dataSource.paginator = this.paginator;
-    }) 
   }
 
   formulaSearch(ingredient) {
