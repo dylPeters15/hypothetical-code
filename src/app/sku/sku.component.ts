@@ -177,31 +177,8 @@ export class SkuComponent  implements OnInit {
       csvExporter.generateCsv(exportData);
   }
 
-   modifySelected() {
-    const dialogConfig = new MatDialogConfig();
-    let counter: number = 0;
-    this.data.forEach(user => {
-      if (user.checked) {
-        counter++;
-      }
-    });
-    if (counter == 0) {
-      this.snackBar.open("Please select a sku to modify", "close", {
-        duration: 2000,
-      });
-    }
-    else if (counter != 1) {
-      this.snackBar.open("Please only select one sku to modify", "close", {
-        duration: 2000,
-      });
-    }
-    else{
-      this.data.forEach(user => {
-        if (user.checked) {
-          this.modifySkuConfirmed(user.skuname, user.skunumber, user.caseupcnumber, user.unitupcnumber, user.unitsize, user.countpercase, user.formula, user.formulascalingfactor, user.manufacturingrate, user.comment);
-        }
-      });
-    }   
+   modifySelected(oldSku) {
+      this.modifySkuConfirmed(oldSku.skuname, oldSku.skunumber, oldSku.caseupcnumber, oldSku.unitupcnumber, oldSku.unitsize, oldSku.countpercase, oldSku.formula, oldSku.formulascalingfactor, oldSku.manufacturingrate, oldSku.comment); 
   }
 
   removeIngredient(ingredient, sku) {
