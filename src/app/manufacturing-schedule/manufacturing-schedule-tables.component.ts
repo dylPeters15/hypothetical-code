@@ -6,6 +6,7 @@ import { MatDialog, MatDialogRef, MatDialogConfig, MatTableDataSource, MatPagina
 import { ModifyActivityDialogComponent } from '../modify-activity-dialog/modify-activity-dialog.component'
 
 
+
 const customValueProvider = {
   provide: NG_VALUE_ACCESSOR,
   useExisting: forwardRef(() => ManufactoringScheduleTableComponent),

@@ -12,7 +12,7 @@ export class ManufacturingGoal {
   activities: String;
   activityCount: number;
   name: String;
-  date: Date;
+  date: String;
   checked: boolean;
   constructor(name, activities, activityCount, date, checked){
     this.activityCount = activityCount;
@@ -86,8 +86,9 @@ export class ManufacturingGoalsComponent implements OnInit {
                     activityString += "SKU: " + currentActivity['sku']['skuname'] + ": Hours Required: " + hoursString + '\n'; 
                 }
                 activityString = activityString.substring(0,activityString.length-1)
-                let date = this.goals[i]['date'];
-                let currentGoal = new ManufacturingGoal(name, activityString, activityCount, date, false);
+                let date = new Date(this.goals[i]['date']);
+                let dateString = date.getMonth()+1 + '/' + date.getDate() + '/' + date.getFullYear();
+                let currentGoal = new ManufacturingGoal(name, activityString, activityCount, dateString, false);
                 this.data.push(currentGoal);
               }
               
