@@ -28,13 +28,22 @@
       </mat-form-field>
 
       <div  class="dropdown-content" [hidden]="formulaDoesNotExist">
-        <p> {{chosen_formula}} | {{chosen_scaling_factor}} <button type="submit" (click)="addFormulaButton()">Edit</button><button type="submit" (click)="deleteFormula()">X</button></p>
+        <p> {{chosen_formula}} | {{chosen_scaling_factor}} <button type="submit" (click)="addFormulaButton()">Edit</button></p>
       </div>
 
-      <mat-dialog-actions align="center" [hidden]="formulaExists">
-          <button class="mat-raised-button" (click)="addFormulaButton()">Add Formula</button>
+      <div  class="add-form-button" [hidden]="formulaExists">
+        <mat-dialog-actions align="center" >
+          <button class="mat-raised-button" (click)="addFormulaButton()">Add Existing Formula</button>
         </mat-dialog-actions>
+      </div>
 
+      <br /> 
+      <br /> 
+
+        <mat-dialog-actions align="center" >
+          <button class="mat-raised-button" (click)="newFormulaButton()">Create New Formula</button>
+        </mat-dialog-actions>
+ 
         <br /> 
         <br /> 
 
@@ -42,9 +51,8 @@
         <input matInput [(ngModel)]="manufacturingrate" placeholder="Manufacturing Rate">
       </mat-form-field>
 
-      <mat-form-field>
-        <input matInput [(ngModel)]="comment" placeholder="Additional Comments">
-      </mat-form-field>
+      <textarea rows="5" cols="50" style="border:inset 4px grey;" matInput [(ngModel)]="comment" placeholder="Additional Comments"> </textarea>
+
     </mat-card-content>
   </mat-card>
 </mat-dialog-content>
