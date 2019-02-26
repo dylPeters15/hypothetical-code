@@ -77,14 +77,29 @@ export class NewSkuDialogComponent implements OnInit {
 
   refreshData() {
      // Get formula name from id
-    if(this.formula == null) this.formulaname = "";
-    else this.formulaname = this.formula['formulaname'];
-    
+
+     console.log("woah mateyy " + this.formula);
+
+     console.log("right here first it's " + this.formulaname);
+
+    if(this.formula == null)
+    {
+      this.formulaname = "";
+    } 
+    else if (this.formula['formulaname'] != null)
+    {
+      this.formulaname = this.formula['formulaname'];
+    }
+    console.log("right here it's " + this.formulaname);
+
      // update formula and scaling factor to display
     this.formulaDoesNotExist = this.formulaname == "";
     this.formulaExists = !this.formulaDoesNotExist;
+    console.log("should add form button be hidden? " + this.formulaExists);
     this.chosen_formula = this.formulaname;
     this.chosen_scaling_factor = this.formulascalingfactor;
+    console.log("okayy finn: name is " + this.formulaname);
+    console.log("okay ya: scale factor is " + this.formulascalingfactor);
   }
 
   closeDialog() {
@@ -106,15 +121,6 @@ export class NewSkuDialogComponent implements OnInit {
   //.formulaName = this.formulaName;
   //this.dialogRef.componentInstance.scalingFactor 
 
-  // 
-  deleteFormula() {
-    this.rest.modifySku(this.oldskuname, this.skuname, this.skunumber, this.caseupcnumber, this.unitupcnumber, this.unitsize, this.countpercase, null, 0, this.manufacturingrate, this.comment).subscribe(response => {
-      console.log("all deleted fam"); 
-      this.formula = null;
-      this.chosen_scaling_factor = 0;
-      this.refreshData();
-    });
-  }
 
   addFormulaToSku(edit, formulaname, scalingFactor) {
     const dialogConfig = new MatDialogConfig();
@@ -130,13 +136,17 @@ export class NewSkuDialogComponent implements OnInit {
       // get object id from formula name
       this.rest.getFormulas(new_formula,0, 0, 1).subscribe(response => {
         if (response.length == 0) {
+          console.log("problem in formula looks like");
           this.snackBar.open("Error adding formula. Please refresh and try again", "close", {
             duration: 2000,
                });
         } 
         else {
+          console.log("success mon");
           this.formula = response[0]['formulanumber'];
           this.formulaname = response[0]['formulaname'];
+          console.log("name: " + this.formulaname);
+          console.log("num: " + this.formulascalingfactor);
         }
         this.refreshData();
         });
