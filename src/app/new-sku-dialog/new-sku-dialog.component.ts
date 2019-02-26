@@ -60,6 +60,7 @@ export class NewSkuDialogComponent implements OnInit {
 
     // update formula and scaling factor to display
     this.formulaDoesNotExist = this.formulaname == "";
+    this.formulaExists = !this.formulaDoesNotExist;
     this.chosen_formula = this.formulaname;
     this.chosen_scaling_factor = this.formulascalingfactor;
 
@@ -78,7 +79,8 @@ export class NewSkuDialogComponent implements OnInit {
 
   refreshData() {
     // update formula and scaling factor to display
-    this.formulaExists = this.formulaname == "";
+    this.formulaDoesNotExist = this.formulaname == "";
+    this.formulaExists = !this.formulaDoesNotExist;
     this.chosen_formula = this.formulaname;
     this.chosen_scaling_factor = this.formulascalingfactor;
   }
