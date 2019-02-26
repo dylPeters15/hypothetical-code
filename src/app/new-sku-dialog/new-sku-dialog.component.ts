@@ -27,8 +27,10 @@ export class NewSkuDialogComponent implements OnInit {
   formulascalingfactor: number = 0;
   manufacturingrate: number = 0;
   comment: String = '';
-  
 
+  chosen_formula: String
+  chosen_scaling_factor: Number;
+  
   newFormulaDialogRef: MatDialogRef<NewSkuFormulaComponent>;
 
 
@@ -49,6 +51,9 @@ export class NewSkuDialogComponent implements OnInit {
     this.manufacturingrate = this.data.present_manufacturingrate;
     this.comment = this.data.present_comment;
 
+    // update formula and scaling factor to display
+    this.chosen_formula = this.formula;
+    this.chosen_scaling_factor = this.chosen_scaling_factor;
 
     // edit == true if sku is being modified, false if a new sku is being created
     if (this.edit == true)
@@ -112,7 +117,6 @@ export class NewSkuDialogComponent implements OnInit {
     }
   
   createSku() {
-    // generate ID
     if (this.edit == false)
     {
       this.rest.createSku(this.skuname, this.skunumber, this.caseupcnumber, this.unitupcnumber, this.unitsize, this.countpercase, this.formula, this.formulascalingfactor, this.manufacturingrate, this.comment).subscribe(response => {

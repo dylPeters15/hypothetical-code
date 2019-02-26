@@ -43,6 +43,8 @@ export class NewFormulaDialogComponent implements OnInit {
     this.ingredientsandquantities = this.data.present_ingredientsandquantities;
     this.comment = this.data.present_comment;
     //console.log("my test array is " + this.testArray);
+
+    // update ingredients and amounts to display
     for(let i=0; i<this.ingredientsandquantities.length; i++){
       this.arrayIngredients.push(this.ingredientsandquantities[i].ingredient);
       this.arrayQuantity.push(this.ingredientsandquantities[i].quantity);

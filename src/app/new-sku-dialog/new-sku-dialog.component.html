@@ -27,6 +27,10 @@
         <input matInput [(ngModel)]="countpercase" placeholder="Count Per Case" required>
       </mat-form-field>
 
+      <div *ngFor="let item of arrayIngredients">
+        <p>{{item}} | {{arrayQuantity[$index]}} <button type="submit">Edit</button><button type="submit">X</button></p>
+     </div>
+
 
       <mat-dialog-actions align="center">
           <button class="mat-raised-button" (click)="addFormulaButton()">Add Formula</button>
