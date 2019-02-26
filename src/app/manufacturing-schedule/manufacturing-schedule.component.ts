@@ -53,7 +53,7 @@ export class ManufacturingScheduleComponent implements OnInit {
   totalHours: number;
 
   ngOnInit() {
-    this.refreshData();
+    // this.refreshData();
     this.selectionChange();
   }
 
@@ -63,7 +63,8 @@ export class ManufacturingScheduleComponent implements OnInit {
     this.rest.getUserName().then(result => {
         this.rest.getGoals(result.toString(), "", "", true, 5).subscribe(goals => {
           goals.forEach(goal => {
-            let activityList = [];
+            console.log("GOAL: " + JSON.stringify(goal))
+            var activityList = [];
             if(goal['enabled']){
             goal['activities'].forEach(activity => {
               if(activity['activity']['line'] == null || activity['activity']['line'] == undefined){
@@ -82,7 +83,7 @@ export class ManufacturingScheduleComponent implements OnInit {
   this.rest.getLine('','.*','','.*',100).subscribe(response => {
     response.forEach(line => {
       var currentLineName = line['shortname'];
-      let currentActivities = [];
+      var currentActivities = [];
       this.rest.getActivities(null,100,line['_id']).subscribe(activities => {
         if(activities.length > 0){
           activities.forEach(activity => {
