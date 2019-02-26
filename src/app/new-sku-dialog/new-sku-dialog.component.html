@@ -32,11 +32,17 @@
       </div>
 
       <div  class="add-form-button" [hidden]="formulaExists">
-
         <mat-dialog-actions align="center" >
-          <button class="mat-raised-button" (click)="addFormulaButton()">Add Formula</button>
+          <button class="mat-raised-button" (click)="addFormulaButton()">Add Existing Formula</button>
         </mat-dialog-actions>
       </div>
+
+      <br /> 
+      <br /> 
+
+        <mat-dialog-actions align="center" >
+          <button class="mat-raised-button" (click)="newFormulaButton()">Create New Formula</button>
+        </mat-dialog-actions>
  
         <br /> 
         <br /> 
@@ -45,9 +51,8 @@
         <input matInput [(ngModel)]="manufacturingrate" placeholder="Manufacturing Rate">
       </mat-form-field>
 
-      <mat-form-field>
-        <input matInput [(ngModel)]="comment" placeholder="Additional Comments">
-      </mat-form-field>
+      <textarea rows="5" cols="50" style="border:inset 4px grey;" matInput [(ngModel)]="comment" placeholder="Additional Comments"> </textarea>
+
     </mat-card-content>
   </mat-card>
 </mat-dialog-content>

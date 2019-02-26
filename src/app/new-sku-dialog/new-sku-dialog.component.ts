@@ -5,6 +5,7 @@ import { RestService } from '../rest.service';
 import {MatSnackBar} from '@angular/material';
 import {MAT_DIALOG_DATA} from '@angular/material';
 import { NewSkuFormulaComponent } from '../new-sku-formula/new-sku-formula.component';
+import { NewFormulaDialogComponent } from '../new-formula-dialog/new-formula-dialog.component';
 
 
 @Component({
@@ -39,6 +40,7 @@ export class NewSkuDialogComponent implements OnInit {
   chosen_scaling_factor: Number;
   
   newFormulaDialogRef: MatDialogRef<NewSkuFormulaComponent>;
+  newDialogRef: MatDialogRef<NewFormulaDialogComponent>;
 
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: any, private dialogRef: MatDialogRef<NewSkuDialogComponent>, public rest:RestService, private snackBar: MatSnackBar, private dialog: MatDialog) { }
@@ -156,6 +158,23 @@ export class NewSkuDialogComponent implements OnInit {
       addFormulaButton() {
         this.addFormulaToSku(false, "", 0);
     }
+
+    newFormulaButton()
+    {
+      let blankTuple = [];
+      this.newFormula(false, "", 0, blankTuple, "");
+    }
+
+    // edit
+  newFormula(edit, present_formulaname, present_formulanumber, present_ingredientsandquantities, present_comment) {
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.data = {edit: edit, present_formulaname: present_formulaname, present_formulanumber: present_formulanumber, present_ingredientsandquantities: present_ingredientsandquantities, present_comment:present_comment};
+    //console.log('formulas ingredient data', present_ingredientTuples)
+    this.newDialogRef = this.dialog.open(NewFormulaDialogComponent, dialogConfig);
+    this.newDialogRef.afterClosed().subscribe(event => {
+      this.refreshData();
+    });
+  }
   
   createSku() {
     if (this.edit == false)
