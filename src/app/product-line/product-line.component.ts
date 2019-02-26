@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material';
 import { NewProductLineDialogComponent } from '../new-product-line-dialog/new-product-line-dialog.component';
 import { DeleteProductLineDialogComponent } from '../delete-product-line-dialog/delete-product-line-dialog.component';
+import { auth } from '../auth.service';
 
 export interface DataForTable {
   productlinename: String,
@@ -22,6 +23,7 @@ export interface DataForTable {
 })
 export class ProductLineComponent implements OnInit {
 
+  admin: boolean = false;
   allReplacement = 54321;
   constructor(public rest: RestService, private snackBar: MatSnackBar, private dialog: MatDialog, public router: Router) { }
   @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -34,6 +36,7 @@ export class ProductLineComponent implements OnInit {
     // this.paginator.page.subscribe(event => {
     //   // this.deselectAll();
     // });
+    this.admin = auth.isAuthenticatedForAdminOperation();
     this.refreshData();
   }
 

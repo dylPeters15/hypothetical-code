@@ -36,6 +36,7 @@ import { UserManagementComponent } from './user-management/user-management.compo
 import { NewUserDialogComponent } from './new-user-dialog/new-user-dialog.component';
 import { NewSkuDialogComponent } from './new-sku-dialog/new-sku-dialog.component';
 import {NewFormulaIngredientDialogComponent} from './new-formula-ingredient/new-formula-ingredient-dialog.component';
+import { NewSkuFormulaComponent } from './new-sku-formula/new-sku-formula.component';
 import { NewFormulaDialogComponent } from './new-formula-dialog/new-formula-dialog.component';
 import { NewIngredientDialogComponent } from './new-ingredient-dialog/new-ingredient-dialog.component';
 import { NewProductLineDialogComponent } from './new-product-line-dialog/new-product-line-dialog.component';
@@ -109,6 +110,7 @@ const appRoutes: Routes = [
     NewSkuDialogComponent,
     NewFormulaDialogComponent,
     NewFormulaIngredientDialogComponent,
+    NewSkuFormulaComponent,
     NewIngredientDialogComponent,
     NewProductLineDialogComponent,
     ProductLineTablesComponent,
@@ -171,7 +173,7 @@ const appRoutes: Routes = [
   ],
   providers: [],
   bootstrap: [AppComponent],
-  entryComponents: [DeleteProductLineDialogComponent, UserNotificationDialogComponent, NewUserDialogComponent, PasswordConfirmationDialogComponent, PrivacyPolicyDialogComponent, TermsAndConditionsDialogComponent, MoreInfoDialogComponent, NewSkuDialogComponent, NewFormulaDialogComponent, NewFormulaIngredientDialogComponent, NewIngredientDialogComponent, NewGoalDialogComponent, NewProductLineDialogComponent, ConfirmActionDialogComponent, ImportPreviewDialogComponent, NewLineDialogComponent, EnableGoalsDialogComponent, ModifyActivityDialogComponent]
+  entryComponents: [DeleteProductLineDialogComponent, UserNotificationDialogComponent, NewUserDialogComponent, PasswordConfirmationDialogComponent, PrivacyPolicyDialogComponent, TermsAndConditionsDialogComponent, MoreInfoDialogComponent, NewSkuDialogComponent, NewFormulaDialogComponent, NewFormulaIngredientDialogComponent, NewSkuFormulaComponent, NewIngredientDialogComponent, NewGoalDialogComponent, NewProductLineDialogComponent, ConfirmActionDialogComponent, ImportPreviewDialogComponent, NewLineDialogComponent, EnableGoalsDialogComponent, ModifyActivityDialogComponent]
 })
 export class AppModule { 
   

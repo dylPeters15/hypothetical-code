@@ -5,6 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { NewLineDialogComponent } from '../new-line-dialog/new-line-dialog.component'
 import { MatDialogRef, MatDialog, MatDialogConfig, MatTableDataSource,MatPaginator, MatSnackBar } from "@angular/material";
 import {ExportToCsv} from 'export-to-csv';
+import { auth } from '../auth.service';
 
 export class ManufacturingLine {
   linename: String;
@@ -52,6 +53,7 @@ export class ManufacturingLinesComponent implements OnInit {
   newDialogRef: MatDialogRef<NewLineDialogComponent>;
   skuString: string = '';
   constructor(public rest:RestService, private route: ActivatedRoute, private router: Router, private snackBar: MatSnackBar, private dialog: MatDialog) {  }
+  admin: boolean = false;
 
   getPageSizeOptions() {
     return [5, 10, 20, this.allReplacement];
@@ -63,7 +65,11 @@ export class ManufacturingLinesComponent implements OnInit {
 
   ngOnInit() {
     this.refreshData();
-
+    this.admin = auth.isAuthenticatedForAdminOperation();
+    if (!this.admin) { //remove "checked" and "actions" columns
+      this.displayedColumns.shift();
+      this.displayedColumns.pop();
+    }
   }
 
   refreshData() {

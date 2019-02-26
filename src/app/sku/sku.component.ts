@@ -61,16 +61,18 @@ export class SkuComponent  implements OnInit {
 
   constructor(public rest:RestService, private snackBar: MatSnackBar, private dialog: MatDialog) { }
   allReplacement = 54321;
-  displayedColumns: string[] = ['checked', 'skuname', 'skunumber','caseupcnumber', 'unitupcnumber', 'unitsize', 'countpercase', 'formula', 'formulascalingfactor', "manufacturingrate", "comment"];
+  displayedColumns: string[] = ['checked', 'skuname', 'skunumber','caseupcnumber', 'unitupcnumber', 'unitsize', 'countpercase', 'formula', 'formulascalingfactor', "manufacturingrate", "comment", 'actions'];
   data: UserForTable[] = [];
   dialogRef: MatDialogRef<MoreInfoDialogComponent>;
   newDialogRef: MatDialogRef<NewSkuDialogComponent>;
   dataSource =  new MatTableDataSource<UserForTable>(this.data);
   admin: boolean = false;
+  filterQuery: string = "";
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
   ngOnInit() {
+    this.paginator.pageSize = 5;
     this.admin = auth.isAuthenticatedForAdminOperation();
     this.refreshData();
   }
@@ -79,8 +81,9 @@ export class SkuComponent  implements OnInit {
     return [5, 10, 20, this.allReplacement];
   }
 
-  refreshData() {
-    this.rest.getSkus("",".*",null,null,null,"",100).subscribe(response => {
+  refreshData(filterQueryData?) {
+    filterQueryData = filterQueryData ? ".*"+filterQueryData+".*" : ".*"+this.filterQuery+".*"; //this returns things that have the pattern anywhere in the string
+    this.rest.getSkus("", filterQueryData, null, null, null, "", this.paginator.pageSize*10).subscribe(response => {
       this.data = response;
       this.data.forEach(user => {
         user['checked'] = false;
@@ -88,9 +91,8 @@ export class SkuComponent  implements OnInit {
       console.log(this.data);
       this.dataSource =  new MatTableDataSource<UserForTable>(this.data);
       this.dataSource.sort = this.sort;
-    this.dataSource.paginator = this.paginator;
+      this.dataSource.paginator = this.paginator;
     });
-    
   }
 
   seeInfo(type, content) {
@@ -253,6 +255,15 @@ export class SkuComponent  implements OnInit {
         }
       }
     }
+  }
+
+  noneSelected(): boolean {
+    for (var i = 0; i < this.data.length; i++) {
+      if (this.data[i].checked) {
+        return false;
+      }
+    }
+    return true;
   }
 
 }

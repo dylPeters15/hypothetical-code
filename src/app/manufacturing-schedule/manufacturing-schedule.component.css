@@ -15,6 +15,11 @@
     max-height: fit-content;
   }
 
+  .manufacturing-schedule-container {
+    display: flex;
+    flex-direction: row;
+  }
+
   .manufacturing-goals-container {
     width: 200px;
     float: left
@@ -26,7 +31,7 @@
   }
 
   .manufacturing-lines-container {
-    width: calc(100% - 220px);
+    width: 200px;
     float: left;
     padding-left: 20px;
     flex-direction: row;
