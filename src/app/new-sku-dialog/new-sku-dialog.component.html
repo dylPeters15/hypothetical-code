@@ -48,7 +48,7 @@
         <br /> 
 
       <mat-form-field>
-        <input matInput [(ngModel)]="manufacturingrate" placeholder="Manufacturing Rate">
+        <input matInput [(ngModel)]="manufacturingrate" placeholder="Manufacturing Rate" (keydown.enter)="createSku()" required>
       </mat-form-field>
 
       <textarea rows="5" cols="50" style="border:inset 4px grey;" matInput [(ngModel)]="comment" placeholder="Additional Comments"> </textarea>
@@ -57,6 +57,6 @@
   </mat-card>
 </mat-dialog-content>
 <mat-dialog-actions align="center">
-  <button class="mat-raised-button" (click)="closeDialog()">Cancel</button>
-  <button class="mat-raised-button" (click)="createSku()" [disabled]="username==''" color="primary">Create</button>
+  <button mat-raised-button (click)="closeDialog()">Cancel</button>
+  <button mat-raised-button (click)="createSku()" [disabled]="manufacturingrate==''||!manufacturingrate" color="primary">Create</button>
 </mat-dialog-actions>
