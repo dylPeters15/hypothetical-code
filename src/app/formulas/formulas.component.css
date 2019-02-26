@@ -18,3 +18,8 @@ color: black;
 th.mat-header-cell {
 text-align: center;
 }
+
+.mat-cell.mat-cell.cdk-column-ingredientsandquantities.mat-column-ingredientsandquantities.ng-star-inserted {
+    display: flex;
+    flex-direction: column
+}
