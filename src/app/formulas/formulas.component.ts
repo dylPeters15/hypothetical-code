@@ -30,7 +30,6 @@ export class ExportableFormula {
   }
 }
 
-
 /**
  * @title Table dynamically changing the columns displayed
  */
