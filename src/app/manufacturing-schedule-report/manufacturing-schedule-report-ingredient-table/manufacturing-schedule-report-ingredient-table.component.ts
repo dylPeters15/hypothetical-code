@@ -1,6 +1,7 @@
 import { Component, OnInit, forwardRef } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { ManufacturingScheduleReportCalculatorService } from '../manufacturing-schedule-report-calculator.service';
+import { MatTableDataSource } from '@angular/material';
 
 @Component({
   selector: 'app-manufacturing-schedule-report-ingredient-table',
@@ -19,18 +20,33 @@ export class ManufacturingScheduleReportIngredientTableComponent implements OnIn
   ngOnInit() {
   }
 
+  
+  sortData(event) {
+    console.log("event:",event);
+    console.log("data: ",this.tableData);
+    this.tableData.data.sort((a,b) => {
+      console.log(a[event['active']] > b[event['active']]);
+      if (event['direction'] == 'asc') {
+        return a[event['active']] > b[event['active']] ? 1 : -1;
+      } else {
+        return a[event['active']] > b[event['active']] ? -1 : 1;
+      }
+    });
+    this.tableData = new MatTableDataSource(this.tableData.data);
+  }
+
   refreshData(): void {
     if (this._value && this._value['selectedLine'] && this._value['startDate'] && this._value['endDate']) {
       this.calc.getIngredients(this._value['selectedLine'], this._value['startDate'], this._value['endDate']).then(result => {
-        this.tableData = result;
+        this.tableData = new MatTableDataSource(result);
       });
     }
   }
-
+  
   _value = '';
   stringified = '';
-  tableData: any;
-  displayedColumns = ['ingredientNum', 'ingredientName', 'quantity', 'numCases'];
+  tableData: MatTableDataSource<any>;
+  displayedColumns = ['ingredientNumber', 'ingredientName', 'quantity', 'numCases'];
 
   propagateChange: any = () => { };
 

@@ -63,6 +63,20 @@ export class IngredientDependencyComponent implements OnInit {
     return [5, 10, 20, this.allReplacement];
   }
 
+  sortData(event) {
+    console.log("event:",event);
+    console.log("data: ",this.dataSource);
+    this.dataSource.data.sort((a,b) => {
+      console.log(a[event['active']] > b[event['active']]);
+      if (event['direction'] == 'asc') {
+        return a[event['active']] > b[event['active']] ? 1 : -1;
+      } else {
+        return a[event['active']] > b[event['active']] ? -1 : 1;
+      }
+    });
+    this.dataSource = new MatTableDataSource(this.dataSource.data);
+  }
+
   async refreshData(filterQueryData?) {
     this.data = []
     filterQueryData = filterQueryData ? "(?i).*"+filterQueryData+".*" : ".*"+this.filterQuery+".*"; //this returns things that have the pattern anywhere in the string  
