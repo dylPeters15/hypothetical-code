@@ -69,7 +69,7 @@ import { TermsAndConditionsDialogComponent } from './footer/terms-and-conditions
 import { UserManagementComponent } from './user-management/user-management.component';
 import { UserNotificationDialogComponent } from './user-notification-dialog/user-notification-dialog.component';
 import { UserRouteGuardService } from './user-route-guard.service';
-
+import { NewSkuFormulaComponent } from './new-sku-formula/new-sku-formula.component';
 
 const appRoutes: Routes = [
   { path: 'login', component: LoginComponent, data: { title: 'Log In' }, canActivate: [AlreadyLoggedInRouteGuardService] },
