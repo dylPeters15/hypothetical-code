@@ -27,8 +27,17 @@ export class NewSkuDialogComponent implements OnInit {
   formulascalingfactor: number = 0;
   manufacturingrate: number = 0;
   comment: String = '';
-  
 
+  formulaname: String = ''; // for displaying purposes.
+
+  // I know this is weird with the double boolean.
+  // They are used to show/hide html content. Idk a better way to do it
+  formulaDoesNotExist: Boolean = true; // for displaying purposes.
+  formulaExists: Boolean = false; // for displaying purposes.
+
+  chosen_formula: String
+  chosen_scaling_factor: Number;
+  
   newFormulaDialogRef: MatDialogRef<NewSkuFormulaComponent>;
 
 
@@ -49,6 +58,8 @@ export class NewSkuDialogComponent implements OnInit {
     this.manufacturingrate = this.data.present_manufacturingrate;
     this.comment = this.data.present_comment;
 
+    // update formula and scaling factor to display
+    this.refreshData();
 
     // edit == true if sku is being modified, false if a new sku is being created
     if (this.edit == true)
@@ -61,6 +72,19 @@ export class NewSkuDialogComponent implements OnInit {
       console.log("setting sku to new");
       this.dialog_title = "Create New Sku";
     }
+  }
+
+
+  refreshData() {
+     // Get formula name from id
+
+     this.formulaname = this.formula['formulaname'];
+    
+     // update formula and scaling factor to display
+    this.formulaDoesNotExist = this.formulaname == "";
+    this.formulaExists = !this.formulaDoesNotExist;
+    this.chosen_formula = this.formulaname;
+    this.chosen_scaling_factor = this.formulascalingfactor;
   }
 
   closeDialog() {
@@ -102,7 +126,9 @@ export class NewSkuDialogComponent implements OnInit {
         } 
         else {
           this.formula = response[0]['formulanumber'];
+          this.formulaname = response[0]['formulaname'];
         }
+        this.refreshData();
         });
         });
       }
@@ -112,7 +138,6 @@ export class NewSkuDialogComponent implements OnInit {
     }
   
   createSku() {
-    // generate ID
     if (this.edit == false)
     {
       this.rest.createSku(this.skuname, this.skunumber, this.caseupcnumber, this.unitupcnumber, this.unitsize, this.countpercase, this.formula, this.formulascalingfactor, this.manufacturingrate, this.comment).subscribe(response => {
@@ -144,5 +169,6 @@ export class NewSkuDialogComponent implements OnInit {
          this.closeDialog();
        });
     }
+    this.refreshData();
   }
 }

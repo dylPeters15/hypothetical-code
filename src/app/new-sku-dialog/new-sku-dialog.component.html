@@ -27,8 +27,12 @@
         <input matInput [(ngModel)]="countpercase" placeholder="Count Per Case" required>
       </mat-form-field>
 
+      <div  class="dropdown-content" [hidden]="formulaDoesNotExist">
+        <p> {{chosen_formula}} | {{chosen_scaling_factor}} <button type="submit">Edit</button><button type="submit">X</button></p>
+      </div>
 
-      <mat-dialog-actions align="center">
+
+      <mat-dialog-actions align="center" [hidden]="formulaExists">
           <button class="mat-raised-button" (click)="addFormulaButton()">Add Formula</button>
         </mat-dialog-actions>
 
