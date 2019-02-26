@@ -43,8 +43,11 @@ export class ManufacturingLinesTableComponent implements ControlValueAccessor {
     if (value) {
       this._value = value;
       this.stringified = JSON.stringify(value);
-      if(this._value['activities'].length > 1){
+      if(this._value['activities'].length > 0){
         this.activitiesExist = true;
+        this._value['activities'].forEach(element => {
+          this.calculateEndDate(element)
+        });
       }
     }
   }
