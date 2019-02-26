@@ -49,7 +49,7 @@ export class ImportComponent implements OnInit {
     this.parser.parseCSVFiles(this.fileSelector.nativeElement.files).then(csvResult => {
       this.fileSelectorForm.nativeElement.reset();
       this.importChecker.checkAll(csvResult).then(checkResult => {
-
+        console.log("Check result: ",checkResult);
         const dialogConfig = new MatDialogConfig();
         dialogConfig.data = checkResult;
         dialogConfig.minWidth = "50%";
