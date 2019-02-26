@@ -277,7 +277,7 @@ app.route('/manufacturing-activities').get((req, res) => {
         resolveError(err, res);
     });
 }).delete((req, res) => {
-    activity_utils.deleteActivity(req.headers['sku'], Number(req.headers['numcases']),Number(req.headers['calculatedhours']), new Date(req.headers['startdate'])).then(response => {
+    activity_utils.deleteActivity(req.headers['_id']).then(response => {
         res.send(response);
     }).catch(err => {
         resolveError(err, res);

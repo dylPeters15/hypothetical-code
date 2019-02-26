@@ -58,13 +58,10 @@ function modifyActivity(sku, numcases, calculatedhours, startdate, newActivityOb
     });
 }
 
-function deleteActivity(sku, numcases, calculatedhours, startdate) {
+function deleteActivity(activityId) {
     return new Promise((resolve, reject) => {
         var filterSchema = {
-            sku: sku,
-            numcases: numcases,
-            calculatedhours: calculatedhours,
-            startdate: startdate
+            _id: activityId
         }
         database.manufacturingActivityModel.deleteOne(filterSchema, (err, response) => {
             if (err) {
