@@ -4,9 +4,9 @@ import { auth } from './auth.service'
 import { Observable } from 'rxjs';
 import { start } from 'repl';
 
-const endpoint = 'https://vcm-8238.vm.duke.edu:8443/'; // Ben
+// const endpoint = 'https://vcm-8238.vm.duke.edu:8443/'; // Ben
 // const endpoint = 'https://vcm-8405.vm.duke.edu:8443/'; // Noah
-// const endpoint = 'https://vcm-8205.vm.duke.edu:8443/'; // Prod
+const endpoint = 'https://vcm-8205.vm.duke.edu:8443/'; // Prod
 // const endpoint = 'https://localhost:8443/'; // localhost
 
 @Injectable({
@@ -152,7 +152,8 @@ modifyFormula(oldname: string, formulaname: string, formulanumber: number, ingre
 
 deleteFormula(formulanumber: number): Observable<any> {
   return this.http.delete(endpoint + "formulas", this.generateHeader({
-    formulanumber: JSON.stringify(formulanumber)
+    // formulanumber: JSON.stringify(formulanumber)
+    formulanumber: formulanumber
   }));
 }
 

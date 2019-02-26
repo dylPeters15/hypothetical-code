@@ -158,11 +158,11 @@ export class FormulaComponent implements OnInit {
               
             dialogRef.afterClosed().subscribe(closeData => {
               if (closeData && closeData['confirmed']) {
-                this.deleteFormulaConfirmed(formula);
+                
                 affectedSkus.forEach((sku) => {
                   this.rest.modifySku(sku['skuname'], sku['skuname'], sku['skunumber'],
                   sku['caseupcnumber'], sku['unitupcnumber'], sku['unitsize'], 
-                  sku['countpercase'], null, sku['formulascalingfactor'], 
+                  sku['countpercase'], -1, sku['formulascalingfactor'], 
                   sku['manufacturingrate'],sku['comment']).subscribe(response => {
                     if (response['nModified']) {
                       this.snackBar.open("Successfully modified formula " + formula['formulaname'] + ".", "close", {
@@ -176,7 +176,8 @@ export class FormulaComponent implements OnInit {
                       });
                     }
                   })
-                })        
+                }) 
+                this.deleteFormulaConfirmed(formula);       
               }
             });
           }
@@ -246,6 +247,15 @@ export class FormulaComponent implements OnInit {
         }
       }
     }
+  }
+
+  noneSelected(): boolean {
+    for (var i = 0; i < this.data.length; i++) {
+      if (this.data[i].checked) {
+        return false;
+      }
+    }
+    return true;
   }
 
 }
