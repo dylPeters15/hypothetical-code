@@ -93,7 +93,7 @@ export class NewFormulaDialogComponent implements OnInit {
       console.log("okay we are back again. ingredient: " + new_ingredient + ", amount: " +  new_amount);
 
       // get object id from ingredient name
-      this.rest.getIngredients(new_ingredient,"", 0, 1).subscribe(response => {
+      this.rest.getIngredients(new_ingredient,"$a", -1, 1).subscribe(response => {
         if (response.length == 0) {
           this.snackBar.open("Error adding ingredient.", "close", {
             duration: 2000,
