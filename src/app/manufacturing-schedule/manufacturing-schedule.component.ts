@@ -87,9 +87,10 @@ export class ManufacturingScheduleComponent implements OnInit {
       this.rest.getActivities(null,100,line['_id']).subscribe(activities => {
         if(activities.length > 0){
           activities.forEach(activity => {
-            currentActivities.push(activity);
+            if(currentActivities.indexOf(activity) == -1){
+              currentActivities.push(activity);
+            }
           })
-          
         }
         let newLine = new DataForLinesTable(currentLineName, currentActivities);
         this.linesData.push(newLine);

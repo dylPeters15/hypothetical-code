@@ -1,8 +1,11 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialogRef} from "@angular/material";
+import { MatDialogConfig, MatDialog} from "@angular/material";
 import { RestService } from '../rest.service';
 import {MatSnackBar} from '@angular/material';
 import {MAT_DIALOG_DATA} from '@angular/material';
+import { NewSkuFormulaComponent } from '../new-sku-formula/new-sku-formula.component';
+
 
 @Component({
   selector: 'app-new-sku-dialog',
@@ -24,8 +27,12 @@ export class NewSkuDialogComponent implements OnInit {
   formulascalingfactor: number = 0;
   manufacturingrate: number = 0;
   comment: String = '';
+  
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: any, private dialogRef: MatDialogRef<NewSkuDialogComponent>, public rest:RestService, private snackBar: MatSnackBar) { }
+  newFormulaDialogRef: MatDialogRef<NewSkuFormulaComponent>;
+
+
+  constructor(@Inject(MAT_DIALOG_DATA) public data: any, private dialogRef: MatDialogRef<NewSkuDialogComponent>, public rest:RestService, private snackBar: MatSnackBar, private dialog: MatDialog) { }
 
   ngOnInit() {
 
@@ -72,12 +79,42 @@ export class NewSkuDialogComponent implements OnInit {
     this.comment = this.data.present_comment;
   }
 
+  //.formulaName = this.formulaName;
+  //this.dialogRef.componentInstance.scalingFactor 
+
+  addFormulaToSku(edit, formulaname, scalingFactor) {
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.data = {edit: edit, present_name: formulaname, present_scalingFactor: scalingFactor};
+    this.newFormulaDialogRef = this.dialog.open(NewSkuFormulaComponent, dialogConfig);
+    //this.newIngredientDialogRef.componentInstance.amount = this.return_amount;
+    //this.newIngredientDialogRef.componentInstance.ingredientNameList = this.ingredientNameList;
+    this.newFormulaDialogRef.afterClosed().subscribe(event => {
+      // grab the new formula values
+      var new_formula = this.newFormulaDialogRef.componentInstance.formulaName;
+      this.formulascalingfactor = this.newFormulaDialogRef.componentInstance.scalingFactor;
+
+      // get object id from formula name
+      this.rest.getFormulas(new_formula,0, 0, 1).subscribe(response => {
+        if (response.length == 0) {
+          this.snackBar.open("Error adding formula. Please refresh and try again", "close", {
+            duration: 2000,
+               });
+        } 
+        else {
+          this.formula = response[0]['formulanumber'];
+        }
+        });
+        });
+      }
+
+      addFormulaButton() {
+        this.addFormulaToSku(false, "", 0);
+    }
+  
   createSku() {
     // generate ID
-    console.log("we in here now, and edit is: " + this.edit);
     if (this.edit == false)
     {
-      console.log("We're creating a new sku");
       this.rest.createSku(this.skuname, this.skunumber, this.caseupcnumber, this.unitupcnumber, this.unitsize, this.countpercase, this.formula, this.formulascalingfactor, this.manufacturingrate, this.comment).subscribe(response => {
         if (response['success']) {
                this.snackBar.open("Successfully created sku " + this.skuname + ".", "close", {
@@ -93,7 +130,6 @@ export class NewSkuDialogComponent implements OnInit {
       }
 
     else{
-      console.log("We're modifying a sku");
       this.rest.modifySku(this.oldskuname, this.skuname, this.skunumber, this.caseupcnumber, this.unitupcnumber, this.unitsize, this.countpercase, this.formula, this.formulascalingfactor, this.manufacturingrate, this.comment).subscribe(response => {
         
          if (response['success']) {

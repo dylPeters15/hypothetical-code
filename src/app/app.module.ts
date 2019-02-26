@@ -110,6 +110,7 @@ const appRoutes: Routes = [
     NewSkuDialogComponent,
     NewFormulaDialogComponent,
     NewFormulaIngredientDialogComponent,
+    NewSkuFormulaComponent,
     NewIngredientDialogComponent,
     NewProductLineDialogComponent,
     ProductLineTablesComponent,
@@ -173,7 +174,9 @@ const appRoutes: Routes = [
   ],
   providers: [],
   bootstrap: [AppComponent],
+
   entryComponents: [ConfirmDeletionDialogComponent, DeleteProductLineDialogComponent, UserNotificationDialogComponent, NewUserDialogComponent, PasswordConfirmationDialogComponent, PrivacyPolicyDialogComponent, TermsAndConditionsDialogComponent, MoreInfoDialogComponent, NewSkuDialogComponent, NewFormulaDialogComponent, NewFormulaIngredientDialogComponent, NewIngredientDialogComponent, NewGoalDialogComponent, NewProductLineDialogComponent, ConfirmActionDialogComponent, ImportPreviewDialogComponent, NewLineDialogComponent, EnableGoalsDialogComponent, ModifyActivityDialogComponent]
+
 })
 export class AppModule { 
   

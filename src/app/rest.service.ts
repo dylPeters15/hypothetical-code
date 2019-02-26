@@ -4,10 +4,10 @@ import { auth } from './auth.service'
 import { Observable } from 'rxjs';
 import { start } from 'repl';
 
-// const endpoint = 'https://vcm-8238.vm.duke.edu:8443/'; // Ben
+const endpoint = 'https://vcm-8238.vm.duke.edu:8443/'; // Ben
 // const endpoint = 'https://vcm-8405.vm.duke.edu:8443/'; // Noah
 // const endpoint = 'https://vcm-8205.vm.duke.edu:8443/'; // Prod
-const endpoint = 'https://localhost:8443/'; // localhost
+//const endpoint = 'https://localhost:8443/'; // localhost
 
 @Injectable({
   providedIn: 'root'
@@ -113,14 +113,6 @@ export class RestService {
 
 ///////////////////// formulas /////////////////////
 getFormulas(formulaname: string, formulanumber: number, ingredient: number, limit: number, formulanameregex?: string, sku?: number): Observable<any> {
-  console.log("limit", limit);
-  console.log("formulaname",formulaname);
-  console.log("formulanumber",formulanumber);
-  console.log("ingredient",ingredient);
-  console.log("limit",limit);
-  console.log("formulanameregex",formulanameregex);
-  console.log("sku",sku);
-
   var header = {
     formulaname: formulaname||"",
     formulanameregex: formulanameregex||"$a",
@@ -167,7 +159,7 @@ deleteFormula(sku: number, ingredient: number): Observable<any> {
 
  ///////////////////// skus /////////////////////
  getSkus(skuName: String, skunameregex: String, skuNumber: number, caseUpcNumber: number, unitUpcNumber: number, formula: String, limit: number): Observable<any> {
-   console.log("formula number rest", formula)
+
   return this.http.get(endpoint + "skus", this.generateHeader({
     skuname: skuName,
     skunameregex: skunameregex,
@@ -182,6 +174,7 @@ deleteFormula(sku: number, ingredient: number): Observable<any> {
 createSku(skuname: String, skunumber: number, 
   caseupcnumber: number, unitupcnumber: number, unitsize: string, 
   countpercase: number, formulanum: Number, formulascalingfactor: Number, manufacturingrate: Number, comment: String): Observable<any> {
+    console.log("comfortably here");
   return this.http.put(endpoint + "skus", {
     skuname: skuname,
     skunumber: skunumber,

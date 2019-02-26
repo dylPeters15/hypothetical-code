@@ -6,6 +6,7 @@ import { MatDialog, MatDialogRef, MatDialogConfig, MatTableDataSource, MatPagina
 import { ModifyActivityDialogComponent } from '../modify-activity-dialog/modify-activity-dialog.component'
 
 
+
 const customValueProvider = {
   provide: NG_VALUE_ACCESSOR,
   useExisting: forwardRef(() => ManufactoringScheduleTableComponent),
@@ -56,7 +57,7 @@ export class ManufactoringScheduleTableComponent implements ControlValueAccessor
       dialogConfig.data = {activity: activity};
       this.modifyActivityDialogRef = this.dialog.open(ModifyActivityDialogComponent, dialogConfig);
       this.modifyActivityDialogRef.afterClosed().subscribe(event => {
-        // this.refreshData();
+        // ngOnInit();
       });
     }
 
