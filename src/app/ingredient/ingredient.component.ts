@@ -175,7 +175,7 @@ export class IngredientComponent  implements OnInit {
   deleteIngredient(ingredientname) {
     this.rest.deleteIngredient(ingredientname).subscribe(response => {
       this.snackBar.open("Ingredient " + ingredientname + " deleted successfully.", "close", {
-        duration: 1000,
+        duration: 2000,
       });
       this.data = this.data.filter((value, index, arr) => {
         return value.ingredientname != ingredientname;
@@ -185,68 +185,67 @@ export class IngredientComponent  implements OnInit {
   }
 
   deleteSelected() {
-        this.data.forEach(ingredient => {
-          var affectedFormulas = [];
-          var affectedFormulaNames = [];
-          if (ingredient.checked) {
-            var thisobject = this;
-            let promise1 = new Promise((resolve, reject) => {
-              thisobject.rest.getFormulas("", -1, ingredient['_id'], 10).subscribe(formulas => {
-                console.log(formulas)
-                formulas.forEach((formula) => {
-                  if (formula['formulaname']) {
-                    affectedFormulas.push(formula);
-                    affectedFormulaNames.push(formula['formulaname'])
-                  }
-                });
-                resolve();
-              })
-            })
-            promise1.then(() => {
-              if (affectedFormulas.length == 0) {
-                this.deleteIngredient(ingredient.ingredientname);
+    this.data.forEach(ingredient => {
+      var affectedFormulas = [];
+      var affectedFormulaNames = [];
+      if (ingredient.checked) {
+        var thisobject = this;
+        let promise1 = new Promise((resolve, reject) => {
+          thisobject.rest.getFormulas("", -1, ingredient['_id'], 10).subscribe(formulas => {
+            console.log(formulas)
+            formulas.forEach((formula) => {
+              if (formula['formulaname']) {
+                affectedFormulas.push(formula);
+                affectedFormulaNames.push(formula['formulaname'])
               }
-              else {
-                const dialogRef = this.dialog.open(ConfirmDeletionDialogComponent, {
-                  width: '250px',
-                  data: {ingredient: ingredient['ingredientname'],
-                      affectedFormulaNames: affectedFormulaNames}
-                }); 
-                 
-                dialogRef.afterClosed().subscribe(closeData => {
-                    if (closeData && closeData['confirmed']) {
-                      this.deleteIngredient(ingredient['ingredientname']);
-                      affectedFormulas.forEach((formula) => {
-                        var newIngredients = []
-                        formula['ingredientsandquantities'].forEach((ingredienttuple) => {
-                          console.log(ingredienttuple['ingredient'])
-                          if((ingredienttuple['ingredient']['_id'] != ingredient['_id'])) {
-                            newIngredients.push(ingredienttuple);
-                          }
-                        });
-                        this.rest.modifyFormula(formula['formulaname'], formula['formulaname'], 
-                        formula['formulanumber'], newIngredients, formula['comment']).subscribe(response => {
-                          if (response['nModified']) {
-                            this.snackBar.open("Successfully modified formula " + formula['formulaname'] + ".", "close", {
-                              duration: 2000,
-                            });
-                            console.log('success')
-                          } else {
-                            console.log(response)
-                            this.snackBar.open("Error modifying formula " + formula['formulaname'] + ".", "close", {
-                              duration: 2000,
-                            });
-                          }
-                        })
-                      })        
+            });
+            resolve();
+          });
+        });
+        promise1.then(() => {
+          if (affectedFormulas.length == 0) {
+            this.deleteIngredient(ingredient.ingredientname);
+          }
+          else {
+            const dialogRef = this.dialog.open(ConfirmDeletionDialogComponent, {
+              width: '250px',
+              data: {ingredient: ingredient['ingredientname'],
+                  affectedFormulaNames: affectedFormulaNames}
+            }); 
+              
+            dialogRef.afterClosed().subscribe(closeData => {
+              if (closeData && closeData['confirmed']) {
+                this.deleteIngredient(ingredient['ingredientname']);
+                affectedFormulas.forEach((formula) => {
+                  var newIngredients = []
+                  formula['ingredientsandquantities'].forEach((ingredienttuple) => {
+                    console.log(ingredienttuple['ingredient'])
+                    if((ingredienttuple['ingredient']['_id'] != ingredient['_id'])) {
+                      newIngredients.push(ingredienttuple);
                     }
                   });
+                  this.rest.modifyFormula(formula['formulaname'], formula['formulaname'], 
+                  formula['formulanumber'], newIngredients, formula['comment']).subscribe(response => {
+                    if (response['nModified']) {
+                      this.snackBar.open("Successfully modified formula " + formula['formulaname'] + ".", "close", {
+                        duration: 2000,
+                      });
+                      console.log('success')
+                    } else {
+                      console.log(response)
+                      this.snackBar.open("Error modifying formula " + formula['formulaname'] + ".", "close", {
+                        duration: 2000,
+                      });
+                    }
+                  })
+                })        
               }
-            })
-            
+            });
           }
-        });
+        })
       }
+    });
+  }
 
   deselectAll() {
     this.data.forEach(ingredient => {

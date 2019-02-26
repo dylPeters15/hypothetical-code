@@ -8,6 +8,7 @@ import { AfterViewChecked } from '@angular/core';
 import { auth } from '../auth.service';
 import {ExportToCsv} from 'export-to-csv';
 import { ingredienttuple } from "../new-formula-dialog/ingredienttuple";
+import { ConfirmDeletionDialogComponent } from '../confirm-deletion-dialog/confirm-deletion-dialog.component';
 
 export interface FormulaForTable {
   formulaname: String;
@@ -110,18 +111,15 @@ export class FormulaComponent implements OnInit {
   }
 
   deleteFormulaConfirmed(formula) {
-    // this.rest.sendAdminDeleteSkuRequest(sku.name).subscribe(response => {
-    //   for (var i=0; i<sku.ingredientTuples.length-1; i = i+2) {
-    //     this.removeIngredient(sku.ingredientTuples[i], sku.name);
-    //   }
-    //   this.snackBar.open("Sku " + name + " deleted successfully.", "close", {
-    //     duration: 2000,
-    //   });
-    //   this.data = this.data.filter((value, index, arr) => {
-    //     return value.name != name;
-    //   });
-    //   this.refreshData();
-    // });
+    this.rest.deleteFormula(formula['formulanumber']).subscribe(response => {
+      this.snackBar.open("Formula " + formula['formulaname'] + " deleted successfully.", "close", {
+        duration: 2000,
+      });
+      this.data = this.data.filter((value, index, arr) => {
+        return value.formulaname != formula['formulaname'];
+      });
+      this.refreshData();
+    });
   }
 
   modifyFormulaConfirmed(formula) {
@@ -130,10 +128,59 @@ export class FormulaComponent implements OnInit {
   }
 
   deleteSelected() {
-    const dialogConfig = new MatDialogConfig();
     this.data.forEach(formula => {
+      var affectedSkus = [];
+      var affectedSkuNames = [];
       if (formula.checked) {
-        this.deleteFormulaConfirmed(formula);
+        var thisobject = this;
+        let promise1 = new Promise((resolve, reject) => {
+          thisobject.rest.getSkus("","", -1, -1, -1, formula['_id'], 10).subscribe(skus => {
+            console.log(skus)
+            skus.forEach((sku) => {
+              if (sku['skuname']) {
+                affectedSkus.push(sku);
+                affectedSkuNames.push(sku['skuname'])
+              }
+            });
+            resolve();
+          });
+        });
+        promise1.then(() => {
+          if (affectedSkus.length == 0) {
+            this.deleteFormulaConfirmed(formula);
+          }
+          else {
+            const dialogRef = this.dialog.open(ConfirmDeletionDialogComponent, {
+              width: '250px',
+              data: {ingredient: formula['formulaname'],
+                  affectedFormulaNames: affectedSkuNames}
+            }); 
+              
+            dialogRef.afterClosed().subscribe(closeData => {
+              if (closeData && closeData['confirmed']) {
+                this.deleteFormulaConfirmed(formula);
+                affectedSkus.forEach((sku) => {
+                  this.rest.modifySku(sku['skuname'], sku['skuname'], sku['skunumber'],
+                  sku['caseupcnumber'], sku['unitupcnumber'], sku['unitsize'], 
+                  sku['countpercase'], null, sku['formulascalingfactor'], 
+                  sku['manufacturingrate'],sku['comment']).subscribe(response => {
+                    if (response['nModified']) {
+                      this.snackBar.open("Successfully modified formula " + formula['formulaname'] + ".", "close", {
+                        duration: 2000,
+                      });
+                      console.log('success')
+                    } else {
+                      console.log(response)
+                      this.snackBar.open("Error modifying formula " + formula['formulaname'] + ".", "close", {
+                        duration: 2000,
+                      });
+                    }
+                  })
+                })        
+              }
+            });
+          }
+        })
       }
     });
   }
@@ -160,20 +207,6 @@ export class FormulaComponent implements OnInit {
       };
       const csvExporter = new ExportToCsv(options);
       csvExporter.generateCsv(exportData);
-  }
-
-  removeIngredient(ingredient, sku) {
-    let newSkus;
-    // this.rest.getIngredientByNumber(ingredient).subscribe(response => {
-    //   newSkus = response.skus
-    //   console.log("new skus", newSkus)
-    //   newSkus.push(sku);
-    //   newSkus = newSkus.filter(function(e) { return e !== sku })
-    //   console.log("new skus", newSkus)
-    //   this.rest.addIngredientSku(ingredient, newSkus).subscribe(response => {
-    //     console.log("New ingredient data", response)
-    //   });
-    // });
   }
   
   deselectAll() {
