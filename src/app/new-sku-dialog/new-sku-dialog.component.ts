@@ -58,21 +58,6 @@ export class NewSkuDialogComponent implements OnInit {
     this.manufacturingrate = this.data.present_manufacturingrate;
     this.comment = this.data.present_comment;
 
-    console.log("NOWWWWWWWWWW we modifying it");
-    console.log("name: " + this.skuname);
-    console.log("oldskuname: " + this.oldskuname);
-    console.log("skunumber: " + this.skunumber);
-    console.log("caseupcnumber: " + this.caseupcnumber);
-    console.log("unitupcnumber: " + this.unitupcnumber);
-    console.log("unitsize: " + this.unitsize);
-    console.log("countpercase: " + this.countpercase);
-    console.log("formula: " + this.formula);
-    console.log("formulascalingfactor: " + this.formulascalingfactor);
-    console.log("manufacturingrate: " + this.manufacturingrate);
-    console.log("comment: " + this.comment);
-    console.log("and done");
-
-
     // update formula and scaling factor to display
     this.refreshData();
 
