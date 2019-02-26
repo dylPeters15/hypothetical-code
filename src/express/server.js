@@ -133,7 +133,7 @@ app.route('/formulas').get((req, res) => {
         resolveError(err, res);
     });
 }).delete((req, res) => {
-    formula_utils.deleteFormula(Number(req.headers['formulanumber'])).then(response => {
+    formula_utils.deleteFormula((req.headers['formulanumber'])).then(response => {
         res.send(response);
     }).catch(err => {
         resolveError(err, res);

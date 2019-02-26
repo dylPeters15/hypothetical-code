@@ -63,32 +63,46 @@ export class IngredientDependencyComponent implements OnInit {
     return [5, 10, 20, this.allReplacement];
   }
 
-  refreshData(filterQueryData?) {
+  sortData(event) {
+    console.log("event:",event);
+    console.log("data: ",this.dataSource);
+    this.dataSource.data.sort((a,b) => {
+      console.log(a[event['active']] > b[event['active']]);
+      if (event['direction'] == 'asc') {
+        return a[event['active']] > b[event['active']] ? 1 : -1;
+      } else {
+        return a[event['active']] > b[event['active']] ? -1 : 1;
+      }
+    });
+    this.dataSource = new MatTableDataSource(this.dataSource.data);
+  }
+
+  async refreshData(filterQueryData?) {
     this.data = []
-    filterQueryData = filterQueryData ? ".*"+filterQueryData+".*" : ".*"+this.filterQuery+".*"; //this returns things that have the pattern anywhere in the string  
+    filterQueryData = filterQueryData ? "(?i).*"+filterQueryData+".*" : ".*"+this.filterQuery+".*"; //this returns things that have the pattern anywhere in the string  
     var numingredients;
+    var rest = this.rest;
     var thisobject = this;
-    var promise3 = new Promise(function(resolve, reject) {
+    this.data = await new Promise(function(resolve, reject) {
+      var data = [];
       thisobject.rest.getIngredients("", filterQueryData, 0, thisobject.paginator.pageSize*10).subscribe(response => {
         var ingredientsvisited = 0;
         response.forEach(ingredient => {
           thisobject.formulaSearch(ingredient).then(function( skuArray) {
             let currentIngredient = new IngredientDependencyData(ingredient['ingredientname'], ingredient['ingredientnumber'], 0, skuArray);
-            thisobject.data.push(currentIngredient);
+            data.push(currentIngredient);
             ingredientsvisited ++; 
             if (ingredientsvisited == response.length) {
-              resolve();
+              resolve(data);
             }
           }) 
         })
       });
     });
-    promise3.then(() => {
       console.log('data sent', this.data)
       this.dataSource.sort = this.sort;
       this.dataSource =  new MatTableDataSource<IngredientDependencyData>(this.data);
       this.dataSource.paginator = this.paginator;
-    }) 
   }
 
   formulaSearch(ingredient) {

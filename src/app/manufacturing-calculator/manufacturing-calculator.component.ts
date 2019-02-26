@@ -85,25 +85,28 @@ export class ManufacturingCalculatorComponent implements OnInit {
       let packages = numCases * formulaScaleFactor;
       let packagesMeasured = numCases * formulaScaleFactor * ingredient['amount'];
       let packagesMeasuredString = packagesMeasured + " " + ingredient['unitofmeasure']
-      this.ingredients.push(name);
-      let newIngredient = new SkuQuantityTable(name, packages, packagesMeasuredString);
-      this.data.push(newIngredient);
+      if(this.ingredients.indexOf(name) == -1){
+        this.ingredients.push(name);
+        let newIngredient = new SkuQuantityTable(name, packages, packagesMeasuredString);
+        this.data.push(newIngredient);
+      }
+      else{
+        var i;
+        for(i = 0; i< this.data.length; i++){
+          if(this.data[i].ingredientName == name){
+            let ingredientToUpdate = this.data[i];
+            ingredientToUpdate.packages +=  packages;
+            let oldMeasured = Number(ingredientToUpdate.packagesMeasured.substring(0,ingredientToUpdate.packagesMeasured.indexOf(" ")))
+            let updatedPackagesMeasured = oldMeasured + packagesMeasured;
+            ingredientToUpdate.packagesMeasured = updatedPackagesMeasured + " " + ingredient['unitofmeasure']
+            this.data.splice(i,1);
+            this.data.push(ingredientToUpdate)
+          }
+        }
+      }
       this.dataSource = new MatTableDataSource<SkuQuantityTable>(this.data);
       this.dataSource.paginator = this.paginator;
     }
-
-  // updateIngredient(ingredientName, additionalQuantity){
-  //   var i;
-  //   for(i = 0; i<this.data.length; i++){
-  //     if(this.data[i].ingredientName == ingredientName){
-  //       let oldQuantity = this.data[i].quantity;
-  //       this.data.splice(i,i);
-  //       let newQuantity = oldQuantity + additionalQuantity;
-  //       let newPair = new SkuQuantityTable(name, newQuantity);
-  //       this.data.push(newPair);
-  //     }
-  //   }
-  // }
 
   exportToCsv() {
     const options = { 

@@ -26,6 +26,10 @@ export class ManufacturingScheduleReportCalculatorService {
         data = data.filter((value, index, array) => {
           return value['enddate'] <= endDate;
         });
+        data.forEach(element => {
+          element['startdate'] = element['startdate'].getMonth()+1 + '/' + element['startdate'].getDate() + '/' + element['startdate'].getFullYear();
+          element['enddate'] = element['enddate'].getMonth()+1 + '/' + element['enddate'].getDate() + '/' + element['enddate'].getFullYear();
+        });
         resolve(data);
       });
     });

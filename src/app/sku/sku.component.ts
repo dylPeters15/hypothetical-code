@@ -7,6 +7,9 @@ import { NewSkuDialogComponent } from '../new-sku-dialog/new-sku-dialog.componen
 import { AfterViewChecked } from '@angular/core';
 import { auth } from '../auth.service';
 import {ExportToCsv} from 'export-to-csv';
+import { LineToLineMappedSource } from 'webpack-sources';
+import { ConfirmDeletionDialogComponent } from '../confirm-deletion-dialog/confirm-deletion-dialog.component';
+
 
 // skuname', 'skunumber','caseupcnumber', 'unitupcnumber', 'unitsize', 'countpercase', 'formula', 'formulascalingfactor', "manufacturingrate", "comment"
 
@@ -126,18 +129,15 @@ export class SkuComponent  implements OnInit {
   }
 
   deleteSkuConfirmed(sku) {
-    // this.rest.sendAdminDeleteSkuRequest(sku.name).subscribe(response => {
-    //   for (var i=0; i<sku.ingredientTuples.length-1; i = i+2) {
-    //     this.removeIngredient(sku.ingredientTuples[i], sku.name);
-    //   }
-    //   this.snackBar.open("Sku " + name + " deleted successfully.", "close", {
-    //     duration: 2000,
-    //   });
-    //   this.data = this.data.filter((value, index, arr) => {
-    //     return value.name != name;
-    //   });
-    //   this.refreshData();
-    // });
+    this.rest.deleteSku(sku['skuname']).subscribe(response => {
+      this.snackBar.open("Stock Keeping Unit " + sku['skuname'] + " deleted successfully.", "close", {
+        duration: 2000,
+      });
+      this.data = this.data.filter((value, index, arr) => {
+        return value.skuname != sku['skuname'];
+      });
+      this.refreshData();
+    });
   }
 
   modifySkuConfirmed(present_name, present_skuNumber, present_caseUpcNumber, present_unitUpcNumber,present_unitSize,present_countPerCase,present_productLine,present_ingredientTuples, present_comment, present_id) {
@@ -145,10 +145,131 @@ export class SkuComponent  implements OnInit {
   }
 
   deleteSelected() {
-    const dialogConfig = new MatDialogConfig();
     this.data.forEach(sku => {
+      var affectedManufacturingLines = [];
+      var affectedManufacturingLineNames = [];
+      var affectedProductLines = [];
+      var affectedProductLineNames = [];
       if (sku.checked) {
-        this.deleteSkuConfirmed(sku);
+        var thisobject = this;
+        let promise1 = new Promise((resolve, reject) => {
+          thisobject.rest.getLine('', '.*','','',50).subscribe(lines => {
+            console.log(lines)
+            lines.forEach((line) => {
+              console.log(line)
+              line['skus'].forEach((skuinline) => {
+                console.log('skuinline', skuinline['sku'], sku)
+                if (skuinline['sku']['_id'] == sku['_id']) {
+                  affectedManufacturingLines.push(line);
+                  affectedManufacturingLineNames.push(line['linename'])
+                }
+              })
+              
+            });
+            resolve();
+          });
+        });
+        let promise2 = new Promise((resolve, reject) => {
+          thisobject.rest.getProductLines("",".*", 50).subscribe(lines => {
+            console.log(lines)
+            lines.forEach((line) => {
+              line['skus'].forEach((skuinline) => {
+                console.log('skuinline', skuinline['sku'], sku)
+                if (skuinline['sku']['_id'] == sku['_id']) {
+                  affectedProductLines.push(line);
+                  affectedProductLineNames.push(line['productlinename'])
+                }
+              })
+            });
+            resolve();
+          });
+        });
+        promise1.then(() => {
+          promise2.then(() => {
+            if (affectedManufacturingLines.length == 0 && affectedProductLines.length == 0) {
+              this.deleteSkuConfirmed(sku);
+            }
+            else {
+              var totalAffected = [];
+              console.log(affectedProductLineNames);
+              totalAffected.push(affectedManufacturingLineNames);
+              totalAffected.push(affectedProductLineNames);
+              const dialogRef = this.dialog.open(ConfirmDeletionDialogComponent, {
+                width: '250px',
+                data: {ingredient: sku['skuname'],
+                    affectedFormulaNames: totalAffected}
+              }); 
+                
+              dialogRef.afterClosed().subscribe(closeData => {
+                if (closeData && closeData['confirmed']) {
+                  this.deleteSkuConfirmed(sku);
+                  affectedManufacturingLines.forEach((line) => {
+                    let newSkus; 
+                    line['skus'].forEach((oldsku) => {
+                      console.log(oldsku)
+                      if((oldsku['sku']['_id'] != sku['_id'])) {
+                        if (newSkus) {
+                          newSkus.push(oldsku);
+                        }
+                        else {
+                          newSkus = oldsku;
+                        } 
+                      }
+                    });
+                    console.log('oldsku', line['skus'])
+                    console.log('modified', newSkus)
+                    this.rest.modifyLine(line['linename'], line['linename'], line['shortname'],
+                    newSkus, line['comment']).subscribe(response => {
+                      if (response['nModified']) {
+                        this.snackBar.open("Successfully modified line " + line['linename'] + ".", "close", {
+                          duration: 2000,
+                        });
+                        console.log('success')
+                      } else {
+                        console.log(response)
+                        this.snackBar.open("Error modifying line " + line['linename'] + ".", "close", {
+                          duration: 2000,
+                        });
+                      }
+                    })
+                  }) 
+                  affectedProductLines.forEach((line) => {
+                    let newSkus;
+                    line['skus'].forEach((oldsku) => {
+                      console.log(oldsku)
+                      if((oldsku['sku']['_id'] != sku['_id'])) {
+                        if (newSkus) {
+                          newSkus.push(oldsku);
+                        }
+                        else {
+                          newSkus = oldsku;
+                        }
+                      }
+                    });
+                    console.log('oldsku', line['skus'])
+                    console.log('modified', newSkus)
+                    this.rest.modifyProductLine(line['productlinename'], line['productlinename'],
+                    newSkus).subscribe(response => {
+                      if (response['nModified']) {
+                        this.snackBar.open("Successfully modified line " + line['productlinename'] + ".", "close", {
+                          duration: 2000,
+                        });
+                        console.log('success')
+                      } else {
+                        console.log(response)
+                        this.snackBar.open("Error modifying line " + line['productlinename'] + ".", "close", {
+                          duration: 2000,
+                        });
+                      }
+                    })
+                  })       
+                }
+              });
+            }
+          })
+          
+          
+        })
       }
     });
   }
