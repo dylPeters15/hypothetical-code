@@ -152,7 +152,8 @@ modifyFormula(oldname: string, formulaname: string, formulanumber: number, ingre
 
 deleteFormula(formulanumber: number): Observable<any> {
   return this.http.delete(endpoint + "formulas", this.generateHeader({
-    formulanumber: JSON.stringify(formulanumber)
+    // formulanumber: JSON.stringify(formulanumber)
+    formulanumber: formulanumber
   }));
 }
 

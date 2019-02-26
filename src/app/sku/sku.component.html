@@ -66,7 +66,9 @@
               <ng-container matColumnDef="formula">
                   <mat-header-cell *matHeaderCellDef mat-sort-header>Formula</mat-header-cell>
                   <mat-cell *matCellDef="let sku">
-                    {{sku['formula']['formulaname']}}
+                    <div *ngIf="sku['formula']">
+                        {{sku['formula']['formulaname']}}
+                    </div>
                   </mat-cell>
                 </ng-container>
           
