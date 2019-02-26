@@ -1,5 +1,13 @@
+<h5>{{_value['Name']}}</h5>
 <mat-list>
   <mat-list-item *ngFor="let key of keys">
-    <p>{{key}}: {{_value[0][key]}}</p>
+    <p *ngIf="key!='ingredientsandquantities'">{{key}}: {{_value[0][key]}}</p>
+    <div *ngIf="key=='ingredientsandquantities'">
+      <div *ngFor="let innerKey of _value[0][key]">
+        <p>
+          Ingredient Number and Quantity: {{innerKey['ingredient']['ingredientnumber']}} : {{innerKey['quantity']}}
+        </p>
+      </div>
+    </div>
   </mat-list-item>
 </mat-list>

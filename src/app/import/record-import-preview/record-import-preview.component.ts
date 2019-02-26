@@ -30,6 +30,7 @@ export class RecordImportPreviewComponent implements ControlValueAccessor {
       this._value = value;
       this.stringified = JSON.stringify(value);
       this.keys = Object.keys(value);
+      console.log(this._value['ingredientsandquantities'])
     }
   }
 
