@@ -167,13 +167,6 @@ deleteFormula(sku: number, ingredient: number): Observable<any> {
 
  ///////////////////// skus /////////////////////
  getSkus(skuName: String, skunameregex: String, skuNumber: number, caseUpcNumber: number, unitUpcNumber: number, formula: String, limit: number): Observable<any> {
-   console.log("skuName", skuName);
-   console.log("skunameregex", skunameregex);
-   console.log("skuNumber", skuNumber);
-   console.log("caseUpcNumber", caseUpcNumber);
-   console.log("unitUpcNumber", unitUpcNumber);
-   console.log("formula", formula);
-   console.log("limit", limit);
 
   return this.http.get(endpoint + "skus", this.generateHeader({
     skuname: skuName,
@@ -189,6 +182,7 @@ deleteFormula(sku: number, ingredient: number): Observable<any> {
 createSku(skuname: String, skunumber: number, 
   caseupcnumber: number, unitupcnumber: number, unitsize: string, 
   countpercase: number, formulanum: Number, formulascalingfactor: Number, manufacturingrate: Number, comment: String): Observable<any> {
+    console.log("comfortably here");
   return this.http.put(endpoint + "skus", {
     skuname: skuname,
     skunumber: skunumber,
