@@ -58,6 +58,7 @@ export class NewGoalDialogComponent implements OnInit {
   }
 
   ngOnInit() {
+    console.log("IDS: " + this.activityIds)
     this.edit = this.data.edit;
     if(this.edit == true){
       this.name = this.data.present_name;
@@ -178,18 +179,4 @@ export class NewGoalDialogComponent implements OnInit {
     this.date = event.value;
   }
 
-  deleteActivity(activity){
-    this.rest.getActivities(null, 100).subscribe(response => {
-      response.forEach(activityInDatabase => {
-        if(activityInDatabase['sku']['skuname'] == activity.skuname && activityInDatabase['calculatedhours'] == activity.hours){
-          this.rest.deleteActivity(activityInDatabase['sku'], activityInDatabase['numcases'], activityInDatabase['calculatedhours'],activityInDatabase['startdate']).subscribe(response => {
-           let toRemoveActivity =  this.displayableActivities.indexOf(activity);
-           let toRemoveID = this.activityIds.indexOf({activity: activityInDatabase['_id']})
-            this.activityIds.splice(toRemoveID,1);
-           this.displayableActivities.splice(toRemoveActivity, 1);
-          })
-        }
-      })
-    })
-  }
 }

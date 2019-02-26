@@ -41,6 +41,7 @@ function createGoal(goalObject) {
 }
 
 function modifyGoal(goalname, newGoalObject) {
+    console.log("NEW OBJ: " + JSON.stringify(newGoalObject))
     return new Promise((resolve, reject) => {
         var filterSchema = {
             goalname: goalname

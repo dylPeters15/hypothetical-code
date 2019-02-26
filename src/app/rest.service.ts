@@ -383,12 +383,10 @@ deleteGoal(goalname: String): Observable<any> {
     }, this.generateHeader());
   }
 
-  deleteActivity(sku: string, numcases: number, calculatedhours: number, startdate: Date){
+  deleteActivity(activityId: string){
+
     return this.http.delete(endpoint + "manufacturing-activities", this.generateHeader({
-      sku: sku,
-      numcases: numcases.toString(),
-      calculatedhours: calculatedhours.toString(),
-      startdate: startdate.toString()
+      _id: activityId
     }));
   }
 
