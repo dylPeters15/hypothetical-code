@@ -106,6 +106,7 @@ export class NewSkuDialogComponent implements OnInit {
   //.formulaName = this.formulaName;
   //this.dialogRef.componentInstance.scalingFactor 
 
+  // 
   deleteFormula() {
     this.rest.modifySku(this.oldskuname, this.skuname, this.skunumber, this.caseupcnumber, this.unitupcnumber, this.unitsize, this.countpercase, null, 0, this.manufacturingrate, this.comment).subscribe(response => {
       console.log("all deleted fam"); 

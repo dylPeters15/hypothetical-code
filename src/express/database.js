@@ -148,7 +148,7 @@ var skuSchema = new mongoose.Schema({
   formula: {
     type: ObjectId,
     ref: 'formula',
-    required: true,
+    required: false,
     unique: false
   },
   formulascalingfactor: {
