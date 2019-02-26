@@ -55,6 +55,6 @@ export class ModifyActivityDialogComponent implements OnInit {
           duration: 2000,
         });
         this.closeDialog();
-      });
-  }
+  })
+}
 }
