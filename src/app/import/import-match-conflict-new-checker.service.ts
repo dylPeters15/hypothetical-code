@@ -9,12 +9,17 @@ export class ImportMatchConflictNewCheckerService {
   constructor(private rest: RestService) { }
 
   checkAll(input): Promise<any> {
+    console.log("Input: ",input);
     return new Promise((resolve, reject) => {
       var toReturn = {};
       var numFinished = 0;
       var totalNum = 6;
       this.checkSKUsMatchesConflictsNew(input['skus']).then(result => {
-        toReturn['skus'] = result;
+        toReturn['skus'] = result||{
+          new: [],
+          conflicts: [],
+          matches: []
+        };
         numFinished = numFinished + 1;
         if (numFinished == totalNum) {
           resolve(toReturn);
@@ -23,7 +28,11 @@ export class ImportMatchConflictNewCheckerService {
         reject(err);
       });
       this.checkIngredientsMatchesConflictsNew(input['ingredients']).then(result => {
-        toReturn['ingredients'] = result;
+        toReturn['ingredients'] = result||{
+          new: [],
+          conflicts: [],
+          matches: []
+        };
         numFinished = numFinished + 1;
         if (numFinished == totalNum) {
           resolve(toReturn);
@@ -32,7 +41,11 @@ export class ImportMatchConflictNewCheckerService {
         reject(err);
       });
       this.checkProductLinesMatchesConflictsNew(input['productlines']).then(result => {
-        toReturn['productlines'] = result;
+        toReturn['productlines'] = result||{
+          new: [],
+          conflicts: [],
+          matches: []
+        };
         numFinished = numFinished + 1;
         if (numFinished == totalNum) {
           resolve(toReturn);
@@ -41,7 +54,11 @@ export class ImportMatchConflictNewCheckerService {
         reject(err);
       });
       this.checkFormulasMatchesConflictsNew(input['formulas']).then(result => {
-        toReturn['formulas'] = result;
+        toReturn['formulas'] = result||{
+          new: [],
+          conflicts: [],
+          matches: []
+        };
         numFinished = numFinished + 1;
         if (numFinished == totalNum) {
           resolve(toReturn);
@@ -50,7 +67,11 @@ export class ImportMatchConflictNewCheckerService {
         reject(err);
       });
       this.checkFormulaReferences(input['formulas'], input['ingredients']).then(result => {
-        toReturn['formulaRefErrs'] = result;
+        toReturn['formulaRefErrs'] = result||{
+          new: [],
+          conflicts: [],
+          matches: []
+        };
         numFinished = numFinished + 1;
         if (numFinished == totalNum) {
           resolve(toReturn);
@@ -59,7 +80,11 @@ export class ImportMatchConflictNewCheckerService {
         reject(err);
       });
       this.checkSKUReferences(input['skus'], input['productlines'], input['formulas']).then(result => {
-        toReturn['skuRefErrs'] = result;
+        toReturn['skuRefErrs'] = result||{
+          new: [],
+          conflicts: [],
+          matches: []
+        };
         numFinished = numFinished + 1;
         if (numFinished == totalNum) {
           resolve(toReturn);
