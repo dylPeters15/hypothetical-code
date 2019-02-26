@@ -92,22 +92,14 @@ export class NewSkuDialogComponent implements OnInit {
 
   refreshData() {
      // Get formula name from id
-     // get object id from formula name
-     this.formula['formulaname']
-     this.rest.getFormulas(this.formula,0, 0, 1).subscribe(response => {
-      if (response.length == 0) {
-        console.log("couldnt find it");
-      } 
-      else {
-        this.formulaname = response[0]['formulaname'];
-      }
+
+     this.formulaname = this.formula['formulaname'];
     
      // update formula and scaling factor to display
     this.formulaDoesNotExist = this.formulaname == "";
     this.formulaExists = !this.formulaDoesNotExist;
     this.chosen_formula = this.formulaname;
     this.chosen_scaling_factor = this.formulascalingfactor;
-    });
   }
 
   closeDialog() {
