@@ -28,6 +28,10 @@ export class NewSkuDialogComponent implements OnInit {
   manufacturingrate: number = 0;
   comment: String = '';
 
+  formulaname: String = ''; // for displaying purposes.
+  formulaExists: Boolean = false; // for displaying purposes.
+
+
   chosen_formula: String
   chosen_scaling_factor: Number;
   
@@ -52,8 +56,9 @@ export class NewSkuDialogComponent implements OnInit {
     this.comment = this.data.present_comment;
 
     // update formula and scaling factor to display
-    this.chosen_formula = this.formula;
-    this.chosen_scaling_factor = this.chosen_scaling_factor;
+    this.formulaExists = this.formulaname != "";
+    this.chosen_formula = this.formulaname;
+    this.chosen_scaling_factor = this.formulascalingfactor;
 
     // edit == true if sku is being modified, false if a new sku is being created
     if (this.edit == true)
@@ -66,6 +71,13 @@ export class NewSkuDialogComponent implements OnInit {
       console.log("setting sku to new");
       this.dialog_title = "Create New Sku";
     }
+  }
+
+  refreshData() {
+    // update formula and scaling factor to display
+    this.formulaExists = this.formulaname != "";
+    this.chosen_formula = this.formulaname;
+    this.chosen_scaling_factor = this.formulascalingfactor;
   }
 
   closeDialog() {
@@ -107,7 +119,9 @@ export class NewSkuDialogComponent implements OnInit {
         } 
         else {
           this.formula = response[0]['formulanumber'];
+          this.formulaname = response[0]['formulaname'];
         }
+        this.refreshData();
         });
         });
       }
@@ -148,5 +162,6 @@ export class NewSkuDialogComponent implements OnInit {
          this.closeDialog();
        });
     }
+    this.refreshData();
   }
 }
