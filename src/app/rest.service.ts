@@ -20,7 +20,7 @@ export class RestService {
   constructor(private http: HttpClient) { }
 
   ///////////////////// Utilities /////////////////////
-  private generateHeaderWithFilterSchema(andVsOr?: AndVsOr, optionsIn?: any) {
+  private generateHeaderWithFilterSchema(andVsOr?: AndVsOr, optionsIn?: any, limit?: number) {
     if (optionsIn && !(andVsOr == AndVsOr.AND || andVsOr == AndVsOr.OR)) {
       throw Error("If you are passing non-null options to the rest call you must pass a non-null value specifying AND vs OR.");
     }
@@ -30,18 +30,24 @@ export class RestService {
       'token': auth.getToken()
     };
 
-    var filterSchema = {};
-    filterSchema[andVsOr] = [];
-    
-    for (let key of Object.keys(optionsIn)) {
-      if (optionsIn[key]) {
-        var FilterToAdd = {};
-        FilterToAdd[key.toLowerCase()] = optionsIn[key];
-        filterSchema[andVsOr].push(FilterToAdd);
+    headersOptions['andvsor'] = AndVsOr.OR;
+    headersOptions['andorclause'] = [];
+    if (limit) {
+      headersOptions['limit'] = JSON.stringify(limit);
+    }
+    if (andVsOr && optionsIn) {
+      headersOptions['andvsor'] = andVsOr;
+      for (let key of Object.keys(optionsIn)) {
+        if (optionsIn[key]) {
+          var FilterToAdd = {};
+          FilterToAdd[key.toLowerCase()] = optionsIn[key];
+          headersOptions['andorclause'].push(FilterToAdd);
+        }
       }
     }
 
-    headersOptions['filterschema'] = JSON.stringify(filterSchema);
+    headersOptions['andvsor'] = JSON.stringify(headersOptions['andvsor']);
+    headersOptions['filterschema'] = JSON.stringify(headersOptions['filterschema']);
     let httpHeaders: HttpHeaders = new HttpHeaders(headersOptions);
     let httpOptions = {
       headers: httpHeaders
@@ -55,9 +61,8 @@ export class RestService {
       username: username,
       usernameregex: usernameregex,
       admin: admin,
-      localuser: localuser,
-      limit: limit
-    })).toPromise();
+      localuser: localuser
+    }, limit)).toPromise();
   }
 
   createUser(username: string, password: string, admin: boolean): Promise<any> {
@@ -78,14 +83,14 @@ export class RestService {
       this.generateHeaderWithFilterSchema(andVsOr, {
         username: username,
         localuser: localuser
-      })).toPromise();
+      }, 1)).toPromise();
   }
 
   deleteUser(andVsOr: AndVsOr, username: string, localuser: boolean): Promise<any> {
     return this.http.delete(endpoint + 'users', this.generateHeaderWithFilterSchema(andVsOr, {
       username: username,
       localuser: localuser
-    })).toPromise();
+    }, 1)).toPromise();
   }
 
   ///////////////////// formulas /////////////////////
@@ -95,9 +100,8 @@ export class RestService {
       formulanameregex: formulanameregex,
       formulanumber: formulanumber,
       ingredientid: ingredientid,
-      skuid: skuid,
-      limit: limit
-    })).toPromise();
+      skuid: skuid
+    }, limit)).toPromise();
   }
 
   createFormula(andVsOr: AndVsOr, formulaname: String, formulanumber: Number, ingredientsandquantities: any[], comment: String): Promise<any> {
@@ -119,13 +123,13 @@ export class RestService {
     },
       this.generateHeaderWithFilterSchema(andVsOr, {
         formulaname: oldname
-      })).toPromise();
+      }, 1)).toPromise();
   }
 
   deleteFormula(andVsOr: AndVsOr, formulanumber: number): Promise<any> {
     return this.http.delete(endpoint + "formulas", this.generateHeaderWithFilterSchema(andVsOr, {
       formulanumber: formulanumber
-    })).toPromise();
+    }, 1)).toPromise();
   }
 
   ///////////////////// skus /////////////////////
@@ -137,9 +141,8 @@ export class RestService {
       skunumber: skuNumber,
       caseupcnumber: caseUpcNumber,
       unitupcnumber: unitUpcNumber,
-      formula: formula,
-      limit: limit
-    })).toPromise();
+      formula: formula
+    }, limit)).toPromise();
   }
 
   createSku(skuname: String, skunumber: number,
@@ -177,13 +180,13 @@ export class RestService {
     },
       this.generateHeaderWithFilterSchema(andVsOr, {
         skuname: oldSkuName
-      })).toPromise();
+      }, 1)).toPromise();
   }
 
   deleteSku(andVsOr: AndVsOr, skuName: String): Promise<any> {
     return this.http.delete(endpoint + "skus", this.generateHeaderWithFilterSchema(andVsOr, {
       skuName: skuName
-    })).toPromise();
+    }, 1)).toPromise();
   }
 
 
@@ -192,9 +195,8 @@ export class RestService {
     return this.http.get(endpoint + "ingredients", this.generateHeaderWithFilterSchema(andVsOr, {
       ingredientname: ingredientname,
       ingredientnameregex: ingredientnameregex,
-      ingredientnumber: ingredientnumber,
-      limit: limit
-    })).toPromise();
+      ingredientnumber: ingredientnumber
+    }, limit)).toPromise();
   }
 
   createIngredient(ingredientname: String, ingredientnumber: number,
@@ -226,13 +228,13 @@ export class RestService {
     },
       this.generateHeaderWithFilterSchema(andVsOr, {
         ingredientname: ingredientname
-      })).toPromise();
+      }, 1)).toPromise();
   }
 
   deleteIngredient(andVsOr: AndVsOr, ingredientname: String): Promise<any> {
     return this.http.delete(endpoint + "ingredients", this.generateHeaderWithFilterSchema(andVsOr, {
       ingredientname: ingredientname
-    })).toPromise();
+    }, 1)).toPromise();
   }
 
 
@@ -240,9 +242,8 @@ export class RestService {
   getProductLines(andVsOr: AndVsOr, productlinename: String, productlinenameregex: String, limit: number): Promise<any> {
     return this.http.get(endpoint + "product_lines", this.generateHeaderWithFilterSchema(andVsOr, {
       productlinename: productlinename,
-      productlinenameregex: productlinenameregex,
-      limit: limit
-    })).toPromise();
+      productlinenameregex: productlinenameregex
+    }, limit)).toPromise();
   }
 
   createProductLine(productlinename: String, skus: any[]): Promise<any> {
@@ -260,13 +261,13 @@ export class RestService {
     },
       this.generateHeaderWithFilterSchema(andVsOr, {
         productlinename: productlinename
-      })).toPromise();
+      }, 1)).toPromise();
   }
 
   deleteProductLine(andVsOr: AndVsOr, productlinename: String): Promise<any> {
     return this.http.delete(endpoint + "product_lines", this.generateHeaderWithFilterSchema(andVsOr, {
       productlinename: productlinename
-    })).toPromise();
+    }, 1)).toPromise();
   }
 
   ///////////////////// Manufacturing Goals /////////////////////
@@ -275,9 +276,8 @@ export class RestService {
       owner: username,
       enabled: enabled,
       goalname: goalname,
-      goalnameregex: goalnameregex,
-      limit: limit
-    })).toPromise();
+      goalnameregex: goalnameregex
+    }, limit)).toPromise();
   }
 
   getUserName(): Promise<any> {
@@ -315,7 +315,7 @@ export class RestService {
     },
       this.generateHeaderWithFilterSchema(andVsOr, {
         goalname: goalname
-      })).toPromise();
+      }, 1)).toPromise();
   }
 
 
@@ -331,9 +331,8 @@ export class RestService {
   getActivities(andVsOr: AndVsOr, startdate: Date, line: string, limit: number): Promise<any> {
     return this.http.get(endpoint + "manufacturing-activities", this.generateHeaderWithFilterSchema(andVsOr, {
       startdate: startdate,
-      line: line,
-      limit: limit
-    })).toPromise();
+      line: line
+    }, limit)).toPromise();
   }
 
   createActivity(skuid: number, numcases: number, calculatedhours: number, sethours: number, startdate: Date, line: number): Promise<any> {
@@ -360,13 +359,13 @@ export class RestService {
       numcases: numcases,
       calculatedhours: calculatedhours,
       startdate: startdate
-    })).toPromise();
+    }, 1)).toPromise();
   }
 
   deleteActivity(andVsOr: AndVsOr, activityId: string): Promise<any> {
     return this.http.delete(endpoint + "manufacturing-activities", this.generateHeaderWithFilterSchema(andVsOr, {
       _id: activityId
-    })).toPromise();
+    }, 1)).toPromise();
   }
 
   ///////////////////// Manufacturing Lines /////////////////////
@@ -375,9 +374,8 @@ export class RestService {
       linename: linename,
       linenameregex: linenameregex,
       shortname: shortname,
-      shortnameregex: shortnameregex,
-      limit: limit
-    })).toPromise();
+      shortnameregex: shortnameregex
+    }, limit)).toPromise();
   }
 
   createLine(linename: String, shortname: String, skus: [], comment: String): Promise<any> {
@@ -397,13 +395,13 @@ export class RestService {
       comment: comment
     }, this.generateHeaderWithFilterSchema(andVsOr, {
       linename: linename
-    })).toPromise();
+    }, 1)).toPromise();
   }
 
   deleteLine(andVsOr: AndVsOr, linename: String): Promise<any> {
     return this.http.delete(endpoint + 'manufacturing-lines', this.generateHeaderWithFilterSchema(andVsOr, {
       linename: linename
-    })).toPromise();
+    }, 1)).toPromise();
   }
 
   ///////////////////// Login /////////////////////
