@@ -9,14 +9,14 @@ import {COMMA, ENTER} from '@angular/cdk/keycodes';
 
 @Component({
   selector: 'app-choose-product-line-dialog',
-  templateUrl: './new-choose-product-line-dialog.component.html',
-  styleUrls: ['./new-choose-product-line-dialog.component.css']
+  templateUrl: './choose-product-line-dialog.component.html',
+  styleUrls: ['./choose-product-line-dialog.component.css']
 })
 
 export class ChooseProductLineDialogComponent implements OnInit {
 
   dialog_title: string;
-  edit: Boolean;
+  //edit: Boolean;
   visible = true;
   selectable = true;
   removeable = true;
@@ -31,7 +31,7 @@ export class ChooseProductLineDialogComponent implements OnInit {
   productLineName: string;
   productLineId: any;
 
-  @ViewChild('productlineInput') productLineInput: ElementRef<HTMLInputElement>;
+  @ViewChild('productLineInput') productLineInput: ElementRef<HTMLInputElement>;
   @ViewChild('auto') matAutocomplete: MatAutocomplete;
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: any, private dialogRef: MatDialogRef<ChooseProductLineDialogComponent>, public rest:RestService, private snackBar: MatSnackBar) {
@@ -41,22 +41,24 @@ export class ChooseProductLineDialogComponent implements OnInit {
    }
 
   ngOnInit() {
-    console.log("in init fam");
-    this.edit = this.data.edit;
-    this.productLineName = this.data.present_name;
-    console.log("edit: " + this.edit);
-    console.log("productLineName: " + this.productLineName);
+    console.log("in init for pL. ");
+    //this.edit = this.data.edit;
+    //this.productLineName = this.data.present_name;
+    //console.log("edit: " + this.edit);
+    //console.log("productLineName: " + this.productLineName);
 
 
     // edit == true if product line is being modified, false if a new product line is being created
-    if (this.edit == true)
-    {
-      this.dialog_title = "Change Product Line";
-    }
-    else this.dialog_title = "Add Product Line";
+    //if (this.edit == true)
+    //{
+     // this.dialog_title = "Change Product Line";
+    //}
+    //else this.dialog_title = "Add Product Line";
+    this.dialog_title = "Select Product Line";
 
     this.rest.getProductLines('','.*',5,).subscribe(response => {
       this.productLineList = response;
+      console.log("hey!!! my response now is ", response);
       this.productLineList.forEach(element => {
         this.productLineNameList.push(element.productlinename)
       });

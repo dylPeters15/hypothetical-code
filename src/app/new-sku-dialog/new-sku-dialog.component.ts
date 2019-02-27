@@ -6,6 +6,7 @@ import {MatSnackBar} from '@angular/material';
 import {MAT_DIALOG_DATA} from '@angular/material';
 import { NewSkuFormulaComponent } from '../new-sku-formula/new-sku-formula.component';
 import { NewFormulaDialogComponent } from '../new-formula-dialog/new-formula-dialog.component';
+import { ChooseProductLineDialogComponent } from '../choose-product-line-dialog/choose-product-line-dialog.component';
 import { LineToLineMappedSource } from 'webpack-sources';
 
 
@@ -42,7 +43,7 @@ export class NewSkuDialogComponent implements OnInit {
   chosen_scaling_factor: Number;
   
   newFormulaDialogRef: MatDialogRef<NewSkuFormulaComponent>;
-  chooseProductLineRef: MatDialogRef<ChooseProductLineComponent>;
+  chooseProductLineRef: MatDialogRef<ChooseProductLineDialogComponent>;
 
   newDialogRef: MatDialogRef<NewFormulaDialogComponent>;
 
@@ -181,15 +182,17 @@ export class NewSkuDialogComponent implements OnInit {
 
     addToProductLine()
     {
+      console.log("about to full send");
       const dialogConfig = new MatDialogConfig();
-      //dialogConfig.data = {edit: edit, present_name: formulaname, present_scalingFactor: scalingFactor};
-      this.chooseProductLineRef = this.dialog.open(ChooseProductLineComponent, dialogConfig);
+      console.log("full fucking send");
+
+      //dialogConfig.data = {edit: edit, present_name: formulaname};
+      this.chooseProductLineRef = this.dialog.open(ChooseProductLineDialogComponent, dialogConfig);
       //this.newIngredientDialogRef.componentInstance.amount = this.return_amount;
       //this.newIngredientDialogRef.componentInstance.ingredientNameList = this.ingredientNameList;
       this.chooseProductLineRef.afterClosed().subscribe(event => {
       // grab the new formula values
       var new_product_line_name = this.chooseProductLineRef.componentInstance.productLineName;
-      this.formulascalingfactor = this.chooseProductLineRef.componentInstance.scalingFactor;
 
       // get object id from formula name
       this.rest.getProductLines(new_product_line_name,"", 1).subscribe(response => {
@@ -200,14 +203,9 @@ export class NewSkuDialogComponent implements OnInit {
                });
         } 
         else {
-
-
           // NOW THAT WE HAVE THE PRODUCT LineToLineMappedSource, ADD TO ITS SKUS ON SAVE
-          console.log("successfully added to product line");
-          this.formula = response[0]['formulanumber'];
-          this.formulaname = response[0]['formulaname'];
-          console.log("name: " + this.formulaname);
-          console.log("num: " + this.formulascalingfactor);
+          console.log("OIIII!!!! PRODUCT LINE TO ADD TO: " + response['productlinename']);
+          console.log("OIIII!!!! PRODUCT LINE TO ADD TO obj: " + response);
         }
         this.refreshData();
         });

@@ -41,7 +41,7 @@ export class NewSkuFormulaComponent implements OnInit {
    }
 
   ngOnInit() {
-    console.log("in init fam");
+    console.log("in init fam. data: " + this.data.edit);
     this.edit = this.data.edit;
     this.scalingFactor = this.data.present_scalingFactor;
     this.formulaName = this.data.present_name;

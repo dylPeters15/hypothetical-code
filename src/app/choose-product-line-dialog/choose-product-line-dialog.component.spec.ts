@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { NewSkuFormulaComponent } from './new-sku-formula.component';
+import { ChooseProductLineDialogComponent } from './choose-product-line-dialog.component';
 
-describe('NewSkuFormulaComponent', () => {
-  let component: NewSkuFormulaComponent;
-  let fixture: ComponentFixture<NewSkuFormulaComponent>;
+describe('ChooseProductLineDialogComponent', () => {
+  let component: ChooseProductLineDialogComponent;
+  let fixture: ComponentFixture<ChooseProductLineDialogComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ NewSkuFormulaComponent ]
+      declarations: [ ChooseProductLineDialogComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(NewSkuFormulaComponent);
+    fixture = TestBed.createComponent(ChooseProductLineDialogComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
