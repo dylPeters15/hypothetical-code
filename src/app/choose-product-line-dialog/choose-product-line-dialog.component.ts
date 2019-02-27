@@ -31,7 +31,7 @@ export class ChooseProductLineDialogComponent implements OnInit {
   productLineName: string;
   productLineId: any;
 
-  @ViewChild('productlineInput') productlineInput: ElementRef<HTMLInputElement>;
+  @ViewChild('productlineInput') productLineInput: ElementRef<HTMLInputElement>;
   @ViewChild('auto') matAutocomplete: MatAutocomplete;
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: any, private dialogRef: MatDialogRef<ChooseProductLineDialogComponent>, public rest:RestService, private snackBar: MatSnackBar) {
@@ -48,7 +48,7 @@ export class ChooseProductLineDialogComponent implements OnInit {
     console.log("productLineName: " + this.productLineName);
 
 
-    // edit == true if formula is being modified, false if a new formula is being created
+    // edit == true if product line is being modified, false if a new product line is being created
     if (this.edit == true)
     {
       this.dialog_title = "Change Product Line";
@@ -58,7 +58,7 @@ export class ChooseProductLineDialogComponent implements OnInit {
     this.rest.getProductLines('','.*',5,).subscribe(response => {
       this.productLineList = response;
       this.productLineList.forEach(element => {
-        this.productLineNameList.push(element.formulaname)
+        this.productLineNameList.push(element.productlinename)
       });
     });
   }
@@ -73,21 +73,21 @@ export class ChooseProductLineDialogComponent implements OnInit {
     this.dialogRef.close();
   }
 
-  addFormula() {
+  addProductLine() {
     this.closeDialog()
   }
 
   add(event: MatChipInputEvent): void {
-    // Add formula only when MatAutocomplete is not open
+    // Add product line only when MatAutocomplete is not open
     // To make sure this does not conflict with OptionSelected Event
     if (!this.matAutocomplete.isOpen) {
       const input = event.input;
       const value = event.value;
 
-      // Add our formula
+      // Add our product line
       if ((value || '').trim()) {
-        this.formulaName = value.trim();
-        this.selectedFormulaNames.push(value.trim());
+        this.productLineName = value.trim();
+        this.selectedProducttLineNames.push(value.trim());
       }
 
       // Reset the input value
@@ -95,37 +95,37 @@ export class ChooseProductLineDialogComponent implements OnInit {
         input.value = '';
       }
 
-      this.formulaCtrl.setValue(null);
+      this.productLineCtrl.setValue(null);
     }
   }
 
-  remove(formula: string): void {
-    this.formulaName = "";
-    const index = this.selectedFormulaNames.indexOf(formula);
+  remove(productline: string): void {
+    this.productLineName = "";
+    const index = this.selectedProducttLineNames.indexOf(productline);
 
     if (index >= 0) {
-      this.selectedFormulaNames.splice(index, 1);
+      this.selectedProducttLineNames.splice(index, 1);
     }
   }
   
   selected(event: MatAutocompleteSelectedEvent): void {
-    this.formulaName = event.option.viewValue;
-    this.selectedFormulaNames.push(event.option.viewValue);
+    this.productLineName = event.option.viewValue;
+    this.selectedProducttLineNames.push(event.option.viewValue);
 
-    this.rest.getFormulas(event.option.viewValue, 0,0,5).subscribe(response => {
+    this.rest.getProductLines(event.option.viewValue, "", 5).subscribe(response => {
       var i;
       for(i = 0; i<response.length; i++){
-        this.formulaId = {formula: response[i]['_id']};
+        this.productLineId = {productline: response[i]['_id']};
       }
     });
-    this.formulaInput.nativeElement.value = '';
-    this.formulaCtrl.setValue(null);
+    this.productLineInput.nativeElement.value = '';
+    this.productLineCtrl.setValue(null);
   }
 
   private _filter(value: string): string[] {
     const filterValue = value.toLowerCase();
 
-    return this.formulaNameList.filter(formula => formula.toLowerCase().indexOf(filterValue) === 0);
+    return this.productLineNameList.filter(productline => productline.toLowerCase().indexOf(filterValue) === 0);
   }
 
 }

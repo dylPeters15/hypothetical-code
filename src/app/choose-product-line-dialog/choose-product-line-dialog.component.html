@@ -6,17 +6,17 @@
       <mat-form-field class="example-chip-list">
         <mat-chip-list #chipList>
           <mat-chip
-            *ngFor="let formula of selectedFormulaNames"
+            *ngFor="let productline of selectedProductLineNames"
             [selectable]="selectable"
             [removable]="removable"
-            (removed)="remove(formula)">
-            {{formula}}
+            (removed)="remove(productline)">
+            {{productline}}
             <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
           </mat-chip>
           <input
-            placeholder="Enter Formula Name"
-            #formulaInput
-            [formControl]="formulaCtrl"
+            placeholder="Enter Product Line Name"
+            #productLineInput
+            [formControl]="productLineCtrl"
             [matAutocomplete]="auto"
             [matChipInputFor]="chipList"
             [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
@@ -24,8 +24,8 @@
             (matChipInputTokenEnd)="add($event)">
         </mat-chip-list>
         <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
-          <mat-option *ngFor="let formula of filteredFormulas | async" [value]="formula">
-            {{formula}}
+          <mat-option *ngFor="let productline of filteredProductLines | async" [value]="productline">
+            {{productline}}
           </mat-option>
         </mat-autocomplete>
       </mat-form-field>
@@ -35,5 +35,5 @@
 </mat-dialog-content>
 <mat-dialog-actions align="center">
   <button class="mat-raised-button" (click)="closeDialog()">Cancel</button>
-  <button class="mat-raised-button" (click)="addFormula()" [disabled]="username==''" color=orange >Add Formula</button>
+  <button class="mat-raised-button" (click)="addProductLine)" [disabled]="username==''" color=orange >Add Product Line</button>
 </mat-dialog-actions>
