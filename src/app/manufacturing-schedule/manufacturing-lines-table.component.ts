@@ -78,14 +78,18 @@ export class ManufacturingLinesTableComponent implements ControlValueAccessor {
         let activitiesOnLine = event.container.data;
         this.rest.getLine('','',event.container.id, event.container.id, 1).subscribe(response => {
           let currentLine = response[0];
+          var numActivitiesFinished = 0;
           activitiesOnLine.forEach(activity => {
             this.rest.modifyActivity(activity['sku']['_id'], activity['sku']['_id'], activity['numcases'],activity['calculatedhours'],activity['sethours'], activity['startdate'], currentLine['_id']).subscribe(response => {
               console.log("Adding activity " + activity['sku']['skuname'] + " to line " + event.container.id);
+              numActivitiesFinished++;
+              if (numActivitiesFinished >= activitiesOnLine.length) {
+                window.location.replace(window.location.href);
+              }
             })
           })
           
         })
-        window.location.replace(window.location.href)
         
     }
   }
