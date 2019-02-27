@@ -1,37 +1,21 @@
 const database = require('./database.js');
 
-   
-function getGoals(username, enabled, goalname, goalnameregex, limit) {
-    username = username || null;
-    goalname = goalname || "";
-    goalnameregex = goalnameregex || "";
-    limit = limit || database.defaultSearchLimit;
-    return new Promise((resolve, reject) => {
-        var filterSchema = {
-            $or: [
-                {enabled: enabled},
-                {owner: username},
-                {goalname: goalname},
-                {goalname: {$regex: goalnameregex}}
 
-            ]
-        }
-        database.goalsModel.find(filterSchema).limit(limit).deepPopulate('activities.activity.sku.formula.ingredientsandquantities.ingredient').exec(function(err,results) {
-            if(results != undefined && results != null){
-              resolve(results);
-            }
-            else {
+function getGoals(filterSchema, limit, optionsDict) {
+    return new Promise((resolve, reject) => {
+        database.goalsModel.find(filterSchema).limit(limit).deepPopulate('activities.activity.sku.formula.ingredientsandquantities.ingredient').exec(function (err, results) {
+            if (err) {
                 reject(Error(err));
-            }  
+            } else {
+                resolve(results);
+            }
         });
-    })
-     
-    
+    });
 }
 
-function createGoal(goalObject) {
+function createGoal(newObject) {
     return new Promise((resolve, reject) => {
-        let goal = new database.goalsModel(goalObject);
+        let goal = new database.goalsModel(newObject);
         goal.save().then(response => {
             resolve(response);
         }).catch(err => {
@@ -40,13 +24,9 @@ function createGoal(goalObject) {
     });
 }
 
-function modifyGoal(goalname, newGoalObject) {
-    console.log("NEW OBJ: " + JSON.stringify(newGoalObject))
+function modifyGoal(filterSchema, newObject, optionsDict) {
     return new Promise((resolve, reject) => {
-        var filterSchema = {
-            goalname: goalname
-        }
-        database.goalsModel.updateOne(filterSchema, newGoalObject, (err, response) => {
+        database.goalsModel.updateOne(filterSchema, newObject, (err, response) => {
             if (err) {
                 reject(Error(err));
                 return
@@ -56,11 +36,8 @@ function modifyGoal(goalname, newGoalObject) {
     });
 }
 
-function deleteGoal(name) {
+function deleteGoal(filterSchema, optionsDict) {
     return new Promise((resolve, reject) => {
-        var filterSchema = {
-            goalname: name,
-        }
         database.goalsModel.deleteOne(filterSchema, (err, response) => {
             if (err) {
                 reject(Error(err));

@@ -1,22 +1,21 @@
 const database = require('./database.js');
 const mongoose = require('mongoose');
 
-function getFormulas(filterSchema) {
-    console.log("get formula.");
+function getFormulas(filterSchema, limit, optionsDict) {
     return new Promise((resolve, reject) => {
-        database.formulaModel.find(filterSchema).limit(limit).populate('ingredientsandquantities.ingredient').exec(function(err, formulas) {
-            if(err){
+        database.formulaModel.find(filterSchema).limit(limit).populate('ingredientsandquantities.ingredient').exec(function (err, formulas) {
+            if (err) {
                 reject(Error(err));
-              } else {
+            } else {
                 resolve(formulas);
-              }  
+            }
         });
     });
 }
 
-function createFormula(newFormulaObject) {
+function createFormula(newObject) {
     return new Promise((resolve, reject) => {
-        let formula = new database.formulaModel(newFormulaObject);
+        let formula = new database.formulaModel(newObject);
         formula.save().then(response => {
             resolve(response);
         }).catch(err => {
@@ -25,9 +24,9 @@ function createFormula(newFormulaObject) {
     });
 }
 
-function modifyFormula(filterSchema, newFormulaObject) {
+function modifyFormula(filterSchema, newObject, optionsDict) {
     return new Promise((resolve, reject) => {
-        database.formulaModel.updateOne(filterSchema, newFormulaObject, (err, response) => {
+        database.formulaModel.updateOne(filterSchema, newObject, (err, response) => {
             if (err) {
                 reject(Error(err));
                 return
@@ -37,7 +36,7 @@ function modifyFormula(filterSchema, newFormulaObject) {
     });
 }
 
-function deleteFormula(filterSchema) {
+function deleteFormula(filterSchema, optionsDict) {
     return new Promise(function (resolve, reject) {
         database.formulaModel.deleteOne(filterSchema, (err, response) => {
             if (err) {
@@ -46,7 +45,7 @@ function deleteFormula(filterSchema) {
             }
             resolve(response);
         });
-    });    
+    });
 }
 
 // function createUniqueFormulaNumber() {
@@ -65,8 +64,8 @@ function deleteFormula(filterSchema) {
 //                 if (result != null) {
 //                     numFound = false;
 //                 }
-             
-                 
+
+
 //             });
 //             resolve(newformulanumber);  
 //         });

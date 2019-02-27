@@ -55,67 +55,7 @@ function generateToken() {
     });
 }
 
-function getUsers(filterSchema) {
-    return new Promise((resolve, reject) => {
-        database.userModel.find(filterSchema).limit(limit).exec((err, users) => {
-            if (err) {
-                reject(Error(err));
-                return;
-            }
-            resolve(users);
-        });
-    });
-}
 
-function createUser(newUserObject) {
-    return new Promise((resolve, reject) => {
-        generateToken().then(token => {
-            newUserObject['token'] = token;
-            if (newUserObject['localuser']) {
-                let saltAndHash = generateSaltAndHash(password);
-                newUserObject['salt'] = saltAndHash.salt;
-                newUserObject['saltedhashedpassword'] = saltAndHash.hash;
-            }
-            let user = new database.userModel(userObject);
-            user.save().then(response => {
-                resolve(response);
-            }).catch(err => {
-                reject(Error(err));
-            });
-        }).catch(err => {
-            reject(Error(err));
-        });
-    });
-}
-
-function modifyUser(filterSchema, newUserObject) {
-    return new Promise((resolve, reject) => {
-        if (newUserObject['localuser'] && newUserObject['password'] !== "") {
-            var saltAndHash = generateSaltAndHash(newPassword);
-            newUserObject['salt'] = saltAndHash.salt;
-            newUserObject['saltedhashedpassword'] = saltAndHash.hash;
-        }
-        database.userModel.updateOne(filterSchema, updateObject, (err, response) => {
-            if (err) {
-                reject(Error(err));
-                return
-            }
-            resolve(response);
-        });
-    });
-}
-
-function deleteUser(filterSchema) {
-    return new Promise((resolve, reject) => {
-        database.userModel.deleteOne(filterSchema, (err, response) => {
-            if (err) {
-                reject(Error(err));
-                return
-            }
-            resolve(response);
-        });
-    });
-}
 
 function createFederatedUser(netidtoken, clientid) {
     return new Promise((resolve, reject) => {
@@ -180,6 +120,68 @@ function getLoginInfoForFederatedUser(netidtoken, clientid) {
             });
         }).catch(err => {
             reject(Error(err));
+        });
+    });
+}
+
+function getUsers(filterSchema, limit, optionsDict) {
+    return new Promise((resolve, reject) => {
+        database.userModel.find(filterSchema).limit(limit).exec((err, users) => {
+            if (err) {
+                reject(Error(err));
+                return;
+            }
+            resolve(users);
+        });
+    });
+}
+
+function createUser(newObject) {
+    return new Promise((resolve, reject) => {
+        generateToken().then(token => {
+            newObject['token'] = token;
+            if (newObject['localuser']) {
+                let saltAndHash = generateSaltAndHash(password);
+                newObject['salt'] = saltAndHash.salt;
+                newObject['saltedhashedpassword'] = saltAndHash.hash;
+            }
+            let user = new database.userModel(userObject);
+            user.save().then(response => {
+                resolve(response);
+            }).catch(err => {
+                reject(Error(err));
+            });
+        }).catch(err => {
+            reject(Error(err));
+        });
+    });
+}
+
+function modifyUser(filterSchema, newObject, optionsDict) {
+    return new Promise((resolve, reject) => {
+        if (optionsDict['localuser'] && optionsDict['password'] !== "") {
+            var saltAndHash = generateSaltAndHash(newPassword);
+            newObject['salt'] = saltAndHash.salt;
+            newObject['saltedhashedpassword'] = saltAndHash.hash;
+        }
+        database.userModel.updateOne(filterSchema, newObject, (err, response) => {
+            if (err) {
+                reject(Error(err));
+                return
+            }
+            resolve(response);
+        });
+    });
+}
+
+function deleteUser(filterSchema, optionsDict) {
+    return new Promise((resolve, reject) => {
+        database.userModel.deleteOne(filterSchema, (err, response) => {
+            if (err) {
+                reject(Error(err));
+                return
+            }
+            resolve(response);
         });
     });
 }

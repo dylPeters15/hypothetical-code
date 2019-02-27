@@ -1,38 +1,21 @@
 const database = require('./database.js');
 
-   
-function getLine(linename, linenameregex, shortname, shortnameregex, limit) {
-    linename = linename || "";
-    shortname = shortname || "";
-    shortnameregex = shortnameregex || "$a";
-    linenameregex = linenameregex || "$a";
-    limit = limit || database.defaultSearchLimit;
+
+function getLine(filterSchema, limit, optionsDict) {
     return new Promise((resolve, reject) => {
-        var filterSchema = {
-            $or: [
-                {linename: linename},
-                {linename: {$regex: linenameregex}},
-                {shortname: shortname},
-                {shortname: {$regex: shortnameregex}}
-            ]
-        }
-        database.manufacturingLineModel.find(filterSchema).limit(limit).populate('skus.sku').exec(function(err,results) {
-            if(err){
+        database.manufacturingLineModel.find(filterSchema).limit(limit).populate('skus.sku').exec(function (err, results) {
+            if (err) {
                 reject(Error(err));
-            }
-            else {
+            } else {
                 resolve(results);
-            }  
+            }
         });
-    })
-     
-    
+    });
 }
 
-function createLine(lineObject) {
-    console.log("OBJ: " + JSON.stringify(lineObject))
+function createLine(newObject) {
     return new Promise((resolve, reject) => {
-        let newLine = new database.manufacturingLineModel(lineObject);
+        let newLine = new database.manufacturingLineModel(newObject);
         newLine.save().then(response => {
             resolve(response);
         }).catch(err => {
@@ -41,12 +24,9 @@ function createLine(lineObject) {
     });
 }
 
-function modifyLine(linename, newLineObject) {
+function modifyLine(filterSchema, newObject, optionsDict) {
     return new Promise((resolve, reject) => {
-        var filterSchema = {
-            linename: linename
-        }
-        database.manufacturingLineModel.updateOne(filterSchema, newLineObject, (err, response) => {
+        database.manufacturingLineModel.updateOne(filterSchema, newObject, (err, response) => {
             if (err) {
                 reject(Error(err));
                 return
@@ -56,11 +36,8 @@ function modifyLine(linename, newLineObject) {
     });
 }
 
-function deleteLine(linename) {
+function deleteLine(filterSchema, optionsDict) {
     return new Promise((resolve, reject) => {
-        var filterSchema = {
-            linename: linename
-        }
         database.manufacturingLineModel.deleteOne(filterSchema, (err, response) => {
             if (err) {
                 reject(Error(err));
