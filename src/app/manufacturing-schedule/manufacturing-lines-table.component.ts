@@ -28,10 +28,6 @@ export class ManufacturingLinesTableComponent implements ControlValueAccessor {
   _value = '';
   stringified = '';
   activitiesExist: boolean = false;
-  startDate = new Date();
-  endDate = new Date();
-  startDateString = '';
-  endDateString = '';
   constructor(public rest: RestService, public dialog: MatDialog) { }
 
 
@@ -45,9 +41,6 @@ export class ManufacturingLinesTableComponent implements ControlValueAccessor {
       this.stringified = JSON.stringify(value);
       if(this._value['activities'].length > 0){
         this.activitiesExist = true;
-        this._value['activities'].forEach(element => {
-          this.calculateEndDate(element)
-        });
       }
     }
   }
@@ -78,70 +71,26 @@ export class ManufacturingLinesTableComponent implements ControlValueAccessor {
       //     });
       //   })
       // })
-      console.log(event)
       transferArrayItem(event.previousContainer.data,
                         event.container.data,
                         event.previousIndex,
                         event.currentIndex);
-        console.log('previous container id',event.previousContainer.id)
-        console.log('container id',event.container.id)
-        console.log('container skus',event.container.data)
         let activitiesOnLine = event.container.data;
         this.rest.getLine('','',event.container.id, event.container.id, 1).subscribe(response => {
           let currentLine = response[0];
-          console.log("LINE: " + JSON.stringify(currentLine))
           activitiesOnLine.forEach(activity => {
-            console.log(JSON.stringify(activity))
             this.rest.modifyActivity(activity['sku']['_id'], activity['sku']['_id'], activity['numcases'],activity['calculatedhours'],activity['sethours'], activity['startdate'], currentLine['_id']).subscribe(response => {
-              console.log("Adding activity " + activity['sku']['skuname'] + " to line " + event.container.id)
+              console.log("Adding activity " + activity['sku']['skuname'] + " to line " + event.container.id);
             })
-            console.log(activity)
-            this.calculateEndDate(activity);
           })
           
         })
+        window.location.replace(window.location.href)
         
-        // this.updateProductLine(event.previousContainer.id, 
-        //     event.previousContainer.id, event.previousContainer.data)
-        // this.updateProductLine(event.container.id,
-        //     event.container.id, event.container.data);
     }
   }
 
-  calculateEndDate(activity) {
-    this.startDate = new Date(activity['startdate'])
-    this.endDate = this.startDate;
-    let days = 0;
 
-    if(activity['sethours'] != null){
-      days = activity['sethours'] / 10
-    }
-    else{
-      days = activity['calculatedhours'] /10
-    }
-    this.endDate.setDate(this.endDate.getDate() + days);
-    // var duration = moment().isoWeekdayCalc(activity['startdate'],initialEndDate,[1,2,3,4,5]);
-    // if (duration > (initialEndDate-activity['startdate'])) {
-    //   this.endDate = new Date(Math.floor(duration - (initialEndDate-activity['startdate']) + (activity['sethours'] / 10)))
-    // }
-    // else {
-    //   this.endDate = new Date(duration + activity['startdate'])
-    // }
-
-    this.startDateString = this.startDate.getMonth()+1 + "/" + this.startDate.getDate() + "/" + this.startDate.getFullYear();
-    this.endDateString = this.endDate.getMonth()+1 + "/" + this.endDate.getDate() + "/" + this.endDate.getFullYear();
-
-    // var month = this.startDate.getUTCMonth() + 1; //months from 1-12
-    // var day = this.startDate.getUTCDate();
-    // var year = this.startDate.getUTCFullYear();
-    // this.startDateString = year + "/" + month + "/" + day;
-
-    // var month2 = this.endDate.getUTCMonth() + 1; //months from 1-12
-    // var day2 = this.endDate.getUTCDate();
-    // var year2 = this.endDate.getUTCFullYear();
-    // this.endDateString = year2 + "/" + month2 + "/" + day2;
-    // console.log(this.endDateString)
-  }
 
   updateActivity(activity, line) {
     return new Promise((resolve, reject) => {
