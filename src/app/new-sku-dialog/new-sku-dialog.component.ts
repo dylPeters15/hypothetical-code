@@ -126,6 +126,7 @@ export class NewSkuDialogComponent implements OnInit {
 
   addFormulaToSku(edit, formulaname, scalingFactor) {
     const dialogConfig = new MatDialogConfig();
+    console.log("About to go here. data sent: name: " + formulaname);
     dialogConfig.data = {edit: edit, present_name: formulaname, present_scalingFactor: scalingFactor};
     this.newFormulaDialogRef = this.dialog.open(NewSkuFormulaComponent, dialogConfig);
     //this.newIngredientDialogRef.componentInstance.amount = this.return_amount;
@@ -156,7 +157,14 @@ export class NewSkuDialogComponent implements OnInit {
       }
 
       addFormulaButton() {
-        this.addFormulaToSku(false, "", 0);
+        if(this.formulaname == "")
+        {
+          this.addFormulaToSku(false, "", 1.0); //new
+        }
+        else 
+        {
+          this.addFormulaToSku(true, this.formulaname, this.formulascalingfactor); //modifying
+        }        
     }
 
     newFormulaButton()

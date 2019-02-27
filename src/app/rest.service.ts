@@ -5,8 +5,8 @@ import { Observable } from 'rxjs';
 import { start } from 'repl';
 
 // const endpoint = 'https://vcm-8238.vm.duke.edu:8443/'; // Ben
-// const endpoint = 'https://vcm-8405.vm.duke.edu:8443/'; // Noah
-const endpoint = 'https://vcm-8205.vm.duke.edu:8443/'; // Prod
+ const endpoint = 'https://vcm-8405.vm.duke.edu:8443/'; // Noah
+//const endpoint = 'https://vcm-8205.vm.duke.edu:8443/'; // Prod
 // const endpoint = 'https://localhost:8443/'; // localhost
 
 @Injectable({
@@ -55,7 +55,6 @@ export class RestService {
 
   loginRequest(username, password, netidtoken?): Observable<any> {
     if (netidtoken) {
-
       return this.http.get(endpoint + 'login', {
         headers: new HttpHeaders({
           netidtoken: netidtoken,
