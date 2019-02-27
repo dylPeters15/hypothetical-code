@@ -83,14 +83,14 @@ export class RestService {
       this.generateHeaderWithFilterSchema(andVsOr, {
         username: username,
         localuser: localuser
-      }, 1)).toPromise();
+      })).toPromise();
   }
 
   deleteUser(andVsOr: AndVsOr, username: string, localuser: boolean): Promise<any> {
     return this.http.delete(endpoint + 'users', this.generateHeaderWithFilterSchema(andVsOr, {
       username: username,
       localuser: localuser
-    }, 1)).toPromise();
+    })).toPromise();
   }
 
   ///////////////////// formulas /////////////////////
@@ -123,13 +123,13 @@ export class RestService {
     },
       this.generateHeaderWithFilterSchema(andVsOr, {
         formulaname: oldname
-      }, 1)).toPromise();
+      })).toPromise();
   }
 
   deleteFormula(andVsOr: AndVsOr, formulanumber: number): Promise<any> {
     return this.http.delete(endpoint + "formulas", this.generateHeaderWithFilterSchema(andVsOr, {
       formulanumber: formulanumber
-    }, 1)).toPromise();
+    })).toPromise();
   }
 
   ///////////////////// skus /////////////////////
@@ -180,13 +180,13 @@ export class RestService {
     },
       this.generateHeaderWithFilterSchema(andVsOr, {
         skuname: oldSkuName
-      }, 1)).toPromise();
+      })).toPromise();
   }
 
   deleteSku(andVsOr: AndVsOr, skuName: String): Promise<any> {
     return this.http.delete(endpoint + "skus", this.generateHeaderWithFilterSchema(andVsOr, {
       skuName: skuName
-    }, 1)).toPromise();
+    })).toPromise();
   }
 
 
@@ -228,13 +228,13 @@ export class RestService {
     },
       this.generateHeaderWithFilterSchema(andVsOr, {
         ingredientname: ingredientname
-      }, 1)).toPromise();
+      })).toPromise();
   }
 
   deleteIngredient(andVsOr: AndVsOr, ingredientname: String): Promise<any> {
     return this.http.delete(endpoint + "ingredients", this.generateHeaderWithFilterSchema(andVsOr, {
       ingredientname: ingredientname
-    }, 1)).toPromise();
+    })).toPromise();
   }
 
 
@@ -261,13 +261,13 @@ export class RestService {
     },
       this.generateHeaderWithFilterSchema(andVsOr, {
         productlinename: productlinename
-      }, 1)).toPromise();
+      })).toPromise();
   }
 
   deleteProductLine(andVsOr: AndVsOr, productlinename: String): Promise<any> {
     return this.http.delete(endpoint + "product_lines", this.generateHeaderWithFilterSchema(andVsOr, {
       productlinename: productlinename
-    }, 1)).toPromise();
+    })).toPromise();
   }
 
   ///////////////////// Manufacturing Goals /////////////////////
@@ -315,7 +315,7 @@ export class RestService {
     },
       this.generateHeaderWithFilterSchema(andVsOr, {
         goalname: goalname
-      }, 1)).toPromise();
+      })).toPromise();
   }
 
 
@@ -359,13 +359,13 @@ export class RestService {
       numcases: numcases,
       calculatedhours: calculatedhours,
       startdate: startdate
-    }, 1)).toPromise();
+    })).toPromise();
   }
 
   deleteActivity(andVsOr: AndVsOr, activityId: string): Promise<any> {
     return this.http.delete(endpoint + "manufacturing-activities", this.generateHeaderWithFilterSchema(andVsOr, {
       _id: activityId
-    }, 1)).toPromise();
+    })).toPromise();
   }
 
   ///////////////////// Manufacturing Lines /////////////////////
@@ -395,13 +395,13 @@ export class RestService {
       comment: comment
     }, this.generateHeaderWithFilterSchema(andVsOr, {
       linename: linename
-    }, 1)).toPromise();
+    })).toPromise();
   }
 
   deleteLine(andVsOr: AndVsOr, linename: String): Promise<any> {
     return this.http.delete(endpoint + 'manufacturing-lines', this.generateHeaderWithFilterSchema(andVsOr, {
       linename: linename
-    }, 1)).toPromise();
+    })).toPromise();
   }
 
   ///////////////////// Login /////////////////////
