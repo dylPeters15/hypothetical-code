@@ -16,6 +16,7 @@ import { NewFormulaDialogComponent } from '../new-formula-dialog/new-formula-dia
 export class NewSkuDialogComponent implements OnInit {
 
   dialog_title: String;
+  submit_title: String;
   edit: Boolean;
   skuname: String = '';
   oldskuname: String = '';
@@ -68,11 +69,13 @@ export class NewSkuDialogComponent implements OnInit {
     {
       console.log("setting sku to modify");
       this.dialog_title = "Modify Sku";
+      this.submit_title = "Save Changes";
     }
     else 
     {
       console.log("setting sku to new");
       this.dialog_title = "Create New Sku";
+      this.submit_title = "Create";
     }
   }
 

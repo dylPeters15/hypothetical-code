@@ -58,5 +58,5 @@
 </mat-dialog-content>
 <mat-dialog-actions align="center">
   <button class="mat-raised-button" (click)="closeDialog()">Cancel</button>
-  <button class="mat-raised-button" (click)="createSku()" [disabled]="username==''" color="primary">Create</button>
+  <button class="mat-raised-button" (click)="createSku()" [disabled]="username==''" color="primary">{{ submit_title }}</button>
 </mat-dialog-actions>
