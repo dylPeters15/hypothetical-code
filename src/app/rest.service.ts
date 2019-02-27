@@ -1,7 +1,6 @@
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
-import { auth } from './auth.service'
-import { start } from 'repl';
+import { auth } from './auth.service';
 
 // const endpoint = 'https://vcm-8238.vm.duke.edu:8443/'; // Ben
 // const endpoint = 'https://vcm-8405.vm.duke.edu:8443/'; // Noah
@@ -9,8 +8,8 @@ import { start } from 'repl';
 const endpoint = 'https://localhost:8443/'; // localhost
 
 export enum AndVsOr {
-  AND= '$and',
-  OR= '$or'
+  AND = '$and',
+  OR = '$or'
 }
 
 @Injectable({
@@ -20,7 +19,7 @@ export class RestService {
 
   constructor(private http: HttpClient) { }
 
-  serverLocation: string = endpoint.substring(endpoint.indexOf("//")+2, endpoint.indexOf(":", endpoint.indexOf("//")));
+  serverLocation: string = endpoint.substring(endpoint.indexOf("//") + 2, endpoint.indexOf(":", endpoint.indexOf("//")));
 
   getClientID(): string {
     if (this.serverLocation == 'vcm-8238.vm.duke.edu') { // Ben
@@ -54,8 +53,8 @@ export class RestService {
     options = options || {};
     options['Content-Type'] = 'application/json';
     options['token'] = auth.getToken();
-    let header:HttpHeaders = new HttpHeaders(options);
-    
+    let header: HttpHeaders = new HttpHeaders(options);
+
     var headers = {
       andvsor: andVsOr
     };
@@ -112,8 +111,8 @@ export class RestService {
 
   modifyUser(andVsOr: AndVsOr, username: string, localuser: boolean, newpassword: string, newadmin: boolean): Promise<any> {
     return this.http.post(endpoint + 'users', {
-      password: newpassword||"",
-      admin: newadmin==null?"":newadmin
+      password: newpassword || "",
+      admin: newadmin == null ? "" : newadmin
     },
       this.generateHeader(andVsOr, {
         username: username,
@@ -128,103 +127,103 @@ export class RestService {
     })).toPromise();
   }
 
-///////////////////// formulas /////////////////////
-getFormulas(andVsOr: AndVsOr, formulaname: string, formulanameregex: string, formulanumber: number, ingredientid: number, skuid: number, limit: number): Promise<any> {
-  return this.http.get(endpoint + "formulas", this.generateHeader(andVsOr, {
-    formulaname: formulaname,
-    formulanameregex: formulanameregex,
-    formulanumber: formulanumber,
-    ingredientid: ingredientid,
-    skuid: skuid,
-    limit: limit
-  })).toPromise();
-}
+  ///////////////////// formulas /////////////////////
+  getFormulas(andVsOr: AndVsOr, formulaname: string, formulanameregex: string, formulanumber: number, ingredientid: number, skuid: number, limit: number): Promise<any> {
+    return this.http.get(endpoint + "formulas", this.generateHeader(andVsOr, {
+      formulaname: formulaname,
+      formulanameregex: formulanameregex,
+      formulanumber: formulanumber,
+      ingredientid: ingredientid,
+      skuid: skuid,
+      limit: limit
+    })).toPromise();
+  }
 
-createFormula(andVsOr: AndVsOr, formulaname: String, formulanumber: Number, ingredientsandquantities: any[], comment: String): Promise<any> {
-  return this.http.put(endpoint + "formulas", {
-    formulaname: formulaname,
-    formulanumber: formulanumber,
-    ingredientsandquantities: ingredientsandquantities,
-    comment: comment
-  },
-  this.generateHeader()).toPromise();
-}
+  createFormula(andVsOr: AndVsOr, formulaname: String, formulanumber: Number, ingredientsandquantities: any[], comment: String): Promise<any> {
+    return this.http.put(endpoint + "formulas", {
+      formulaname: formulaname,
+      formulanumber: formulanumber,
+      ingredientsandquantities: ingredientsandquantities,
+      comment: comment
+    },
+      this.generateHeader()).toPromise();
+  }
 
-modifyFormula(andVsOr: AndVsOr, oldname: string, formulaname: string, formulanumber: number, ingredientsandquantities: any[], comment: string): Promise<any> {
-  return this.http.post(endpoint + "formulas", {
-    formulaname: formulaname,
-    formulanumber: formulanumber,
-    ingredientsandquantities: ingredientsandquantities,
-    comment: comment
-  },
-  this.generateHeader(andVsOr, {
-    formulaname: oldname
-  })).toPromise();
-}
+  modifyFormula(andVsOr: AndVsOr, oldname: string, formulaname: string, formulanumber: number, ingredientsandquantities: any[], comment: string): Promise<any> {
+    return this.http.post(endpoint + "formulas", {
+      formulaname: formulaname,
+      formulanumber: formulanumber,
+      ingredientsandquantities: ingredientsandquantities,
+      comment: comment
+    },
+      this.generateHeader(andVsOr, {
+        formulaname: oldname
+      })).toPromise();
+  }
 
-deleteFormula(andVsOr: AndVsOr, formulanumber: number): Promise<any> {
-  return this.http.delete(endpoint + "formulas", this.generateHeader(andVsOr, {
-    formulanumber: formulanumber
-  })).toPromise();
-}
+  deleteFormula(andVsOr: AndVsOr, formulanumber: number): Promise<any> {
+    return this.http.delete(endpoint + "formulas", this.generateHeader(andVsOr, {
+      formulanumber: formulanumber
+    })).toPromise();
+  }
 
- ///////////////////// skus /////////////////////
- getSkus(andVsOr: AndVsOr, skuName: String, skunameregex: String, skuNumber: number, caseUpcNumber: number, unitUpcNumber: number, formula: String, limit: number): Promise<any> {
+  ///////////////////// skus /////////////////////
+  getSkus(andVsOr: AndVsOr, skuName: String, skunameregex: String, skuNumber: number, caseUpcNumber: number, unitUpcNumber: number, formula: String, limit: number): Promise<any> {
 
-  return this.http.get(endpoint + "skus", this.generateHeader(andVsOr, {
-    skuname: skuName,
-    skunameregex: skunameregex,
-    skunumber: skuNumber,
-    caseupcnumber: caseUpcNumber,
-    unitupcnumber: unitUpcNumber,
-    formula: formula,
-    limit: limit
-  })).toPromise();
-}
+    return this.http.get(endpoint + "skus", this.generateHeader(andVsOr, {
+      skuname: skuName,
+      skunameregex: skunameregex,
+      skunumber: skuNumber,
+      caseupcnumber: caseUpcNumber,
+      unitupcnumber: unitUpcNumber,
+      formula: formula,
+      limit: limit
+    })).toPromise();
+  }
 
-createSku(skuname: String, skunumber: number, 
-  caseupcnumber: number, unitupcnumber: number, unitsize: string, 
-  countpercase: number, formulanum: Number, formulascalingfactor: Number, manufacturingrate: Number, comment: String): Promise<any> {
-  return this.http.put(endpoint + "skus", {
-    skuname: skuname,
-    skunumber: skunumber,
-    caseupcnumber: caseupcnumber,
-    unitupcnumber: unitupcnumber,
-    unitsize: unitsize,
-    countpercase: countpercase,
-    formulanum: formulanum,
-    formulascalingfactor: formulascalingfactor,
-    manufacturingrate: manufacturingrate,
-    comment: comment
-  },
-  this.generateHeader()).toPromise();
-}
+  createSku(skuname: String, skunumber: number,
+    caseupcnumber: number, unitupcnumber: number, unitsize: string,
+    countpercase: number, formulanum: Number, formulascalingfactor: Number, manufacturingrate: Number, comment: String): Promise<any> {
+    return this.http.put(endpoint + "skus", {
+      skuname: skuname,
+      skunumber: skunumber,
+      caseupcnumber: caseupcnumber,
+      unitupcnumber: unitupcnumber,
+      unitsize: unitsize,
+      countpercase: countpercase,
+      formulanum: formulanum,
+      formulascalingfactor: formulascalingfactor,
+      manufacturingrate: manufacturingrate,
+      comment: comment
+    },
+      this.generateHeader()).toPromise();
+  }
 
-modifySku(andVsOr: AndVsOr, oldSkuName: String, skuname: String, skunumber: number, 
-  caseupcnumber: number, unitupcnumber: number, unitsize: string, 
-  countpercase: number, formulanum: Number, formulascalingfactor: Number, manufacturingrate: Number, comment: String): Promise<any> {
-  return this.http.post(endpoint + "skus", {
-    skuname: skuname,
-    skunumber: skunumber,
-    caseupcnumber: caseupcnumber,
-    unitupcnumber: unitupcnumber,
-    unitsize: unitsize,
-    countpercase: countpercase,
-    formulanum: formulanum,
-    formulascalingfactor: formulascalingfactor,
-    manufacturingrate: manufacturingrate,
-    comment: comment
-  },
-  this.generateHeader(andVsOr, {
-    skuname: oldSkuName
-  })).toPromise();
-}
+  modifySku(andVsOr: AndVsOr, oldSkuName: String, skuname: String, skunumber: number,
+    caseupcnumber: number, unitupcnumber: number, unitsize: string,
+    countpercase: number, formulanum: Number, formulascalingfactor: Number, manufacturingrate: Number, comment: String): Promise<any> {
+    return this.http.post(endpoint + "skus", {
+      skuname: skuname,
+      skunumber: skunumber,
+      caseupcnumber: caseupcnumber,
+      unitupcnumber: unitupcnumber,
+      unitsize: unitsize,
+      countpercase: countpercase,
+      formulanum: formulanum,
+      formulascalingfactor: formulascalingfactor,
+      manufacturingrate: manufacturingrate,
+      comment: comment
+    },
+      this.generateHeader(andVsOr, {
+        skuname: oldSkuName
+      })).toPromise();
+  }
 
-deleteSku(andVsOr: AndVsOr, skuName: String): Promise<any> {
-  return this.http.delete(endpoint + "skus", this.generateHeader(andVsOr, {
-    skuName: skuName
-  })).toPromise();
-}
+  deleteSku(andVsOr: AndVsOr, skuName: String): Promise<any> {
+    return this.http.delete(endpoint + "skus", this.generateHeader(andVsOr, {
+      skuName: skuName
+    })).toPromise();
+  }
 
 
   ///////////////////// ingredients /////////////////////
@@ -237,43 +236,43 @@ deleteSku(andVsOr: AndVsOr, skuName: String): Promise<any> {
     })).toPromise();
   }
 
-createIngredient(ingredientname: String, ingredientnumber: number, 
-  vendorinformation: String, unitofmeasure: String, amount: number, 
-  costperpackage: number, comment: String): Promise<any> {
-  return this.http.put(endpoint + "ingredients", {
-    ingredientname: ingredientname,
-    ingredientnumber: ingredientnumber,
-    vendorinformation: vendorinformation,
-    unitofmeasure: unitofmeasure,
-    amount: amount,
-    costperpackage: costperpackage,
-    comment: comment
-  },
-  this.generateHeader()).toPromise();
-}
+  createIngredient(ingredientname: String, ingredientnumber: number,
+    vendorinformation: String, unitofmeasure: String, amount: number,
+    costperpackage: number, comment: String): Promise<any> {
+    return this.http.put(endpoint + "ingredients", {
+      ingredientname: ingredientname,
+      ingredientnumber: ingredientnumber,
+      vendorinformation: vendorinformation,
+      unitofmeasure: unitofmeasure,
+      amount: amount,
+      costperpackage: costperpackage,
+      comment: comment
+    },
+      this.generateHeader()).toPromise();
+  }
 
-modifyIngredient(andVsOr: AndVsOr, ingredientname: String,  newingredientname: String, 
-  ingredientnumber: number, vendorinformation: String, unitofmeasure: String, 
-  amount: number, costperpackage: number, comment: String): Promise<any> {
-  return this.http.post(endpoint + "ingredients", {
-    ingredientname: newingredientname,
-    ingredientnumber: ingredientnumber,
-    vendorinformation: vendorinformation,
-    unitofmeasure: unitofmeasure,
-    amount: amount,
-    costperpackage: costperpackage,
-    comment: comment
-  },
-  this.generateHeader(andVsOr, {
-    ingredientname: ingredientname
-  })).toPromise();
-}
+  modifyIngredient(andVsOr: AndVsOr, ingredientname: String, newingredientname: String,
+    ingredientnumber: number, vendorinformation: String, unitofmeasure: String,
+    amount: number, costperpackage: number, comment: String): Promise<any> {
+    return this.http.post(endpoint + "ingredients", {
+      ingredientname: newingredientname,
+      ingredientnumber: ingredientnumber,
+      vendorinformation: vendorinformation,
+      unitofmeasure: unitofmeasure,
+      amount: amount,
+      costperpackage: costperpackage,
+      comment: comment
+    },
+      this.generateHeader(andVsOr, {
+        ingredientname: ingredientname
+      })).toPromise();
+  }
 
-deleteIngredient(andVsOr: AndVsOr, ingredientname: String): Promise<any> {
-  return this.http.delete(endpoint + "ingredients", this.generateHeader(andVsOr, {
-    ingredientname: ingredientname
-  })).toPromise();
-}
+  deleteIngredient(andVsOr: AndVsOr, ingredientname: String): Promise<any> {
+    return this.http.delete(endpoint + "ingredients", this.generateHeader(andVsOr, {
+      ingredientname: ingredientname
+    })).toPromise();
+  }
 
 
   ///////////////////// product lines /////////////////////
@@ -290,10 +289,10 @@ deleteIngredient(andVsOr: AndVsOr, ingredientname: String): Promise<any> {
       productlinename: productlinename,
       skus: skus
     },
-    this.generateHeader()).toPromise();
+      this.generateHeader()).toPromise();
   }
 
-  modifyProductLine(andVsOr: AndVsOr, productlinename: String,  newproductlinename: String, skus: any[]): Promise<any> {
+  modifyProductLine(andVsOr: AndVsOr, productlinename: String, newproductlinename: String, skus: any[]): Promise<any> {
     return this.http.post(endpoint + 'product_lines', {
       productlinename: newproductlinename,
       skus: skus
@@ -310,7 +309,7 @@ deleteIngredient(andVsOr: AndVsOr, ingredientname: String): Promise<any> {
   }
 
   ///////////////////// Manufacturing Goals /////////////////////
-  getGoals(andVsOr: AndVsOr, username: String,  goalname: String, goalnameregex: String, enabled: boolean, limit: number): Promise<any> {
+  getGoals(andVsOr: AndVsOr, username: String, goalname: String, goalnameregex: String, enabled: boolean, limit: number): Promise<any> {
     return this.http.get(endpoint + "manufacturing-goals", this.generateHeader(andVsOr, {
       owner: username,
       enabled: enabled,
@@ -322,18 +321,18 @@ deleteIngredient(andVsOr: AndVsOr, ingredientname: String): Promise<any> {
 
   getUserName(): Promise<any> {
     return new Promise((resolve, reject) => {
-      this.getUsers(AndVsOr.AND, auth.getUsername(), null, null, null, null).then(response =>{
-        setTimeout(function() {
+      this.getUsers(AndVsOr.AND, auth.getUsername(), null, null, null, null).then(response => {
+        setTimeout(function () {
           resolve(response[0]['_id']);;
         }, 300);
+      });
     });
-  });
   }
 
-  createGoal(goalname: String, activities: [], date: Date, enabled: boolean) : Promise<any>{
+  createGoal(goalname: String, activities: [], date: Date, enabled: boolean): Promise<any> {
     return new Promise((resolve, reject) => {
       this.getUserName().then(id => {
-        this.http.put(endpoint + 'manufacturing-goals',{
+        this.http.put(endpoint + 'manufacturing-goals', {
           owner: id.toString(),
           goalname: goalname,
           activities: activities,
@@ -346,25 +345,25 @@ deleteIngredient(andVsOr: AndVsOr, ingredientname: String): Promise<any> {
     });
   }
 
-  modifyGoal(andVsOr: AndVsOr, goalname: String, newgoalname: String, activities: [], date:Date, enabled: boolean): Promise<any> {
+  modifyGoal(andVsOr: AndVsOr, goalname: String, newgoalname: String, activities: [], date: Date, enabled: boolean): Promise<any> {
     return this.http.post(endpoint + "manufacturing-goals", {
       goalname: newgoalname,
       activities: activities,
       date: date,
       enabled: enabled
     },
-    this.generateHeader(andVsOr, {
-      goalname: goalname
-    })).toPromise();
+      this.generateHeader(andVsOr, {
+        goalname: goalname
+      })).toPromise();
   }
 
 
 
-deleteGoal(andVsOr: AndVsOr, goalname: String): Promise<any> {
-  return this.http.delete(endpoint + "manufacturing-goals", this.generateHeader(andVsOr, {
-    goalname: goalname
-  })).toPromise();
-}
+  deleteGoal(andVsOr: AndVsOr, goalname: String): Promise<any> {
+    return this.http.delete(endpoint + "manufacturing-goals", this.generateHeader(andVsOr, {
+      goalname: goalname
+    })).toPromise();
+  }
 
 
   ///////////////////// Manufacturing Activities /////////////////////
@@ -376,8 +375,8 @@ deleteGoal(andVsOr: AndVsOr, goalname: String): Promise<any> {
     })).toPromise();
   }
 
-  createActivity(sku: number, numcases: number, calculatedhours: number, sethours: number, startdate: Date, line: number) : Promise<any>{
-    return this.http.put(endpoint + 'manufacturing-activities',{
+  createActivity(sku: number, numcases: number, calculatedhours: number, sethours: number, startdate: Date, line: number): Promise<any> {
+    return this.http.put(endpoint + 'manufacturing-activities', {
       sku: sku,
       numcases: numcases,
       calculatedhours: calculatedhours,
@@ -388,7 +387,7 @@ deleteGoal(andVsOr: AndVsOr, goalname: String): Promise<any> {
   }
 
   modifyActivity(andVsOr: AndVsOr, sku: string, newsku: string, numcases: number, calculatedhours: number, sethours: number, startdate: Date, line: string): Promise<any> {
-    return this.http.post(endpoint + 'manufacturing-activities',{
+    return this.http.post(endpoint + 'manufacturing-activities', {
       sku: newsku,
       numcases: numcases,
       calculatedhours: calculatedhours,
