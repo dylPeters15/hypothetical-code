@@ -55,7 +55,6 @@ export class RestService {
 
   loginRequest(username, password, netidtoken?): Observable<any> {
     if (netidtoken) {
-
       return this.http.get(endpoint + 'login', {
         headers: new HttpHeaders({
           netidtoken: netidtoken,

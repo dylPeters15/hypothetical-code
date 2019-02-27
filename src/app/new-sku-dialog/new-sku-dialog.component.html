@@ -58,5 +58,5 @@
 </mat-dialog-content>
 <mat-dialog-actions align="center">
   <button mat-raised-button (click)="closeDialog()">Cancel</button>
-  <button mat-raised-button (click)="createSku()" [disabled]="manufacturingrate==''||!manufacturingrate" color="primary">Create</button>
+  <button mat-raised-button (click)="createSku()" [disabled]="manufacturingrate==''||!manufacturingrate" color="primary">{{ submit_title }}</button>
 </mat-dialog-actions>

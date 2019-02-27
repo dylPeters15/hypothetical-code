@@ -101,7 +101,7 @@ export class NewFormulaDialogComponent implements OnInit {
         } 
         else {
           console.log("located the ingredient. " + response);
-          new_objectid = response[0]['_id'];
+          new_objectid = response[0];
           console.log("mah object id fam " + new_objectid);
           let new_ingredienttuple = new ingredienttuple();
           //new_ingredienttuple.create({

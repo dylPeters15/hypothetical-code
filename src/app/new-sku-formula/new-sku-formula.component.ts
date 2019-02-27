@@ -41,9 +41,14 @@ export class NewSkuFormulaComponent implements OnInit {
    }
 
   ngOnInit() {
-
+    console.log("in init fam");
     this.edit = this.data.edit;
-    this.scalingFactor = this.data.scalingFactor;
+    this.scalingFactor = this.data.present_scalingFactor;
+    this.formulaName = this.data.present_name;
+    console.log("edit: " + this.edit);
+    console.log("scalingFactor: " + this.scalingFactor);
+    console.log("formulaName: " + this.formulaName);
+
 
     // edit == true if formula is being modified, false if a new formula is being created
     if (this.edit == true)
