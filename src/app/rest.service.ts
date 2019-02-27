@@ -332,9 +332,9 @@ export class RestService {
     })).toPromise();
   }
 
-  createActivity(sku: number, numcases: number, calculatedhours: number, sethours: number, startdate: Date, line: number): Promise<any> {
+  createActivity(skuid: number, numcases: number, calculatedhours: number, sethours: number, startdate: Date, line: number): Promise<any> {
     return this.http.put(endpoint + 'manufacturing-activities', {
-      sku: sku,
+      skuid: skuid,
       numcases: numcases,
       calculatedhours: calculatedhours,
       sethours: sethours,
