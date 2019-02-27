@@ -47,6 +47,13 @@
         <br /> 
         <br /> 
 
+        <mat-dialog-actions align="center" >
+          <button class="mat-raised-button" (click)="addToProductLine()">Add to Product Line</button>
+        </mat-dialog-actions>
+
+        <br /> 
+        <br /> 
+
       <mat-form-field>
         <input matInput [(ngModel)]="manufacturingrate" placeholder="Manufacturing Rate" (keydown.enter)="createSku()" required>
       </mat-form-field>

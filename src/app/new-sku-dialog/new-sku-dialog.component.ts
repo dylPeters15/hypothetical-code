@@ -6,6 +6,7 @@ import {MatSnackBar} from '@angular/material';
 import {MAT_DIALOG_DATA} from '@angular/material';
 import { NewSkuFormulaComponent } from '../new-sku-formula/new-sku-formula.component';
 import { NewFormulaDialogComponent } from '../new-formula-dialog/new-formula-dialog.component';
+import { LineToLineMappedSource } from 'webpack-sources';
 
 
 @Component({
@@ -41,6 +42,8 @@ export class NewSkuDialogComponent implements OnInit {
   chosen_scaling_factor: Number;
   
   newFormulaDialogRef: MatDialogRef<NewSkuFormulaComponent>;
+  chooseProductLineRef: MatDialogRef<ChooseProductLineComponent>;
+
   newDialogRef: MatDialogRef<NewFormulaDialogComponent>;
 
 
@@ -174,6 +177,41 @@ export class NewSkuDialogComponent implements OnInit {
     {
       let blankTuple = [];
       this.newFormula(false, "", 0, blankTuple, "");
+    }
+
+    addToProductLine()
+    {
+      const dialogConfig = new MatDialogConfig();
+      //dialogConfig.data = {edit: edit, present_name: formulaname, present_scalingFactor: scalingFactor};
+      this.chooseProductLineRef = this.dialog.open(ChooseProductLineComponent, dialogConfig);
+      //this.newIngredientDialogRef.componentInstance.amount = this.return_amount;
+      //this.newIngredientDialogRef.componentInstance.ingredientNameList = this.ingredientNameList;
+      this.chooseProductLineRef.afterClosed().subscribe(event => {
+      // grab the new formula values
+      var new_product_line_name = this.chooseProductLineRef.componentInstance.productLineName;
+      this.formulascalingfactor = this.chooseProductLineRef.componentInstance.scalingFactor;
+
+      // get object id from formula name
+      this.rest.getProductLines(new_product_line_name,"", 1).subscribe(response => {
+        if (response.length == 0) {
+          console.log("problem in formula looks like");
+          this.snackBar.open("Error adding formula. Please refresh and try again", "close", {
+            duration: 2000,
+               });
+        } 
+        else {
+
+
+          // NOW THAT WE HAVE THE PRODUCT LineToLineMappedSource, ADD TO ITS SKUS ON SAVE
+          console.log("successfully added to product line");
+          this.formula = response[0]['formulanumber'];
+          this.formulaname = response[0]['formulaname'];
+          console.log("name: " + this.formulaname);
+          console.log("num: " + this.formulascalingfactor);
+        }
+        this.refreshData();
+        });
+        });
     }
 
     // edit

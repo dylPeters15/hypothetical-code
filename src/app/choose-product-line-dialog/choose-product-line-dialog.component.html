@@ -1,0 +1,39 @@
+<h2 mat-dialog-title align="center">{{ dialog_title }}</h2>
+<mat-dialog-content align="center">
+  <mat-card>
+    <mat-card-content style="display: grid; width: 100%; justify-items: center;">
+
+      <mat-form-field class="example-chip-list">
+        <mat-chip-list #chipList>
+          <mat-chip
+            *ngFor="let formula of selectedFormulaNames"
+            [selectable]="selectable"
+            [removable]="removable"
+            (removed)="remove(formula)">
+            {{formula}}
+            <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+          </mat-chip>
+          <input
+            placeholder="Enter Formula Name"
+            #formulaInput
+            [formControl]="formulaCtrl"
+            [matAutocomplete]="auto"
+            [matChipInputFor]="chipList"
+            [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+            [matChipInputAddOnBlur]="addOnBlur"
+            (matChipInputTokenEnd)="add($event)">
+        </mat-chip-list>
+        <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
+          <mat-option *ngFor="let formula of filteredFormulas | async" [value]="formula">
+            {{formula}}
+          </mat-option>
+        </mat-autocomplete>
+      </mat-form-field>
+
+    </mat-card-content>
+  </mat-card>
+</mat-dialog-content>
+<mat-dialog-actions align="center">
+  <button class="mat-raised-button" (click)="closeDialog()">Cancel</button>
+  <button class="mat-raised-button" (click)="addFormula()" [disabled]="username==''" color=orange >Add Formula</button>
+</mat-dialog-actions>
