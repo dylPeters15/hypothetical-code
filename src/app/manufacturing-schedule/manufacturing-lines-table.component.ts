@@ -76,6 +76,7 @@ export class ManufacturingLinesTableComponent implements ControlValueAccessor {
                         event.previousIndex,
                         event.currentIndex);
         let activitiesOnLine = event.container.data;
+        console.log("The Data: ",event.container.data);
         this.rest.getLine('','',event.container.id, event.container.id, 1).subscribe(response => {
           let currentLine = response[0];
           var numActivitiesFinished = 0;
@@ -84,7 +85,15 @@ export class ManufacturingLinesTableComponent implements ControlValueAccessor {
               console.log("Adding activity " + activity['sku']['skuname'] + " to line " + event.container.id);
               numActivitiesFinished++;
               if (numActivitiesFinished >= activitiesOnLine.length) {
-                window.location.replace(window.location.href);
+                var shouldRefresh = false;
+                for(var i = 0; i < event.container.data.length; i++) {
+                  if (!event.container.data[i]['line']) {
+                    shouldRefresh = true;
+                  }
+                }
+                if (shouldRefresh) {
+                  window.location.replace(window.location.href);
+                }
               }
             })
           })
