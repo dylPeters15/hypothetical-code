@@ -19,32 +19,7 @@ export class RestService {
 
   constructor(private http: HttpClient) { }
 
-  serverLocation: string = endpoint.substring(endpoint.indexOf("//") + 2, endpoint.indexOf(":", endpoint.indexOf("//")));
-
-  getClientID(): string {
-    if (this.serverLocation == 'vcm-8238.vm.duke.edu') { // Ben
-      return 'benserver';
-    } else if (this.serverLocation == 'vcm-8405.vm.duke.edu') { // Noah
-      return 'noahserver';
-    } else if (this.serverLocation == 'vcm-8205.vm.duke.edu') { // Prod
-      return 'prodserver';
-    } else { // localhost
-      return 'localhost';
-    }
-  }
-
-  getClientSecret(): string {
-    if (this.serverLocation == 'vcm-8238.vm.duke.edu') { // Ben
-      return 'HQIaVbToUN84U1@kwTy6!t%8=AQimYUBPhtoMI2!iTx9pP43fC';
-    } else if (this.serverLocation == 'vcm-8405.vm.duke.edu') { // Noah
-      return '$w8J3iMdA!o16ktD@ijjHgnua#P!KQt#+ZXRJ5et%95gKgP!WE';
-    } else if (this.serverLocation == 'vcm-8205.vm.duke.edu') { // Prod
-      return 'Qtc8mg5pZSeeTtg#WP4gR=h9g+gxFkYzf**4l2XjHHpDmGhK#s';
-    } else { // localhost
-      return '4sqNKIcu%*H7$9=QPKG3Qx=n=9I3zqmnDwZ14MaaFYS3Wx86*p';
-    }
-  }
-
+  ///////////////////// Utilities /////////////////////
   private generateHeader(andVsOr?: AndVsOr, options?: any) {
     if (options && !(andVsOr == AndVsOr.AND || andVsOr == AndVsOr.OR)) {
       throw Error("If you are passing non-null options to the rest call you must pass a non-null value specifying AND vs OR.");
@@ -70,24 +45,6 @@ export class RestService {
     return httpOptions
   }
 
-  loginRequest(username, password, netidtoken?): Promise<any> {
-    if (netidtoken) {
-      return this.http.get(endpoint + 'login', {
-        headers: new HttpHeaders({
-          netidtoken: netidtoken,
-          clientid: this.getClientID()
-        })
-      }).toPromise();
-    } else {
-      return this.http.get(endpoint + 'login', {
-        headers: new HttpHeaders({
-          username: username,
-          password: password
-        })
-      }).toPromise();
-    }
-  }
-
   ///////////////////// users /////////////////////
   getUsers(andVsOr: AndVsOr, username: string, usernameregex: string, admin: boolean, localuser: boolean, limit: number): Promise<any> {
     return this.http.get(endpoint + 'users', this.generateHeader(andVsOr, {
@@ -111,8 +68,8 @@ export class RestService {
 
   modifyUser(andVsOr: AndVsOr, username: string, localuser: boolean, newpassword: string, newadmin: boolean): Promise<any> {
     return this.http.post(endpoint + 'users', {
-      password: newpassword || "",
-      admin: newadmin == null ? "" : newadmin
+      password: newpassword,
+      admin: newadmin == newadmin
     },
       this.generateHeader(andVsOr, {
         username: username,
@@ -443,6 +400,52 @@ export class RestService {
     return this.http.delete(endpoint + 'manufacturing-lines', this.generateHeader(andVsOr, {
       linename: linename
     })).toPromise();
+  }
+
+  ///////////////////// Login /////////////////////
+
+  serverLocation: string = endpoint.substring(endpoint.indexOf("//") + 2, endpoint.indexOf(":", endpoint.indexOf("//")));
+
+  getClientID(): string {
+    if (this.serverLocation == 'vcm-8238.vm.duke.edu') { // Ben
+      return 'benserver';
+    } else if (this.serverLocation == 'vcm-8405.vm.duke.edu') { // Noah
+      return 'noahserver';
+    } else if (this.serverLocation == 'vcm-8205.vm.duke.edu') { // Prod
+      return 'prodserver';
+    } else { // localhost
+      return 'localhost';
+    }
+  }
+
+  getClientSecret(): string {
+    if (this.serverLocation == 'vcm-8238.vm.duke.edu') { // Ben
+      return 'HQIaVbToUN84U1@kwTy6!t%8=AQimYUBPhtoMI2!iTx9pP43fC';
+    } else if (this.serverLocation == 'vcm-8405.vm.duke.edu') { // Noah
+      return '$w8J3iMdA!o16ktD@ijjHgnua#P!KQt#+ZXRJ5et%95gKgP!WE';
+    } else if (this.serverLocation == 'vcm-8205.vm.duke.edu') { // Prod
+      return 'Qtc8mg5pZSeeTtg#WP4gR=h9g+gxFkYzf**4l2XjHHpDmGhK#s';
+    } else { // localhost
+      return '4sqNKIcu%*H7$9=QPKG3Qx=n=9I3zqmnDwZ14MaaFYS3Wx86*p';
+    }
+  }
+
+  loginRequest(username, password): Promise<any> {
+    return this.http.get(endpoint + 'login', {
+      headers: new HttpHeaders({
+        username: username,
+        password: password
+      })
+    }).toPromise();
+  }
+
+  loginRequestNetID(netidtoken): Promise<any> {
+    return this.http.get(endpoint + 'login', {
+      headers: new HttpHeaders({
+        netidtoken: netidtoken,
+        clientid: this.getClientID()
+      })
+    }).toPromise();
   }
 
 }
