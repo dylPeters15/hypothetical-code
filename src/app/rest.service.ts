@@ -31,7 +31,7 @@ export class RestService {
     let header: HttpHeaders = new HttpHeaders(options);
 
     var headers = {
-      andvsor: andVsOr
+      andvsor: JSON.stringify(andVsOr)
     };
     for (let key of Object.keys(options)) {
       if (options[key]) {
