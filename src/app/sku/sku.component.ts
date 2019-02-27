@@ -75,13 +75,13 @@ export class SkuComponent  implements OnInit {
   @ViewChild(MatSort) sort: MatSort;
 
   ngOnInit() {
-    this.paginator.pageSize = 5;
+    this.paginator.pageSize = 20;
     this.admin = auth.isAuthenticatedForAdminOperation();
     this.refreshData();
   }
 
   getPageSizeOptions() {
-    return [5, 10, 20, this.allReplacement];
+    return [20, 50, 100, this.allReplacement];
   }
 
   refreshData(filterQueryData?) {
