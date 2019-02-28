@@ -127,6 +127,7 @@ function getLoginInfoForFederatedUser(netidtoken, clientid) {
 }
 
 function getUsers(filterSchema, limit, optionsDict) {
+    console.log("Filter schema: ",filterSchema);
     return new Promise((resolve, reject) => {
         database.userModel.find(filterSchema).limit(limit).exec((err, users) => {
             if (err) {
@@ -161,11 +162,13 @@ function createUser(newObject) {
 
 function modifyUser(filterSchema, newObject, optionsDict) {
     return new Promise((resolve, reject) => {
+        console.log(optionsDict);
         if (optionsDict['localuser'] && optionsDict['password'] !== "") {
             var saltAndHash = generateSaltAndHash(newPassword);
             newObject['salt'] = saltAndHash.salt;
             newObject['saltedhashedpassword'] = saltAndHash.hash;
         }
+        console.log("New object.: ",newObject);
         database.userModel.updateOne(filterSchema, newObject, (err, response) => {
             if (err) {
                 reject(Error(err));

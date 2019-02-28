@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { RestService } from '../rest.service';
+import { RestService, AndVsOr } from '../rest.service';
 import { MatSnackBar } from '@angular/material';
 import { MatDialogRef, MatDialog, MatDialogConfig, MatTableDataSource, MatPaginator } from "@angular/material";
 import { NewUserDialogComponent } from '../new-user-dialog/new-user-dialog.component';
@@ -56,13 +56,14 @@ export class UserManagementComponent implements OnInit {
   refreshData(filterQueryData?) {
     // filterQueryData = filterQueryData ? "^"+filterQueryData+".*" : "^"+this.filterQuery+".*"; //this returns things that start with the pattern
     filterQueryData = filterQueryData ? ".*"+filterQueryData+".*" : ".*"+this.filterQuery+".*"; //this returns things that have the pattern anywhere in the string
-    // this.rest.getUsers("", filterQueryData, this.displayAdmins=="all"?null:this.displayAdmins=="adminsonly", this.displayLocal=="all"?null:this.displayLocal=="localonly", this.paginator.pageSize*10).subscribe(response => {
-    //   this.data = response;
-    //   this.deselectAll();
-    //   this.sortData();
-    //   this.dataSource = new MatTableDataSource<UserForTable>(this.data);
-    //   this.dataSource.paginator = this.paginator;
-    // });
+    this.rest.getUsers(AndVsOr.AND, null, filterQueryData, this.displayAdmins=="all"?null:this.displayAdmins=="adminsonly", this.displayLocal=="all"?null:this.displayLocal=="localonly", this.paginator.pageSize*10).then(response => {
+      console.log(response);
+      this.data = response;
+      this.deselectAll();
+      this.sortData();
+      this.dataSource = new MatTableDataSource<UserForTable>(this.data);
+      this.dataSource.paginator = this.paginator;
+    });
   }
 
   openDialog() {
@@ -203,17 +204,17 @@ export class UserManagementComponent implements OnInit {
   }
 
   changeAdminPriviledge(username, localuser, newPriviledge) {
-    // this.rest.modifyUser(username, localuser, null, newPriviledge).subscribe(response => {
-    //   if (response['ok'] != 1) {
-    //     this.snackBar.open("Unable to change user privilege. Please try again later.", "close");
-    //     this.refreshData();
-    //   } else if (username == auth.getUsername()) {
-    //     this.notifyUser("Logging Out", "Your account permission was changed and you will be redirected to the login page.");
-    //     this.router.navigate(['logout']);
-    //   } else if (this.displayAdmins != "all") {
-    //     this.refreshData();
-    //   }
-    // });
+    this.rest.modifyUser(AndVsOr.AND, username, localuser, null, newPriviledge).then(response => {
+      if (response['ok'] != 1) {
+        this.snackBar.open("Unable to change user privilege. Please try again later.", "close");
+        this.refreshData();
+      } else if (username == auth.getUsername()) {
+        this.notifyUser("Logging Out", "Your account permission was changed and you will be redirected to the login page.");
+        this.router.navigate(['logout']);
+      } else if (this.displayAdmins != "all") {
+        this.refreshData();
+      }
+    });
   }
 
 }

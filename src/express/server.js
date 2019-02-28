@@ -40,7 +40,10 @@ function getFilterSchemaFromHeaders(headers) {
         return {};
     }
     var filterschema = {};
-    filterschema[headers['andvsor']] = JSON.parse[headers['andorclause']];
+    filterschema[headers['andvsor']] = JSON.parse(headers['andorclause']);
+    if (filterschema[headers['andvsor']].length == 0) {
+        return {};
+    }
     return filterschema;
 }
 
@@ -55,21 +58,14 @@ function getLimitFromHeaders(headers) {
 }
 
 function getOptionsDictionaryFromHeaders(headers) {
-    if (!headers) {
-        throw Error("Headers are undefined.");
+    var filterschema = getFilterSchemaFromHeaders(headers);
+    if (filterschema['$or']) {
+        return filterschema['$or'];
+    } else if (filterschema['$and']) {
+        return filterschema['$and'];
+    } else {
+        return [];
     }
-    if (!headers['andorclause']) {
-        return {};
-    }
-    var dict = {};
-    var andorclause = JSON.parse(headers['andorclause']);
-    for (var i = 0; i < andorclause.length; i++) {
-        var clause = andorclause[i];
-        for (let key of Object.keys(clause)) {
-            dict[key] = clause[key];
-        }
-    }
-    return dict;
 }
 
 function resolveError(err, res) {
@@ -81,6 +77,7 @@ function resolveError(err, res) {
 
 ///////////////////// users /////////////////////
 app.route('/users').get((req, res) => {
+    console.log(req.headers);
     user_utils.getUsers(getFilterSchemaFromHeaders(req.headers), getLimitFromHeaders(req.headers), getOptionsDictionaryFromHeaders(req.headers)).then(users => {
         var usersToSend = [];
         for (var i = 0; i < users.length; i = i + 1) {

@@ -37,17 +37,17 @@ export class RestService {
     }
     if (andVsOr && optionsIn) {
       headersOptions['andvsor'] = andVsOr;
-      for (let key of Object.keys(optionsIn)) {
-        if (optionsIn[key]) {
-          var FilterToAdd = {};
-          FilterToAdd[key.toLowerCase()] = optionsIn[key];
-          headersOptions['andorclause'].push(FilterToAdd);
+      for (let clause of optionsIn) {
+        for (let key of Object.keys(clause)) {
+          if (clause[key] !== null) {
+            headersOptions['andorclause'].push(clause);
+          }
         }
       }
     }
 
-    headersOptions['andvsor'] = JSON.stringify(headersOptions['andvsor']);
-    headersOptions['filterschema'] = JSON.stringify(headersOptions['filterschema']);
+    headersOptions['andvsor'] = headersOptions['andvsor'];
+    headersOptions['andorclause'] = JSON.stringify(headersOptions['andorclause']);
     let httpHeaders: HttpHeaders = new HttpHeaders(headersOptions);
     let httpOptions = {
       headers: httpHeaders
@@ -55,14 +55,28 @@ export class RestService {
     return httpOptions;
   }
 
+  generateBodyWithOptions(options) {
+    var body = {
+      $set: {}
+    };
+    for (let key of Object.keys(options)) {
+      if (options[key] !== null) {
+        body['$set'][key] = options[key];
+      }
+    }
+    return body;
+  }
+
   ///////////////////// users /////////////////////
   getUsers(andVsOr: AndVsOr, username: string, usernameregex: string, admin: boolean, localuser: boolean, limit: number): Promise<any> {
-    return this.http.get(endpoint + 'users', this.generateHeaderWithFilterSchema(andVsOr, {
-      username: username,
-      usernameregex: usernameregex,
-      admin: admin,
-      localuser: localuser
-    }, limit)).toPromise();
+    var header = this.generateHeaderWithFilterSchema(andVsOr, [
+      { username: username },
+      { username: { $regex: usernameregex } },
+      { admin: admin },
+      { localuser: localuser }
+    ], limit);
+    console.log(header);
+    return this.http.get(endpoint + 'users', header).toPromise();
   }
 
   createUser(username: string, password: string, admin: boolean): Promise<any> {
@@ -76,10 +90,10 @@ export class RestService {
   }
 
   modifyUser(andVsOr: AndVsOr, username: string, localuser: boolean, newpassword: string, newadmin: boolean): Promise<any> {
-    return this.http.post(endpoint + 'users', {
+    return this.http.post(endpoint + 'users', this.generateBodyWithOptions({
       password: newpassword,
       admin: newadmin == newadmin
-    },
+    }),
       this.generateHeaderWithFilterSchema(andVsOr, {
         username: username,
         localuser: localuser
