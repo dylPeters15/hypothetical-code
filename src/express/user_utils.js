@@ -101,7 +101,8 @@ function getLoginInfoForFederatedUser(netidtoken, clientid) {
                     //user does not exist. create it
                     createFederatedUser(netidtoken, clientid).then(createResponse => {
                         getUsers({
-                            username: netid
+                            username: netid,
+                            localuser: false
                         }).then(users => {
                             if (users.length == 1) {
                                 resolve(users[0]);
@@ -163,7 +164,9 @@ function createUser(newObject) {
 function modifyUser(filterSchema, newObject, optionsDict) {
     return new Promise((resolve, reject) => {
         console.log(optionsDict);
-        if (newObject['$set']['password'] !== "") {
+        console.log(newObject);
+        if (newObject['$set']['password']) {
+            console.log("Setting password");
             var saltAndHash = generateSaltAndHash(newObject['$set']['password']);
             newObject['$set']['salt'] = saltAndHash.salt;
             newObject['$set']['saltedhashedpassword'] = saltAndHash.hash;
