@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators, FormGroupDirective } from '@angular/forms';
-import { RestService } from '../rest.service';
+import { RestService, AndVsOr } from '../rest.service';
 import { MatDialog, MatDialogConfig, MatDialogRef } from "@angular/material";
 import { UserNotificationDialogComponent } from '../user-notification-dialog/user-notification-dialog.component';
 import { ConfirmActionDialogComponent } from '../confirm-action-dialog/confirm-action-dialog.component';
@@ -40,22 +40,22 @@ export class AccountSettingsComponent implements OnInit {
     if (this.passwordsValid()) {
       const oldPass = this.form.get('currentPass').value;
       const newPass = this.form.get('password').value;
-      // this.rest.loginRequest(auth.getUsername(), oldPass).subscribe(loginresponse => {
-      //   if (loginresponse['token']) {
-      //     this.rest.modifyUser(auth.getUsername(), auth.getLocal(), newPass, false).subscribe(response => {
-      //       if (response['nModified'] == 1 && response['ok'] == 1) {
-      //         this.openDialog("Success!", "Password changed successfully.");
-      //         this.form.get('currentPass').setValue('');
-      //         this.form.get('password').setValue('');
-      //         this.form.get('confirm').setValue('');
-      //       } else {
-      //         this.openDialog("Unkown Error", "Unable to perform operation.");
-      //       }
-      //     });
-      //   } else {
-      //     this.openDialog("Incorrect password", "Please ensure that you have entered your current password correctly and try again.");
-      //   }
-      // });
+      this.rest.loginRequest(auth.getUsername(), oldPass).then(loginresponse => {
+        if (loginresponse['token']) {
+          this.rest.modifyUser(AndVsOr.AND, auth.getUsername(), auth.getLocal(), newPass, false).then(response => {
+            if (response['nModified'] == 1 && response['ok'] == 1) {
+              this.openDialog("Success!", "Password changed successfully.");
+              this.form.get('currentPass').setValue('');
+              this.form.get('password').setValue('');
+              this.form.get('confirm').setValue('');
+            } else {
+              this.openDialog("Unkown Error", "Unable to perform operation.");
+            }
+          });
+        } else {
+          this.openDialog("Incorrect password", "Please ensure that you have entered your current password correctly and try again.");
+        }
+      });
     } else {
       this.openDialog("Incorrect password", "Please ensure that you have entered your current password correctly and try again.");
     }
@@ -64,13 +64,13 @@ export class AccountSettingsComponent implements OnInit {
   deleteAccount() {
     if (auth.getLocal()) {
       const pass = this.deleteForm.get('confirmDelete').value
-      // this.rest.loginRequest(auth.getUsername(), pass).subscribe(loginresponse => {
-      //   if (loginresponse['token']) {
-      //     this.deleteAccountConfirmed();
-      //   } else {
-      //     this.openDialog("Incorrect password", "Please ensure that you have entered your password correctly and try again.");
-      //   }
-      // });
+      this.rest.loginRequest(auth.getUsername(), pass).then(loginresponse => {
+        if (loginresponse['token']) {
+          this.deleteAccountConfirmed();
+        } else {
+          this.openDialog("Incorrect password", "Please ensure that you have entered your password correctly and try again.");
+        }
+      });
     } else {
       const dialogConfig = new MatDialogConfig();
       dialogConfig.closeOnNavigation = false;
@@ -84,15 +84,15 @@ export class AccountSettingsComponent implements OnInit {
   }
 
   deleteAccountConfirmed() {
-    // this.rest.deleteUser(auth.getUsername(), auth.getLocal()).subscribe(response => {
-    //   if (response['deletedCount'] == 1 && response['ok'] == 1) {
-    //     this.openDialog("Success", "Account deleted successfully. You will be redirected to the login page.");
-    //     auth.clearLogin();
-    //     this.router.navigate(['login']);
-    //   } else {
-    //     this.openDialog("Unkown Error", "Unable to perform operation.");
-    //   }
-    // });
+    this.rest.deleteUser(AndVsOr.AND, auth.getUsername(), auth.getLocal()).then(response => {
+      if (response['deletedCount'] == 1 && response['ok'] == 1) {
+        this.openDialog("Success", "Account deleted successfully. You will be redirected to the login page.");
+        auth.clearLogin();
+        this.router.navigate(['login']);
+      } else {
+        this.openDialog("Unkown Error", "Unable to perform operation.");
+      }
+    });
   }
 
   form = new FormGroup(

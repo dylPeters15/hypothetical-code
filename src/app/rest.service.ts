@@ -71,7 +71,7 @@ export class RestService {
   getUsers(andVsOr: AndVsOr, username: string, usernameregex: string, admin: boolean, localuser: boolean, limit: number): Promise<any> {
     var header = this.generateHeaderWithFilterSchema(andVsOr, [
       { username: username },
-      { username: { $regex: usernameregex } },
+      { username: usernameregex?{ $regex: usernameregex }:null },
       { admin: admin },
       { localuser: localuser }
     ], limit);
@@ -94,17 +94,17 @@ export class RestService {
       password: newpassword,
       admin: newadmin == newadmin
     }),
-      this.generateHeaderWithFilterSchema(andVsOr, {
-        username: username,
-        localuser: localuser
-      })).toPromise();
+      this.generateHeaderWithFilterSchema(andVsOr, [
+        {username: username},
+        {localuser: localuser}
+      ])).toPromise();
   }
 
   deleteUser(andVsOr: AndVsOr, username: string, localuser: boolean): Promise<any> {
-    return this.http.delete(endpoint + 'users', this.generateHeaderWithFilterSchema(andVsOr, {
-      username: username,
-      localuser: localuser
-    })).toPromise();
+    return this.http.delete(endpoint + 'users', this.generateHeaderWithFilterSchema(andVsOr, [
+      {username: username},
+      {localuser: localuser}
+    ])).toPromise();
   }
 
   ///////////////////// formulas /////////////////////

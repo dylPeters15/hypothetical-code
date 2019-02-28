@@ -88,19 +88,19 @@ export class UserManagementComponent implements OnInit {
   }
 
   deleteUserConfirmed(username, localuser) {
-    // this.rest.deleteUser(username, localuser).subscribe(response => {
-    //   this.snackBar.open("User " + username + " deleted successfully.", "close", {
-    //     duration: 2000,
-    //   });
-    //   if (username == auth.getUsername()) {
-    //     this.notifyUser("Logging Out", "Your account was deleted and you will be redirected to the login page.");
-    //     this.router.navigate(['logout']);
-    //   }
-    //   this.data = this.data.filter((value, index, arr) => {
-    //     return value.username != username;
-    //   });
-    //   this.refreshData();
-    // });
+    this.rest.deleteUser(AndVsOr.AND, username, localuser).then(response => {
+      this.snackBar.open("User " + username + " deleted successfully.", "close", {
+        duration: 2000,
+      });
+      if (username == auth.getUsername()) {
+        this.notifyUser("Logging Out", "Your account was deleted and you will be redirected to the login page.");
+        this.router.navigate(['logout']);
+      }
+      this.data = this.data.filter((value, index, arr) => {
+        return value.username != username;
+      });
+      this.refreshData();
+    });
   }
 
   deleteUser(username, localuser) {

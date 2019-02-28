@@ -99,6 +99,7 @@ app.route('/users').get((req, res) => {
         resolveError(err, res);
     });
 }).post((req, res) => {
+    console.log(req.headers);
     user_utils.modifyUser(getFilterSchemaFromHeaders(req.headers), req.body, getOptionsDictionaryFromHeaders(req.headers)).then(response => {
         res.send(response);
     }).catch(err => {

@@ -144,7 +144,7 @@ function createUser(newObject) {
         generateToken().then(token => {
             newObject['token'] = token;
             if (newObject['localuser']) {
-                let saltAndHash = generateSaltAndHash(password);
+                let saltAndHash = generateSaltAndHash(newObject['password']);
                 newObject['salt'] = saltAndHash.salt;
                 newObject['saltedhashedpassword'] = saltAndHash.hash;
             }
@@ -163,11 +163,13 @@ function createUser(newObject) {
 function modifyUser(filterSchema, newObject, optionsDict) {
     return new Promise((resolve, reject) => {
         console.log(optionsDict);
-        if (optionsDict['localuser'] && optionsDict['password'] !== "") {
-            var saltAndHash = generateSaltAndHash(newPassword);
-            newObject['salt'] = saltAndHash.salt;
-            newObject['saltedhashedpassword'] = saltAndHash.hash;
+        if (newObject['$set']['password'] !== "") {
+            var saltAndHash = generateSaltAndHash(newObject['$set']['password']);
+            newObject['$set']['salt'] = saltAndHash.salt;
+            newObject['$set']['saltedhashedpassword'] = saltAndHash.hash;
+            delete newObject['$set']['password'];
         }
+        console.log("filterSchema: ",filterSchema);
         console.log("New object.: ",newObject);
         database.userModel.updateOne(filterSchema, newObject, (err, response) => {
             if (err) {
