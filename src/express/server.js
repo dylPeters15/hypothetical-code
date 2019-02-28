@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 const fs = require('fs');
 const https = require('https');
 const serverV1 = require('./v1/serverv1');
+const serverV2 = require('./v2/serverv2');
 
 const app = express();
 const corsOptions = {
@@ -25,3 +26,4 @@ const server = https.createServer({
 module.exports = server;
 
 serverV1.startServerV1(app);
+serverV2.startServerV2(app);
