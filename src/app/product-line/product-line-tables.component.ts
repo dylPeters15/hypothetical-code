@@ -67,13 +67,13 @@ export class ProductLineTablesComponent implements ControlValueAccessor, OnInit 
       if (result) {
         this._value['productlinename'] = result;  
         return new Promise((resolve, reject) => {
-          this.rest.getProductLines(oldname,"",1).subscribe(results => {
-            if (results != null) {
-              console.log(results)
-              this.updateProductLine(oldname, result, results[0].skus);
-            }
-            resolve();
-          })
+          // this.rest.getProductLines(oldname,"",1).subscribe(results => {
+          //   if (results != null) {
+          //     console.log(results)
+          //     this.updateProductLine(oldname, result, results[0].skus);
+          //   }
+          //   resolve();
+          // })
         })
       }      
     });
@@ -99,16 +99,16 @@ export class ProductLineTablesComponent implements ControlValueAccessor, OnInit 
 
   updateProductLine(oldname, newname, skus) {
     return new Promise((resolve, reject) => {
-    this.rest.modifyProductLine(oldname,
-        newname, skus).subscribe(modifyPLResponse => {
-            if (modifyPLResponse['ok'] == 1) {
-                console.log('success')
-                resolve();
-            } else {
-                console.log('failure')
-                reject(Error("Could not modify Product Line " + oldname));
-            }     
-        });
+    // this.rest.modifyProductLine(oldname,
+    //     newname, skus).subscribe(modifyPLResponse => {
+    //         if (modifyPLResponse['ok'] == 1) {
+    //             console.log('success')
+    //             resolve();
+    //         } else {
+    //             console.log('failure')
+    //             reject(Error("Could not modify Product Line " + oldname));
+    //         }     
+    //     });
     });
   }
 

@@ -57,12 +57,12 @@ export class NewSkuFormulaComponent implements OnInit {
     }
     else this.dialog_title = "Add SKU's Formula";
 
-    this.rest.getFormulas('',0,0,5,'.*').subscribe(response => {
-      this.formulaList = response;
-      this.formulaList.forEach(element => {
-        this.formulaNameList.push(element.formulaname)
-      });
-    });
+    // this.rest.getFormulas('',0,0,5,'.*').subscribe(response => {
+    //   this.formulaList = response;
+    //   this.formulaList.forEach(element => {
+    //     this.formulaNameList.push(element.formulaname)
+    //   });
+    // });
   }
 
   closeDialog() {
@@ -120,12 +120,12 @@ export class NewSkuFormulaComponent implements OnInit {
     this.formulaName = event.option.viewValue;
     this.selectedFormulaNames.push(event.option.viewValue);
 
-    this.rest.getFormulas(event.option.viewValue, 0,0,5).subscribe(response => {
-      var i;
-      for(i = 0; i<response.length; i++){
-        this.formulaId = {formula: response[i]['_id']};
-      }
-    });
+    // this.rest.getFormulas(event.option.viewValue, 0,0,5).subscribe(response => {
+    //   var i;
+    //   for(i = 0; i<response.length; i++){
+    //     this.formulaId = {formula: response[i]['_id']};
+    //   }
+    // });
     this.formulaInput.nativeElement.value = '';
     this.formulaCtrl.setValue(null);
   }

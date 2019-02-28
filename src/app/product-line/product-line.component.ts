@@ -47,14 +47,14 @@ export class ProductLineComponent implements OnInit {
   refreshData(filterQueryData?) {
     // filterQueryData = filterQueryData ? "^"+filterQueryData+".*" : "^"+this.filterQuery+".*"; //this returns things that start with the pattern
     filterQueryData = filterQueryData ? ".*"+filterQueryData+".*" : ".*"+this.filterQuery+".*"; //this returns things that have the pattern anywhere in the string
-    this.rest.getProductLines("", filterQueryData, 10).subscribe(response => {
-      this.data = response;
-      // this.deselectAll();
-      this.sortData();
-      this.dataSource = new MatTableDataSource<DataForTable>(this.data);
-      // this.dataSource.paginator = this.paginator;
-      console.log(this.dataSource.data)
-    });
+    // this.rest.getProductLines("", filterQueryData, 10).subscribe(response => {
+    //   this.data = response;
+    //   // this.deselectAll();
+    //   this.sortData();
+    //   this.dataSource = new MatTableDataSource<DataForTable>(this.data);
+    //   // this.dataSource.paginator = this.paginator;
+    //   console.log(this.dataSource.data)
+    // });
   }
 
   drop(event: CdkDragDrop<string[]>) {
@@ -78,13 +78,13 @@ export class ProductLineComponent implements OnInit {
       if (result) {
         this.data['productlinename'] = result;
         return new Promise((resolve, reject) => {
-          this.rest.createProductLine(result, []).subscribe(results => {
-            if (results != null) {
-              console.log(results)
-            }
-            this.refreshData();
-            resolve();
-          })
+          // this.rest.createProductLine(result, []).subscribe(results => {
+          //   if (results != null) {
+          //     console.log(results)
+          //   }
+          //   this.refreshData();
+          //   resolve();
+          // })
         })
       }
     });

@@ -73,15 +73,15 @@ export class ManufacturingGoalsTablesComponent implements ControlValueAccessor {
     
     return new Promise((resolve, reject) => {
       goal.forEach(element => {
-        this.rest.modifyGoal(element['goalname'],element['goalname'],element['activities'],element['date'],enabledStatus).subscribe(modifyPLResponse => {
-          if (modifyPLResponse['ok'] == 1) {
-              console.log('success')
-              resolve();
-          } else {
-              console.log('failure')
-              reject(Error("Could not modify Goal " + goal['goalname']));
-          }     
-      });
+      //   this.rest.modifyGoal(element['goalname'],element['goalname'],element['activities'],element['date'],enabledStatus).subscribe(modifyPLResponse => {
+      //     if (modifyPLResponse['ok'] == 1) {
+      //         console.log('success')
+      //         resolve();
+      //     } else {
+      //         console.log('failure')
+      //         reject(Error("Could not modify Goal " + goal['goalname']));
+      //     }     
+      // });
   });
       });
     

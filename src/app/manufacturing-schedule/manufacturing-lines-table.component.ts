@@ -77,28 +77,28 @@ export class ManufacturingLinesTableComponent implements ControlValueAccessor {
                         event.currentIndex);
         let activitiesOnLine = event.container.data;
         console.log("The Data: ",event.container.data);
-        this.rest.getLine('','',event.container.id, event.container.id, 1).subscribe(response => {
-          let currentLine = response[0];
-          var numActivitiesFinished = 0;
-          activitiesOnLine.forEach(activity => {
-            this.rest.modifyActivity(activity['sku']['_id'], activity['sku']['_id'], activity['numcases'],activity['calculatedhours'],activity['sethours'], activity['startdate'], currentLine['_id']).subscribe(response => {
-              console.log("Adding activity " + activity['sku']['skuname'] + " to line " + event.container.id);
-              numActivitiesFinished++;
-              if (numActivitiesFinished >= activitiesOnLine.length) {
-                var shouldRefresh = false;
-                for(var i = 0; i < event.container.data.length; i++) {
-                  if (!event.container.data[i]['line']) {
-                    shouldRefresh = true;
-                  }
-                }
-                if (shouldRefresh) {
-                  window.location.replace(window.location.href);
-                }
-              }
-            })
-          })
+        // this.rest.getLine('','',event.container.id, event.container.id, 1).subscribe(response => {
+        //   let currentLine = response[0];
+        //   var numActivitiesFinished = 0;
+        //   activitiesOnLine.forEach(activity => {
+        //     this.rest.modifyActivity(activity['sku']['_id'], activity['sku']['_id'], activity['numcases'],activity['calculatedhours'],activity['sethours'], activity['startdate'], currentLine['_id']).subscribe(response => {
+        //       console.log("Adding activity " + activity['sku']['skuname'] + " to line " + event.container.id);
+        //       numActivitiesFinished++;
+        //       if (numActivitiesFinished >= activitiesOnLine.length) {
+        //         var shouldRefresh = false;
+        //         for(var i = 0; i < event.container.data.length; i++) {
+        //           if (!event.container.data[i]['line']) {
+        //             shouldRefresh = true;
+        //           }
+        //         }
+        //         if (shouldRefresh) {
+        //           window.location.replace(window.location.href);
+        //         }
+        //       }
+        //     })
+        //   })
           
-        })
+        // })
         
     }
   }
@@ -107,17 +107,17 @@ export class ManufacturingLinesTableComponent implements ControlValueAccessor {
 
   updateActivity(activity, line) {
     return new Promise((resolve, reject) => {
-      this.rest.modifyActivity(activity['sku']['_id'], activity['sku']['_id'], 
-      activity['numcases'], activity['calculatedhours'], 
-      activity['sethours'], activity['startdate'], line).subscribe(modifyPLResponse => {
-        if (modifyPLResponse['ok'] == 1) {
-            console.log('success')
-            resolve();
-        } else {
-            console.log('failure')
-            reject(Error("Could not modify Activity " + activity));
-        }     
-    });
+    //   this.rest.modifyActivity(activity['sku']['_id'], activity['sku']['_id'], 
+    //   activity['numcases'], activity['calculatedhours'], 
+    //   activity['sethours'], activity['startdate'], line).subscribe(modifyPLResponse => {
+    //     if (modifyPLResponse['ok'] == 1) {
+    //         console.log('success')
+    //         resolve();
+    //     } else {
+    //         console.log('failure')
+    //         reject(Error("Could not modify Activity " + activity));
+    //     }     
+    // });
   });
 }
 

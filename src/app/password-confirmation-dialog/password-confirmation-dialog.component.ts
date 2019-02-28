@@ -24,13 +24,13 @@ export class PasswordConfirmationDialogComponent implements OnInit {
   }
 
   submit() {
-    this.rest.loginRequest(auth.getUsername(), this.password).subscribe(response => {
-      if (response['token']) {
-        this.dialogRef.close({validated:true});
-      } else {
-        this.snackBar.open("Incorrect password. Please try again.", "close");
-      }
-    });
+    // this.rest.loginRequest(auth.getUsername(), this.password).subscribe(response => {
+    //   if (response['token']) {
+    //     this.dialogRef.close({validated:true});
+    //   } else {
+    //     this.snackBar.open("Incorrect password. Please try again.", "close");
+    //   }
+    // });
   }
 
 }

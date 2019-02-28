@@ -12,26 +12,26 @@ export class ManufacturingScheduleReportCalculatorService {
 
   getActivities(selectedLine: string, startDate: Date, endDate: Date): Promise<any> {
     return new Promise((resolve, reject) => {
-      this.rest.getActivities(startDate, 100).subscribe(response => {
-        console.log(response);
-        var data = response.filter((value, index, array) => {
-          return value['line'] && value['line']['linename'] == selectedLine;
-        });
-        console.log("Table data: ", data);
-        data.forEach(element => {
-          element['sethours'] = element['sethours'] || element['calculatedhours'];
-          element['startdate'] = new Date(element['startdate']);
-          element['enddate'] = this.calculateEndDate(new Date(element['startdate']), element['sethours']);
-        });
-        data = data.filter((value, index, array) => {
-          return value['enddate'] <= endDate;
-        });
-        data.forEach(element => {
-          element['startdate'] = element['startdate'].getMonth()+1 + '/' + element['startdate'].getDate() + '/' + element['startdate'].getFullYear();
-          element['enddate'] = element['enddate'].getMonth()+1 + '/' + element['enddate'].getDate() + '/' + element['enddate'].getFullYear();
-        });
-        resolve(data);
-      });
+      // this.rest.getActivities(startDate, 100).subscribe(response => {
+      //   console.log(response);
+      //   var data = response.filter((value, index, array) => {
+      //     return value['line'] && value['line']['linename'] == selectedLine;
+      //   });
+      //   console.log("Table data: ", data);
+      //   data.forEach(element => {
+      //     element['sethours'] = element['sethours'] || element['calculatedhours'];
+      //     element['startdate'] = new Date(element['startdate']);
+      //     element['enddate'] = this.calculateEndDate(new Date(element['startdate']), element['sethours']);
+      //   });
+      //   data = data.filter((value, index, array) => {
+      //     return value['enddate'] <= endDate;
+      //   });
+      //   data.forEach(element => {
+      //     element['startdate'] = element['startdate'].getMonth()+1 + '/' + element['startdate'].getDate() + '/' + element['startdate'].getFullYear();
+      //     element['enddate'] = element['enddate'].getMonth()+1 + '/' + element['enddate'].getDate() + '/' + element['enddate'].getFullYear();
+      //   });
+      //   resolve(data);
+      // });
     });
   }
 

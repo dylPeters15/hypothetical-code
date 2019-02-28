@@ -20,13 +20,13 @@ export class ManufacturingScheduleReportComponent implements OnInit {
   ngOnInit() {
     this.options.startDate.setHours(0,0,0,0);
     this.options.endDate.setHours(23,59,59,999);
-    this.rest.getLine("",".*","",".*",100).subscribe(result => {
-      this.lines = result;
-      if (result.length > 0) {
-        this.options.selectedLine = result[0]['linename'];
-      }
-      this.selectionChange();
-    });
+    // this.rest.getLine("",".*","",".*",100).subscribe(result => {
+    //   this.lines = result;
+    //   if (result.length > 0) {
+    //     this.options.selectedLine = result[0]['linename'];
+    //   }
+    //   this.selectionChange();
+    // });
   }
 
   selectionChange() {

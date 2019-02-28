@@ -26,16 +26,16 @@ export class NewUserDialogComponent implements OnInit {
 
   createUser() {
     if (this.form.get('username').value && this.form.get('username').value != "" && !this.usernameExists) {
-      this.rest.createUser(this.form.get('username').value, this.form.get('password').value, this.form.get('admin').value).subscribe(response => {
-        if (response['token']) {
-          this.snackBar.open("Successfully created user " + this.form.get('username').value + ".", "close", {
-            duration: 2000,
-          });
-          this.closeDialog();
-        } else {
-          this.snackBar.open("Error creating user " + this.form.get('username').value + ". Please refresh and try again.", "close", {});
-        }
-      });
+      // this.rest.createUser(this.form.get('username').value, this.form.get('password').value, this.form.get('admin').value).subscribe(response => {
+      //   if (response['token']) {
+      //     this.snackBar.open("Successfully created user " + this.form.get('username').value + ".", "close", {
+      //       duration: 2000,
+      //     });
+      //     this.closeDialog();
+      //   } else {
+      //     this.snackBar.open("Error creating user " + this.form.get('username').value + ". Please refresh and try again.", "close", {});
+      //   }
+      // });
     }
   }
 
@@ -66,9 +66,9 @@ export class NewUserDialogComponent implements OnInit {
   }
 
   usernameChanged() {
-    this.rest.getUsers(this.form.get('username').value, "", null, true, 1).subscribe(result => {
-      this.usernameExists = result.length == 1;
-    });
+    // this.rest.getUsers(this.form.get('username').value, "", null, true, 1).subscribe(result => {
+    //   this.usernameExists = result.length == 1;
+    // });
   }
 
 }

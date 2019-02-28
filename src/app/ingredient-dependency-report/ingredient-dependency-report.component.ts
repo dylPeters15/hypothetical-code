@@ -85,19 +85,19 @@ export class IngredientDependencyComponent implements OnInit {
     var thisobject = this;
     this.data = await new Promise(function(resolve, reject) {
       var data = [];
-      thisobject.rest.getIngredients("", filterQueryData, 0, thisobject.paginator.pageSize*10).subscribe(response => {
-        var ingredientsvisited = 0;
-        response.forEach(ingredient => {
-          thisobject.formulaSearch(ingredient).then(function( skuArray) {
-            let currentIngredient = new IngredientDependencyData(ingredient['ingredientname'], ingredient['ingredientnumber'], 0, skuArray);
-            data.push(currentIngredient);
-            ingredientsvisited ++; 
-            if (ingredientsvisited == response.length) {
-              resolve(data);
-            }
-          }) 
-        })
-      });
+      // thisobject.rest.getIngredients("", filterQueryData, 0, thisobject.paginator.pageSize*10).subscribe(response => {
+      //   var ingredientsvisited = 0;
+      //   response.forEach(ingredient => {
+      //     thisobject.formulaSearch(ingredient).then(function( skuArray) {
+      //       let currentIngredient = new IngredientDependencyData(ingredient['ingredientname'], ingredient['ingredientnumber'], 0, skuArray);
+      //       data.push(currentIngredient);
+      //       ingredientsvisited ++; 
+      //       if (ingredientsvisited == response.length) {
+      //         resolve(data);
+      //       }
+      //     }) 
+      //   })
+      // });
     });
       console.log('data sent', this.data)
       this.dataSource.sort = this.sort;
@@ -111,16 +111,16 @@ export class IngredientDependencyComponent implements OnInit {
     var skuArray = [];
     var numberProcessed = 100;
     return new Promise(function(resolve, reject) {
-      thisobject.rest.getFormulas("", -1, ingredient['_id'], 10).subscribe(formulas => {
-        if (formulas) {
-          total = formulas.length
-        }
-        thisobject.skuSearch(formulas, skuArray, total).then(() => {
-          if (numberProcessed >= total) {
-            resolve(skuArray)
-          } 
-        })  
-      });
+      // thisobject.rest.getFormulas("", -1, ingredient['_id'], 10).subscribe(formulas => {
+      //   if (formulas) {
+      //     total = formulas.length
+      //   }
+      //   thisobject.skuSearch(formulas, skuArray, total).then(() => {
+      //     if (numberProcessed >= total) {
+      //       resolve(skuArray)
+      //     } 
+      //   })  
+      // });
     });
   }
 
@@ -130,16 +130,16 @@ export class IngredientDependencyComponent implements OnInit {
     return new Promise(function(resolve, reject) {
       var formulasvisited = 0;
       formulas.forEach(formula => {
-        thisobject.rest.getSkus("", "", -1, -1, -1, formula['_id'], 10).subscribe(skus => {
-          total += skus.length;
-          skus.forEach(sku => {
-            let skuInfo = " " + sku['skuname'] + ": " + sku['unitsize'] + " * " 
-            + sku['countpercase'] + " (" + sku['skunumber'] + ")\n"
-            skuArray.push(skuInfo);
-            console.log('pushed: ', skuArray)
-          })
-          resolve(skus.length);
-        })
+        // thisobject.rest.getSkus("", "", -1, -1, -1, formula['_id'], 10).subscribe(skus => {
+        //   total += skus.length;
+        //   skus.forEach(sku => {
+        //     let skuInfo = " " + sku['skuname'] + ": " + sku['unitsize'] + " * " 
+        //     + sku['countpercase'] + " (" + sku['skunumber'] + ")\n"
+        //     skuArray.push(skuInfo);
+        //     console.log('pushed: ', skuArray)
+        //   })
+        //   resolve(skus.length);
+        // })
         formulasvisited ++;
       })   
       if (formulasvisited == formulas.length) {

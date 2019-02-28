@@ -140,22 +140,22 @@ export class NewSkuDialogComponent implements OnInit {
       this.formulascalingfactor = this.newFormulaDialogRef.componentInstance.scalingFactor;
 
       // get object id from formula name
-      this.rest.getFormulas(new_formula,0, 0, 1).subscribe(response => {
-        if (response.length == 0) {
-          console.log("problem in formula looks like");
-          this.snackBar.open("Error adding formula. Please refresh and try again", "close", {
-            duration: 2000,
-               });
-        } 
-        else {
-          console.log("success mon");
-          this.formula = response[0]['formulanumber'];
-          this.formulaname = response[0]['formulaname'];
-          console.log("name: " + this.formulaname);
-          console.log("num: " + this.formulascalingfactor);
-        }
-        this.refreshData();
-        });
+      // this.rest.getFormulas(new_formula,0, 0, 1).subscribe(response => {
+      //   if (response.length == 0) {
+      //     console.log("problem in formula looks like");
+      //     this.snackBar.open("Error adding formula. Please refresh and try again", "close", {
+      //       duration: 2000,
+      //          });
+      //   } 
+      //   else {
+      //     console.log("success mon");
+      //     this.formula = response[0]['formulanumber'];
+      //     this.formulaname = response[0]['formulaname'];
+      //     console.log("name: " + this.formulaname);
+      //     console.log("num: " + this.formulascalingfactor);
+      //   }
+      //   this.refreshData();
+      //   });
         });
       }
 
@@ -190,34 +190,34 @@ export class NewSkuDialogComponent implements OnInit {
   createSku() {
     if (this.edit == false)
     {
-      this.rest.createSku(this.skuname, this.skunumber, this.caseupcnumber, this.unitupcnumber, this.unitsize, this.countpercase, this.formula, this.formulascalingfactor, this.manufacturingrate, this.comment).subscribe(response => {
-        if (response['success']) {
-               this.snackBar.open("Successfully created sku " + this.skuname + ".", "close", {
-                 duration: 2000,
-               });
-             } else {
-               this.snackBar.open("Error creating user " + this.skuname + ". Please refresh and try again.", "close", {
-                 duration: 2000,
-               });
-             }
-             this.closeDialog();
-           });
+      // this.rest.createSku(this.skuname, this.skunumber, this.caseupcnumber, this.unitupcnumber, this.unitsize, this.countpercase, this.formula, this.formulascalingfactor, this.manufacturingrate, this.comment).subscribe(response => {
+      //   if (response['success']) {
+      //          this.snackBar.open("Successfully created sku " + this.skuname + ".", "close", {
+      //            duration: 2000,
+      //          });
+      //        } else {
+      //          this.snackBar.open("Error creating user " + this.skuname + ". Please refresh and try again.", "close", {
+      //            duration: 2000,
+      //          });
+      //        }
+      //        this.closeDialog();
+      //      });
       }
 
     else{
-      this.rest.modifySku(this.oldskuname, this.skuname, this.skunumber, this.caseupcnumber, this.unitupcnumber, this.unitsize, this.countpercase, this.formula, this.formulascalingfactor, this.manufacturingrate, this.comment).subscribe(response => {
+      // this.rest.modifySku(this.oldskuname, this.skuname, this.skunumber, this.caseupcnumber, this.unitupcnumber, this.unitsize, this.countpercase, this.formula, this.formulascalingfactor, this.manufacturingrate, this.comment).subscribe(response => {
         
-         if (response['success']) {
-           this.snackBar.open("Successfully modifyed sku " + this.skuname + ".", "close", {
-             duration: 2000,
-           });
-         } else {
-           this.snackBar.open("Error modifying sku " + this.skuname + ". Please refresh and try again.", "close", {
-             duration: 2000,
-           });
-         }
-         this.closeDialog();
-       });
+      //    if (response['success']) {
+      //      this.snackBar.open("Successfully modifyed sku " + this.skuname + ".", "close", {
+      //        duration: 2000,
+      //      });
+      //    } else {
+      //      this.snackBar.open("Error modifying sku " + this.skuname + ". Please refresh and try again.", "close", {
+      //        duration: 2000,
+      //      });
+      //    }
+      //    this.closeDialog();
+      //  });
     }
     this.refreshData();
   }

@@ -65,18 +65,18 @@ export class NewGoalDialogComponent implements OnInit {
       this.displayableActivities = this.data.present_activities;
       
       if(this.displayableActivities.length> 0){
-        this.rest.getActivities(null, 100).subscribe(response => {
-          response.forEach(activityInDatabase => {
-            this.displayableActivities.forEach(element => {
-              console.log("Act: " + activityInDatabase['sku']['skuname'])
-              console.log("ELEMENT:" + element.skuname)
-              if(activityInDatabase['sku']['skuname'] == element.skuname && activityInDatabase['calculatedhours'] == Number(element.hours)){
-                this.activityIds.push({activity: activityInDatabase['_id']})
-              }
-            })
-            });
+        // this.rest.getActivities(null, 100).subscribe(response => {
+        //   response.forEach(activityInDatabase => {
+        //     this.displayableActivities.forEach(element => {
+        //       console.log("Act: " + activityInDatabase['sku']['skuname'])
+        //       console.log("ELEMENT:" + element.skuname)
+        //       if(activityInDatabase['sku']['skuname'] == element.skuname && activityInDatabase['calculatedhours'] == Number(element.hours)){
+        //         this.activityIds.push({activity: activityInDatabase['_id']})
+        //       }
+        //     })
+        //     });
       
-        })
+        // })
       }
       console.log("Array: " + JSON.stringify(this.displayableActivities))
      
@@ -88,12 +88,12 @@ export class NewGoalDialogComponent implements OnInit {
     this.date = new Date(this.data.present_date);
     console.log("DATE: " + this.date.toString())
     this.dateCtrl = new FormControl(this.date)
-    this.rest.getSkus('', '.*',0,0,0,'',5).subscribe(response => {
-        this.skuList = response;
-        this.skuList.forEach(element => {
-          this.skuNameList.push(element.skuname)
-        });
-      });
+    // this.rest.getSkus('', '.*',0,0,0,'',5).subscribe(response => {
+    //     this.skuList = response;
+    //     this.skuList.forEach(element => {
+    //       this.skuNameList.push(element.skuname)
+    //     });
+    //   });
   }
 
   closeDialog() {
@@ -114,15 +114,15 @@ export class NewGoalDialogComponent implements OnInit {
     this.displayableActivities.push(newActivity);
     
     console.log("ACTIVITES: " + JSON.stringify(this.displayableActivities))
-    this.rest.createActivity(this.currentSku['_id'], this.quantity, hours, null,new Date(),null).subscribe(response => {
-      this.activityIds.push({activity: response['_id']});
-      console.log("IDS: " + JSON.stringify(this.activityIds))
-      this.snackBar.open("Successfully created Activity: " + this.currentSku['skuname'] + ".", "close", {
-              duration: 2000,
-            });
-      this.skuCtrl.setValue(null);
-      this.quantity = null;
-    });
+    // this.rest.createActivity(this.currentSku['_id'], this.quantity, hours, null,new Date(),null).subscribe(response => {
+    //   this.activityIds.push({activity: response['_id']});
+    //   console.log("IDS: " + JSON.stringify(this.activityIds))
+    //   this.snackBar.open("Successfully created Activity: " + this.currentSku['skuname'] + ".", "close", {
+    //           duration: 2000,
+    //         });
+    //   this.skuCtrl.setValue(null);
+    //   this.quantity = null;
+    // });
 
   }
 
@@ -144,12 +144,12 @@ export class NewGoalDialogComponent implements OnInit {
       });
     }
     else{
-      this.rest.modifyGoal(this.data.present_name, this.name, this.activityIds, this.date, false).subscribe(response => {
-        this.snackBar.open("Successfully modified Line: " + this.name + ".", "close", {
-          duration: 2000,
-        });
-        this.closeDialog();
-      });
+      // this.rest.modifyGoal(this.data.present_name, this.name, this.activityIds, this.date, false).subscribe(response => {
+      //   this.snackBar.open("Successfully modified Line: " + this.name + ".", "close", {
+      //     duration: 2000,
+      //   });
+      //   this.closeDialog();
+      // });
     }
   }
 
@@ -157,15 +157,15 @@ export class NewGoalDialogComponent implements OnInit {
   selected(event: MatAutocompleteSelectedEvent): void {
     this.selectedSkuNames.push(event.option.viewValue);
 
-    this.rest.getSkus(event.option.viewValue, '', 0,0,0,'',5).subscribe(response => {
-      var i;
-      for(i = 0; i<response.length; i++){
-        this.selectedSkus.push({sku: response[i]['_id']})
-        this.currentSku = response[i];
-      }
+    // this.rest.getSkus(event.option.viewValue, '', 0,0,0,'',5).subscribe(response => {
+    //   var i;
+    //   for(i = 0; i<response.length; i++){
+    //     this.selectedSkus.push({sku: response[i]['_id']})
+    //     this.currentSku = response[i];
+    //   }
 
       
-    });
+    // });
     this.skuInput.nativeElement.value = '';
     this.skuCtrl.setValue(event.option.viewValue);
   }

@@ -93,29 +93,29 @@ export class NewFormulaDialogComponent implements OnInit {
       console.log("okay we are back again. ingredient: " + new_ingredient + ", amount: " +  new_amount);
 
       // get object id from ingredient name
-      this.rest.getIngredients(new_ingredient,"$a", -1, 1).subscribe(response => {
-        if (response.length == 0) {
-          this.snackBar.open("Error adding ingredient.", "close", {
-            duration: 2000,
-               });
-        } 
-        else {
-          console.log("located the ingredient. " + response);
-          new_objectid = response[0];
-          console.log("mah object id fam " + new_objectid);
-          let new_ingredienttuple = new ingredienttuple();
-          //new_ingredienttuple.create({
-          //  ingredient: new_objectid,
-          //  quantity: new_amount,
-         // });
-          new_ingredienttuple.ingredient = new_objectid;
-          new_ingredienttuple.quantity = new_amount;
-          console.log("We are adding a new ingredient tuple with name " + new_ingredient + " and amount " + new_ingredienttuple.quantity);
-          this.ingredientsandquantities.push(new_ingredienttuple);
-          console.log("ingredients and quantities are now " + this.ingredientsandquantities);
-        }
-        this.refreshData();
-        });
+      // this.rest.getIngredients(new_ingredient,"$a", -1, 1).subscribe(response => {
+      //   if (response.length == 0) {
+      //     this.snackBar.open("Error adding ingredient.", "close", {
+      //       duration: 2000,
+      //          });
+      //   } 
+      //   else {
+      //     console.log("located the ingredient. " + response);
+      //     new_objectid = response[0];
+      //     console.log("mah object id fam " + new_objectid);
+      //     let new_ingredienttuple = new ingredienttuple();
+      //     //new_ingredienttuple.create({
+      //     //  ingredient: new_objectid,
+      //     //  quantity: new_amount,
+      //    // });
+      //     new_ingredienttuple.ingredient = new_objectid;
+      //     new_ingredienttuple.quantity = new_amount;
+      //     console.log("We are adding a new ingredient tuple with name " + new_ingredient + " and amount " + new_ingredienttuple.quantity);
+      //     this.ingredientsandquantities.push(new_ingredienttuple);
+      //     console.log("ingredients and quantities are now " + this.ingredientsandquantities);
+      //   }
+      //   this.refreshData();
+      //   });
         
         });
         
@@ -137,36 +137,36 @@ export class NewFormulaDialogComponent implements OnInit {
       console.log("ingredientsandquantities: " + this.ingredientsandquantities);
       console.log("comment: " + this.comment);
 
-      this.rest.createFormula(this.formulaname, this.formulanumber, this.ingredientsandquantities, this.comment).subscribe(response => {
-        console.log("response:: ", response);
-        if (response['success']) {
-               this.snackBar.open("Successfully created formula " + this.formulaname + ".", "close", {
-                 duration: 2000,
-               });
-             } else {
-               console.log("something went very wrong. response: " + response.data);
-               this.snackBar.open("Error creating formula " + this.formulaname + ". Please refresh and try again.", "close", {
-                 duration: 2000,
-               });
-             }
-             this.closeDialog();
-           });
+      // this.rest.createFormula(this.formulaname, this.formulanumber, this.ingredientsandquantities, this.comment).subscribe(response => {
+      //   console.log("response:: ", response);
+      //   if (response['success']) {
+      //          this.snackBar.open("Successfully created formula " + this.formulaname + ".", "close", {
+      //            duration: 2000,
+      //          });
+      //        } else {
+      //          console.log("something went very wrong. response: " + response.data);
+      //          this.snackBar.open("Error creating formula " + this.formulaname + ". Please refresh and try again.", "close", {
+      //            duration: 2000,
+      //          });
+      //        }
+      //        this.closeDialog();
+      //      });
       }
 
     else{
       console.log("We're modifying a formula");
-      this.rest.modifyFormula(this.oldformulaname, this.formulaname, this.formulanumber, this.ingredientsandquantities, this.comment).subscribe(response => {
-         if (response['success']) {
-           this.snackBar.open("Successfully modifyed formula " + this.formulaname + ".", "close", {
-             duration: 2000,
-           });
-         } else {
-           this.snackBar.open("Error modifying formula " + this.formulaname + ". Please refresh and try again.", "close", {
-             duration: 2000,
-           });
-         }
-         this.closeDialog();
-       });
+      // this.rest.modifyFormula(this.oldformulaname, this.formulaname, this.formulanumber, this.ingredientsandquantities, this.comment).subscribe(response => {
+      //    if (response['success']) {
+      //      this.snackBar.open("Successfully modifyed formula " + this.formulaname + ".", "close", {
+      //        duration: 2000,
+      //      });
+      //    } else {
+      //      this.snackBar.open("Error modifying formula " + this.formulaname + ". Please refresh and try again.", "close", {
+      //        duration: 2000,
+      //      });
+      //    }
+      //    this.closeDialog();
+      //  });
     }
     this.refreshData();
   }

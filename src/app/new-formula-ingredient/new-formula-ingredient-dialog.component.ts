@@ -54,12 +54,12 @@ export class NewFormulaIngredientDialogComponent implements OnInit {
     }
     else this.dialog_title = "Add Ingredient to Formula";
 
-    this.rest.getIngredients('','.*',0,5).subscribe(response => {
-      this.ingredientList = response;
-      this.ingredientList.forEach(element => {
-        this.ingredientNameList.push(element.ingredientname)
-      });
-    });
+    // this.rest.getIngredients('','.*',0,5).subscribe(response => {
+    //   this.ingredientList = response;
+    //   this.ingredientList.forEach(element => {
+    //     this.ingredientNameList.push(element.ingredientname)
+    //   });
+    // });
   }
 
   closeDialog() {
@@ -118,12 +118,12 @@ export class NewFormulaIngredientDialogComponent implements OnInit {
     this.selectedIngredientNames.push(event.option.viewValue);
     console.log(event.option.viewValue)
     this.ingredientName = event.option.viewValue;
-    this.rest.getIngredients(event.option.viewValue, '', 0, 5).subscribe(response => {
-      var i;
-      for(i = 0; i<response.length; i++){
-        this.selectedIngredients.push({ingredient: response[i]['_id']})
-      }
-    });
+    // this.rest.getIngredients(event.option.viewValue, '', 0, 5).subscribe(response => {
+    //   var i;
+    //   for(i = 0; i<response.length; i++){
+    //     this.selectedIngredients.push({ingredient: response[i]['_id']})
+    //   }
+    // });
     this.ingredientInput.nativeElement.value = '';
     this.ingredientCtrl.setValue(null);
   }

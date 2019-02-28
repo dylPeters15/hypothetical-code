@@ -66,44 +66,44 @@ export class ManufacturingGoalsComponent implements OnInit {
 
   refreshData() {
     this.data = [];
-    this.rest.getUserName().then(result => {
-      this.rest.getGoals(result.toString(), "", "", true, 5).subscribe(data => {
-        this.goals = data;
-            var i;
-            this.dataSource = new MatTableDataSource<ManufacturingGoal>(this.data);
-            for(i = 0; i<this.goals.length; i++){
-              let name = this.goals[i]['goalname'];
-              let activities = this.goals[i]['activities'];
-              if(activities != undefined){
-                console.log("ACTIVITES: " + JSON.stringify(activities))
-                var j;
-                let activityCount = activities.length;
-                let activityString = '';
-                for(j = 0; j<activities.length; j++){                  
-                  let currentActivity =  activities[j]['activity']
-                  console.log("Activity: " + JSON.stringify(currentActivity))
-                  if(currentActivity != null && currentActivity != undefined){
-                    let hoursString = currentActivity['sethours'] != null ? currentActivity['sethours'] : currentActivity['calculatedhours'];
-                    activityString += "SKU: " + currentActivity['sku']['skuname'] + ": Hours Required: " + hoursString + '\n'; 
-                  }
+    // this.rest.getUserName().then(result => {
+    //   this.rest.getGoals(result.toString(), "", "", true, 5).subscribe(data => {
+    //     this.goals = data;
+    //         var i;
+    //         this.dataSource = new MatTableDataSource<ManufacturingGoal>(this.data);
+    //         for(i = 0; i<this.goals.length; i++){
+    //           let name = this.goals[i]['goalname'];
+    //           let activities = this.goals[i]['activities'];
+    //           if(activities != undefined){
+    //             console.log("ACTIVITES: " + JSON.stringify(activities))
+    //             var j;
+    //             let activityCount = activities.length;
+    //             let activityString = '';
+    //             for(j = 0; j<activities.length; j++){                  
+    //               let currentActivity =  activities[j]['activity']
+    //               console.log("Activity: " + JSON.stringify(currentActivity))
+    //               if(currentActivity != null && currentActivity != undefined){
+    //                 let hoursString = currentActivity['sethours'] != null ? currentActivity['sethours'] : currentActivity['calculatedhours'];
+    //                 activityString += "SKU: " + currentActivity['sku']['skuname'] + ": Hours Required: " + hoursString + '\n'; 
+    //               }
                  
-                }
-                activityString = activityString.substring(0,activityString.length-1)
-                let date = new Date(this.goals[i]['date']);
-                let dateString = date.getMonth()+1 + '/' + date.getDate() + '/' + date.getFullYear();
-                let currentGoal = new ManufacturingGoal(name, activityString, activityCount, dateString, false);
-                this.data.push(currentGoal);
-              }
+    //             }
+    //             activityString = activityString.substring(0,activityString.length-1)
+    //             let date = new Date(this.goals[i]['date']);
+    //             let dateString = date.getMonth()+1 + '/' + date.getDate() + '/' + date.getFullYear();
+    //             let currentGoal = new ManufacturingGoal(name, activityString, activityCount, dateString, false);
+    //             this.data.push(currentGoal);
+    //           }
               
          
-            }
-            this.data.forEach(element => {
-              element['checked'] = false;
-            });
-            this.dataSource = new MatTableDataSource<ManufacturingGoal>(this.data);
-            this.dataSource.paginator = this.paginator;
-        })
-      })
+    //         }
+    //         this.data.forEach(element => {
+    //           element['checked'] = false;
+    //         });
+    //         this.dataSource = new MatTableDataSource<ManufacturingGoal>(this.data);
+    //         this.dataSource.paginator = this.paginator;
+    //     })
+    //   })
     
   }
 
@@ -117,15 +117,15 @@ export class ManufacturingGoalsComponent implements OnInit {
   }
 
   deleteGoalConfirmed(name) {
-    this.rest.deleteGoal(name).subscribe(response => {
-      this.snackBar.open("Goal: " + name + " deleted successfully.", "close", {
-        duration: 2000,
-      });
-      this.data = this.data.filter((value, index, arr) => {
-        return value.name != name;
-      });
-      this.refreshData();
-    });
+    // this.rest.deleteGoal(name).subscribe(response => {
+    //   this.snackBar.open("Goal: " + name + " deleted successfully.", "close", {
+    //     duration: 2000,
+    //   });
+    //   this.data = this.data.filter((value, index, arr) => {
+    //     return value.name != name;
+    //   });
+    //   this.refreshData();
+    // });
   }
 
   deselectAll() {

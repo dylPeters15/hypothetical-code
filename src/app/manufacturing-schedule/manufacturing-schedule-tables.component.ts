@@ -80,17 +80,17 @@ export class ManufactoringScheduleTableComponent implements ControlValueAccessor
       var isValidMove = false;
       let promise =  new Promise((resolve, reject) => {
         // let splitId = event.previousContainer.id.split(",")
-        this.rest.getLine("", "", event.previousContainer.id, "", 1).subscribe(line => {
-              if (line['shortname'] == event.previousContainer.id) {
-                console.log(event.previousContainer.id, line)
-                isValidMove = true;
-                resolve(line);
-              }
-              else {
-                isValidMove = false;
-                resolve(line)
-              }
-            });
+        // this.rest.getLine("", "", event.previousContainer.id, "", 1).subscribe(line => {
+        //       if (line['shortname'] == event.previousContainer.id) {
+        //         console.log(event.previousContainer.id, line)
+        //         isValidMove = true;
+        //         resolve(line);
+        //       }
+        //       else {
+        //         isValidMove = false;
+        //         resolve(line)
+        //       }
+        //     });
         });
       promise.then((line) => {
         if (isValidMove) {
@@ -110,32 +110,32 @@ export class ManufactoringScheduleTableComponent implements ControlValueAccessor
 /* Hi this method is buggy */
   updateActivity(event) {
     return new Promise((resolve, reject) => {
-      this.rest.getGoals("", "", "", true, 5).subscribe(goals => {
-        if (goals) {
-          goals.forEach((goal) => {
-            var activities = goal['activities'];
-            console.log(activities)
-            activities.forEach((activity) => {
-              if (activity['_id'] == event.previousContainer.data[event.previousIndex]['_id']) {
-                this.rest.modifyActivity(activity['sku']['_id'], activity['sku']['_id'], 
-                activity['numcases'], activity['calculatedhours'], 
-                activity['sethours'], activity['startdate'], null).subscribe(modifyPLResponse => {
-                  if (modifyPLResponse['ok'] == 1) {
-                      console.log('success')
-                      resolve();
-                  } else {
-                      console.log('failure')
-                      reject(Error("Could not modify Activity " + activity));
-                  }     
-              });
-              }
-              console.log("Must move activity to proper goal")
-              resolve();
-            })
+      // this.rest.getGoals("", "", "", true, 5).subscribe(goals => {
+      //   if (goals) {
+      //     goals.forEach((goal) => {
+      //       var activities = goal['activities'];
+      //       console.log(activities)
+      //       activities.forEach((activity) => {
+      //         if (activity['_id'] == event.previousContainer.data[event.previousIndex]['_id']) {
+      //           this.rest.modifyActivity(activity['sku']['_id'], activity['sku']['_id'], 
+      //           activity['numcases'], activity['calculatedhours'], 
+      //           activity['sethours'], activity['startdate'], null).subscribe(modifyPLResponse => {
+      //             if (modifyPLResponse['ok'] == 1) {
+      //                 console.log('success')
+      //                 resolve();
+      //             } else {
+      //                 console.log('failure')
+      //                 reject(Error("Could not modify Activity " + activity));
+      //             }     
+      //         });
+      //         }
+      //         console.log("Must move activity to proper goal")
+      //         resolve();
+      //       })
 
-          });
-        }
-      })
+      //     });
+      //   }
+      // })
     })
     
   }

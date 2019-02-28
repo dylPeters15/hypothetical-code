@@ -56,13 +56,13 @@ export class NewLineDialogComponent implements OnInit {
           let sku = skuString.substring(0,colonIndex);
           
           this.selectedSkuNames.push(sku);
-          this.rest.getSkus(sku,sku,0,0,0,'',100).subscribe(response=>{
-            if(response[0] != undefined){
-              let currentSku = response[0];
-              console.log("SKU: " + JSON.stringify(currentSku))
-              this.selectedSkus.push({sku: currentSku['_id']});
-            }
-          })
+          // this.rest.getSkus(sku,sku,0,0,0,'',100).subscribe(response=>{
+          //   if(response[0] != undefined){
+          //     let currentSku = response[0];
+          //     console.log("SKU: " + JSON.stringify(currentSku))
+          //     this.selectedSkus.push({sku: currentSku['_id']});
+          //   }
+          // })
       });
       }
     
@@ -72,12 +72,12 @@ export class NewLineDialogComponent implements OnInit {
     else {
       this.dialog_title = "Create New Manufacturing Line";
     }
-    this.rest.getSkus('', '.*',0,0,0,'',100).subscribe(response => {
-        this.skuList = response;
-        this.skuList.forEach(element => {
-          this.skuNameList.push(element.skuname)
-        });
-      });
+    // this.rest.getSkus('', '.*',0,0,0,'',100).subscribe(response => {
+    //     this.skuList = response;
+    //     this.skuList.forEach(element => {
+    //       this.skuNameList.push(element.skuname)
+    //     });
+    //   });
   }
 
   closeDialog() {
@@ -94,25 +94,25 @@ export class NewLineDialogComponent implements OnInit {
   createLine() {
     if (this.linename!='' && this.shortname!='') {
       if(this.edit == false){
-        this.rest.createLine(this.linename, this.shortname, this.selectedSkus, this.comment).subscribe(response => {
-          this.snackBar.open("Successfully created Line: " + this.linename + ".", "close", {
-            duration: 2000,
-          });
-        //   console.log(response);
-        //   this.snackBar.open("Error creating Line: " + this.linename + ". Please refresh and try again.", "close", {
+        // this.rest.createLine(this.linename, this.shortname, this.selectedSkus, this.comment).subscribe(response => {
+        //   this.snackBar.open("Successfully created Line: " + this.linename + ".", "close", {
         //     duration: 2000,
         //   });
-        // }
-          this.closeDialog();
-        });
+        // //   console.log(response);
+        // //   this.snackBar.open("Error creating Line: " + this.linename + ". Please refresh and try again.", "close", {
+        // //     duration: 2000,
+        // //   });
+        // // }
+        //   this.closeDialog();
+        // });
       }
       else{
-        this.rest.modifyLine(this.data.present_linename, this.linename, this.shortname, this.selectedSkus, this.comment).subscribe(response => {
-          this.snackBar.open("Successfully modified Line: " + this.linename + ".", "close", {
-            duration: 2000,
-          });
-          this.closeDialog();
-        });
+        // this.rest.modifyLine(this.data.present_linename, this.linename, this.shortname, this.selectedSkus, this.comment).subscribe(response => {
+        //   this.snackBar.open("Successfully modified Line: " + this.linename + ".", "close", {
+        //     duration: 2000,
+        //   });
+        //   this.closeDialog();
+        // });
       }
     }
   }
@@ -144,28 +144,28 @@ export class NewLineDialogComponent implements OnInit {
     if (index >= 0) {
       this.selectedSkuNames.splice(index, 1);
     }
-    this.rest.getSkus(sku, sku, 0,0,0,'',100).subscribe(response => {
-      if(response != undefined){
-        console.log(this.selectedSkus)
-        const skuIndex = this.selectedSkus.indexOf(response[0]['_id']);
-        this.selectedSkus.splice(skuIndex,1);
-      }
+    // this.rest.getSkus(sku, sku, 0,0,0,'',100).subscribe(response => {
+    //   if(response != undefined){
+    //     console.log(this.selectedSkus)
+    //     const skuIndex = this.selectedSkus.indexOf(response[0]['_id']);
+    //     this.selectedSkus.splice(skuIndex,1);
+    //   }
 
-    });
+    // });
 
 
   }
 
   selected(event: MatAutocompleteSelectedEvent): void {
     this.selectedSkuNames.push(event.option.viewValue);
-    this.rest.getSkus(event.option.viewValue, '', 0,0,0,'',5).subscribe(response => {
-      var i;
-      for(i = 0; i<response.length; i++){
-        this.selectedSkus.push({sku: response[i]['_id']})
-      }
+    // this.rest.getSkus(event.option.viewValue, '', 0,0,0,'',5).subscribe(response => {
+    //   var i;
+    //   for(i = 0; i<response.length; i++){
+    //     this.selectedSkus.push({sku: response[i]['_id']})
+    //   }
 
       
-    });
+    // });
     this.skuInput.nativeElement.value = '';
     this.skuCtrl.setValue(null);
   }

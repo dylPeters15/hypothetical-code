@@ -42,13 +42,13 @@ export class ManufacturingCalculatorComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.rest.getUserName().then(result => {
-      this.username = result.toString();
-      this.rest.getGoals(this.username, "", ".*", false, 5).subscribe(data => {
-          this.goals = data;
+    // this.rest.getUserName().then(result => {
+    //   this.username = result.toString();
+    //   this.rest.getGoals(this.username, "", ".*", false, 5).subscribe(data => {
+    //       this.goals = data;
           
-      })
-    })
+    //   })
+    // })
   }
 
   getGoalByName(name) {
@@ -56,14 +56,14 @@ export class ManufacturingCalculatorComponent implements OnInit {
     this.data = [];
     this.ingredients = [];
     this.dataSource = new MatTableDataSource<SkuQuantityTable>(this.data);
-      this.rest.getGoals(this.username, name, name, false, 5).subscribe(data => {
-          this.selectedGoal = data[0];
-          console.log("GOAL: " + JSON.stringify(data[0]))
-          let skus: String[] = [];
-          let activities = this.selectedGoal['activities'];
-          this.calculateIngredientsAndQuantities(activities)
+      // this.rest.getGoals(this.username, name, name, false, 5).subscribe(data => {
+      //     this.selectedGoal = data[0];
+      //     console.log("GOAL: " + JSON.stringify(data[0]))
+      //     let skus: String[] = [];
+      //     let activities = this.selectedGoal['activities'];
+      //     this.calculateIngredientsAndQuantities(activities)
     
-        });
+      //   });
     }
 
   calculateIngredientsAndQuantities(activitiesList) {

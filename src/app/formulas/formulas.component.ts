@@ -65,17 +65,17 @@ export class FormulaComponent implements OnInit {
 
   refreshData(filterQueryData?) {
     filterQueryData = filterQueryData ? ".*"+filterQueryData+".*" : ".*"+this.filterQuery+".*"; //this returns things that have the pattern anywhere in the string
-    this.rest.getFormulas("", null, null, this.paginator.pageSize*10,filterQueryData, null).subscribe(response => {
-      console.log("in formula: ", response);
-      this.data = response;
-      this.data.forEach(user => {
-        user['checked'] = false;
-      });
-      console.log(this.data);
-      this.dataSource =  new MatTableDataSource<FormulaForTable>(this.data);
-      this.dataSource.sort = this.sort;
-      this.dataSource.paginator = this.paginator;
-    });
+    // this.rest.getFormulas("", null, null, this.paginator.pageSize*10,filterQueryData, null).subscribe(response => {
+    //   console.log("in formula: ", response);
+    //   this.data = response;
+    //   this.data.forEach(user => {
+    //     user['checked'] = false;
+    //   });
+    //   console.log(this.data);
+    //   this.dataSource =  new MatTableDataSource<FormulaForTable>(this.data);
+    //   this.dataSource.sort = this.sort;
+    //   this.dataSource.paginator = this.paginator;
+    // });
   }
 
   seeInfo(type, content) {
@@ -111,15 +111,15 @@ export class FormulaComponent implements OnInit {
   }
 
   deleteFormulaConfirmed(formula) {
-    this.rest.deleteFormula(formula['formulanumber']).subscribe(response => {
-      this.snackBar.open("Formula " + formula['formulaname'] + " deleted successfully.", "close", {
-        duration: 2000,
-      });
-      this.data = this.data.filter((value, index, arr) => {
-        return value.formulaname != formula['formulaname'];
-      });
-      this.refreshData();
-    });
+    // this.rest.deleteFormula(formula['formulanumber']).subscribe(response => {
+    //   this.snackBar.open("Formula " + formula['formulaname'] + " deleted successfully.", "close", {
+    //     duration: 2000,
+    //   });
+    //   this.data = this.data.filter((value, index, arr) => {
+    //     return value.formulaname != formula['formulaname'];
+    //   });
+    //   this.refreshData();
+    // });
   }
 
   modifyFormulaConfirmed(formula) {
@@ -134,16 +134,16 @@ export class FormulaComponent implements OnInit {
       if (formula.checked) {
         var thisobject = this;
         let promise1 = new Promise((resolve, reject) => {
-          thisobject.rest.getSkus("","", -1, -1, -1, formula['_id'], 10).subscribe(skus => {
-            console.log(skus)
-            skus.forEach((sku) => {
-              if (sku['skuname']) {
-                affectedSkus.push(sku);
-                affectedSkuNames.push(sku['skuname'])
-              }
-            });
-            resolve();
-          });
+          // thisobject.rest.getSkus("","", -1, -1, -1, formula['_id'], 10).subscribe(skus => {
+          //   console.log(skus)
+          //   skus.forEach((sku) => {
+          //     if (sku['skuname']) {
+          //       affectedSkus.push(sku);
+          //       affectedSkuNames.push(sku['skuname'])
+          //     }
+          //   });
+          //   resolve();
+          // });
         });
         promise1.then(() => {
           if (affectedSkus.length == 0) {
@@ -160,22 +160,22 @@ export class FormulaComponent implements OnInit {
               if (closeData && closeData['confirmed']) {
                 
                 affectedSkus.forEach((sku) => {
-                  this.rest.modifySku(sku['skuname'], sku['skuname'], sku['skunumber'],
-                  sku['caseupcnumber'], sku['unitupcnumber'], sku['unitsize'], 
-                  sku['countpercase'], -1, sku['formulascalingfactor'], 
-                  sku['manufacturingrate'],sku['comment']).subscribe(response => {
-                    if (response['nModified']) {
-                      this.snackBar.open("Successfully modified formula " + formula['formulaname'] + ".", "close", {
-                        duration: 2000,
-                      });
-                      console.log('success')
-                    } else {
-                      console.log(response)
-                      this.snackBar.open("Error modifying formula " + formula['formulaname'] + ".", "close", {
-                        duration: 2000,
-                      });
-                    }
-                  })
+                  // this.rest.modifySku(sku['skuname'], sku['skuname'], sku['skunumber'],
+                  // sku['caseupcnumber'], sku['unitupcnumber'], sku['unitsize'], 
+                  // sku['countpercase'], -1, sku['formulascalingfactor'], 
+                  // sku['manufacturingrate'],sku['comment']).subscribe(response => {
+                  //   if (response['nModified']) {
+                  //     this.snackBar.open("Successfully modified formula " + formula['formulaname'] + ".", "close", {
+                  //       duration: 2000,
+                  //     });
+                  //     console.log('success')
+                  //   } else {
+                  //     console.log(response)
+                  //     this.snackBar.open("Error modifying formula " + formula['formulaname'] + ".", "close", {
+                  //       duration: 2000,
+                  //     });
+                  //   }
+                  // })
                 }) 
                 this.deleteFormulaConfirmed(formula);       
               }

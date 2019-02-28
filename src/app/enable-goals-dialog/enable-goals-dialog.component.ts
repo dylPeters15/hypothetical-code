@@ -46,27 +46,27 @@ export class EnableGoalsDialogComponent implements OnInit {
   }
 
   refreshData() {
-    this.rest.getUserName().then(result => {
-      this.rest.getGoals("", "", ".*", true, 5).subscribe(goals => {
-        let enabledGoalsList = [];
-        let disabledGoalsList = [];
-        goals.forEach(goal => {
-          if(goal['enabled'] == true){
-            enabledGoalsList.push(goal);
-          }
-          else{
-            disabledGoalsList.push(goal);
-          }
-        })
-        let enabledGoalsTable = new DataForTable("Enabled", enabledGoalsList)
-        this.data.push(enabledGoalsTable)
-          let disabledGoalsTable = new DataForTable("Disabled", disabledGoalsList)
-          this.data.push(disabledGoalsTable)
-          this.dataSource = new MatTableDataSource<DataForTable>(this.data);
+    // this.rest.getUserName().then(result => {
+    //   this.rest.getGoals("", "", ".*", true, 5).subscribe(goals => {
+    //     let enabledGoalsList = [];
+    //     let disabledGoalsList = [];
+    //     goals.forEach(goal => {
+    //       if(goal['enabled'] == true){
+    //         enabledGoalsList.push(goal);
+    //       }
+    //       else{
+    //         disabledGoalsList.push(goal);
+    //       }
+    //     })
+    //     let enabledGoalsTable = new DataForTable("Enabled", enabledGoalsList)
+    //     this.data.push(enabledGoalsTable)
+    //       let disabledGoalsTable = new DataForTable("Disabled", disabledGoalsList)
+    //       this.data.push(disabledGoalsTable)
+    //       this.dataSource = new MatTableDataSource<DataForTable>(this.data);
 
-      });
+    //   });
 
-    });
+    // });
   }
 
   drop(event: CdkDragDrop<string[]>) {

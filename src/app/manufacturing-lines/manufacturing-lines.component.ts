@@ -74,31 +74,31 @@ export class ManufacturingLinesComponent implements OnInit {
 
   refreshData() {
     this.data = [];
-    this.rest.getLine('', '.*','','',5).subscribe(skus => {
-      this.lines = skus;
-      this.dataSource = new MatTableDataSource<ManufacturingLine>(this.data);
-      var i;
-      for(i = 0; i<this.lines.length; i++){
-        this.skuString = "";
-        let linename = this.lines[i]['linename'];
-        let shortname = this.lines[i]['shortname'];
-        var count = 0;
-        var j;
-        for(j = 0; j<this.lines[i]['skus'].length; j++){
-          this.skuString += this.printSKU(this.lines[i]['skus'][j]['sku']);
-          count++;
-        }
-        this.skuString = this.skuString.substring(0,this.skuString.length-1);
-        let comment = this.lines[i]['comment'];
-        let currentLine = new ManufacturingLine(linename, shortname, this.skuString, comment, false, count);
-        this.data.push(currentLine)
-      }
-      this.data.forEach(element => {
-        element['checked'] = false;
-      });
-      this.dataSource = new MatTableDataSource<ManufacturingLine>(this.data);
-      this.dataSource.paginator = this.paginator;
-    });
+    // this.rest.getLine('', '.*','','',5).subscribe(skus => {
+    //   this.lines = skus;
+    //   this.dataSource = new MatTableDataSource<ManufacturingLine>(this.data);
+    //   var i;
+    //   for(i = 0; i<this.lines.length; i++){
+    //     this.skuString = "";
+    //     let linename = this.lines[i]['linename'];
+    //     let shortname = this.lines[i]['shortname'];
+    //     var count = 0;
+    //     var j;
+    //     for(j = 0; j<this.lines[i]['skus'].length; j++){
+    //       this.skuString += this.printSKU(this.lines[i]['skus'][j]['sku']);
+    //       count++;
+    //     }
+    //     this.skuString = this.skuString.substring(0,this.skuString.length-1);
+    //     let comment = this.lines[i]['comment'];
+    //     let currentLine = new ManufacturingLine(linename, shortname, this.skuString, comment, false, count);
+    //     this.data.push(currentLine)
+    //   }
+    //   this.data.forEach(element => {
+    //     element['checked'] = false;
+    //   });
+    //   this.dataSource = new MatTableDataSource<ManufacturingLine>(this.data);
+    //   this.dataSource.paginator = this.paginator;
+    // });
   }
 
   deleteSelected() {
@@ -111,16 +111,16 @@ export class ManufacturingLinesComponent implements OnInit {
   }
 
   deleteGoalConfirmed(name) {
-    this.rest.deleteLine(name).subscribe(response => {
-      this.snackBar.open("Line: " + name + " deleted successfully.", "close", {
-        duration: 2000,
-      });
-      this.data = this.data.filter((value, index, arr) => {
-        return value.linename != name;
-      });
-      this.skuString = "";
-      this.refreshData();
-    });
+    // this.rest.deleteLine(name).subscribe(response => {
+    //   this.snackBar.open("Line: " + name + " deleted successfully.", "close", {
+    //     duration: 2000,
+    //   });
+    //   this.data = this.data.filter((value, index, arr) => {
+    //     return value.linename != name;
+    //   });
+    //   this.skuString = "";
+    //   this.refreshData();
+    // });
   }
 
   deselectAll() {

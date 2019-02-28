@@ -37,19 +37,19 @@ import {MatSnackBar} from '@angular/material';
       let i;
         for (i=0; i<this.selectedOptions.length; i++) {
           console.log(this.selectedOptions[i]);
-          this.rest.getProductLines(this.selectedOptions[i],"",1).subscribe(data => {
-            console.log(data[0].skus.length)
-            if (data[0].skus.length != 0) {
-              this.snackBar.open("Error deleting product line " + this.selectedOptions[i] + ". Please remove all associated SKUs and try again.", "close", {});
-            }
-            else {
-              this.rest.deleteProductLine(data[0].productlinename).subscribe(results => {
-                if (results != null) {
-                  console.log(results)
-                }
-              })
-            }
-          })
+          // this.rest.getProductLines(this.selectedOptions[i],"",1).subscribe(data => {
+          //   console.log(data[0].skus.length)
+          //   if (data[0].skus.length != 0) {
+          //     this.snackBar.open("Error deleting product line " + this.selectedOptions[i] + ". Please remove all associated SKUs and try again.", "close", {});
+          //   }
+          //   else {
+          //     this.rest.deleteProductLine(data[0].productlinename).subscribe(results => {
+          //       if (results != null) {
+          //         console.log(results)
+          //       }
+          //     });
+          //   }
+          // });
         }
     }
 

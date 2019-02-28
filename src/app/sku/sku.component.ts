@@ -86,16 +86,16 @@ export class SkuComponent  implements OnInit {
 
   refreshData(filterQueryData?) {
     filterQueryData = filterQueryData ? ".*"+filterQueryData+".*" : ".*"+this.filterQuery+".*"; //this returns things that have the pattern anywhere in the string
-    this.rest.getSkus("", filterQueryData, null, null, null, "", this.paginator.pageSize*10).subscribe(response => {
-      this.data = response;
-      this.data.forEach(user => {
-        user['checked'] = false;
-      });
-      console.log(this.data);
-      this.dataSource =  new MatTableDataSource<UserForTable>(this.data);
-      this.dataSource.sort = this.sort;
-      this.dataSource.paginator = this.paginator;
-    });
+    // this.rest.getSkus("", filterQueryData, null, null, null, "", this.paginator.pageSize*10).subscribe(response => {
+    //   this.data = response;
+    //   this.data.forEach(user => {
+    //     user['checked'] = false;
+    //   });
+    //   console.log(this.data);
+    //   this.dataSource =  new MatTableDataSource<UserForTable>(this.data);
+    //   this.dataSource.sort = this.sort;
+    //   this.dataSource.paginator = this.paginator;
+    // });
   }
 
   seeInfo(type, content) {
@@ -129,15 +129,15 @@ export class SkuComponent  implements OnInit {
   }
 
   deleteSkuConfirmed(sku) {
-    this.rest.deleteSku(sku['skuname']).subscribe(response => {
-      this.snackBar.open("Stock Keeping Unit " + sku['skuname'] + " deleted successfully.", "close", {
-        duration: 2000,
-      });
-      this.data = this.data.filter((value, index, arr) => {
-        return value.skuname != sku['skuname'];
-      });
-      this.refreshData();
-    });
+    // this.rest.deleteSku(sku['skuname']).subscribe(response => {
+    //   this.snackBar.open("Stock Keeping Unit " + sku['skuname'] + " deleted successfully.", "close", {
+    //     duration: 2000,
+    //   });
+    //   this.data = this.data.filter((value, index, arr) => {
+    //     return value.skuname != sku['skuname'];
+    //   });
+    //   this.refreshData();
+    // });
   }
 
   modifySkuConfirmed(present_name, present_skuNumber, present_caseUpcNumber, present_unitUpcNumber,present_unitSize,present_countPerCase,present_productLine,present_ingredientTuples, present_comment, present_id) {
@@ -153,36 +153,36 @@ export class SkuComponent  implements OnInit {
       if (sku.checked) {
         var thisobject = this;
         let promise1 = new Promise((resolve, reject) => {
-          thisobject.rest.getLine('', '.*','','',50).subscribe(lines => {
-            console.log(lines)
-            lines.forEach((line) => {
-              console.log(line)
-              line['skus'].forEach((skuinline) => {
-                console.log('skuinline', skuinline['sku'], sku)
-                if (skuinline['sku']['_id'] == sku['_id']) {
-                  affectedManufacturingLines.push(line);
-                  affectedManufacturingLineNames.push(line['linename'])
-                }
-              })
+          // thisobject.rest.getLine('', '.*','','',50).subscribe(lines => {
+          //   console.log(lines)
+          //   lines.forEach((line) => {
+          //     console.log(line)
+          //     line['skus'].forEach((skuinline) => {
+          //       console.log('skuinline', skuinline['sku'], sku)
+          //       if (skuinline['sku']['_id'] == sku['_id']) {
+          //         affectedManufacturingLines.push(line);
+          //         affectedManufacturingLineNames.push(line['linename'])
+          //       }
+          //     })
               
-            });
-            resolve();
-          });
+          //   });
+          //   resolve();
+          // });
         });
         let promise2 = new Promise((resolve, reject) => {
-          thisobject.rest.getProductLines("",".*", 50).subscribe(lines => {
-            console.log(lines)
-            lines.forEach((line) => {
-              line['skus'].forEach((skuinline) => {
-                console.log('skuinline', skuinline['sku'], sku)
-                if (skuinline['sku']['_id'] == sku['_id']) {
-                  affectedProductLines.push(line);
-                  affectedProductLineNames.push(line['productlinename'])
-                }
-              })
-            });
-            resolve();
-          });
+          // thisobject.rest.getProductLines("",".*", 50).subscribe(lines => {
+          //   console.log(lines)
+          //   lines.forEach((line) => {
+          //     line['skus'].forEach((skuinline) => {
+          //       console.log('skuinline', skuinline['sku'], sku)
+          //       if (skuinline['sku']['_id'] == sku['_id']) {
+          //         affectedProductLines.push(line);
+          //         affectedProductLineNames.push(line['productlinename'])
+          //       }
+          //     })
+          //   });
+          //   resolve();
+          // });
         });
         promise1.then(() => {
           promise2.then(() => {
@@ -218,20 +218,20 @@ export class SkuComponent  implements OnInit {
                     });
                     console.log('oldsku', line['skus'])
                     console.log('modified', newSkus)
-                    this.rest.modifyLine(line['linename'], line['linename'], line['shortname'],
-                    newSkus, line['comment']).subscribe(response => {
-                      if (response['nModified']) {
-                        this.snackBar.open("Successfully modified line " + line['linename'] + ".", "close", {
-                          duration: 2000,
-                        });
-                        console.log('success')
-                      } else {
-                        console.log(response)
-                        this.snackBar.open("Error modifying line " + line['linename'] + ".", "close", {
-                          duration: 2000,
-                        });
-                      }
-                    })
+                    // this.rest.modifyLine(line['linename'], line['linename'], line['shortname'],
+                    // newSkus, line['comment']).subscribe(response => {
+                    //   if (response['nModified']) {
+                    //     this.snackBar.open("Successfully modified line " + line['linename'] + ".", "close", {
+                    //       duration: 2000,
+                    //     });
+                    //     console.log('success')
+                    //   } else {
+                    //     console.log(response)
+                    //     this.snackBar.open("Error modifying line " + line['linename'] + ".", "close", {
+                    //       duration: 2000,
+                    //     });
+                    //   }
+                    // })
                   }) 
                   affectedProductLines.forEach((line) => {
                     let newSkus;
@@ -248,20 +248,20 @@ export class SkuComponent  implements OnInit {
                     });
                     console.log('oldsku', line['skus'])
                     console.log('modified', newSkus)
-                    this.rest.modifyProductLine(line['productlinename'], line['productlinename'],
-                    newSkus).subscribe(response => {
-                      if (response['nModified']) {
-                        this.snackBar.open("Successfully modified line " + line['productlinename'] + ".", "close", {
-                          duration: 2000,
-                        });
-                        console.log('success')
-                      } else {
-                        console.log(response)
-                        this.snackBar.open("Error modifying line " + line['productlinename'] + ".", "close", {
-                          duration: 2000,
-                        });
-                      }
-                    })
+                    // this.rest.modifyProductLine(line['productlinename'], line['productlinename'],
+                    // newSkus).subscribe(response => {
+                    //   if (response['nModified']) {
+                    //     this.snackBar.open("Successfully modified line " + line['productlinename'] + ".", "close", {
+                    //       duration: 2000,
+                    //     });
+                    //     console.log('success')
+                    //   } else {
+                    //     console.log(response)
+                    //     this.snackBar.open("Error modifying line " + line['productlinename'] + ".", "close", {
+                    //       duration: 2000,
+                    //     });
+                    //   }
+                    // })
                   })       
                 }
               });

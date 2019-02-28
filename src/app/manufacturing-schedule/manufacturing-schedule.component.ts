@@ -64,55 +64,55 @@ export class ManufacturingScheduleComponent implements OnInit {
     var thisobject = this;
     console.log("Refresh data");
     this.goalsData = [];
-    this.rest.getUserName().then(result => {
-        this.rest.getGoals(result.toString(), "", "", true, 5).subscribe(goals => {
-          goals.forEach(goal => {
-            var activityList = [];
-            if(goal['enabled']){
-            goal['activities'].forEach(activity => {
-              if(activity['activity']['line'] == null || activity['activity']['line'] == undefined){
-                activityList.push(activity['activity'])
-              }
-            })
-            let goalTable = new DataForGoalsTable(goal['goalname'], activityList)
-            this.goalsData.push(goalTable)
-            }
-        });
-        this.goalsDataSource = new MatTableDataSource<DataForGoalsTable>(this.goalsData);
-        console.log(this.goalsDataSource)
-      });
-  })
+  //   this.rest.getUserName().then(result => {
+  //       this.rest.getGoals(result.toString(), "", "", true, 5).subscribe(goals => {
+  //         goals.forEach(goal => {
+  //           var activityList = [];
+  //           if(goal['enabled']){
+  //           goal['activities'].forEach(activity => {
+  //             if(activity['activity']['line'] == null || activity['activity']['line'] == undefined){
+  //               activityList.push(activity['activity'])
+  //             }
+  //           })
+  //           let goalTable = new DataForGoalsTable(goal['goalname'], activityList)
+  //           this.goalsData.push(goalTable)
+  //           }
+  //       });
+  //       this.goalsDataSource = new MatTableDataSource<DataForGoalsTable>(this.goalsData);
+  //       console.log(this.goalsDataSource)
+  //     });
+  // })
   this.linesData = [];
-  this.rest.getLine('','.*','','.*',100).subscribe(response => {
-    response.forEach(line => {
-      var currentLineName = line['shortname'];
-      var currentActivities = [];
-      this.rest.getActivities(null,100,line['_id']).subscribe(activities => {
-        if(activities.length > 0){
-          activities.forEach(activity => {
-            var activityStart = new Date(activity['startdate'])
-            var activityEnd = new Date(activityStart);
-            let hours = activity['sethours'] || activity['calculatedhours'];
-            const NUM_HOURS_PER_DAY = 10;
+  // this.rest.getLine('','.*','','.*',100).subscribe(response => {
+  //   response.forEach(line => {
+  //     var currentLineName = line['shortname'];
+  //     var currentActivities = [];
+  //     this.rest.getActivities(null,100,line['_id']).subscribe(activities => {
+  //       if(activities.length > 0){
+  //         activities.forEach(activity => {
+  //           var activityStart = new Date(activity['startdate'])
+  //           var activityEnd = new Date(activityStart);
+  //           let hours = activity['sethours'] || activity['calculatedhours'];
+  //           const NUM_HOURS_PER_DAY = 10;
       
-            while (moment().isoWeekdayCalc([activityStart.getUTCFullYear(), activityStart.getUTCMonth(), activityStart.getUTCDay()], [activityStart.getUTCFullYear(), activityEnd.getUTCMonth(), activityEnd.getUTCDay()], [2, 3, 4, 5, 6]) * NUM_HOURS_PER_DAY < hours) {
-              activityEnd.setDate(activityEnd.getDate() + 1);
-            }
-            activity['startdatestring'] = activityStart.getMonth()+1 + "/" + activityStart.getDate() + "/" + activityStart.getFullYear();
-            activity['enddatestring'] = activityEnd.getMonth()+1 + "/" + activityEnd.getDate() + "/" + activityEnd.getFullYear();
+  //           while (moment().isoWeekdayCalc([activityStart.getUTCFullYear(), activityStart.getUTCMonth(), activityStart.getUTCDay()], [activityStart.getUTCFullYear(), activityEnd.getUTCMonth(), activityEnd.getUTCDay()], [2, 3, 4, 5, 6]) * NUM_HOURS_PER_DAY < hours) {
+  //             activityEnd.setDate(activityEnd.getDate() + 1);
+  //           }
+  //           activity['startdatestring'] = activityStart.getMonth()+1 + "/" + activityStart.getDate() + "/" + activityStart.getFullYear();
+  //           activity['enddatestring'] = activityEnd.getMonth()+1 + "/" + activityEnd.getDate() + "/" + activityEnd.getFullYear();
 
-            if(currentActivities.indexOf(activity) == -1){
-              currentActivities.push(activity);
-            }
-          })
-        }
-        let newLine = new DataForLinesTable(currentLineName, currentActivities);
-        this.linesData.push(newLine);
-      });
+  //           if(currentActivities.indexOf(activity) == -1){
+  //             currentActivities.push(activity);
+  //           }
+  //         })
+  //       }
+  //       let newLine = new DataForLinesTable(currentLineName, currentActivities);
+  //       this.linesData.push(newLine);
+  //     });
 
-    })
+  //   })
 
-  })
+  // })
   this.linesDataSource = new MatTableDataSource<DataForLinesTable>(this.linesData);
 
   this.totalHours = (this.HOURS_PER_DAY * this.numberOfDays);

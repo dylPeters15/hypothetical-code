@@ -75,16 +75,16 @@ export class IngredientComponent  implements OnInit {
 
   refreshData(filterQueryData?) {
     filterQueryData = filterQueryData ? "(?i).*"+filterQueryData+".*" : ".*"+this.filterQuery+".*"; //this returns things that have the pattern anywhere in the string
-    this.rest.getIngredients("", filterQueryData, -1, this.paginator.pageSize*10).subscribe(response => {
-      console.log("in ingredient: ", response);
-      this.data = response;
-      this.data.forEach(user => {
-        user['checked'] = false;
-      });
-      this.dataSource =  new MatTableDataSource<IngredientForTable>(this.data);
-      this.dataSource.sort = this.sort;
-    this.dataSource.paginator = this.paginator;
-    });
+    // this.rest.getIngredients("", filterQueryData, -1, this.paginator.pageSize*10).subscribe(response => {
+    //   console.log("in ingredient: ", response);
+    //   this.data = response;
+    //   this.data.forEach(user => {
+    //     user['checked'] = false;
+    //   });
+    //   this.dataSource =  new MatTableDataSource<IngredientForTable>(this.data);
+    //   this.dataSource.sort = this.sort;
+    // this.dataSource.paginator = this.paginator;
+    // });
     
   }
 
@@ -106,22 +106,22 @@ export class IngredientComponent  implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       console.log(result)
       if (result) {
-        this.rest.createIngredient(result.ingredientname, result.ingredientnumber, 
-          result.vendorinformation, result.unitofmeasure, result.amount, 
-          result.costperpackage, result.comment).subscribe(response => {
-          if (response['_id']) {
-            this.snackBar.open("Successfully created ingredient " + result.ingredientname + ".", "close", {
-              duration: 2000,
-            });
-            console.log('success')
-          } else {
-            console.log(response)
-            this.snackBar.open("Error creating ingredient " + result.ingredientname + ".", "close", {
-              duration: 2000,
-            });
-            console.log('failure')
-          }
-        });
+        // this.rest.createIngredient(result.ingredientname, result.ingredientnumber, 
+        //   result.vendorinformation, result.unitofmeasure, result.amount, 
+        //   result.costperpackage, result.comment).subscribe(response => {
+        //   if (response['_id']) {
+        //     this.snackBar.open("Successfully created ingredient " + result.ingredientname + ".", "close", {
+        //       duration: 2000,
+        //     });
+        //     console.log('success')
+        //   } else {
+        //     console.log(response)
+        //     this.snackBar.open("Error creating ingredient " + result.ingredientname + ".", "close", {
+        //       duration: 2000,
+        //     });
+        //     console.log('failure')
+        //   }
+        // });
       }    
       this.refreshData();
     });
@@ -150,22 +150,22 @@ export class IngredientComponent  implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       console.log(result)
       if (result) {
-        this.rest.modifyIngredient(oldingredient.ingredientname, result.ingredientname, result.ingredientnumber, 
-          result.vendorinformation, result.unitofmeasure, result.amount, 
-          result.costperpackage, result.comment).subscribe(response => {
-          if (response['nModified']) {
-            this.snackBar.open("Successfully modified ingredient " + oldingredient.ingredientname + ".", "close", {
-              duration: 2000,
-            });
-            console.log('success')
-          } else {
-            console.log(response)
-            this.snackBar.open("Error modifying ingredient " + oldingredient.ingredientname + ".", "close", {
-              duration: 2000,
-            });
-            console.log('failure')
-          }
-        });
+        // this.rest.modifyIngredient(oldingredient.ingredientname, result.ingredientname, result.ingredientnumber, 
+        //   result.vendorinformation, result.unitofmeasure, result.amount, 
+        //   result.costperpackage, result.comment).subscribe(response => {
+        //   if (response['nModified']) {
+        //     this.snackBar.open("Successfully modified ingredient " + oldingredient.ingredientname + ".", "close", {
+        //       duration: 2000,
+        //     });
+        //     console.log('success')
+        //   } else {
+        //     console.log(response)
+        //     this.snackBar.open("Error modifying ingredient " + oldingredient.ingredientname + ".", "close", {
+        //       duration: 2000,
+        //     });
+        //     console.log('failure')
+        //   }
+        // });
       }   
       this.refreshData();
     });
@@ -173,15 +173,15 @@ export class IngredientComponent  implements OnInit {
   }
 
   deleteIngredient(ingredientname) {
-    this.rest.deleteIngredient(ingredientname).subscribe(response => {
-      this.snackBar.open("Ingredient " + ingredientname + " deleted successfully.", "close", {
-        duration: 2000,
-      });
-      this.data = this.data.filter((value, index, arr) => {
-        return value.ingredientname != ingredientname;
-      });
-      this.refreshData();
-    });
+    // this.rest.deleteIngredient(ingredientname).subscribe(response => {
+    //   this.snackBar.open("Ingredient " + ingredientname + " deleted successfully.", "close", {
+    //     duration: 2000,
+    //   });
+    //   this.data = this.data.filter((value, index, arr) => {
+    //     return value.ingredientname != ingredientname;
+    //   });
+    //   this.refreshData();
+    // });
   }
 
   deleteSelected() {
@@ -191,16 +191,16 @@ export class IngredientComponent  implements OnInit {
       if (ingredient.checked) {
         var thisobject = this;
         let promise1 = new Promise((resolve, reject) => {
-          thisobject.rest.getFormulas("", -1, ingredient['_id'], 10).subscribe(formulas => {
-            console.log(formulas)
-            formulas.forEach((formula) => {
-              if (formula['formulaname']) {
-                affectedFormulas.push(formula);
-                affectedFormulaNames.push(formula['formulaname'])
-              }
-            });
-            resolve();
-          });
+          // thisobject.rest.getFormulas("", -1, ingredient['_id'], 10).subscribe(formulas => {
+          //   console.log(formulas)
+          //   formulas.forEach((formula) => {
+          //     if (formula['formulaname']) {
+          //       affectedFormulas.push(formula);
+          //       affectedFormulaNames.push(formula['formulaname'])
+          //     }
+          //   });
+          //   resolve();
+          // });
         });
         promise1.then(() => {
           if (affectedFormulas.length == 0) {
@@ -224,20 +224,20 @@ export class IngredientComponent  implements OnInit {
                       newIngredients.push(ingredienttuple);
                     }
                   });
-                  this.rest.modifyFormula(formula['formulaname'], formula['formulaname'], 
-                  formula['formulanumber'], newIngredients, formula['comment']).subscribe(response => {
-                    if (response['nModified']) {
-                      this.snackBar.open("Successfully modified formula " + formula['formulaname'] + ".", "close", {
-                        duration: 2000,
-                      });
-                      console.log('success')
-                    } else {
-                      console.log(response)
-                      this.snackBar.open("Error modifying formula " + formula['formulaname'] + ".", "close", {
-                        duration: 2000,
-                      });
-                    }
-                  })
+                  // this.rest.modifyFormula(formula['formulaname'], formula['formulaname'], 
+                  // formula['formulanumber'], newIngredients, formula['comment']).subscribe(response => {
+                  //   if (response['nModified']) {
+                  //     this.snackBar.open("Successfully modified formula " + formula['formulaname'] + ".", "close", {
+                  //       duration: 2000,
+                  //     });
+                  //     console.log('success')
+                  //   } else {
+                  //     console.log(response)
+                  //     this.snackBar.open("Error modifying formula " + formula['formulaname'] + ".", "close", {
+                  //       duration: 2000,
+                  //     });
+                  //   }
+                  // })
                 })        
               }
             });

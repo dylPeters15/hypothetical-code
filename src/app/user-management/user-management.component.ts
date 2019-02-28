@@ -56,13 +56,13 @@ export class UserManagementComponent implements OnInit {
   refreshData(filterQueryData?) {
     // filterQueryData = filterQueryData ? "^"+filterQueryData+".*" : "^"+this.filterQuery+".*"; //this returns things that start with the pattern
     filterQueryData = filterQueryData ? ".*"+filterQueryData+".*" : ".*"+this.filterQuery+".*"; //this returns things that have the pattern anywhere in the string
-    this.rest.getUsers("", filterQueryData, this.displayAdmins=="all"?null:this.displayAdmins=="adminsonly", this.displayLocal=="all"?null:this.displayLocal=="localonly", this.paginator.pageSize*10).subscribe(response => {
-      this.data = response;
-      this.deselectAll();
-      this.sortData();
-      this.dataSource = new MatTableDataSource<UserForTable>(this.data);
-      this.dataSource.paginator = this.paginator;
-    });
+    // this.rest.getUsers("", filterQueryData, this.displayAdmins=="all"?null:this.displayAdmins=="adminsonly", this.displayLocal=="all"?null:this.displayLocal=="localonly", this.paginator.pageSize*10).subscribe(response => {
+    //   this.data = response;
+    //   this.deselectAll();
+    //   this.sortData();
+    //   this.dataSource = new MatTableDataSource<UserForTable>(this.data);
+    //   this.dataSource.paginator = this.paginator;
+    // });
   }
 
   openDialog() {
@@ -87,19 +87,19 @@ export class UserManagementComponent implements OnInit {
   }
 
   deleteUserConfirmed(username, localuser) {
-    this.rest.deleteUser(username, localuser).subscribe(response => {
-      this.snackBar.open("User " + username + " deleted successfully.", "close", {
-        duration: 2000,
-      });
-      if (username == auth.getUsername()) {
-        this.notifyUser("Logging Out", "Your account was deleted and you will be redirected to the login page.");
-        this.router.navigate(['logout']);
-      }
-      this.data = this.data.filter((value, index, arr) => {
-        return value.username != username;
-      });
-      this.refreshData();
-    });
+    // this.rest.deleteUser(username, localuser).subscribe(response => {
+    //   this.snackBar.open("User " + username + " deleted successfully.", "close", {
+    //     duration: 2000,
+    //   });
+    //   if (username == auth.getUsername()) {
+    //     this.notifyUser("Logging Out", "Your account was deleted and you will be redirected to the login page.");
+    //     this.router.navigate(['logout']);
+    //   }
+    //   this.data = this.data.filter((value, index, arr) => {
+    //     return value.username != username;
+    //   });
+    //   this.refreshData();
+    // });
   }
 
   deleteUser(username, localuser) {
@@ -203,17 +203,17 @@ export class UserManagementComponent implements OnInit {
   }
 
   changeAdminPriviledge(username, localuser, newPriviledge) {
-    this.rest.modifyUser(username, localuser, null, newPriviledge).subscribe(response => {
-      if (response['ok'] != 1) {
-        this.snackBar.open("Unable to change user privilege. Please try again later.", "close");
-        this.refreshData();
-      } else if (username == auth.getUsername()) {
-        this.notifyUser("Logging Out", "Your account permission was changed and you will be redirected to the login page.");
-        this.router.navigate(['logout']);
-      } else if (this.displayAdmins != "all") {
-        this.refreshData();
-      }
-    });
+    // this.rest.modifyUser(username, localuser, null, newPriviledge).subscribe(response => {
+    //   if (response['ok'] != 1) {
+    //     this.snackBar.open("Unable to change user privilege. Please try again later.", "close");
+    //     this.refreshData();
+    //   } else if (username == auth.getUsername()) {
+    //     this.notifyUser("Logging Out", "Your account permission was changed and you will be redirected to the login page.");
+    //     this.router.navigate(['logout']);
+    //   } else if (this.displayAdmins != "all") {
+    //     this.refreshData();
+    //   }
+    // });
   }
 
 }
