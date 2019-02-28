@@ -55,7 +55,7 @@ export class UserManagementComponent implements OnInit {
 
   refreshData(filterQueryData?) {
     // filterQueryData = filterQueryData ? "^"+filterQueryData+".*" : "^"+this.filterQuery+".*"; //this returns things that start with the pattern
-    filterQueryData = filterQueryData ? ".*"+filterQueryData+".*" : ".*"+this.filterQuery+".*"; //this returns things that have the pattern anywhere in the string
+    filterQueryData = filterQueryData ? "(?i).*"+filterQueryData+".*" : ".*"+this.filterQuery+".*"; //this returns things that have the pattern anywhere in the string
     this.rest.getUsers(AndVsOr.AND, null, filterQueryData, this.displayAdmins=="all"?null:this.displayAdmins=="adminsonly", this.displayLocal=="all"?null:this.displayLocal=="localonly", this.paginator.pageSize*10).then(response => {
       console.log(response);
       this.data = response;
