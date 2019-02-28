@@ -8,25 +8,15 @@ export class ImportUploadService {
 
   constructor(public rest: RestService) { }
 
-  importData(data): Promise<any> {
-    return new Promise((resolve, reject) => {
-      function catcher(err) {
-        reject(err);
-      };
-      this.importIngredients(data['ingredients']).then(ingredientResult => {
-        console.log("finished ingredients.");
-        this.importFormulas(data['formulas']).then(formulaResult => {
-          console.log("finished formulas.");
-          this.importProductLines(data['productlines']).then(productLineResult => {
-            console.log("finished product lines.");
-            this.importSKUs(data['skus']).then(skuResult => {
-              console.log("finished skus.");
-              resolve();
-            }).catch(catcher);
-          }).catch(catcher);
-        }).catch(catcher);
-      }).catch(catcher);
-    });
+  async importData(data): Promise<any> {
+    await this.importIngredients(data['ingredients']);
+    console.log("finished ingredients.");
+    await this.importFormulas(data['formulas']);
+    console.log("finished formulas.");
+    await this.importProductLines(data['productlines']);
+    console.log("finished product lines.");
+    await this.importSKUs(data['skus']);
+    console.log("finished skus.");
   }
 
   private numConflictedSelectNew(data) {
@@ -249,8 +239,8 @@ export class ImportUploadService {
     return new Promise((resolve, reject) => {
       var numCompleted = 0;
       var numToComplete = 5;
-      console.log("OLDSKU",oldsku);
-      console.log("NEWSKU:",newsku);
+      console.log("OLDSKU", oldsku);
+      console.log("NEWSKU:", newsku);
       // this.rest.getFormulas("",newsku['formula'],0,1).subscribe(formulas => {
       //   if (formulas.length == 0) {
       //     reject(Error("Could not get formula " + newsku['formula'] + " for SKU " + newsku['skuname']));
@@ -266,7 +256,7 @@ export class ImportUploadService {
       //     });
       //   }
       // });
-      
+
     });
   }
 
