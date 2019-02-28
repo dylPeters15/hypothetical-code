@@ -8,91 +8,37 @@ export class ImportMatchConflictNewCheckerService {
 
   constructor(private rest: RestService) { }
 
-  checkAll(input): Promise<any> {
-    console.log("Input: ",input);
-    return new Promise((resolve, reject) => {
-      var toReturn = {};
-      var numFinished = 0;
-      var totalNum = 6;
-      this.checkSKUsMatchesConflictsNew(input['skus']).then(result => {
-        toReturn['skus'] = result||{
-          new: [],
-          conflicts: [],
-          matches: []
-        };
-        numFinished = numFinished + 1;
-        if (numFinished == totalNum) {
-          resolve(toReturn);
-        }
-      }).catch(err => {
-        reject(err);
-      });
-      this.checkIngredientsMatchesConflictsNew(input['ingredients']).then(result => {
-        toReturn['ingredients'] = result||{
-          new: [],
-          conflicts: [],
-          matches: []
-        };
-        numFinished = numFinished + 1;
-        if (numFinished == totalNum) {
-          resolve(toReturn);
-        }
-      }).catch(err => {
-        reject(err);
-      });
-      this.checkProductLinesMatchesConflictsNew(input['productlines']).then(result => {
-        toReturn['productlines'] = result||{
-          new: [],
-          conflicts: [],
-          matches: []
-        };
-        numFinished = numFinished + 1;
-        if (numFinished == totalNum) {
-          resolve(toReturn);
-        }
-      }).catch(err => {
-        reject(err);
-      });
-      this.checkFormulasMatchesConflictsNew(input['formulas']).then(result => {
-        toReturn['formulas'] = result||{
-          new: [],
-          conflicts: [],
-          matches: []
-        };
-        numFinished = numFinished + 1;
-        if (numFinished == totalNum) {
-          resolve(toReturn);
-        }
-      }).catch(err => {
-        reject(err);
-      });
-      this.checkFormulaReferences(input['formulas'], input['ingredients']).then(result => {
-        toReturn['formulaRefErrs'] = result||{
-          new: [],
-          conflicts: [],
-          matches: []
-        };
-        numFinished = numFinished + 1;
-        if (numFinished == totalNum) {
-          resolve(toReturn);
-        }
-      }).catch(err => {
-        reject(err);
-      });
-      this.checkSKUReferences(input['skus'], input['productlines'], input['formulas']).then(result => {
-        toReturn['skuRefErrs'] = result||{
-          new: [],
-          conflicts: [],
-          matches: []
-        };
-        numFinished = numFinished + 1;
-        if (numFinished == totalNum) {
-          resolve(toReturn);
-        }
-      }).catch(err => {
-        reject(err);
-      });
-    });
+  async checkAll(input): Promise<any> {
+    console.log("Input: ", input);
+    var toReturn = {};
+    var defaultObject = {
+      new: [],
+      conflicts: [],
+      matches: []
+    };
+
+    var result = await this.checkSKUsMatchesConflictsNew(input['skus']);
+    toReturn['skus'] = result || defaultObject;
+
+    var result = await this.checkIngredientsMatchesConflictsNew(input['ingredients']);
+    toReturn['ingredients'] = result || defaultObject;
+
+    var result = await this.checkProductLinesMatchesConflictsNew(input['productlines']);
+    toReturn['productlines'] = result || defaultObject;
+
+    var result = await this.checkFormulasMatchesConflictsNew(input['formulas']);
+    toReturn['formulas'] = result || defaultObject;
+
+    var result = await this.checkFormulaReferences(input['formulas'], input['ingredients']);
+    toReturn['formulaRefErrs'] = result || defaultObject;
+
+    var result = await this.checkSKUReferences(input['skus'], input['productlines'], input['formulas']);
+    toReturn['skuRefErrs'] = result || {
+      new: [],
+      conflicts: [],
+      matches: []
+    };
+    return toReturn;
   }
 
   private checkSKUMatchConflictNew(sku, toReturn): Promise<any> {
@@ -384,15 +330,15 @@ export class ImportMatchConflictNewCheckerService {
     return new Promise((resolve, reject) => {
       var numMLsChecked = 0;
       // if (sku['manufacturinglines'].length == 0) {
-        console.log(sku['formula'])
-        // this.rest.getFormulas("", sku['formula'], 0, 1).subscribe(formulaResponse => {
-        //   console.log(formulaResponse)
-        //   if (formulaResponse.length == 1 || this.arrayContainsObjectWithKeyVal(formulas, 'formulanumber', sku['formula'])) {
-        //     resolve();
-        //   } else {
-        //     reject(Error("Could not find formula " + sku['formula'] + " for SKU " + sku['skuname']));
-        //   }
-        // });
+      console.log(sku['formula'])
+      // this.rest.getFormulas("", sku['formula'], 0, 1).subscribe(formulaResponse => {
+      //   console.log(formulaResponse)
+      //   if (formulaResponse.length == 1 || this.arrayContainsObjectWithKeyVal(formulas, 'formulanumber', sku['formula'])) {
+      //     resolve();
+      //   } else {
+      //     reject(Error("Could not find formula " + sku['formula'] + " for SKU " + sku['skuname']));
+      //   }
+      // });
       // }
       sku['manufacturinglines'].forEach(shortname => {
         // this.rest.getLine("","",shortname,"",1).subscribe(mlResponse => {

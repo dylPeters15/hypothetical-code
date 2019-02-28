@@ -45,49 +45,8 @@ export class ImportComponent implements OnInit {
     return numNew;
   }
 
-  filesSelected() {
-    this.parser.parseCSVFiles(this.fileSelector.nativeElement.files).then(csvResult => {
-      this.fileSelectorForm.nativeElement.reset();
-      this.importChecker.checkAll(csvResult).then(checkResult => {
-        console.log("Check result: ",checkResult);
-        const dialogConfig = new MatDialogConfig();
-        dialogConfig.data = checkResult;
-        dialogConfig.minWidth = "50%";
-        this.dialog.open(ImportPreviewDialogComponent, dialogConfig).afterClosed().subscribe(closeData => {
-          if (!closeData || closeData['cancel']) {
-            //operation was cancelled
-          } else {
-            //operation confirmed
-            this.importUploader.importData(closeData).then(() => {
-              //popup a dialog telling the user it was successfull
-              console.log(closeData);
-              const dialogConfig = new MatDialogConfig();
-              dialogConfig.data = {
-                title: "Success!",
-                message: "Successfully imported " + this.numNew(closeData) + " new records and updated " + this.numUpdated(closeData) + " records."
-              };
-              this.dialog.open(UserNotificationDialogComponent, dialogConfig);
-            }).catch(err => {
-              //popup a dialog telling the user there was an error
-              const dialogConfig = new MatDialogConfig();
-              dialogConfig.data = {
-                title: "Error!",
-                message: "" + err
-              };
-              this.dialog.open(UserNotificationDialogComponent, dialogConfig);
-            });
-          }
-        });
-
-      }).catch(err => {
-        const dialogConfig = new MatDialogConfig();
-        dialogConfig.data = {
-          title: "Error!",
-          message: "" + err
-        };
-        this.dialog.open(UserNotificationDialogComponent, dialogConfig);
-      });
-    }).catch(err => {
+  async filesSelected() {
+    var csvResult = await this.parser.parseCSVFiles(this.fileSelector.nativeElement.files).catch(err => {
       const dialogConfig = new MatDialogConfig();
       dialogConfig.data = {
         title: "Error!",
@@ -95,7 +54,46 @@ export class ImportComponent implements OnInit {
       };
       this.dialog.open(UserNotificationDialogComponent, dialogConfig);
     });
+    this.fileSelectorForm.nativeElement.reset();
+
+    var checkResult = await this.importChecker.checkAll(csvResult).catch(err => {
+      const dialogConfig = new MatDialogConfig();
+      dialogConfig.data = {
+        title: "Error!",
+        message: "" + err
+      };
+      this.dialog.open(UserNotificationDialogComponent, dialogConfig);
+    });
+    console.log("Check result: ", checkResult);
+
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.data = checkResult;
+    dialogConfig.minWidth = "50%";
+
+    var closeData = await this.dialog.open(ImportPreviewDialogComponent, dialogConfig).afterClosed().toPromise();
+    if (!closeData || closeData['cancel']) {
+      //operation was cancelled
+    } else {
+      //operation confirmed
+      this.importUploader.importData(closeData).then(() => {
+        //popup a dialog telling the user it was successfull
+        console.log(closeData);
+        const dialogConfig = new MatDialogConfig();
+        dialogConfig.data = {
+          title: "Success!",
+          message: "Successfully imported " + this.numNew(closeData) + " new records and updated " + this.numUpdated(closeData) + " records."
+        };
+        this.dialog.open(UserNotificationDialogComponent, dialogConfig);
+      }).catch(err => {
+        //popup a dialog telling the user there was an error
+        const dialogConfig = new MatDialogConfig();
+        dialogConfig.data = {
+          title: "Error!",
+          message: "" + err
+        };
+        this.dialog.open(UserNotificationDialogComponent, dialogConfig);
+      });
+    }
   }
-
-
+  
 }
