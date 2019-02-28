@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { MatDialogRef} from "@angular/material";
+import { MatDialogRef } from "@angular/material";
 import { RestService, AndVsOr } from '../rest.service';
-import {MatSnackBar} from '@angular/material';
+import { MatSnackBar } from '@angular/material';
 import { FormGroup, FormControl, Validators, FormGroupDirective } from '@angular/forms';
 
 @Component({
@@ -15,7 +15,7 @@ export class NewUserDialogComponent implements OnInit {
   hidePassword2: boolean = true;
   usernameExists: boolean = false;
 
-  constructor(private dialogRef: MatDialogRef<NewUserDialogComponent>, public rest:RestService, private snackBar: MatSnackBar) { }
+  constructor(private dialogRef: MatDialogRef<NewUserDialogComponent>, public rest: RestService, private snackBar: MatSnackBar) { }
 
   ngOnInit() {
   }
@@ -24,18 +24,17 @@ export class NewUserDialogComponent implements OnInit {
     this.dialogRef.close();
   }
 
-  createUser() {
+  async createUser(): Promise<void> {
     if (this.form.get('username').value && this.form.get('username').value != "" && !this.usernameExists) {
-      this.rest.createUser(this.form.get('username').value, this.form.get('password').value, this.form.get('admin').value).then(response => {
-        if (response['token']) {
-          this.snackBar.open("Successfully created user " + this.form.get('username').value + ".", "close", {
-            duration: 2000,
-          });
-          this.closeDialog();
-        } else {
-          this.snackBar.open("Error creating user " + this.form.get('username').value + ". Please refresh and try again.", "close", {});
-        }
-      });
+      var response = await this.rest.createUser(this.form.get('username').value, this.form.get('password').value, this.form.get('admin').value);
+      if (response['token']) {
+        this.snackBar.open("Successfully created user " + this.form.get('username').value + ".", "close", {
+          duration: 2000,
+        });
+        this.closeDialog();
+      } else {
+        this.snackBar.open("Error creating user " + this.form.get('username').value + ". Please refresh and try again.", "close", {});
+      }
     }
   }
 
@@ -65,10 +64,9 @@ export class NewUserDialogComponent implements OnInit {
     }
   }
 
-  usernameChanged() {
-    this.rest.getUsers(AndVsOr.AND, this.form.get('username').value, null, null, true, 1).then(result => {
-      this.usernameExists = result.length == 1;
-    });
+  async usernameChanged(): Promise<void> {
+    var result = await this.rest.getUsers(AndVsOr.AND, this.form.get('username').value, null, null, true, 1);
+    this.usernameExists = result.length == 1;
   }
 
 }

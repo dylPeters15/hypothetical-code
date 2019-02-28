@@ -53,17 +53,16 @@ export class UserManagementComponent implements OnInit {
     return [20, 50, 100, this.allReplacement];
   }
 
-  refreshData(filterQueryData?) {
+  async refreshData(filterQueryData?): Promise<void> {
     // filterQueryData = filterQueryData ? "^"+filterQueryData+".*" : "^"+this.filterQuery+".*"; //this returns things that start with the pattern
-    filterQueryData = filterQueryData ? "(?i).*"+filterQueryData+".*" : ".*"+this.filterQuery+".*"; //this returns things that have the pattern anywhere in the string
-    this.rest.getUsers(AndVsOr.AND, null, filterQueryData, this.displayAdmins=="all"?null:this.displayAdmins=="adminsonly", this.displayLocal=="all"?null:this.displayLocal=="localonly", this.paginator.pageSize*10).then(response => {
-      console.log(response);
-      this.data = response;
-      this.deselectAll();
-      this.sortData();
-      this.dataSource = new MatTableDataSource<UserForTable>(this.data);
-      this.dataSource.paginator = this.paginator;
-    });
+    filterQueryData = filterQueryData ? "(?i).*" + filterQueryData + ".*" : ".*" + this.filterQuery + ".*"; //this returns things that have the pattern anywhere in the string
+    var getUsersResponse = await this.rest.getUsers(AndVsOr.AND, null, filterQueryData, this.displayAdmins == "all" ? null : this.displayAdmins == "adminsonly", this.displayLocal == "all" ? null : this.displayLocal == "localonly", this.paginator.pageSize * 10);
+    console.log(getUsersResponse);
+    this.data = getUsersResponse;
+    this.deselectAll();
+    this.sortData();
+    this.dataSource = new MatTableDataSource<UserForTable>(this.data);
+    this.dataSource.paginator = this.paginator;
   }
 
   openDialog() {
@@ -87,20 +86,19 @@ export class UserManagementComponent implements OnInit {
     this.notificationDialogRef.componentInstance.message = message;
   }
 
-  deleteUserConfirmed(username, localuser) {
-    this.rest.deleteUser(AndVsOr.AND, username, localuser).then(response => {
-      this.snackBar.open("User " + username + " deleted successfully.", "close", {
-        duration: 2000,
-      });
-      if (username == auth.getUsername()) {
-        this.notifyUser("Logging Out", "Your account was deleted and you will be redirected to the login page.");
-        this.router.navigate(['logout']);
-      }
-      this.data = this.data.filter((value, index, arr) => {
-        return value.username != username;
-      });
-      this.refreshData();
+  async deleteUserConfirmed(username, localuser): Promise<void> {
+    var deleteUserResponse = await this.rest.deleteUser(AndVsOr.AND, username, localuser);
+    this.snackBar.open("User " + username + " deleted successfully.", "close", {
+      duration: 2000,
     });
+    if (username == auth.getUsername()) {
+      this.notifyUser("Logging Out", "Your account was deleted and you will be redirected to the login page.");
+      this.router.navigate(['logout']);
+    }
+    this.data = this.data.filter((value, index, arr) => {
+      return value.username != username;
+    });
+    this.refreshData();
   }
 
   deleteUser(username, localuser) {
@@ -163,12 +161,12 @@ export class UserManagementComponent implements OnInit {
 
   selectAll() {
     var lowerIndex = this.paginator.pageSize * this.paginator.pageIndex;
-    var upperIndex = this.paginator.pageSize * (this.paginator.pageIndex+1);
+    var upperIndex = this.paginator.pageSize * (this.paginator.pageIndex + 1);
     if (this.data.length < upperIndex) {
       upperIndex = this.data.length;
     }
     this.deselectAll();
-    for (var i = lowerIndex; i < upperIndex; i=i+1) {
+    for (var i = lowerIndex; i < upperIndex; i = i + 1) {
       this.data[i].checked = true;
     }
   }
@@ -203,9 +201,9 @@ export class UserManagementComponent implements OnInit {
     return true;
   }
 
-  changeAdminPriviledge(username, localuser, newPriviledge) {
-    this.rest.modifyUser(AndVsOr.AND, username, localuser, null, newPriviledge).then(response => {
-      if (response['ok'] != 1) {
+  async changeAdminPriviledge(username, localuser, newPriviledge): Promise<void> {
+    var modifyUserResponse = await this.rest.modifyUser(AndVsOr.AND, username, localuser, null, newPriviledge);
+      if (modifyUserResponse['ok'] != 1) {
         this.snackBar.open("Unable to change user privilege. Please try again later.", "close");
         this.refreshData();
       } else if (username == auth.getUsername()) {
@@ -214,7 +212,6 @@ export class UserManagementComponent implements OnInit {
       } else if (this.displayAdmins != "all") {
         this.refreshData();
       }
-    });
   }
 
 }

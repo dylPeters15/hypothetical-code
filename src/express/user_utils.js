@@ -159,6 +159,8 @@ function createUser(newObject) {
 }
 
 function modifyUser(filterSchema, newObject) {
+    console.log(filterSchema);
+    console.log(newObject);
     return new Promise((resolve, reject) => {
         if (newObject['$set']['password']) {
             var saltAndHash = generateSaltAndHash(newObject['$set']['password']);

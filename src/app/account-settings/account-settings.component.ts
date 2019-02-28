@@ -36,41 +36,38 @@ export class AccountSettingsComponent implements OnInit {
     this.dialogRef.componentInstance.message = message;
   }
 
-  changePassword() {
+  async changePassword(): Promise<void> {
     if (this.passwordsValid()) {
       const oldPass = this.form.get('currentPass').value;
       const newPass = this.form.get('password').value;
-      this.rest.loginRequest(auth.getUsername(), oldPass).then(loginresponse => {
-        if (loginresponse['token']) {
-          this.rest.modifyUser(AndVsOr.AND, auth.getUsername(), auth.getLocal(), newPass, false).then(response => {
-            if (response['nModified'] == 1 && response['ok'] == 1) {
-              this.openDialog("Success!", "Password changed successfully.");
-              this.form.get('currentPass').setValue('');
-              this.form.get('password').setValue('');
-              this.form.get('confirm').setValue('');
-            } else {
-              this.openDialog("Unkown Error", "Unable to perform operation.");
-            }
-          });
+      var loginresponse = await this.rest.loginRequest(auth.getUsername(), oldPass);
+      if (loginresponse['token']) {
+        var modifyUserResponse = await this.rest.modifyUser(AndVsOr.AND, auth.getUsername(), auth.getLocal(), newPass, null);
+        if (modifyUserResponse['nModified'] == 1 && modifyUserResponse['ok'] == 1) {
+          this.openDialog("Success!", "Password changed successfully.");
+          this.form.get('currentPass').setValue('');
+          this.form.get('password').setValue('');
+          this.form.get('confirm').setValue('');
         } else {
-          this.openDialog("Incorrect password", "Please ensure that you have entered your current password correctly and try again.");
+          this.openDialog("Unkown Error", "Unable to perform operation.");
         }
-      });
+      } else {
+        this.openDialog("Incorrect password", "Please ensure that you have entered your current password correctly and try again.");
+      }
     } else {
       this.openDialog("Incorrect password", "Please ensure that you have entered your current password correctly and try again.");
     }
   }
 
-  deleteAccount() {
+  async deleteAccount(): Promise<void> {
     if (auth.getLocal()) {
-      const pass = this.deleteForm.get('confirmDelete').value
-      this.rest.loginRequest(auth.getUsername(), pass).then(loginresponse => {
-        if (loginresponse['token']) {
-          this.deleteAccountConfirmed();
-        } else {
-          this.openDialog("Incorrect password", "Please ensure that you have entered your password correctly and try again.");
-        }
-      });
+      const pass = this.deleteForm.get('confirmDelete').value;
+      var loginresponse = await this.rest.loginRequest(auth.getUsername(), pass);
+      if (loginresponse['token']) {
+        this.deleteAccountConfirmed();
+      } else {
+        this.openDialog("Incorrect password", "Please ensure that you have entered your password correctly and try again.");
+      }
     } else {
       const dialogConfig = new MatDialogConfig();
       dialogConfig.closeOnNavigation = false;
@@ -83,16 +80,15 @@ export class AccountSettingsComponent implements OnInit {
     }
   }
 
-  deleteAccountConfirmed() {
-    this.rest.deleteUser(AndVsOr.AND, auth.getUsername(), auth.getLocal()).then(response => {
-      if (response['deletedCount'] == 1 && response['ok'] == 1) {
-        this.openDialog("Success", "Account deleted successfully. You will be redirected to the login page.");
-        auth.clearLogin();
-        this.router.navigate(['login']);
-      } else {
-        this.openDialog("Unkown Error", "Unable to perform operation.");
-      }
-    });
+  async deleteAccountConfirmed(): Promise<void> {
+    var deleteUserResponse = await this.rest.deleteUser(AndVsOr.AND, auth.getUsername(), auth.getLocal());
+    if (deleteUserResponse['deletedCount'] == 1 && deleteUserResponse['ok'] == 1) {
+      this.openDialog("Success", "Account deleted successfully. You will be redirected to the login page.");
+      auth.clearLogin();
+      this.router.navigate(['login']);
+    } else {
+      this.openDialog("Unkown Error", "Unable to perform operation.");
+    }
   }
 
   form = new FormGroup(

@@ -92,7 +92,7 @@ export class RestService {
   modifyUser(andVsOr: AndVsOr, username: string, localuser: boolean, newpassword: string, newadmin: boolean): Promise<any> {
     return this.http.post(endpoint + 'users', this.generateBodyWithOptions({
       password: newpassword,
-      admin: newadmin == newadmin
+      admin: newadmin
     }),
       this.generateHeaderWithFilterSchema(andVsOr, [
         {username: username},
