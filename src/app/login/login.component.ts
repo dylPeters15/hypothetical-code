@@ -27,39 +27,39 @@ export class LoginComponent implements OnInit {
     if (window.location.hash.length > 0) {
       var netidtoken = querystring.parse(window.location.hash.substring(1)).access_token;
       if (netidtoken) {
-        // this.rest.loginRequest("", "", netidtoken).subscribe(response => {
-        //   var username = response['username'];
-        //   var token = response['token'];
-        //   var admin = response['admin'];
-        //   if (username && token && admin!==null) {
-        //     this.failedLogin = false;
-        //     auth.storeLogin(username, token, admin, false);
-        //     this.router.navigateByUrl('/home');
-        //   } else {
-        //     //incorrect login
-        //     this.failedLogin = true;
-        //     auth.clearLogin();
-        //   }
-        // });
+        this.rest.loginRequestNetID(netidtoken).then(response => {
+          var username = response['username'];
+          var token = response['token'];
+          var admin = response['admin'];
+          if (username && token && admin!==null) {
+            this.failedLogin = false;
+            auth.storeLogin(username, token, admin, false);
+            this.router.navigateByUrl('/home');
+          } else {
+            //incorrect login
+            this.failedLogin = true;
+            auth.clearLogin();
+          }
+        });
       }
     }
   }
 
   login(): void {
-    // this.rest.loginRequest(this.myusername, this.mypassword).subscribe(
-    //   (data: {}) => {
-    //     if (data['token']) {
-    //       //logged in successfully
-    //       this.failedLogin = false;
-    //       auth.storeLogin(this.myusername, data['token'], data['admin'], true);
-    //       this.router.navigateByUrl('/home');
-    //     } else {
-    //       //incorrect login
-    //       this.failedLogin = true;
-    //       auth.clearLogin();
-    //     }
-    //   }
-    // );
+    this.rest.loginRequest(this.myusername, this.mypassword).then(
+      (data: {}) => {
+        if (data['token']) {
+          //logged in successfully
+          this.failedLogin = false;
+          auth.storeLogin(this.myusername, data['token'], data['admin'], true);
+          this.router.navigateByUrl('/home');
+        } else {
+          //incorrect login
+          this.failedLogin = true;
+          auth.clearLogin();
+        }
+      }
+    );
   }
 
   netid(): void {

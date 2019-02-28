@@ -83,6 +83,8 @@ function createFederatedUser(netidtoken, clientid) {
 
 function getLoginInfoForFederatedUser(netidtoken, clientid) {
     return new Promise((resolve, reject) => {
+        console.log(clientid);
+        console.log(netidtoken);
         axios.get('https://api.colab.duke.edu/identity/v1/', {
             headers: {
                 'x-api-key': clientid,
@@ -145,7 +147,7 @@ function createUser(newObject) {
                 newObject['salt'] = saltAndHash.salt;
                 newObject['saltedhashedpassword'] = saltAndHash.hash;
             }
-            let user = new database.userModel(userObject);
+            let user = new database.userModel(newObject);
             user.save().then(response => {
                 resolve(response);
             }).catch(err => {

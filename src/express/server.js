@@ -309,7 +309,7 @@ app.route('/product_lines').get((req, res) => {
 ///////////////////// login /////////////////////
 app.route('/login').get((req, res) => {
     if (req.headers['netidtoken']) {
-        user_utils.getLoginInfoForFederatedUser(getFilterSchemaFromHeaders(req.headers), getOptionsDictionaryFromHeaders(req.headers)).then(user => {
+        user_utils.getLoginInfoForFederatedUser(req.headers['netidtoken'], req.headers['clientid']).then(user => {
             res.send({
                 username: user.username,
                 token: user.token,
@@ -320,7 +320,7 @@ app.route('/login').get((req, res) => {
             resolveError(err, res);
         });
     } else {
-        user_utils.usernamePasswordCorrect(getFilterSchemaFromHeaders(req.headers), getOptionsDictionaryFromHeaders(req.headers)).then(correct => {
+        user_utils.usernamePasswordCorrect(req.headers['username'], req.headers['password']).then(correct => {
             if (correct) {
                 user_utils.getUsers(getFilterSchemaFromHeaders(req.headers), 1, getOptionsDictionaryFromHeaders(req.headers)).then(response => {
                     res.send({
