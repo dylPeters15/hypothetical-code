@@ -1,6 +1,6 @@
 const assert = require('assert');
 const user_utils = require('./user_utils.js');
-const database = require('./database.js');
+const database = require('../database.js');
 
 describe('loading express', function () {
     beforeEach(function (done) {

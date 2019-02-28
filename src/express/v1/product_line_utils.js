@@ -1,4 +1,4 @@
-const database = require('./database.js');
+const database = require('../database.js');
 
 function getProductLines(productlinename, productlinenameregex, limit){
 

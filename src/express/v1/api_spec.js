@@ -6,8 +6,8 @@ let mongoose = require("mongoose");
 //Require the dev-dependencies
 let chai = require('chai');
 let chaiHttp = require('chai-http');
-const server = require('./server.js');
-const database = require('./database.js');
+const server = require('../server.js');
+const database = require('../database.js');
 let should = chai.should();
 const user_utils = require('./user_utils.js');
 const assert = require('assert');

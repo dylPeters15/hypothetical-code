@@ -1,4 +1,4 @@
-const database = require('./database.js');
+const database = require('../database.js');
 
 function getIngredients(ingredientname, ingredientnameregex, ingredientnumber,limit){
     ingredientname = ingredientname || "";

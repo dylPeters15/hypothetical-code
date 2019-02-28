@@ -3,18 +3,14 @@ import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http
 import { auth } from './auth.service'
 import { Observable } from 'rxjs';
 import { start } from 'repl';
+import { RestService } from './rest.service';
 
-// export const endpoint = 'https://vcm-8238.vm.duke.edu:8443/'; // Ben
-// export const endpoint = 'https://vcm-8405.vm.duke.edu:8443/'; // Noah
-// export const endpoint = 'https://vcm-8205.vm.duke.edu:8443/'; // Prod
-export const endpoint = 'https://localhost:8443/'; // localhost
+const endpoint = RestService.endpoint;
 
 @Injectable({
   providedIn: 'root'
 })
-export class RestService {
-
-  static endpoint = endpoint;
+export class RestServiceV2 {
 
   constructor(private http: HttpClient) { }
 
