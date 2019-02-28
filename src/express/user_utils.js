@@ -83,8 +83,6 @@ function createFederatedUser(netidtoken, clientid) {
 
 function getLoginInfoForFederatedUser(netidtoken, clientid) {
     return new Promise((resolve, reject) => {
-        console.log(clientid);
-        console.log(netidtoken);
         axios.get('https://api.colab.duke.edu/identity/v1/', {
             headers: {
                 'x-api-key': clientid,
@@ -127,8 +125,7 @@ function getLoginInfoForFederatedUser(netidtoken, clientid) {
     });
 }
 
-function getUsers(filterSchema, limit, optionsDict) {
-    console.log("Filter schema: ",filterSchema);
+function getUsers(filterSchema, limit) {
     return new Promise((resolve, reject) => {
         database.userModel.find(filterSchema).limit(limit).exec((err, users) => {
             if (err) {
@@ -161,19 +158,14 @@ function createUser(newObject) {
     });
 }
 
-function modifyUser(filterSchema, newObject, optionsDict) {
+function modifyUser(filterSchema, newObject) {
     return new Promise((resolve, reject) => {
-        console.log(optionsDict);
-        console.log(newObject);
         if (newObject['$set']['password']) {
-            console.log("Setting password");
             var saltAndHash = generateSaltAndHash(newObject['$set']['password']);
             newObject['$set']['salt'] = saltAndHash.salt;
             newObject['$set']['saltedhashedpassword'] = saltAndHash.hash;
             delete newObject['$set']['password'];
         }
-        console.log("filterSchema: ",filterSchema);
-        console.log("New object.: ",newObject);
         database.userModel.updateOne(filterSchema, newObject, (err, response) => {
             if (err) {
                 reject(Error(err));
@@ -184,7 +176,7 @@ function modifyUser(filterSchema, newObject, optionsDict) {
     });
 }
 
-function deleteUser(filterSchema, optionsDict) {
+function deleteUser(filterSchema) {
     return new Promise((resolve, reject) => {
         database.userModel.deleteOne(filterSchema, (err, response) => {
             if (err) {

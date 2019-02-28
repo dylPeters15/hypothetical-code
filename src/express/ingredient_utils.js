@@ -1,6 +1,6 @@
 const database = require('./database.js');
 
-function getIngredients(filterSchema, limit, optionsDict) {
+function getIngredients(filterSchema, limit) {
     return new Promise(function (resolve, reject) {
         database.ingredientModel.find(filterSchema).limit(limit).exec((err, ingredients) => {
             if (err) {
@@ -26,7 +26,7 @@ function createIngredient(newObject) {
     });
 }
 
-function modifyIngredient(filterSchema, newObject, optionsDict) {
+function modifyIngredient(filterSchema, newObject) {
     return new Promise(function (resolve, reject) {
         database.ingredientModel.updateOne(filterSchema, newObject, (err, response) => {
             if (err) {
@@ -38,7 +38,7 @@ function modifyIngredient(filterSchema, newObject, optionsDict) {
     });
 }
 
-function deleteIngredient(filterSchema, optionsDict) {
+function deleteIngredient(filterSchema) {
     return new Promise(function (resolve, reject) {
         database.ingredientModel.deleteOne(filterSchema, (err, response) => {
             if (err) {

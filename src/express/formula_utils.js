@@ -1,7 +1,7 @@
 const database = require('./database.js');
 const mongoose = require('mongoose');
 
-function getFormulas(filterSchema, limit, optionsDict) {
+function getFormulas(filterSchema, limit) {
     return new Promise((resolve, reject) => {
         database.formulaModel.find(filterSchema).limit(limit).populate('ingredientsandquantities.ingredient').exec(function (err, formulas) {
             if (err) {
@@ -24,7 +24,7 @@ function createFormula(newObject) {
     });
 }
 
-function modifyFormula(filterSchema, newObject, optionsDict) {
+function modifyFormula(filterSchema, newObject) {
     return new Promise((resolve, reject) => {
         database.formulaModel.updateOne(filterSchema, newObject, (err, response) => {
             if (err) {
@@ -36,7 +36,7 @@ function modifyFormula(filterSchema, newObject, optionsDict) {
     });
 }
 
-function deleteFormula(filterSchema, optionsDict) {
+function deleteFormula(filterSchema) {
     return new Promise(function (resolve, reject) {
         database.formulaModel.deleteOne(filterSchema, (err, response) => {
             if (err) {

@@ -1,6 +1,6 @@
 const database = require('./database.js');
 
-function getProductLines(filterSchema, limit, optionsDict) {
+function getProductLines(filterSchema, limit) {
     return new Promise(function (resolve, reject) {
         database.productLineModel.find(filterSchema).limit(limit).populate('skus.sku').exec((err, productLines) => {
             if (err) {
@@ -24,7 +24,7 @@ function createProductLine(newObject) {
     });
 }
 
-function modifyProductLine(filterSchema, newObject, optionsDict) {
+function modifyProductLine(filterSchema, newObject) {
     return new Promise(function (resolve, reject) {
         database.productLineModel.updateOne(filterSchema, newObject, (err, response) => {
             if (err) {
@@ -37,7 +37,7 @@ function modifyProductLine(filterSchema, newObject, optionsDict) {
 
 }
 
-function deleteProductLine(filterSchema, optionsDict) {
+function deleteProductLine(filterSchema) {
     return new Promise(function (resolve, reject) {
         database.productLineModel.deleteOne(filterschema, (err, response) => {
             if (err) {

@@ -1,7 +1,7 @@
 const database = require('./database.js');
 
 
-function getGoals(filterSchema, limit, optionsDict) {
+function getGoals(filterSchema, limit) {
     return new Promise((resolve, reject) => {
         database.goalsModel.find(filterSchema).limit(limit).deepPopulate('activities.activity.sku.formula.ingredientsandquantities.ingredient').exec(function (err, results) {
             if (err) {
@@ -24,7 +24,7 @@ function createGoal(newObject) {
     });
 }
 
-function modifyGoal(filterSchema, newObject, optionsDict) {
+function modifyGoal(filterSchema, newObject) {
     return new Promise((resolve, reject) => {
         database.goalsModel.updateOne(filterSchema, newObject, (err, response) => {
             if (err) {
@@ -36,7 +36,7 @@ function modifyGoal(filterSchema, newObject, optionsDict) {
     });
 }
 
-function deleteGoal(filterSchema, optionsDict) {
+function deleteGoal(filterSchema) {
     return new Promise((resolve, reject) => {
         database.goalsModel.deleteOne(filterSchema, (err, response) => {
             if (err) {

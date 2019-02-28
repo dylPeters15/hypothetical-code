@@ -57,17 +57,6 @@ function getLimitFromHeaders(headers) {
     return JSON.parse(headers['limit']);
 }
 
-function getOptionsDictionaryFromHeaders(headers) {
-    var filterschema = getFilterSchemaFromHeaders(headers);
-    if (filterschema['$or']) {
-        return filterschema['$or'];
-    } else if (filterschema['$and']) {
-        return filterschema['$and'];
-    } else {
-        return [];
-    }
-}
-
 function resolveError(err, res) {
     console.log(err);
     res.send({
@@ -77,8 +66,7 @@ function resolveError(err, res) {
 
 ///////////////////// users /////////////////////
 app.route('/users').get((req, res) => {
-    console.log(req.headers);
-    user_utils.getUsers(getFilterSchemaFromHeaders(req.headers), getLimitFromHeaders(req.headers), getOptionsDictionaryFromHeaders(req.headers)).then(users => {
+    user_utils.getUsers(getFilterSchemaFromHeaders(req.headers), getLimitFromHeaders(req.headers)).then(users => {
         var usersToSend = [];
         for (var i = 0; i < users.length; i = i + 1) {
             usersToSend.push({
@@ -99,14 +87,13 @@ app.route('/users').get((req, res) => {
         resolveError(err, res);
     });
 }).post((req, res) => {
-    console.log(req.headers);
-    user_utils.modifyUser(getFilterSchemaFromHeaders(req.headers), req.body, getOptionsDictionaryFromHeaders(req.headers)).then(response => {
+    user_utils.modifyUser(getFilterSchemaFromHeaders(req.headers), req.body).then(response => {
         res.send(response);
     }).catch(err => {
         resolveError(err, res);
     });
 }).delete((req, res) => {
-    user_utils.deleteUser(getFilterSchemaFromHeaders(req.headers), getOptionsDictionaryFromHeaders(req.headers)).then(response => {
+    user_utils.deleteUser(getFilterSchemaFromHeaders(req.headers)).then(response => {
         res.send(response);
     }).catch(err => {
         resolveError(err, res);
@@ -115,7 +102,7 @@ app.route('/users').get((req, res) => {
 
 ///////////////////// formulas /////////////////////
 app.route('/formulas').get((req, res) => {
-    formula_utils.getFormulas(getFilterSchemaFromHeaders(req.headers), getLimitFromHeaders(req.headers), getOptionsDictionaryFromHeaders(req.headers)).then(formulas => {
+    formula_utils.getFormulas(getFilterSchemaFromHeaders(req.headers), getLimitFromHeaders(req.headers)).then(formulas => {
         res.send(formulas);
     }).catch(err => {
         resolveError(err, res);
@@ -127,13 +114,13 @@ app.route('/formulas').get((req, res) => {
         resolveError(err, res);
     });
 }).post((req, res) => {
-    formula_utils.modifyFormula(getFilterSchemaFromHeaders(req.headers), req.body, getOptionsDictionaryFromHeaders(req.headers)).then(response => {
+    formula_utils.modifyFormula(getFilterSchemaFromHeaders(req.headers), req.body).then(response => {
         res.send(response);
     }).catch(err => {
         resolveError(err, res);
     });
 }).delete((req, res) => {
-    formula_utils.deleteFormula(getFilterSchemaFromHeaders(req.headers), getOptionsDictionaryFromHeaders(req.headers)).then(response => {
+    formula_utils.deleteFormula(getFilterSchemaFromHeaders(req.headers)).then(response => {
         res.send(response);
     }).catch(err => {
         resolveError(err, res);
@@ -142,7 +129,7 @@ app.route('/formulas').get((req, res) => {
 
 ///////////////////// ingredients /////////////////////
 app.route('/ingredients').get((req, res) => {
-    ingredient_utils.getIngredients(getFilterSchemaFromHeaders(req.headers), getLimitFromHeaders(req.headers), getOptionsDictionaryFromHeaders(req.headers)).then(ingredients => {
+    ingredient_utils.getIngredients(getFilterSchemaFromHeaders(req.headers), getLimitFromHeaders(req.headers)).then(ingredients => {
         res.send(ingredients);
     }).catch(err => {
         resolveError(err, res);
@@ -154,13 +141,13 @@ app.route('/ingredients').get((req, res) => {
         resolveError(err, res);
     });
 }).post((req, res) => {
-    ingredient_utils.modifyIngredient(getFilterSchemaFromHeaders(req.headers), req.body, getOptionsDictionaryFromHeaders(req.headers)).then(response => {
+    ingredient_utils.modifyIngredient(getFilterSchemaFromHeaders(req.headers), req.body).then(response => {
         res.send(response);
     }).catch(err => {
         resolveError(err, res);
     });
 }).delete((req, res) => {
-    ingredient_utils.deleteIngredient(getFilterSchemaFromHeaders(req.headers), getOptionsDictionaryFromHeaders(req.headers)).then(response => {
+    ingredient_utils.deleteIngredient(getFilterSchemaFromHeaders(req.headers)).then(response => {
         res.send(response);
     }).catch(err => {
         resolveError(err, res);
@@ -169,7 +156,7 @@ app.route('/ingredients').get((req, res) => {
 
 ///////////////////// skus /////////////////////
 app.route('/skus').get((req, res) => {
-    sku_utils.getSkus(getFilterSchemaFromHeaders(req.headers), getLimitFromHeaders(req.headers), getOptionsDictionaryFromHeaders(req.headers)).then(skus => {
+    sku_utils.getSkus(getFilterSchemaFromHeaders(req.headers), getLimitFromHeaders(req.headers)).then(skus => {
         res.send(skus);
     }).catch(err => {
         resolveError(err, res);
@@ -181,13 +168,13 @@ app.route('/skus').get((req, res) => {
         resolveError(err, res);
     });
 }).post((req, res) => {
-    sku_utils.modifySku(getFilterSchemaFromHeaders(req.headers), req.body, getOptionsDictionaryFromHeaders(req.headers)).then(response => {
+    sku_utils.modifySku(getFilterSchemaFromHeaders(req.headers), req.body).then(response => {
         res.send(response);
     }).catch(err => {
         resolveError(err, res);
     });
 }).delete((req, res) => {
-    sku_utils.deleteSku(getFilterSchemaFromHeaders(req.headers), getOptionsDictionaryFromHeaders(req.headers)).then(response => {
+    sku_utils.deleteSku(getFilterSchemaFromHeaders(req.headers)).then(response => {
         res.send(response);
     }).catch(err => {
         resolveError(err, res);
@@ -196,7 +183,7 @@ app.route('/skus').get((req, res) => {
 
 ///////////////////// Manufacturing Goals /////////////////////
 app.route('/manufacturing-goals').get((req, res) => {
-    goals_utils.getGoals(getFilterSchemaFromHeaders(req.headers), getLimitFromHeaders(req.headers), getOptionsDictionaryFromHeaders(req.headers)).then(goals => {
+    goals_utils.getGoals(getFilterSchemaFromHeaders(req.headers), getLimitFromHeaders(req.headers)).then(goals => {
         res.send(goals);
     }).catch(err => {
         resolveError(err, res);
@@ -208,13 +195,13 @@ app.route('/manufacturing-goals').get((req, res) => {
         resolveError(err, res);
     });
 }).post((req, res) => {
-    goals_utils.modifyGoal(getFilterSchemaFromHeaders(req.headers), req.body, getOptionsDictionaryFromHeaders(req.headers)).then(response => {
+    goals_utils.modifyGoal(getFilterSchemaFromHeaders(req.headers), req.body).then(response => {
         res.send(response);
     }).catch(err => {
         resolveError(err, res);
     });
 }).delete((req, res) => {
-    goals_utils.deleteGoal(getFilterSchemaFromHeaders(req.headers), getOptionsDictionaryFromHeaders(req.headers)).then(response => {
+    goals_utils.deleteGoal(getFilterSchemaFromHeaders(req.headers)).then(response => {
         res.send(response);
     }).catch(err => {
         resolveError(err, res);
@@ -223,7 +210,7 @@ app.route('/manufacturing-goals').get((req, res) => {
 
 ///////////////////// Manufacturing Lines /////////////////////
 app.route('/manufacturing-lines').get((req, res) => {
-    line_utils.getLine(getFilterSchemaFromHeaders(req.headers), getLimitFromHeaders(req.headers), getOptionsDictionaryFromHeaders(req.headers)).then(lines => {
+    line_utils.getLine(getFilterSchemaFromHeaders(req.headers), getLimitFromHeaders(req.headers)).then(lines => {
         res.send(lines);
     }).catch(err => {
         resolveError(err, res);
@@ -235,13 +222,13 @@ app.route('/manufacturing-lines').get((req, res) => {
         resolveError(err, res);
     });
 }).post((req, res) => {
-    line_utils.modifyLine(getFilterSchemaFromHeaders(req.headers), req.body, getOptionsDictionaryFromHeaders(req.headers)).then(response => {
+    line_utils.modifyLine(getFilterSchemaFromHeaders(req.headers), req.body).then(response => {
         res.send(response);
     }).catch(err => {
         resolveError(err, res);
     });
 }).delete((req, res) => {
-    line_utils.deleteLine(getFilterSchemaFromHeaders(req.headers), getOptionsDictionaryFromHeaders(req.headers)).then(response => {
+    line_utils.deleteLine(getFilterSchemaFromHeaders(req.headers)).then(response => {
         res.send(response);
     }).catch(err => {
         resolveError(err, res);
@@ -250,7 +237,7 @@ app.route('/manufacturing-lines').get((req, res) => {
 
 ///////////////////// Manufacturing Activity /////////////////////
 app.route('/manufacturing-activities').get((req, res) => {
-    activity_utils.getActivity(getFilterSchemaFromHeaders(req.headers), getLimitFromHeaders(req.headers), getOptionsDictionaryFromHeaders(req.headers)).then(activities => {
+    activity_utils.getActivity(getFilterSchemaFromHeaders(req.headers), getLimitFromHeaders(req.headers)).then(activities => {
         res.send(activities);
     }).catch(err => {
         resolveError(err, res);
@@ -262,13 +249,13 @@ app.route('/manufacturing-activities').get((req, res) => {
         resolveError(err, res);
     });
 }).post((req, res) => {
-    activity_utils.modifyActivity(getFilterSchemaFromHeaders(req.headers), req.body, getOptionsDictionaryFromHeaders(req.headers)).then(response => {
+    activity_utils.modifyActivity(getFilterSchemaFromHeaders(req.headers), req.body).then(response => {
         res.send(response);
     }).catch(err => {
         resolveError(err, res);
     });
 }).delete((req, res) => {
-    activity_utils.deleteActivity(getFilterSchemaFromHeaders(req.headers), getOptionsDictionaryFromHeaders(req.headers)).then(response => {
+    activity_utils.deleteActivity(getFilterSchemaFromHeaders(req.headers)).then(response => {
         res.send(response);
     }).catch(err => {
         resolveError(err, res);
@@ -277,7 +264,7 @@ app.route('/manufacturing-activities').get((req, res) => {
 
 ///////////////////// product lines /////////////////////
 app.route('/product_lines').get((req, res) => {
-    product_line_utils.getProductLines(getFilterSchemaFromHeaders(req.headers), getLimitFromHeaders(req.headers), getOptionsDictionaryFromHeaders(req.headers)).then(productLines => {
+    product_line_utils.getProductLines(getFilterSchemaFromHeaders(req.headers), getLimitFromHeaders(req.headers)).then(productLines => {
         res.send(productLines);
     }).catch(err => {
         resolveError(err, res);
@@ -289,15 +276,13 @@ app.route('/product_lines').get((req, res) => {
         resolveError(err, res);
     });
 }).post((req, res) => {
-    product_line_utils.modifyProductLine(getFilterSchemaFromHeaders(req.headers), req.body, getOptionsDictionaryFromHeaders(req.headers)).then(response => {
+    product_line_utils.modifyProductLine(getFilterSchemaFromHeaders(req.headers), req.body).then(response => {
         res.send(response);
-        console.log('sent')
     }).catch(err => {
-        console.log('error');
         resolveError(err, res);
     });
 }).delete((req, res) => {
-    product_line_utils.deleteProductLine(getFilterSchemaFromHeaders(req.headers), getOptionsDictionaryFromHeaders(req.headers)).then(response => {
+    product_line_utils.deleteProductLine(getFilterSchemaFromHeaders(req.headers)).then(response => {
         res.send(response);
     }).catch(err => {
         resolveError(err, res);
@@ -320,7 +305,7 @@ app.route('/login').get((req, res) => {
     } else {
         user_utils.usernamePasswordCorrect(req.headers['username'], req.headers['password']).then(correct => {
             if (correct) {
-                user_utils.getUsers(getFilterSchemaFromHeaders(req.headers), 1, getOptionsDictionaryFromHeaders(req.headers)).then(response => {
+                user_utils.getUsers(getFilterSchemaFromHeaders(req.headers), 1).then(response => {
                     res.send({
                         token: response[0].token,
                         admin: response[0].admin,

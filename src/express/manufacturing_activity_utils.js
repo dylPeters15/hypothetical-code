@@ -1,7 +1,7 @@
 const database = require('./database.js');
 
 
-function getActivity(filterSchema, limit, optionsDict) {
+function getActivity(filterSchema, limit) {
     return new Promise((resolve, reject) => {
         database.manufacturingActivityModel.find(filterSchema).limit(limit).deepPopulate('sku.formula.ingredientsandquantities.ingredient').populate('line').exec(function (err, results) {
             if (err) {
@@ -24,7 +24,7 @@ function createActivity(newObject) {
     });
 }
 
-function modifyActivity(filterSchema, newObject, optionsDict) {
+function modifyActivity(filterSchema, newObject) {
     return new Promise((resolve, reject) => {
         database.manufacturingActivityModel.updateOne(filterSchema, newObject, (err, response) => {
             if (err) {
@@ -36,7 +36,7 @@ function modifyActivity(filterSchema, newObject, optionsDict) {
     });
 }
 
-function deleteActivity(filterSchema, optionsDict) {
+function deleteActivity(filterSchema) {
     return new Promise((resolve, reject) => {
         database.manufacturingActivityModel.deleteOne(filterSchema, (err, response) => {
             if (err) {

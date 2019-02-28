@@ -2,7 +2,7 @@ const database = require('./database.js');
 const formula_utils = require('./formula_utils.js');
 
 
-function getSkus(filterSchema, limit, optionsDict) {
+function getSkus(filterSchema, limit) {
     return new Promise(function (resolve, reject) {
         database.skuModel.find(filterSchema).limit(limit).populate('formula').exec((err, skus) => {
             if (err) {
@@ -25,7 +25,7 @@ function createSku(newObject) {
     });
 }
 
-function modifySku(filterSchema, newObject, optionsDict) {
+function modifySku(filterSchema, newObject) {
     return new Promise(function (resolve, reject) {
         database.skuModel.updateOne(filterSchema, newObject, (err, response) => {
             if (err) {
@@ -37,7 +37,7 @@ function modifySku(filterSchema, newObject, optionsDict) {
     });
 }
 
-function deleteSku(filterSchema, optionsDict) {
+function deleteSku(filterSchema) {
     return new Promise(function (resolve, reject) {
         database.skuModel.deleteOne(filterSchema, (err, response) => {
             if (err) {
