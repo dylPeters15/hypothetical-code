@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
-import { RestService } from '../rest.service';
+import { RestServiceV2, AndVsOr } from '../restv2.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ImportUploadService {
 
-  constructor(public rest: RestService) { }
+  constructor(public restv2: RestServiceV2) { }
 
   async importData(data): Promise<void> {
     await this.importIngredients(data['ingredients']);
@@ -40,14 +40,14 @@ export class ImportUploadService {
     for (let conflict of ingredients['conflicts']) {
       if (conflict['select'] == 'new') {
         var ingredient = conflict['new'];
-        var result = await this.rest.modifyIngredient(conflict['old'][0]['ingredientname'], ingredient['ingredientname'], ingredient['ingredientnumber'], ingredient['vendorinformation'], ingredient['unitofmeasure'], ingredient['amount'], ingredient['costperpackage'], ingredient['comment']).toPromise();
+        var result = await this.restv2.modifyIngredient(AndVsOr.AND, conflict['old'][0]['ingredientname'], ingredient['ingredientname'], ingredient['ingredientnumber'], ingredient['vendorinformation'], ingredient['unitofmeasure'], ingredient['amount'], ingredient['costperpackage'], ingredient['comment']);
         if (result['ok'] != 1) {
           throw Error("Could not modify ingredient " + ingredient['ingredientname']);
         }
       }
     }
     for (let ingredient of ingredients['new']) {
-      var result = await this.rest.createIngredient(ingredient['ingredientname'], ingredient['ingredientnumber'], ingredient['vendorinformation'], ingredient['unitofmeasure'], ingredient['amount'], ingredient['costperpackage'], ingredient['comment']).toPromise();
+      var result = await this.restv2.createIngredient(ingredient['ingredientname'], ingredient['ingredientnumber'], ingredient['vendorinformation'], ingredient['unitofmeasure'], ingredient['amount'], ingredient['costperpackage'], ingredient['comment']);
       if (result['ingredientname'] != ingredient['ingredientname']) {
         throw Error("Could not create ingredient " + ingredient['ingredientname']);
       }
@@ -59,7 +59,7 @@ export class ImportUploadService {
 
     for (let ingredientAndQuantity of formula['ingredientsandquantities']) {
       var ingredientnum = ingredientAndQuantity['ingredient'];
-      var response = await this.rest.getIngredients("", "", ingredientnum, 1).toPromise();
+      var response = await this.restv2.getIngredients(AndVsOr.AND, null, null, ingredientnum, 1);
       if (response.length == 0) {
         throw Error("Could not find ingredient " + ingredientnum + " for formula " + formula['formulaname']);
       }
@@ -70,7 +70,7 @@ export class ImportUploadService {
       });
     }
 
-    var createResponse = await this.rest.createFormula(formula['formulaname'], formula['formulanumber'], ingredientsAndQuantities, formula['comment'] || "").toPromise();
+    var createResponse = await this.restv2.createFormula(formula['formulaname'], formula['formulanumber'], ingredientsAndQuantities, formula['comment'] || "");
     if (createResponse['formulaname'] != formula['formulaname']) {
       throw Error("Error creating formula.");
     }
@@ -81,7 +81,7 @@ export class ImportUploadService {
 
     for (let ingredientAndQuantity of formula['ingredientsandquantities']) {
       var ingredientnum = ingredientAndQuantity['ingredient'];
-      var response = await this.rest.getIngredients("", "", ingredientnum, 1).toPromise();
+      var response = await this.restv2.getIngredients(AndVsOr.AND, null, null, ingredientnum, 1);
       if (response.length == 0) {
         throw Error("Could not find ingredient " + ingredientnum + " for formula " + formula['formulaname']);
       }
@@ -92,7 +92,7 @@ export class ImportUploadService {
       });
     }
 
-    var modifyResponse = await this.rest.modifyFormula(oldname, formula['formulaname'], formula['formulanumber'], ingredientsAndQuantities, formula['comment'] || "").toPromise();
+    var modifyResponse = await this.restv2.modifyFormula(AndVsOr.AND, oldname, formula['formulaname'], formula['formulanumber'], ingredientsAndQuantities, formula['comment'] || "");
     if (modifyResponse['ok'] == 1) {
       throw Error("Error creating formula.");
     }
@@ -110,12 +110,12 @@ export class ImportUploadService {
   }
 
   private async importSKU(sku): Promise<void> {
-    var createSkuResponse = await this.rest.createSku(sku['skuname'], sku['skunumber'], sku['caseupcnumber'], sku['unitupcnumber'], "" + sku['unitsize'], sku['countpercase'], sku['formula'], sku['formulascalingfactor'], sku['manufacturingrate'], sku['comment']).toPromise();
+    var createSkuResponse = await this.restv2.createSku(sku['skuname'], sku['skunumber'], sku['caseupcnumber'], sku['unitupcnumber'], "" + sku['unitsize'], sku['countpercase'], sku['formula'], sku['formulascalingfactor'], sku['manufacturingrate'], sku['comment']);
     if (createSkuResponse['skuname'] != sku['skuname']) {
       throw Error("Could not create SKU " + sku['skuname']);
     }
 
-    var getPLResponse = await this.rest.getProductLines(sku['productline'], "", 1).toPromise();
+    var getPLResponse = await this.restv2.getProductLines(AndVsOr.AND, sku['productline'], name, 1);
     if (getPLResponse.length == 0) {
       throw Error("Could not find product line " + sku['productline'] + " for SKU " + sku['skuname']);
     }
@@ -123,13 +123,13 @@ export class ImportUploadService {
     skus.push({
       sku: createSkuResponse['_id']
     });
-    var modifyPLResponse = await this.rest.modifyProductLine(sku['productline'], sku['productline'], skus).toPromise();
+    var modifyPLResponse = await this.restv2.modifyProductLine(AndVsOr.AND, sku['productline'], sku['productline'], skus);
     if (modifyPLResponse['ok'] != 1) {
       throw Error("Could not modify Product Line " + sku['productline'] + " for SKU " + sku['skuname']);
     }
 
     for (let ml of sku['manufacturinglines']) {
-      var mlResponse = await this.rest.getLine(ml, "$a", ml, "", 1).toPromise();
+      var mlResponse = await this.restv2.getLine(AndVsOr.AND, ml, null, ml, null, 1);
       if (mlResponse.length == 0) {
         throw Error("Could not find manufacturing line " + ml + " for SKU " + sku['skuname']);
       }
@@ -143,7 +143,7 @@ export class ImportUploadService {
         mlResponse[0]['skus'].push({
           sku: createSkuResponse['_id']
         });
-        var mlCreateResponse = await this.rest.modifyLine(mlResponse[0]['linename'], mlResponse[0]['linename'], mlResponse[0]['shortname'], mlResponse[0]['skus'], mlResponse[0]['comment']).toPromise();
+        var mlCreateResponse = await this.restv2.modifyLine(AndVsOr.AND, mlResponse[0]['linename'], mlResponse[0]['linename'], mlResponse[0]['shortname'], mlResponse[0]['skus'], mlResponse[0]['comment']);
         console.log("ML Response: ",mlResponse);
         console.log("ML Create Response: ",mlCreateResponse);
         if (mlCreateResponse['ok'] != 1 || mlCreateResponse['nModified'] != 1) {
@@ -154,11 +154,11 @@ export class ImportUploadService {
   }
 
   private async updateSKU(oldsku, newsku): Promise<void> {
-    var formulas = await this.rest.getFormulas("", newsku['formula'], 0, 1).toPromise();
+    var formulas = await this.restv2.getFormulas(AndVsOr.AND, null, null, newsku['formula'], null, null, 1);
     if (formulas.length == 0) {
       throw Error("Could not get formula " + newsku['formula'] + " for SKU " + newsku['skuname']);
     }
-    var response = await this.rest.modifySku(oldsku['skuname'], newsku['skuname'], newsku['skunumber'], newsku['caseupcnumber'], newsku['unitupcnumber'], "" + newsku['unitsize'], newsku['countpercase'], newsku['formula'], newsku['formulascalingfactor'], newsku['manufacturingrate'], newsku['comment']).toPromise();
+    var response = await this.restv2.modifySku(AndVsOr.AND, oldsku['skuname'], newsku['skuname'], newsku['skunumber'], newsku['caseupcnumber'], newsku['unitupcnumber'], "" + newsku['unitsize'], newsku['countpercase'], newsku['formula'], newsku['formulascalingfactor'], newsku['manufacturingrate'], newsku['comment']);
     if (response['ok'] != 1) {
       throw Error("Could not update sku " + oldsku['skuname']);
     }
@@ -194,7 +194,7 @@ export class ImportUploadService {
 
   private async importProductLines(productLines): Promise<void> {
     for (let productLine of productLines['new']) {
-      var result = await this.rest.createProductLine(productLine['Name'], []).toPromise();
+      var result = await this.restv2.createProductLine(productLine['Name'], []);
       if (result['productlinename'] != productLine['Name']) {
         throw Error("Could not create product line " + result['productlinename']);
       }
