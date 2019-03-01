@@ -33,11 +33,9 @@ export class ImportMatchConflictNewCheckerService {
     toReturn['formulaRefErrs'] = result || defaultObject;
 
     var result = await this.checkSKUReferences(input['skus'], input['productlines'], input['formulas']);
-    toReturn['skuRefErrs'] = result || {
-      new: [],
-      conflicts: [],
-      matches: []
-    };
+    toReturn['skuRefErrs'] = result || defaultObject;
+
+    console.log("To return: ", toReturn);
     return toReturn;
   }
 
@@ -85,6 +83,7 @@ export class ImportMatchConflictNewCheckerService {
     for (let sku of skus) {
       await this.checkSKUMatchConflictNew(sku, toReturn);
     }
+    return toReturn;
   }
 
   private async checkIngredientsMatchesConflictsNew(ingredients): Promise<any> {
@@ -116,6 +115,7 @@ export class ImportMatchConflictNewCheckerService {
         }
       }
     }
+    return toReturn;
   }
 
   private async checkProductLinesMatchesConflictsNew(productLines): Promise<any> {
@@ -131,6 +131,7 @@ export class ImportMatchConflictNewCheckerService {
         toReturn['matches'].push(productLine);
       }
     }
+    return toReturn;
   }
 
   private arrayContainsObjectWithKey(array: any[], key: string): boolean {
@@ -206,6 +207,7 @@ export class ImportMatchConflictNewCheckerService {
         select: 'new'
       });
     }
+    return toReturn;
   }
 
   private async checkFormulasMatchesConflictsNew(formulas): Promise<any> {
@@ -216,6 +218,7 @@ export class ImportMatchConflictNewCheckerService {
     for (let formula of formulas) {
       this.checkFormulaMatchConflictNew(formula, toReturn);
     }
+    return toReturn;
   }
 
   /**
@@ -238,6 +241,7 @@ export class ImportMatchConflictNewCheckerService {
         }
       }
     }
+    return toReturn;
   }
 
   private async checkSKUReference(sku, productLines, formulas): Promise<any> {
@@ -267,6 +271,7 @@ export class ImportMatchConflictNewCheckerService {
       for (let sku of skus) {
         await this.checkSKUReference(sku, productLines, formulas);
       }
+      return toReturn;
   }
 
 }
