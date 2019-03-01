@@ -110,7 +110,6 @@ export class ImportComponent implements OnInit {
         message: "Successfully imported " + this.numNew(closeData) + " new records and updated " + this.numUpdated(closeData) + " records."
       };
       this.dialog.open(UserNotificationDialogComponent, dialogConfig);
-      this.dialog.open(UserNotificationDialogComponent, dialogConfig);
     }
   }
 

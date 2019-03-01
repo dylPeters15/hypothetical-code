@@ -144,7 +144,9 @@ export class ImportUploadService {
           sku: createSkuResponse['_id']
         });
         var mlCreateResponse = await this.rest.modifyLine(mlResponse[0]['linename'], mlResponse[0]['linename'], mlResponse[0]['shortname'], mlResponse[0]['skus'], mlResponse[0]['comment']).toPromise();
-        if (mlCreateResponse['linename'] != mlResponse[0]['linename']) {
+        console.log("ML Response: ",mlResponse);
+        console.log("ML Create Response: ",mlCreateResponse);
+        if (mlCreateResponse['ok'] != 1 || mlCreateResponse['nModified'] != 1) {
           throw Error("Could not add SKU " + sku['skuname'] + " to Manufacturing Line " + mlCreateResponse['linename']);
         }
       }
