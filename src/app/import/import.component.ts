@@ -45,21 +45,41 @@ export class ImportComponent implements OnInit {
     return numNew;
   }
 
+  displayErrorDialog(err, thisObject) {
+  }
+
   async filesSelected(): Promise<void> {
-    function displayErrorDialog(err) {
+    var errors = false;
+
+    var csvResult = await this.parser.parseCSVFiles(this.fileSelector.nativeElement.files).catch(err => {
+      errors = true;
+      //popup a dialog telling the user there was an error
       const dialogConfig = new MatDialogConfig();
       dialogConfig.data = {
         title: "Error!",
         message: "" + err
       };
       this.dialog.open(UserNotificationDialogComponent, dialogConfig);
+    });
+    this.fileSelectorForm.nativeElement.reset();
+    if (errors) {
+      return;
     }
 
-    var csvResult = await this.parser.parseCSVFiles(this.fileSelector.nativeElement.files).catch(displayErrorDialog);
-    this.fileSelectorForm.nativeElement.reset();
-
-    var checkResult = await this.importChecker.checkAll(csvResult).catch(displayErrorDialog);
+    var checkResult = await this.importChecker.checkAll(csvResult).catch(err => {
+      errors = true;
+      //popup a dialog telling the user there was an error
+      const dialogConfig = new MatDialogConfig();
+      dialogConfig.data = {
+        title: "Error!",
+        message: "" + err
+      };
+      this.dialog.open(UserNotificationDialogComponent, dialogConfig);
+    });
     console.log("Check result: ", checkResult);
+    if (errors) {
+      return;
+    }
 
     const dialogConfig = new MatDialogConfig();
     dialogConfig.data = checkResult;
@@ -69,8 +89,20 @@ export class ImportComponent implements OnInit {
       //operation was cancelled
     } else {
       //operation confirmed
-      await this.importUploader.importData(closeData).catch(displayErrorDialog);
-      //popup a dialog telling the user it was successfull
+      await this.importUploader.importData(closeData).catch(err => {
+        errors = true;
+        //popup a dialog telling the user there was an error
+        const dialogConfig = new MatDialogConfig();
+        dialogConfig.data = {
+          title: "Error!",
+          message: "" + err
+        };
+        this.dialog.open(UserNotificationDialogComponent, dialogConfig);
+      });
+      if (errors) {
+        return;
+      }
+      // popup a dialog telling the user it was successfull
       console.log(closeData);
       const dialogConfig = new MatDialogConfig();
       dialogConfig.data = {
