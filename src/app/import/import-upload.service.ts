@@ -110,7 +110,7 @@ export class ImportUploadService {
   }
 
   private async importSKU(sku): Promise<void> {
-    var createSkuResponse = await this.restv2.createSku(sku['skuname'], sku['skunumber'], sku['caseupcnumber'], sku['unitupcnumber'], "" + sku['unitsize'], sku['countpercase'], sku['formula'], sku['formulascalingfactor'], sku['manufacturingrate'], sku['comment']);
+    var createSkuResponse = await this.restv2.createSku(sku['skuname'], sku['skunumber'], sku['caseupcnumber'], sku['unitupcnumber'], "" + sku['unitsize'], sku['countpercase'], sku['formula'], sku['formulascalingfactor'], sku['manufacturingrate'], 1, 1, sku['comment']); //TODO
     if (createSkuResponse['skuname'] != sku['skuname']) {
       throw Error("Could not create SKU " + sku['skuname']);
     }
@@ -158,7 +158,7 @@ export class ImportUploadService {
     if (formulas.length == 0) {
       throw Error("Could not get formula " + newsku['formula'] + " for SKU " + newsku['skuname']);
     }
-    var response = await this.restv2.modifySku(AndVsOr.AND, oldsku['skuname'], newsku['skuname'], newsku['skunumber'], newsku['caseupcnumber'], newsku['unitupcnumber'], "" + newsku['unitsize'], newsku['countpercase'], newsku['formula'], newsku['formulascalingfactor'], newsku['manufacturingrate'], newsku['comment']);
+    var response = await this.restv2.modifySku(AndVsOr.AND, oldsku['skuname'], newsku['skuname'], newsku['skunumber'], newsku['caseupcnumber'], newsku['unitupcnumber'], "" + newsku['unitsize'], newsku['countpercase'], newsku['formula'], newsku['formulascalingfactor'], newsku['manufacturingrate'], 1,1, newsku['comment']); //TODO
     if (response['ok'] != 1) {
       throw Error("Could not update sku " + oldsku['skuname']);
     }
