@@ -71,6 +71,7 @@ import { UserNotificationDialogComponent } from './user-notification-dialog/user
 import { UserRouteGuardService } from './user-route-guard.service';
 import { NewSkuFormulaComponent } from './new-sku-formula/new-sku-formula.component';
 import {MatDialogModule} from '@angular/material/dialog';
+import { SalesTrackingComponent } from './sales-tracking/sales-tracking.component';
 
 const appRoutes: Routes = [
   { path: 'login', component: LoginComponent, data: { title: 'Log In' }, canActivate: [AlreadyLoggedInRouteGuardService] },
@@ -144,7 +145,8 @@ const appRoutes: Routes = [
     ModifyActivityDialogComponent,
     ManufactoringScheduleTableComponent,
     ManufacturingLinesTableComponent,
-    ConfirmDeletionDialogComponent
+    ConfirmDeletionDialogComponent,
+    SalesTrackingComponent
   ],
   imports: [
     BrowserModule,
