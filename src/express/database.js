@@ -18,7 +18,7 @@ function dropDatabase() {
   return db.dropDatabase();
 }
 
-var localUserRequired = function() {
+var localUserRequired = function () {
   return this.localuser;
 }
 /**
@@ -52,6 +52,11 @@ var userSchema = new mongoose.Schema({
     unique: false
   },
   localuser: {
+    type: Boolean,
+    required: true,
+    unique: false
+  },
+  sysadmin: {
     type: Boolean,
     required: true,
     unique: false
@@ -161,6 +166,16 @@ var skuSchema = new mongoose.Schema({
     required: true,
     unique: false
   },
+  manufacturingsetupcost: {
+    type: Number,
+    required: true,
+    unique: false
+  },
+  manufacturingruncost: {
+    type: Number,
+    required: true,
+    unique: false
+  },
   comment: {
     type: String,
     required: false,
@@ -186,7 +201,7 @@ var productLineSchema = new mongoose.Schema({
       ref: 'sku'
     }
   }]
-  
+
 });
 productLineSchema.plugin(uniqueValidator);
 
@@ -206,7 +221,7 @@ var manufacturingGoalsSchema = new mongoose.Schema({
     unique: false
   },
   activities: [{
-    activity:{
+    activity: {
       type: ObjectId,
       ref: 'activity'
     }
@@ -345,6 +360,68 @@ manufacturingActivitySchema.plugin(deepPopulate);
 
 var manufacturingActivityModel = mongoose.model('activity', manufacturingActivitySchema);
 
+/**
+ * Valid search criteria:
+ * customername - match, regex
+ * customernumber - match
+ */
+var customerSchema = new mongoose.Schema({
+  customername: {
+    type: String,
+    required: true,
+    unique: true
+  },
+  customernumber: {
+    type: Number,
+    required: true,
+    unique: true
+  }
+});
+customerSchema.plugin(uniqueValidator);
+customerSchema.plugin(deepPopulate);
+
+var customerModel = mongoose.model('customer', customerSchema);
+
+/**
+ * Valid search criteria:
+ * sku - id match
+ * customer - id match
+ * date - between 2 dates
+ */
+var saleSchema = new mongoose.Schema({
+  sku: {
+    type: ObjectId,
+    ref: 'sku',
+    required: true,
+    unique: false
+  },
+  customer: {
+    type: ObjectId,
+    ref: 'customer',
+    required: true,
+    unique: false
+  },
+  date: {
+    type: Date,
+    required: true,
+    unique: false
+  },
+  numcases: {
+    type: Number,
+    required: true,
+    unique: false
+  },
+  pricepercase: {
+    type: Number,
+    required: true,
+    unique: false
+  }
+});
+saleSchema.plugin(uniqueValidator);
+saleSchema.plugin(deepPopulate);
+
+var saleModel = mongoose.model('sale', saleSchema);
+
 module.exports = {
   defaultSearchLimit: defaultSearchLimit,
   userModel: userModel,
@@ -355,6 +432,8 @@ module.exports = {
   formulaModel: formulaModel,
   manufacturingLineModel: manufacturingLineModel,
   manufacturingActivityModel: manufacturingActivityModel,
+  customerModel: customerModel,
+  saleModel: saleModel,
   dropDatabase: dropDatabase,
   deepPopulate: deepPopulate
 };
