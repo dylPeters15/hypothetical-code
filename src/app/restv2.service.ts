@@ -442,23 +442,23 @@ export class RestServiceV2 {
       this.generateHeaderWithFilterSchema()).toPromise();
   }
 
-  modifyCustomer(andVsOr: AndVsOr, customername: String, customernumber: Number, newcustomername: String, newcustomernumber: Number): Promise<any> {
-    return this.http.post(endpoint + 'customers', this.generateBodyWithOptions({
-      customername: newcustomername,
-      customernumber: newcustomernumber
-    }),
-      this.generateHeaderWithFilterSchema(andVsOr, [
-        {customername: customername},
-        {customernumber: customernumber}
-      ])).toPromise();
-  }
+  // modifyCustomer(andVsOr: AndVsOr, customername: String, customernumber: Number, newcustomername: String, newcustomernumber: Number): Promise<any> {
+  //   return this.http.post(endpoint + 'customers', this.generateBodyWithOptions({
+  //     customername: newcustomername,
+  //     customernumber: newcustomernumber
+  //   }),
+  //     this.generateHeaderWithFilterSchema(andVsOr, [
+  //       {customername: customername},
+  //       {customernumber: customernumber}
+  //     ])).toPromise();
+  // }
 
-  deleteCustomer(andVsOr: AndVsOr, customername: String, customernumber: Number): Promise<any> {
-    return this.http.delete(endpoint + "customers", this.generateHeaderWithFilterSchema(andVsOr, [
-      {customername: customername},
-      {customernumber: customernumber}
-    ])).toPromise();
-  }
+  // deleteCustomer(andVsOr: AndVsOr, customername: String, customernumber: Number): Promise<any> {
+  //   return this.http.delete(endpoint + "customers", this.generateHeaderWithFilterSchema(andVsOr, [
+  //     {customername: customername},
+  //     {customernumber: customernumber}
+  //   ])).toPromise();
+  // }
 
 
   ///////////////////// Sales /////////////////////
@@ -482,30 +482,30 @@ export class RestServiceV2 {
       this.generateHeaderWithFilterSchema()).toPromise();
   }
 
-  modifySale(andVsOr: AndVsOr, skuid: Number, customerid: Number, startdate: Date, enddate: Date, newskuid: Number, newcustomerid: Number, newdate: Date, newnumcases: Number, newpricepercase: Number): Promise<any> {
-    return this.http.post(endpoint + 'sales', this.generateBodyWithOptions({
-      sku: newskuid,
-      customer: newcustomerid,
-      date: newdate,
-      numcases: newnumcases,
-      pricepercase: newpricepercase
-    }),
-      this.generateHeaderWithFilterSchema(andVsOr, [
-        {sku: skuid},
-        {customer: customerid},
-        {date: startdate?{$gte: startdate}:null},
-        {date: enddate?{$lte: enddate}:null}
-      ])).toPromise();
-  }
+  // modifySale(andVsOr: AndVsOr, skuid: Number, customerid: Number, startdate: Date, enddate: Date, newskuid: Number, newcustomerid: Number, newdate: Date, newnumcases: Number, newpricepercase: Number): Promise<any> {
+  //   return this.http.post(endpoint + 'sales', this.generateBodyWithOptions({
+  //     sku: newskuid,
+  //     customer: newcustomerid,
+  //     date: newdate,
+  //     numcases: newnumcases,
+  //     pricepercase: newpricepercase
+  //   }),
+  //     this.generateHeaderWithFilterSchema(andVsOr, [
+  //       {sku: skuid},
+  //       {customer: customerid},
+  //       {date: startdate?{$gte: startdate}:null},
+  //       {date: enddate?{$lte: enddate}:null}
+  //     ])).toPromise();
+  // }
 
-  deleteSale(andVsOr: AndVsOr, skuid: Number, customerid: Number, startdate: Date, enddate: Date): Promise<any> {
-    return this.http.delete(endpoint + "sales", this.generateHeaderWithFilterSchema(andVsOr, [
-      {sku: skuid},
-      {customer: customerid},
-      {date: startdate?{$gte: startdate}:null},
-      {date: enddate?{$lte: enddate}:null}
-    ])).toPromise();
-  }
+  // deleteSale(andVsOr: AndVsOr, skuid: Number, customerid: Number, startdate: Date, enddate: Date): Promise<any> {
+  //   return this.http.delete(endpoint + "sales", this.generateHeaderWithFilterSchema(andVsOr, [
+  //     {sku: skuid},
+  //     {customer: customerid},
+  //     {date: startdate?{$gte: startdate}:null},
+  //     {date: enddate?{$lte: enddate}:null}
+  //   ])).toPromise();
+  // }
 
 
   ///////////////////// Login /////////////////////
