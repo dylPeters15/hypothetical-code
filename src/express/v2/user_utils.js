@@ -1,10 +1,12 @@
-const database = require('./database.js');
+const database = require('../database.js');
 const crypto = require('crypto');
 const axios = require('axios');
 
 function usernamePasswordCorrect(username, password) {
     return new Promise((resolve, reject) => {
-        getUsers(username).then(users => {
+        getUsers({
+            username: username
+        }).then(users => {
             if (users.length != 1) {
                 reject(Error("Could not find username"));
                 return;
@@ -53,103 +55,7 @@ function generateToken() {
     });
 }
 
-function getUsers(username, usernameregex, admin, localuser, limit) {
-    username = username || "";
-    usernameregex = usernameregex || "$a";
-    limit = limit || database.defaultSearchLimit;
 
-    return new Promise((resolve, reject) => {
-        var filterSchema = {
-            $or: [
-                { username: username },
-                { username: { $regex: usernameregex } }
-            ]
-        }
-        if (admin !== null && admin !== undefined && admin !== "") {
-            filterSchema['admin'] = admin;
-        }
-        if (localuser !== null && localuser !== undefined && localuser !== "") {
-            filterSchema['localuser'] = localuser;
-        }
-        database.userModel.find(filterSchema).limit(limit).exec((err, users) => {
-            if (err) {
-                reject(Error(err));
-                return;
-            }
-            resolve(users);
-        });
-    });
-}
-
-function createUser(username, password, admin, localuser) {
-    return new Promise((resolve, reject) => {
-        generateToken().then(token => {
-            var userObject = {
-                username: username,
-                token: token,
-                admin: admin,
-                localuser: localuser
-            };
-            if (localuser) {
-                let saltAndHash = generateSaltAndHash(password);
-                userObject['salt'] = saltAndHash.salt;
-                userObject['saltedhashedpassword'] = saltAndHash.hash;
-            }
-            let user = new database.userModel(userObject);
-            user.save().then(response => {
-                resolve(response);
-            }).catch(err => {
-                reject(Error(err));
-            });
-        }).catch(err => {
-            reject(Error(err));
-        });
-    });
-}
-
-function modifyUser(username, localuser, newPassword, newAdmin) {
-    return new Promise((resolve, reject) => {
-        var filterSchema = {
-            username: username,
-            localuser: localuser
-        }
-        var toSet = {};
-        if (localuser && newPassword !== null && newPassword !== undefined && newPassword !== "") {
-            var saltAndHash = generateSaltAndHash(newPassword);
-            toSet['salt'] = saltAndHash.salt;
-            toSet['saltedhashedpassword'] = saltAndHash.hash;
-        }
-        if (newAdmin !== null && newAdmin !== undefined && newAdmin !== "") {
-            toSet['admin'] = newAdmin;
-        }
-        var updateObject = {
-            $set: toSet
-        }
-        database.userModel.updateOne(filterSchema, updateObject, (err, response) => {
-            if (err) {
-                reject(Error(err));
-                return
-            }
-            resolve(response);
-        });
-    });
-}
-
-function deleteUser(username, localuser) {
-    return new Promise((resolve, reject) => {
-        var filterSchema = {
-            username: username,
-            localuser: localuser
-        }
-        database.userModel.deleteOne(filterSchema, (err, response) => {
-            if (err) {
-                reject(Error(err));
-                return
-            }
-            resolve(response);
-        });
-    });
-}
 
 function createFederatedUser(netidtoken, clientid) {
     return new Promise((resolve, reject) => {
@@ -160,7 +66,11 @@ function createFederatedUser(netidtoken, clientid) {
             }
         }).then(response => {
             var netid = response.data.netid;
-            createUser(netid, null, false, false).then(response => {
+            createUser({
+                username: netid,
+                admin: false,
+                localuser: false
+            }).then(response => {
                 resolve(response);
             }).catch(err => {
                 reject(Error(err));
@@ -180,13 +90,18 @@ function getLoginInfoForFederatedUser(netidtoken, clientid) {
             }
         }).then(response => {
             var netid = response.data.netid;
-            getUsers(netid, null, null, false, 1).then(users => {
+            getUsers({
+                username: netid
+            }).then(users => {
                 if (users.length == 1) {
                     resolve(users[0]);
                 } else if (users.length == 0) {
                     //user does not exist. create it
                     createFederatedUser(netidtoken, clientid).then(createResponse => {
-                        getUsers(netid, null, null, false, 1).then(users => {
+                        getUsers({
+                            username: netid,
+                            localuser: false
+                        }).then(users => {
                             if (users.length == 1) {
                                 resolve(users[0]);
                             } else {
@@ -206,6 +121,71 @@ function getLoginInfoForFederatedUser(netidtoken, clientid) {
             });
         }).catch(err => {
             reject(Error(err));
+        });
+    });
+}
+
+function getUsers(filterSchema, limit) {
+    return new Promise((resolve, reject) => {
+        database.userModel.find(filterSchema).limit(limit).exec((err, users) => {
+            if (err) {
+                reject(Error(err));
+                return;
+            }
+            resolve(users);
+        });
+    });
+}
+
+function createUser(newObject) {
+    return new Promise((resolve, reject) => {
+        generateToken().then(token => {
+            newObject['token'] = token;
+            if (newObject['localuser']) {
+                let saltAndHash = generateSaltAndHash(newObject['password']);
+                newObject['salt'] = saltAndHash.salt;
+                newObject['saltedhashedpassword'] = saltAndHash.hash;
+            }
+            let user = new database.userModel(newObject);
+            user.save().then(response => {
+                resolve(response);
+            }).catch(err => {
+                reject(Error(err));
+            });
+        }).catch(err => {
+            reject(Error(err));
+        });
+    });
+}
+
+function modifyUser(filterSchema, newObject) {
+    console.log(filterSchema);
+    console.log(newObject);
+    return new Promise((resolve, reject) => {
+        if (newObject['$set']['password']) {
+            var saltAndHash = generateSaltAndHash(newObject['$set']['password']);
+            newObject['$set']['salt'] = saltAndHash.salt;
+            newObject['$set']['saltedhashedpassword'] = saltAndHash.hash;
+            delete newObject['$set']['password'];
+        }
+        database.userModel.updateOne(filterSchema, newObject, (err, response) => {
+            if (err) {
+                reject(Error(err));
+                return
+            }
+            resolve(response);
+        });
+    });
+}
+
+function deleteUser(filterSchema) {
+    return new Promise((resolve, reject) => {
+        database.userModel.deleteOne(filterSchema, (err, response) => {
+            if (err) {
+                reject(Error(err));
+                return
+            }
+            resolve(response);
         });
     });
 }
