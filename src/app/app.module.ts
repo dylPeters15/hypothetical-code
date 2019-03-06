@@ -69,6 +69,7 @@ import { TermsAndConditionsDialogComponent } from './footer/terms-and-conditions
 import { UserManagementComponent } from './user-management/user-management.component';
 import { UserNotificationDialogComponent } from './user-notification-dialog/user-notification-dialog.component';
 import { UserRouteGuardService } from './user-route-guard.service';
+import { VisComponent } from './manufacturing-schedule/vis/vis.component';
 import { NewSkuFormulaComponent } from './new-sku-formula/new-sku-formula.component';
 
 const appRoutes: Routes = [
@@ -143,7 +144,8 @@ const appRoutes: Routes = [
     ModifyActivityDialogComponent,
     ManufactoringScheduleTableComponent,
     ManufacturingLinesTableComponent,
-    ConfirmDeletionDialogComponent
+    ConfirmDeletionDialogComponent,
+    VisComponent
   ],
   imports: [
     BrowserModule,
