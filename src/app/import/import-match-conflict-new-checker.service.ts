@@ -1,232 +1,137 @@
 import { Injectable } from '@angular/core';
-import { RestService } from '../rest.service';
+import { RestServiceV2, AndVsOr } from '../restv2.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ImportMatchConflictNewCheckerService {
 
-  constructor(private rest: RestService) { }
+  constructor(private restv2: RestServiceV2) { }
 
-  checkAll(input): Promise<any> {
-    console.log("Input: ",input);
-    return new Promise((resolve, reject) => {
-      var toReturn = {};
-      var numFinished = 0;
-      var totalNum = 6;
-      this.checkSKUsMatchesConflictsNew(input['skus']).then(result => {
-        toReturn['skus'] = result||{
-          new: [],
-          conflicts: [],
-          matches: []
-        };
-        numFinished = numFinished + 1;
-        if (numFinished == totalNum) {
-          resolve(toReturn);
-        }
-      }).catch(err => {
-        reject(err);
-      });
-      this.checkIngredientsMatchesConflictsNew(input['ingredients']).then(result => {
-        toReturn['ingredients'] = result||{
-          new: [],
-          conflicts: [],
-          matches: []
-        };
-        numFinished = numFinished + 1;
-        if (numFinished == totalNum) {
-          resolve(toReturn);
-        }
-      }).catch(err => {
-        reject(err);
-      });
-      this.checkProductLinesMatchesConflictsNew(input['productlines']).then(result => {
-        toReturn['productlines'] = result||{
-          new: [],
-          conflicts: [],
-          matches: []
-        };
-        numFinished = numFinished + 1;
-        if (numFinished == totalNum) {
-          resolve(toReturn);
-        }
-      }).catch(err => {
-        reject(err);
-      });
-      this.checkFormulasMatchesConflictsNew(input['formulas']).then(result => {
-        toReturn['formulas'] = result||{
-          new: [],
-          conflicts: [],
-          matches: []
-        };
-        numFinished = numFinished + 1;
-        if (numFinished == totalNum) {
-          resolve(toReturn);
-        }
-      }).catch(err => {
-        reject(err);
-      });
-      this.checkFormulaReferences(input['formulas'], input['ingredients']).then(result => {
-        toReturn['formulaRefErrs'] = result||{
-          new: [],
-          conflicts: [],
-          matches: []
-        };
-        numFinished = numFinished + 1;
-        if (numFinished == totalNum) {
-          resolve(toReturn);
-        }
-      }).catch(err => {
-        reject(err);
-      });
-      this.checkSKUReferences(input['skus'], input['productlines'], input['formulas']).then(result => {
-        toReturn['skuRefErrs'] = result||{
-          new: [],
-          conflicts: [],
-          matches: []
-        };
-        numFinished = numFinished + 1;
-        if (numFinished == totalNum) {
-          resolve(toReturn);
-        }
-      }).catch(err => {
-        reject(err);
-      });
-    });
+  async checkAll(input): Promise<any> {
+    console.log("Input: ", input);
+    var toReturn = {};
+    var defaultObject = {
+      new: [],
+      conflicts: [],
+      matches: []
+    };
+
+    var result = await this.checkSKUsMatchesConflictsNew(input['skus']);
+    toReturn['skus'] = result || defaultObject;
+
+    var result = await this.checkIngredientsMatchesConflictsNew(input['ingredients']);
+    toReturn['ingredients'] = result || defaultObject;
+
+    var result = await this.checkProductLinesMatchesConflictsNew(input['productlines']);
+    toReturn['productlines'] = result || defaultObject;
+
+    var result = await this.checkFormulasMatchesConflictsNew(input['formulas']);
+    toReturn['formulas'] = result || defaultObject;
+
+    var result = await this.checkFormulaReferences(input['formulas'], input['ingredients']);
+    toReturn['formulaRefErrs'] = result || defaultObject;
+
+    var result = await this.checkSKUReferences(input['skus'], input['productlines'], input['formulas']);
+    toReturn['skuRefErrs'] = result || defaultObject;
+
+    console.log("To return: ", toReturn);
+    return toReturn;
   }
 
-  private checkSKUMatchConflictNew(sku, toReturn): Promise<any> {
-    return new Promise((resolve, reject) => {
-      console.log(sku);
-      this.rest.getSkus(sku['skuname'],"$a", sku['skunumber'], 100, 100, "", 1).subscribe(response => {
-        if (response.length == 0) {
-          toReturn['new'].push(sku);
-          resolve();
+  private async checkSKUMatchConflictNew(sku, toReturn): Promise<any> {
+    console.log(sku);
+    var response = await this.restv2.getSkus(AndVsOr.OR, sku['skuname'], null, sku['skunumber'], null, null, null, 1);
+    if (response.length == 0) {
+      toReturn['new'].push(sku);
+      return;
+    }
+    var responseSku = response[0];
+    var match = true;
+    console.log("SKU", sku);
+    console.log("RESPONSESKU", responseSku);
+    match = sku['skuname'] == responseSku['skuname']
+      && sku['skunumber'] == responseSku['skunumber']
+      && sku['caseupcnumber'] == responseSku['caseupcnumber']
+      && sku['unitupcnumber'] == responseSku['unitupcnumber']
+      && sku['unitsize'] == responseSku['unitsize']
+      && sku['countpercase'] == responseSku['countpercase']
+      && sku['formula'] == responseSku['formula']['formulanumber']
+      && sku['formulascalingfactor'] == responseSku['formulascalingfactor']
+      && sku['manufacturingrate'] == responseSku['manufacturingrate']
+      && sku['comment'] == responseSku['comment'];
+
+    if (match) {
+      toReturn['matches'].push(sku);
+    } else {
+      responseSku['Name'] = responseSku['skuname'];
+      toReturn['conflicts'].push({
+        old: [responseSku],
+        new: sku,
+        select: 'new'
+      })
+    }
+  }
+
+  private async checkSKUsMatchesConflictsNew(skus): Promise<any> {
+    var toReturn = {};
+    toReturn['matches'] = [];
+    toReturn['conflicts'] = [];
+    toReturn['new'] = [];
+    //do processing here
+    var numSKUsProcessed = 0;
+    for (let sku of skus) {
+      await this.checkSKUMatchConflictNew(sku, toReturn);
+    }
+    return toReturn;
+  }
+
+  private async checkIngredientsMatchesConflictsNew(ingredients): Promise<any> {
+    var toReturn = {};
+    toReturn['matches'] = [];
+    toReturn['conflicts'] = [];
+    toReturn['new'] = [];
+    for (let ingredient of ingredients) {
+      var response = await this.restv2.getIngredients(AndVsOr.OR, ingredient['ingredientname'], null, ingredient['ingredientnumber'], 1);
+      if (response.length == 0) {
+        toReturn['new'].push(ingredient);
+      } else {
+        var responseIngredient = response[0];
+        if (ingredient['ingredientname'] == responseIngredient['ingredientname']
+          && ingredient['ingredientnumber'] == responseIngredient['ingredientnumber']
+          && ingredient['vendorinformation'] == responseIngredient['vendorinformation']
+          && ingredient['unitofmeasure'] == responseIngredient['unitofmeasure']
+          && ingredient['amount'] == responseIngredient['amount']
+          && ingredient['costperpackage'] == responseIngredient['costperpackage']
+          && ingredient['comment'] == responseIngredient['comment']
+        ) {
+          toReturn['matches'].push(ingredient);
         } else {
-          var responseSku = response[0];
-          var match = true;
-          console.log("SKU",sku);
-          console.log("RESPONSESKU",responseSku);
-          match = sku['skuname'] == responseSku['skuname']
-          && sku['skunumber'] == responseSku['skunumber']
-          && sku['caseupcnumber'] == responseSku['caseupcnumber']
-          && sku['unitupcnumber'] == responseSku['unitupcnumber']
-          && sku['unitsize'] == responseSku['unitsize']
-          && sku['countpercase'] == responseSku['countpercase']
-          && sku['formula'] == responseSku['formula']['formulanumber']
-          && sku['formulascalingfactor'] == responseSku['formulascalingfactor']
-          && sku['manufacturingrate'] == responseSku['manufacturingrate']
-          && sku['comment'] == responseSku['comment'];
-
-          if (match) {
-            toReturn['matches'].push(sku);
-          } else {
-            responseSku['Name'] = responseSku['skuname'];
-            toReturn['conflicts'].push({
-              old: [responseSku],
-              new: sku,
-              select: 'new'
-            })
-          }
-          resolve();
+          toReturn['conflicts'].push({
+            old: response,
+            new: ingredient,
+            select: 'new'
+          });
         }
-      });
-    });
+      }
+    }
+    return toReturn;
   }
 
-  private checkSKUsMatchesConflictsNew(skus): Promise<any> {
-    return new Promise((resolve, reject) => {
-      var toReturn = {};
-      toReturn['matches'] = [];
-      toReturn['conflicts'] = [];
-      toReturn['new'] = [];
-      //do processing here
-      var numSKUsProcessed = 0;
-      if (skus.length == 0) {
-        resolve();
+  private async checkProductLinesMatchesConflictsNew(productLines): Promise<any> {
+    var toReturn = {};
+    toReturn['matches'] = [];
+    toReturn['conflicts'] = [];
+    toReturn['new'] = [];
+    for (let productLine of productLines) {
+      var result = await this.restv2.getProductLines(AndVsOr.OR, productLine['Name'], null, 1);
+      if (result.length == 0) {
+        toReturn['new'].push(productLine);
+      } else {
+        toReturn['matches'].push(productLine);
       }
-      skus.forEach(sku => {
-        this.checkSKUMatchConflictNew(sku, toReturn).then(() => {
-          numSKUsProcessed = numSKUsProcessed + 1;
-          if (numSKUsProcessed == skus.length) {
-            resolve(toReturn);
-          }
-        }).catch(err => {
-          console.log('error here')
-          reject(Error(err));
-        });
-      });
-    });
-  }
-
-  private checkIngredientsMatchesConflictsNew(ingredients): Promise<any> {
-    return new Promise((resolve, reject) => {
-      var toReturn = {};
-      toReturn['matches'] = [];
-      toReturn['conflicts'] = [];
-      toReturn['new'] = [];
-      var numIngredientsProcessed = 0;
-      if (ingredients.length == 0) {
-        resolve();
-      }
-      ingredients.forEach(ingredient => {
-        //do processing here
-        this.rest.getIngredients(ingredient['ingredientname'],"", ingredient['ingredientnumber'], 1).subscribe(response => {
-          if (response.length == 0) {
-            toReturn['new'].push(ingredient);
-          } else {
-            var responseIngredient = response[0];
-            if (ingredient['ingredientname'] == responseIngredient['ingredientname']
-              && ingredient['ingredientnumber'] == responseIngredient['ingredientnumber']
-              && ingredient['vendorinformation'] == responseIngredient['vendorinformation']
-              && ingredient['unitofmeasure'] == responseIngredient['unitofmeasure']
-              && ingredient['amount'] == responseIngredient['amount']
-              && ingredient['costperpackage'] == responseIngredient['costperpackage']
-              && ingredient['comment'] == responseIngredient['comment']
-            ) {
-              toReturn['matches'].push(ingredient);
-            } else {
-              toReturn['conflicts'].push({
-                old: response,
-                new: ingredient,
-                select: 'new'
-              });
-            }
-          }
-          numIngredientsProcessed = numIngredientsProcessed + 1;
-          if (numIngredientsProcessed == ingredients.length) {
-            resolve(toReturn);
-          }
-        });
-      });
-    });
-  }
-
-  private checkProductLinesMatchesConflictsNew(productLines): Promise<any> {
-    return new Promise((resolve, reject) => {
-      var toReturn = {};
-      toReturn['matches'] = [];
-      toReturn['conflicts'] = [];
-      toReturn['new'] = [];
-      var numPLsProcessed = 0;
-      if (productLines.length == 0) {
-        resolve();
-      }
-      productLines.forEach(productLine => {
-        //do processing here
-        this.rest.getProductLines(productLine['Name'], "", 1).subscribe(result => {
-          if (result.length == 0) {
-            toReturn['new'].push(productLine);
-          } else {
-            toReturn['matches'].push(productLine);
-          }
-          numPLsProcessed = numPLsProcessed + 1;
-          if (numPLsProcessed == productLines.length) {
-            resolve(toReturn);
-          }
-        });
-      });
-    });
+    }
+    return toReturn;
   }
 
   private arrayContainsObjectWithKey(array: any[], key: string): boolean {
@@ -275,146 +180,82 @@ export class ImportMatchConflictNewCheckerService {
     return false;
   }
 
-  private checkFormulaMatchConflictNew(formula, toReturn): Promise<any> {
-    return new Promise((resolve, reject) => {
-      this.rest.getFormulas(formula['formulaname'], formula['formulanumber'], null, 1).subscribe(response => {
-        if (response.length == 0) {
-          toReturn['new'].push(formula);
-          resolve();
-        } else {
-          var responseFormula = response[0];
-          var sameIngredientsAndQuantities = responseFormula['ingredientsandquantities'].length == formula['ingredientsandquantities'].length;
-          for (var i = 0; i < formula['ingredientsandquantities'].length; i++) {
-            if (!this.responseFormulaContainsIngredientAndQuantity(responseFormula, formula['ingredientsandquantities'][i]['ingredient'], formula['ingredientsandquantities'][i]['quantity'])) {
-              sameIngredientsAndQuantities = false;
-            }
-          }
-          if (responseFormula['formulaname'] == formula['formulaname']
-            && responseFormula['formulanumber'] == formula['formulanumber']
-            && responseFormula['comment'] == formula['comment']
-            && sameIngredientsAndQuantities
-            ) {
-            toReturn['matches'].push(formula);
-          } else {
-            responseFormula['Name'] = responseFormula['formulaname'];
-            toReturn['conflicts'].push({
-              old: [responseFormula],
-              new: formula,
-              select: 'new'
-            });
-          }
-          resolve();
-        }
+  private async checkFormulaMatchConflictNew(formula, toReturn): Promise<any> {
+    var response = await this.restv2.getFormulas(AndVsOr.OR, formula['formulaname'], null, formula['formulanumber'], null, null, 1);
+    if (response.length == 0) {
+      toReturn['new'].push(formula);
+      return;
+    }
+    var responseFormula = response[0];
+    var sameIngredientsAndQuantities = responseFormula['ingredientsandquantities'].length == formula['ingredientsandquantities'].length;
+    for (var i = 0; i < formula['ingredientsandquantities'].length; i++) {
+      if (!this.responseFormulaContainsIngredientAndQuantity(responseFormula, formula['ingredientsandquantities'][i]['ingredient'], formula['ingredientsandquantities'][i]['quantity'])) {
+        sameIngredientsAndQuantities = false;
+      }
+    }
+    if (responseFormula['formulaname'] == formula['formulaname']
+      && responseFormula['formulanumber'] == formula['formulanumber']
+      && responseFormula['comment'] == formula['comment']
+      && sameIngredientsAndQuantities
+    ) {
+      toReturn['matches'].push(formula);
+    } else {
+      responseFormula['Name'] = responseFormula['formulaname'];
+      toReturn['conflicts'].push({
+        old: [responseFormula],
+        new: formula,
+        select: 'new'
       });
-    });
+    }
+    return toReturn;
   }
 
-  private checkFormulasMatchesConflictsNew(formulas): Promise<any> {
-    return new Promise((resolve, reject) => {
-      var toReturn = {};
-      toReturn['matches'] = [];
-      toReturn['conflicts'] = [];
-      toReturn['new'] = [];
-      var numFormulasProcessed = 0;
-      if (formulas.length == 0) {
-        resolve();
-      }
-      formulas.forEach(formula => {
-        //do processing here
-        this.checkFormulaMatchConflictNew(formula, toReturn).then(() => {
-          numFormulasProcessed++;
-          if (numFormulasProcessed == formulas.length) {
-            resolve(toReturn);
-          }
-        }).catch(err => {
-          reject(err);
-        });
-      });
-    });
+  private async checkFormulasMatchesConflictsNew(formulas): Promise<any> {
+    var toReturn = {};
+    toReturn['matches'] = [];
+    toReturn['conflicts'] = [];
+    toReturn['new'] = [];
+    for (let formula of formulas) {
+      this.checkFormulaMatchConflictNew(formula, toReturn);
+    }
+    return toReturn;
   }
 
   /**
    * Objects Formulas reference that could cause errors:
    * ingredients
    */
-  private checkFormulaReferences(formulas, ingredients): Promise<any> {
-    return new Promise((resolve, reject) => {
-      var toReturn = {};
-      toReturn['matches'] = [];
-      toReturn['conflicts'] = [];
-      toReturn['new'] = [];
-      var numFormulasProcessed = 0;
-      if (formulas.length == 0) {
-        resolve();
-      }
-      formulas.forEach(formula => {
-        //do processing here
-        var numIngredientsChecked = 0;
-        for (let ingredientAndQuantity of formula['ingredientsandquantities']) {
-          var ingredientnum = ingredientAndQuantity['ingredient'];
-          if (this.arrayContainsObjectWithKeyVal(ingredients, 'ingredientnumber', ingredientnum)) {
-            numIngredientsChecked++;
-            if (numIngredientsChecked == formula['ingredientsandquantities'].length) {
-              numFormulasProcessed = numFormulasProcessed + 1;
-              if (numFormulasProcessed == formulas.length) {
-                resolve(toReturn);
-              }
-            }
-          } else {
-            this.rest.getIngredients("","", ingredientnum, 1).subscribe(response => {
-              if (response.length == 0) {
-                reject(Error("Could not find ingredient " + ingredientnum + " for formula " + formula['formulaname']));
-              } else {
-                numIngredientsChecked++;
-                if (numIngredientsChecked == formula['ingredientsandquantities'].length) {
-                  numFormulasProcessed = numFormulasProcessed + 1;
-                  if (numFormulasProcessed == formulas.length) {
-                    resolve(toReturn);
-                  }
-                }
-              }
-            });
+  private async checkFormulaReferences(formulas, ingredients): Promise<any> {
+    var toReturn = {};
+    toReturn['matches'] = [];
+    toReturn['conflicts'] = [];
+    toReturn['new'] = [];
+    for (let formula of formulas) {
+      for (let ingredientAndQuantity of formula['ingredientsandquantities']) {
+        var ingredientnum = ingredientAndQuantity['ingredient'];
+        if (!this.arrayContainsObjectWithKeyVal(ingredients, 'ingredientnumber', ingredientnum)) {
+          var response = await this.restv2.getIngredients(AndVsOr.OR, null, null, ingredientnum, 1);
+          if (response.length == 0) {
+            throw Error("Could not find ingredient " + ingredientnum + " for formula " + formula['formulaname']);
           }
         }
-      });
-    });
+      }
+    }
+    return toReturn;
   }
 
-  private checkSKUReference(sku, productLines, formulas): Promise<any> {
-    return new Promise((resolve, reject) => {
-      var numMLsChecked = 0;
-      // if (sku['manufacturinglines'].length == 0) {
-        console.log(sku['formula'])
-        this.rest.getFormulas("", sku['formula'], 0, 1).subscribe(formulaResponse => {
-          console.log(formulaResponse)
-          if (formulaResponse.length == 1 || this.arrayContainsObjectWithKeyVal(formulas, 'formulanumber', sku['formula'])) {
-            resolve();
-          } else {
-            reject(Error("Could not find formula " + sku['formula'] + " for SKU " + sku['skuname']));
-          }
-        });
-      // }
-      sku['manufacturinglines'].forEach(shortname => {
-        this.rest.getLine("","",shortname,"",1).subscribe(mlResponse => {
-          console.log(mlResponse);
-          if (mlResponse.length == 1) {
-            numMLsChecked++;
-            if (numMLsChecked >= sku['manufacturinglines'].length) {
-              this.rest.getFormulas("", sku['formula'], null, 1).subscribe(formulaResponse => {
-                console.log(formulaResponse);
-                if (formulaResponse.length == 1 || this.arrayContainsObjectWithKeyVal(formulas, 'formulanumber', sku['formula'])) {
-                  resolve();
-                } else {
-                  reject(Error("Could not find formula " + sku['formula'] + " for SKU " + sku['skuname']));
-                }
-              });
-            }
-          } else {
-            reject(Error("Could not find Manufacturing Line " + shortname + " for SKU " + sku['skuname']));
-          }
-        });
-      });
-    });
+  private async checkSKUReference(sku, productLines, formulas): Promise<any> {
+      var formulaResponse = await this.restv2.getFormulas(AndVsOr.OR, null, null, sku['formula'], null, null, 1);
+      if (formulaResponse.length != 1 && !this.arrayContainsObjectWithKeyVal(formulas, 'formulanumber', sku['formula'])) {
+        throw Error("Could not find formula " + sku['formula'] + " for SKU " + sku['skuname']);
+      }
+        
+      for (let shortname of sku['manufacturinglines']) {
+        var mlResponse = await this.restv2.getLine(AndVsOr.OR, null, null, shortname, null, 1);
+        if (mlResponse.length != 1) {
+          throw Error("Could not find Manufacturing Line " + shortname + " for SKU " + sku['skuname']);
+        }
+      }
   }
 
   /**
@@ -422,28 +263,15 @@ export class ImportMatchConflictNewCheckerService {
    * Product Line
    * Formula
    */
-  private checkSKUReferences(skus, productLines, formulas): Promise<any> {
-    return new Promise((resolve, reject) => {
+  private async checkSKUReferences(skus, productLines, formulas): Promise<any> {
       var toReturn = {};
       toReturn['matches'] = [];
       toReturn['conflicts'] = [];
       toReturn['new'] = [];
-      var numFormulasProcessed = 0;
-      if (skus.length == 0) {
-        resolve();
+      for (let sku of skus) {
+        await this.checkSKUReference(sku, productLines, formulas);
       }
-      skus.forEach(sku => {
-        //do processing here
-        this.checkSKUReference(sku, productLines, formulas).then(() => {
-          numFormulasProcessed = numFormulasProcessed + 1;
-          if (numFormulasProcessed == formulas.length) {
-            resolve(toReturn);
-          }
-        }).catch(err => {
-          reject(err);
-        });
-      });
-    });
+      return toReturn;
   }
 
 }

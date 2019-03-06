@@ -1,4 +1,4 @@
-const database = require('./database.js');
+const database = require('../database.js');
 const formula_utils = require('./formula_utils.js');
 
 

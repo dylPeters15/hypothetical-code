@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const database = require('./database.js');
-const user_utils = require('./user_utils.js');
+const user_utils = require('./v1/user_utils.js');
 database.dropDatabase().then(response => {
     console.log("Database cleared: ", response);
     user_utils.createUser("admin", "hypocode123", true, true).then(value => {
