@@ -20,6 +20,15 @@ body {
   z-index:2;
 }
 
+.ManufacturingSchedule {
+  height: 100%;
+}
+
+#timeline {
+  height: 100%;
+  width: 100%;
+  border: 1px solid lightgray;
+}
 /* .ng-star-inserted {
     width: 100%;
     display: inline-block;
