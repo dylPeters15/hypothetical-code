@@ -71,6 +71,7 @@ import { UserNotificationDialogComponent } from './user-notification-dialog/user
 import { UserRouteGuardService } from './user-route-guard.service';
 import { NewSkuFormulaComponent } from './new-sku-formula/new-sku-formula.component';
 import {MatDialogModule} from '@angular/material/dialog';
+import { SalesReportComponent } from './sales-report/sales-report.component';
 
 const appRoutes: Routes = [
   { path: 'login', component: LoginComponent, data: { title: 'Log In' }, canActivate: [AlreadyLoggedInRouteGuardService] },
@@ -89,6 +90,7 @@ const appRoutes: Routes = [
   { path: 'sku', component: SkuComponent, data: { title: 'SKUs' }, canActivate: [UserRouteGuardService] },
   { path: 'formulas', component: FormulaComponent, data: { title: 'Formulas' }, canActivate: [UserRouteGuardService] },
   { path: 'product-line', component: ProductLineComponent, data: { title: 'Product Lines' }, canActivate: [UserRouteGuardService] },
+  { path: 'sales-report', component: SalesReportComponent, data: { title: 'Sales Report' }, canActivate: [UserRouteGuardService] },
   { path: 'import', component: ImportComponent, data: { title: 'Import' }, canActivate: [AdminRouteGuardService] },
   { path: 'logout', component: LogoutComponent, data: { title: "Logout" }, canActivate: [UserRouteGuardService] },
   { path: '**', redirectTo: 'home' }
@@ -144,7 +146,8 @@ const appRoutes: Routes = [
     ModifyActivityDialogComponent,
     ManufactoringScheduleTableComponent,
     ManufacturingLinesTableComponent,
-    ConfirmDeletionDialogComponent
+    ConfirmDeletionDialogComponent,
+    SalesReportComponent
   ],
   imports: [
     BrowserModule,
