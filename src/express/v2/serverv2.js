@@ -147,6 +147,8 @@ function startServerV2(app) {
             resolveError(err, res);
         });
     }).post((req, res) => {
+        console.log(getFilterSchemaFromHeaders(req.headers));
+        console.log(req.body);
         sku_utils.modifySku(getFilterSchemaFromHeaders(req.headers), req.body).then(response => {
             res.send(response);
         }).catch(err => {
