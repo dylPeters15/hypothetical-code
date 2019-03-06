@@ -106,7 +106,7 @@ export class RestServiceV2 {
   }
 
   ///////////////////// formulas /////////////////////
-  getFormulas(andVsOr: AndVsOr, formulaname: string, formulanameregex: string, formulanumber: number, ingredientid: number, skuid: number, limit: number): Promise<any> {
+  getFormulas(andVsOr: AndVsOr, formulaname: string, formulanameregex: string, formulanumber: number, ingredientid: string, skuid: string, limit: number): Promise<any> {
     return this.http.get(endpoint + "formulas", this.generateHeaderWithFilterSchema(andVsOr, [
       {formulaname: formulaname},
       {formulaname: formulanameregex?{$regex: formulanameregex}:null},
@@ -160,7 +160,7 @@ export class RestServiceV2 {
 
   createSku(skuname: String, skunumber: number,
     caseupcnumber: number, unitupcnumber: number, unitsize: string,
-    countpercase: number, formulanum: Number, formulascalingfactor: Number, manufacturingrate: Number, comment: String): Promise<any> {
+    countpercase: number, formulanum: Number, formulascalingfactor: Number, manufacturingrate: Number, manufacturingsetupcost: Number, manufacturingruncost: Number, comment: String): Promise<any> {
     return this.http.put(endpoint + "skus", {
       skuname: skuname,
       skunumber: skunumber,
@@ -171,6 +171,8 @@ export class RestServiceV2 {
       formulanum: formulanum,
       formulascalingfactor: formulascalingfactor,
       manufacturingrate: manufacturingrate,
+      manufacturingsetupcost: manufacturingsetupcost,
+      manufacturingruncost: manufacturingruncost,
       comment: comment
     },
       this.generateHeaderWithFilterSchema()).toPromise();
@@ -178,7 +180,7 @@ export class RestServiceV2 {
 
   modifySku(andVsOr: AndVsOr, oldSkuName: String, skuname: String, skunumber: number,
     caseupcnumber: number, unitupcnumber: number, unitsize: string,
-    countpercase: number, formulanum: Number, formulascalingfactor: Number, manufacturingrate: Number, comment: String): Promise<any> {
+    countpercase: number, formulanum: Number, formulascalingfactor: Number, manufacturingrate: Number, manufacturingsetupcost: Number, manufacturingruncost: Number, comment: String): Promise<any> {
     return this.http.post(endpoint + "skus", [
       {skuname: skuname},
       {skunumber: skunumber},
@@ -189,6 +191,8 @@ export class RestServiceV2 {
       {formulanum: formulanum},
       {formulascalingfactor: formulascalingfactor},
       {manufacturingrate: manufacturingrate},
+      {manufacturingsetupcost: manufacturingsetupcost},
+      {manufacturingruncost: manufacturingruncost},
       {comment: comment}
     ],
       this.generateHeaderWithFilterSchema(andVsOr, [
@@ -253,10 +257,10 @@ export class RestServiceV2 {
 
   ///////////////////// product lines /////////////////////
   getProductLines(andVsOr: AndVsOr, productlinename: String, productlinenameregex: String, limit: number): Promise<any> {
-    return this.http.get(endpoint + "product_lines", this.generateHeaderWithFilterSchema(andVsOr, {
-      productlinename: productlinename,
-      productlinenameregex: productlinenameregex
-    }, limit)).toPromise();
+    return this.http.get(endpoint + "product_lines", this.generateHeaderWithFilterSchema(andVsOr, [
+      {productlinename: productlinename},
+      {productlinename: productlinenameregex?{$regex: productlinenameregex}:null}
+    ], limit)).toPromise();
   }
 
   createProductLine(productlinename: String, skus: any[]): Promise<any> {
@@ -348,7 +352,7 @@ export class RestServiceV2 {
     ], limit)).toPromise();
   }
 
-  createActivity(skuid: number, numcases: number, calculatedhours: number, sethours: number, startdate: Date, line: number): Promise<any> {
+  createActivity(skuid: string, numcases: number, calculatedhours: number, sethours: number, startdate: Date, line: number): Promise<any> {
     return this.http.put(endpoint + 'manufacturing-activities', {
       skuid: skuid,
       numcases: numcases,
@@ -416,6 +420,90 @@ export class RestServiceV2 {
       {linename: linename}
     ])).toPromise();
   }
+
+
+  ///////////////////// Customers /////////////////////
+  getCustomers(andVsOr: AndVsOr, customername: String, customernameregex: String, customernumber: Number, limit: number): Promise<any> {
+    return this.http.get(endpoint + "customers", this.generateHeaderWithFilterSchema(andVsOr, [
+      {customername: customername},
+      {customername: customernameregex?{$regex: customernameregex}:null},
+      {customernumber: customernumber}
+    ], limit)).toPromise();
+  }
+
+  createCustomer(customername: String, customernumber: Number): Promise<any> {
+    return this.http.put(endpoint + "customers", {
+      customername: customername,
+      customernumber: customernumber
+    },
+      this.generateHeaderWithFilterSchema()).toPromise();
+  }
+
+  // modifyCustomer(andVsOr: AndVsOr, customername: String, customernumber: Number, newcustomername: String, newcustomernumber: Number): Promise<any> {
+  //   return this.http.post(endpoint + 'customers', this.generateBodyWithOptions({
+  //     customername: newcustomername,
+  //     customernumber: newcustomernumber
+  //   }),
+  //     this.generateHeaderWithFilterSchema(andVsOr, [
+  //       {customername: customername},
+  //       {customernumber: customernumber}
+  //     ])).toPromise();
+  // }
+
+  // deleteCustomer(andVsOr: AndVsOr, customername: String, customernumber: Number): Promise<any> {
+  //   return this.http.delete(endpoint + "customers", this.generateHeaderWithFilterSchema(andVsOr, [
+  //     {customername: customername},
+  //     {customernumber: customernumber}
+  //   ])).toPromise();
+  // }
+
+
+  ///////////////////// Sales /////////////////////
+  getSales(andVsOr: AndVsOr, skuid: string, customerid: string, startdate: Date, enddate: Date, limit: number): Promise<any> {
+    return this.http.get(endpoint + "sales", this.generateHeaderWithFilterSchema(andVsOr, [
+      {sku: skuid},
+      {customer: customerid},
+      {date: startdate?{$gte: startdate}:null},
+      {date: enddate?{$lte: enddate}:null}
+    ], limit)).toPromise();
+  }
+
+  createSale(skuid: string, customerid: string, date: Date, numcases: Number, pricepercase: Number): Promise<any> {
+    return this.http.put(endpoint + "sales", {
+      sku: skuid,
+      customer: customerid,
+      date: date,
+      numcases: numcases,
+      pricepercase: pricepercase
+    },
+      this.generateHeaderWithFilterSchema()).toPromise();
+  }
+
+  // modifySale(andVsOr: AndVsOr, skuid: string, customerid: string, startdate: Date, enddate: Date, newskuid: string, newcustomerid: string, newdate: Date, newnumcases: Number, newpricepercase: Number): Promise<any> {
+  //   return this.http.post(endpoint + 'sales', this.generateBodyWithOptions({
+  //     sku: newskuid,
+  //     customer: newcustomerid,
+  //     date: newdate,
+  //     numcases: newnumcases,
+  //     pricepercase: newpricepercase
+  //   }),
+  //     this.generateHeaderWithFilterSchema(andVsOr, [
+  //       {sku: skuid},
+  //       {customer: customerid},
+  //       {date: startdate?{$gte: startdate}:null},
+  //       {date: enddate?{$lte: enddate}:null}
+  //     ])).toPromise();
+  // }
+
+  // deleteSale(andVsOr: AndVsOr, skuid: string, customerid: string, startdate: Date, enddate: Date): Promise<any> {
+  //   return this.http.delete(endpoint + "sales", this.generateHeaderWithFilterSchema(andVsOr, [
+  //     {sku: skuid},
+  //     {customer: customerid},
+  //     {date: startdate?{$gte: startdate}:null},
+  //     {date: enddate?{$lte: enddate}:null}
+  //   ])).toPromise();
+  // }
+
 
   ///////////////////// Login /////////////////////
 
