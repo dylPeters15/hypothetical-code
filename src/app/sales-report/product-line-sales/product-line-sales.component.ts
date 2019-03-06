@@ -16,7 +16,9 @@ const customValueProvider = {
 })
 export class ProductLineSalesComponent implements OnInit, ControlValueAccessor {
 
+  productLine: any;
   skus: any[] = [];
+  sales: any = {};
 
   constructor(public restv2: RestServiceV2) { }
 
@@ -25,9 +27,15 @@ export class ProductLineSalesComponent implements OnInit, ControlValueAccessor {
   }
 
   async refreshData() {
-    //this.skus = await this.restv2.getPro
-    //getSales(AndVsOr.AND, this._value['_id'], null, null, null, 10000);
+    this.productLine = this._value;
+    this.skus = this.productLine['skus'];
+    this.sales = {};
+    for (let sku of this.skus) {
+      sku = sku['sku'];
+      this.sales[sku['skuname']] = await this.restv2.getSales(AndVsOr.AND, sku['_id'], null, null, null, 10000);
+    }
     console.log("This.skus: ",this.skus);
+    console.log("This.sales: ", this.sales);
   }
 
   _value = '';
