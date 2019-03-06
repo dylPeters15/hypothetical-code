@@ -6,7 +6,7 @@ const activity_utils = require('./manufacturing_activity_utils');
 const product_line_utils = require('./product_line_utils.js');
 const sku_utils = require('./sku_utils.js');
 const goals_utils = require('./manufacturing_goals_utils.js')
-
+const scraper = require('./sales_scraper.js')
 function startServerV2(app) {
     ///////////////////// Utilities /////////////////////
     function getFilterSchemaFromHeaders(headers) {
