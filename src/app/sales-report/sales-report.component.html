@@ -16,5 +16,8 @@
 
 
 <mat-tab-group>
-  <mat-tab *ngFor="let productline of selectedProductLines" label={{productline.productlinename}}>{{productline['productlinename']}}</mat-tab>
+  <mat-tab *ngFor="let productLine of selectedProductLines" label={{productLine.productlinename}}>
+    {{productLine['productlinename']}}
+    <app-product-line-sales [(ngModel)]="productLine"></app-product-line-sales>
+  </mat-tab>
 </mat-tab-group>
