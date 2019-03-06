@@ -90,7 +90,6 @@ export class NewFormulaDialogComponent implements OnInit {
       var new_ingredient = this.newIngredientDialogRef.componentInstance.ingredientName;
       var new_amount = this.newIngredientDialogRef.componentInstance.amount;
       var new_objectid;
-      console.log("okay we are back again. ingredient: " + new_ingredient + ", amount: " +  new_amount);
 
       // get object id from ingredient name
       this.rest.getIngredients(new_ingredient,"$a", -1, 1).subscribe(response => {
@@ -100,9 +99,7 @@ export class NewFormulaDialogComponent implements OnInit {
                });
         } 
         else {
-          console.log("located the ingredient. " + response);
           new_objectid = response[0];
-          console.log("mah object id fam " + new_objectid);
           let new_ingredienttuple = new ingredienttuple();
           //new_ingredienttuple.create({
           //  ingredient: new_objectid,
@@ -110,9 +107,7 @@ export class NewFormulaDialogComponent implements OnInit {
          // });
           new_ingredienttuple.ingredient = new_objectid;
           new_ingredienttuple.quantity = new_amount;
-          console.log("We are adding a new ingredient tuple with name " + new_ingredient + " and amount " + new_ingredienttuple.quantity);
           this.ingredientsandquantities.push(new_ingredienttuple);
-          console.log("ingredients and quantities are now " + this.ingredientsandquantities);
         }
         this.refreshData();
         });
