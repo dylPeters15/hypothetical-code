@@ -111,10 +111,13 @@ export class ChooseProductLineDialogComponent implements OnInit {
   }
   
   selected(event: MatAutocompleteSelectedEvent): void {
+    console.log("NOW. " + event.option.viewValue);
     this.productLineName = event.option.viewValue;
     this.selectedProducttLineNames.push(event.option.viewValue);
 
     this.rest.getProductLines(event.option.viewValue, "", 5).subscribe(response => {
+      console.log("response: ", response);
+
       var i;
       for(i = 0; i<response.length; i++){
         this.productLineId = {productline: response[i]['_id']};

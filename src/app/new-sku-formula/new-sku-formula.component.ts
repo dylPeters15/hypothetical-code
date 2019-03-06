@@ -94,6 +94,7 @@ export class NewSkuFormulaComponent implements OnInit {
 
       // Add our formula
       if ((value || '').trim()) {
+
         this.formulaName = value.trim();
         this.selectedFormulaNames.push(value.trim());
       }

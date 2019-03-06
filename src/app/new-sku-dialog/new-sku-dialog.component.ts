@@ -47,6 +47,8 @@ export class NewSkuDialogComponent implements OnInit {
 
   newDialogRef: MatDialogRef<NewFormulaDialogComponent>;
 
+  productLineToAdd: any;
+
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: any, private dialogRef: MatDialogRef<NewSkuDialogComponent>, public rest:RestService, private snackBar: MatSnackBar, private dialog: MatDialog) { }
 
@@ -204,8 +206,9 @@ export class NewSkuDialogComponent implements OnInit {
         } 
         else {
           // NOW THAT WE HAVE THE PRODUCT LineToLineMappedSource, ADD TO ITS SKUS ON SAVE
-          console.log("OIIII!!!! PRODUCT LINE TO ADD TO: " + response['productlinename']);
+          console.log("OIIII!!!! PRODUCT LINE TO ADD TO name: " + response[0]['productlinename']);
           console.log("OIIII!!!! PRODUCT LINE TO ADD TO obj: " + response);
+          this.productLineToAdd = response[0];
         }
         this.refreshData();
         });
@@ -224,6 +227,10 @@ export class NewSkuDialogComponent implements OnInit {
   }
   
   createSku() {
+    // Add sku to product line 
+    console.log("prepare to add product line");
+    var previousSkus = this.productLineToAdd['skus'];
+
     if (this.edit == false)
     {
       this.rest.createSku(this.skuname, this.skunumber, this.caseupcnumber, this.unitupcnumber, this.unitsize, this.countpercase, this.formula, this.formulascalingfactor, this.manufacturingrate, this.comment).subscribe(response => {
@@ -236,8 +243,15 @@ export class NewSkuDialogComponent implements OnInit {
                  duration: 2000,
                });
              }
-             this.closeDialog();
-           });
+             this.rest.getSkus(this.skuname,"", 0,0,0,null,1).subscribe(response => {
+              previousSkus.push(response[0]['_id']);
+              this.rest.modifyProductLine(this.productLineToAdd['productlinename'],this.productLineToAdd['productlinename'],previousSkus).subscribe(response => {
+                this.closeDialog();
+
+              
+            });
+          });
+        });
       }
 
     else{
