@@ -1,16 +1,23 @@
-<p>
-  sales-report works!
-</p>
-<mat-checkbox (click)="selectDeselectAllProductLines()" [(ngModel)]="allProductLinesSelected">Select/Deselect All</mat-checkbox>
-<div *ngFor="let productLine of productLines">
-  <mat-checkbox (ngModelChange)="productLineSelectionsChanged($event, productLine['productlinename'])" [(ngModel)]="productLine['checked']">{{productLine['productlinename']}}</mat-checkbox>
-</div>
+<div style="float: left">
+    <mat-checkbox (change)="selectDeselectAllProductLines()" [(ngModel)]="allProductLinesSelected">Select/Deselect All</mat-checkbox>
+    <div *ngFor="let productLine of productLines">
+      <mat-checkbox (change)="productLineSelectionsChanged()" [(ngModel)]="productLine['checked']">{{productLine['productlinename']}}</mat-checkbox>
+    </div>
+    
+    <br>
+    <br>
+    <br>
+    
+    <mat-checkbox (change)="selectDeselectAllCustomers()" [(ngModel)]="allCustomersSelected">Select/Deselect All</mat-checkbox>
+    <div *ngFor="let customer of customers">
+      <mat-checkbox (change)="customerSelectionsChanged()" [(ngModel)]="customer['checked']">{{customer['customername']}}</mat-checkbox>
+    </div>
+  </div>
 
-<br>
-<br>
-<br>
 
-<mat-checkbox (click)="selectDeselectAllCustomers()" [(ngModel)]="allCustomersSelected">Select/Deselect All</mat-checkbox>
-<div *ngFor="let customer of customers">
-  <mat-checkbox (ngModelChange)="customerSelectionsChanged($event, customer['customername'])" [(ngModel)]="customer['checked']">{{customer['customername']}}</mat-checkbox>
-</div>
+<mat-tab-group>
+  <mat-tab *ngFor="let productLine of selectedProductLines" label={{productLine.productlinename}}>
+    {{productLine['productlinename']}}
+    <app-product-line-sales [(ngModel)]="productLine"></app-product-line-sales>
+  </mat-tab>
+</mat-tab-group>

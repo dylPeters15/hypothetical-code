@@ -9,10 +9,12 @@ import { RestServiceV2, AndVsOr } from '../restv2.service';
 export class SalesReportComponent implements OnInit {
 
   productLines: any[] = [];
-  allProductLinesSelected: boolean = false;
+  allProductLinesSelected: boolean = true;
+  selectedProductLines: any[] = [];
 
   customers: any[] = [];
-  allCustomersSelected: boolean = false;
+  allCustomersSelected: boolean = true;
+  selectedCustomers: any[] = [];
 
   constructor(public restv2: RestServiceV2) { }
 
@@ -23,53 +25,60 @@ export class SalesReportComponent implements OnInit {
   async onInit(): Promise<any> {
     this.productLines = await this.restv2.getProductLines(AndVsOr.OR, null, null, 10000);
     for (let productLine of this.productLines) {
-      productLine['checked'] = false;
+      productLine['checked'] = true;
     }
+    this.customers = await this.restv2.getCustomers(AndVsOr.OR, null, null, null, 10000);
+    for (let customer of this.customers) {
+      customer['checked'] = true;
+    }
+    this.refreshSelected();
     console.log(this.productLines);
   }
 
-  productLineSelectionsChanged(event, productLineName): void {
+  refreshSelected(): void {
+    this.selectedProductLines = this.productLines.filter((value, index, array) => {
+      return value['checked'];
+    });
+
+    this.selectedCustomers = this.customers.filter((value, index, array) => {
+      return value['checked'];
+    });
+  }
+
+  productLineSelectionsChanged(): void {
     var areAllSelected = true;
     for (let productLine of this.productLines) {
-      if (productLineName == productLine['productlinename']) {
-        if (!event) {
-          areAllSelected = false;
-        }
-      } else {
-        if (!productLine['checked']) {
-          areAllSelected = false;
-        }
+      if (!productLine['checked']) {
+        areAllSelected = false;
       }
     }
     this.allProductLinesSelected = areAllSelected;
+    this.refreshSelected();
   }
 
   selectDeselectAllProductLines(): void {
     for (let productLine of this.productLines) {
-      productLine['checked'] = !this.allProductLinesSelected;
+      productLine['checked'] = this.allProductLinesSelected;
     }
+    this.refreshSelected();
   }
 
-  customerSelectionsChanged(event, customerName): void {
+  customerSelectionsChanged(): void {
     var areAllSelected = true;
     for (let customer of this.customers) {
-      if (customerName == customer['customername']) {
-        if (!event) {
-          areAllSelected = false;
-        }
-      } else {
-        if (!customer['checked']) {
-          areAllSelected = false;
-        }
+      if (!customer['checked']) {
+        areAllSelected = false;
       }
     }
     this.allCustomersSelected = areAllSelected;
+    this.refreshSelected();
   }
 
   selectDeselectAllCustomers(): void {
     for (let customer of this.customers) {
-      customer['checked'] = !this.allCustomersSelected;
+      customer['checked'] = this.allCustomersSelected;
     }
+    this.refreshSelected();
   }
 
 }
