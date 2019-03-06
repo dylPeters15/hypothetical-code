@@ -109,7 +109,7 @@ export class RestServiceV2 {
   }
 
   ///////////////////// formulas /////////////////////
-  getFormulas(andVsOr: AndVsOr, formulaname: string, formulanameregex: string, formulanumber: number, ingredientid: number, skuid: number, limit: number): Promise<any> {
+  getFormulas(andVsOr: AndVsOr, formulaname: string, formulanameregex: string, formulanumber: number, ingredientid: string, skuid: string, limit: number): Promise<any> {
     return this.http.get(endpoint + "formulas", this.generateHeaderWithFilterSchema(andVsOr, [
       {formulaname: formulaname},
       {formulaname: formulanameregex?{$regex: formulanameregex}:null},
@@ -355,7 +355,7 @@ export class RestServiceV2 {
     ], limit)).toPromise();
   }
 
-  createActivity(skuid: number, numcases: number, calculatedhours: number, sethours: number, startdate: Date, line: number): Promise<any> {
+  createActivity(skuid: string, numcases: number, calculatedhours: number, sethours: number, startdate: Date, line: number): Promise<any> {
     return this.http.put(endpoint + 'manufacturing-activities', {
       skuid: skuid,
       numcases: numcases,
@@ -462,7 +462,7 @@ export class RestServiceV2 {
 
 
   ///////////////////// Sales /////////////////////
-  getSales(andVsOr: AndVsOr, skuid: Number, customerid: Number, startdate: Date, enddate: Date, limit: number): Promise<any> {
+  getSales(andVsOr: AndVsOr, skuid: string, customerid: string, startdate: Date, enddate: Date, limit: number): Promise<any> {
     return this.http.get(endpoint + "sales", this.generateHeaderWithFilterSchema(andVsOr, [
       {sku: skuid},
       {customer: customerid},
@@ -471,7 +471,7 @@ export class RestServiceV2 {
     ], limit)).toPromise();
   }
 
-  createSale(skuid: Number, customerid: Number, date: Date, numcases: Number, pricepercase: Number): Promise<any> {
+  createSale(skuid: string, customerid: string, date: Date, numcases: Number, pricepercase: Number): Promise<any> {
     return this.http.put(endpoint + "sales", {
       sku: skuid,
       customer: customerid,
@@ -482,7 +482,7 @@ export class RestServiceV2 {
       this.generateHeaderWithFilterSchema()).toPromise();
   }
 
-  // modifySale(andVsOr: AndVsOr, skuid: Number, customerid: Number, startdate: Date, enddate: Date, newskuid: Number, newcustomerid: Number, newdate: Date, newnumcases: Number, newpricepercase: Number): Promise<any> {
+  // modifySale(andVsOr: AndVsOr, skuid: string, customerid: string, startdate: Date, enddate: Date, newskuid: string, newcustomerid: string, newdate: Date, newnumcases: Number, newpricepercase: Number): Promise<any> {
   //   return this.http.post(endpoint + 'sales', this.generateBodyWithOptions({
   //     sku: newskuid,
   //     customer: newcustomerid,
@@ -498,7 +498,7 @@ export class RestServiceV2 {
   //     ])).toPromise();
   // }
 
-  // deleteSale(andVsOr: AndVsOr, skuid: Number, customerid: Number, startdate: Date, enddate: Date): Promise<any> {
+  // deleteSale(andVsOr: AndVsOr, skuid: string, customerid: string, startdate: Date, enddate: Date): Promise<any> {
   //   return this.http.delete(endpoint + "sales", this.generateHeaderWithFilterSchema(andVsOr, [
   //     {sku: skuid},
   //     {customer: customerid},
