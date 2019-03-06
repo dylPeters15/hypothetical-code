@@ -116,7 +116,7 @@ export class RestServiceV2 {
     ], limit)).toPromise();
   }
 
-  createFormula(andVsOr: AndVsOr, formulaname: String, formulanumber: Number, ingredientsandquantities: any[], comment: String): Promise<any> {
+  createFormula(formulaname: String, formulanumber: Number, ingredientsandquantities: any[], comment: String): Promise<any> {
     return this.http.put(endpoint + "formulas", {
       formulaname: formulaname,
       formulanumber: formulanumber,

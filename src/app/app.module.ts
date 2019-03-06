@@ -70,6 +70,7 @@ import { UserManagementComponent } from './user-management/user-management.compo
 import { UserNotificationDialogComponent } from './user-notification-dialog/user-notification-dialog.component';
 import { UserRouteGuardService } from './user-route-guard.service';
 import { NewSkuFormulaComponent } from './new-sku-formula/new-sku-formula.component';
+import {MatDialogModule} from '@angular/material/dialog';
 
 const appRoutes: Routes = [
   { path: 'login', component: LoginComponent, data: { title: 'Log In' }, canActivate: [AlreadyLoggedInRouteGuardService] },
@@ -170,7 +171,8 @@ const appRoutes: Routes = [
     MatChipsModule,
     MatAutocompleteModule,   
     DragDropModule,
-    MatDatepickerModule
+    MatDatepickerModule,
+    MatDialogModule
   ],
   providers: [],
   bootstrap: [AppComponent],

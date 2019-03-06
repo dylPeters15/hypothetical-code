@@ -1,32 +1,22 @@
 import { Injectable } from '@angular/core';
-import { RestService } from '../rest.service';
+import { RestServiceV2, AndVsOr } from '../restv2.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ImportUploadService {
 
-  constructor(public rest: RestService) { }
+  constructor(public restv2: RestServiceV2) { }
 
-  importData(data): Promise<any> {
-    return new Promise((resolve, reject) => {
-      function catcher(err) {
-        reject(err);
-      };
-      this.importIngredients(data['ingredients']).then(ingredientResult => {
-        console.log("finished ingredients.");
-        this.importFormulas(data['formulas']).then(formulaResult => {
-          console.log("finished formulas.");
-          this.importProductLines(data['productlines']).then(productLineResult => {
-            console.log("finished product lines.");
-            this.importSKUs(data['skus']).then(skuResult => {
-              console.log("finished skus.");
-              resolve();
-            }).catch(catcher);
-          }).catch(catcher);
-        }).catch(catcher);
-      }).catch(catcher);
-    });
+  async importData(data): Promise<void> {
+    await this.importIngredients(data['ingredients']);
+    console.log("finished ingredients.");
+    await this.importFormulas(data['formulas']);
+    console.log("finished formulas.");
+    await this.importProductLines(data['productlines']);
+    console.log("finished product lines.");
+    await this.importSKUs(data['skus']);
+    console.log("finished skus.");
   }
 
   private numConflictedSelectNew(data) {
@@ -46,320 +36,169 @@ export class ImportUploadService {
     return total;
   }
 
-  private importIngredients(ingredients): Promise<any> {
-    return new Promise((resolve, reject) => {
-      var numIngredientsProcessed = 0;
-      var totalIngredients = ingredients['new'].length + this.numConflictedSelectNewOfSection(ingredients);
-      if (totalIngredients == 0) {
-        resolve();
-      }
-      ingredients['conflicts'].forEach(conflict => {
-        if (conflict['select'] == 'new') {
-          var ingredient = conflict['new'];
-          this.rest.modifyIngredient(conflict['old'][0]['ingredientname'], ingredient['ingredientname'], ingredient['ingredientnumber'], ingredient['vendorinformation'], ingredient['unitofmeasure'], ingredient['amount'], ingredient['costperpackage'], ingredient['comment']).subscribe(result => {
-            if (result['ok'] == 1) {
-              if (++numIngredientsProcessed == totalIngredients) {
-                resolve();
-              }
-            } else {
-              reject(result);
-            }
-          });
+  private async importIngredients(ingredients): Promise<void> {
+    for (let conflict of ingredients['conflicts']) {
+      if (conflict['select'] == 'new') {
+        var ingredient = conflict['new'];
+        var result = await this.restv2.modifyIngredient(AndVsOr.AND, conflict['old'][0]['ingredientname'], ingredient['ingredientname'], ingredient['ingredientnumber'], ingredient['vendorinformation'], ingredient['unitofmeasure'], ingredient['amount'], ingredient['costperpackage'], ingredient['comment']);
+        if (result['ok'] != 1) {
+          throw Error("Could not modify ingredient " + ingredient['ingredientname']);
         }
-      });
-      ingredients['new'].forEach(ingredient => {
-        this.rest.createIngredient(ingredient['ingredientname'], ingredient['ingredientnumber'], ingredient['vendorinformation'], ingredient['unitofmeasure'], ingredient['amount'], ingredient['costperpackage'], ingredient['comment']).subscribe(result => {
-          if (result['ingredientname'] == ingredient['ingredientname']) {
-            if (++numIngredientsProcessed == totalIngredients) {
-              resolve();
-            }
-          } else {
-            reject(result);
-          }
-        });
-      });
-    });
-  }
-
-  private importFormula(formula): Promise<any> {
-    return new Promise((resolve, reject) => {
-      var numIngredientsProcessed = 0;
-      var ingredientsAndQuantities = [];
-      formula['ingredientsandquantities'].forEach(ingredientAndQuantity => {
-        var ingredientnum = ingredientAndQuantity['ingredient'];
-        this.rest.getIngredients("","", ingredientnum, 1).subscribe(response => {
-          if (response.length == 0) {
-            reject(Error("Could not find ingredient " + ingredientnum + " for formula " + formula['formulaname']));
-          } else {
-            var ingredientID = response[0]['_id'];
-            ingredientsAndQuantities.push({
-              ingredient: "" + ingredientID,
-              quantity: ingredientAndQuantity['quantity']
-            });
-            numIngredientsProcessed++;
-            if (numIngredientsProcessed == formula['ingredientsandquantities'].length) {
-              this.rest.createFormula(formula['formulaname'], formula['formulanumber'], ingredientsAndQuantities, formula['comment'] || "").subscribe(createResponse => {
-                if (createResponse['formulaname'] == formula['formulaname']) {
-                  resolve();
-                } else {
-                  reject(Error("Error creating formula."));
-                }
-              });
-            }
-          }
-        });
-      });
-    });
-  }
-
-  private updateFormula(oldname, formula): Promise<any> {
-    return new Promise((resolve, reject) => {
-      var numIngredientsProcessed = 0;
-      var ingredientsAndQuantities = [];
-      formula['ingredientsandquantities'].forEach(ingredientAndQuantity => {
-        var ingredientnum = ingredientAndQuantity['ingredient'];
-        this.rest.getIngredients("","", ingredientnum, 1).subscribe(response => {
-          if (response.length == 0) {
-            reject(Error("Could not find ingredient " + ingredientnum + " for formula " + formula['formulaname']));
-          } else {
-            var ingredientID = response[0]['_id'];
-            ingredientsAndQuantities.push({
-              ingredient: "" + ingredientID,
-              quantity: ingredientAndQuantity['quantity']
-            });
-            numIngredientsProcessed++;
-            if (numIngredientsProcessed == formula['ingredientsandquantities'].length) {
-              this.rest.modifyFormula(oldname, formula['formulaname'], formula['formulanumber'], ingredientsAndQuantities, formula['comment'] || "").subscribe(modifyResponse => {
-                if (modifyResponse['ok'] == 1) {
-                  resolve();
-                } else {
-                  reject(Error("Error creating formula."));
-                }
-              });
-            }
-          }
-        });
-      });
-    });
-  }
-
-  private importFormulas(formulas): Promise<any> {
-    return new Promise((resolve, reject) => {
-      var numFormulasToProcess = formulas['new'].length + this.numConflictedSelectNewOfSection(formulas);
-      var numFormulasProcessed = 0;
-      if (numFormulasToProcess == 0) {
-        resolve();
       }
-      formulas['new'].forEach(formula => {
-        this.importFormula(formula).then(() => {
-          numFormulasProcessed++;
-          if (numFormulasProcessed >= numFormulasToProcess) {
-            resolve();
-          }
-        }).catch(err => {
-          reject(err);
-        });
-      });
-      formulas['conflicts'].forEach(conflict => {
-        if (conflict['select'] == 'new') {
-          this.updateFormula(conflict['old'][0]['formulaname'], conflict['new']).then(() => {
-            numFormulasProcessed++;
-            if (numFormulasProcessed >= numFormulasToProcess) {
-              resolve();
-            }
-          }).catch(err => {
-            reject(err);
-          });
-        }
-      });
-    });
-  }
-
-  private importSKU(sku): Promise<any> {
-    return new Promise((resolve, reject) => {
-      console.log("SKU: ", sku);
-      this.rest.createSku(sku['skuname'], sku['skunumber'], sku['caseupcnumber'], sku['unitupcnumber'], ""+sku['unitsize'], sku['countpercase'], sku['formula'], sku['formulascalingfactor'], sku['manufacturingrate'], sku['comment']).subscribe(createSkuResponse => {
-        if (createSkuResponse['skuname'] == sku['skuname']) {
-          this.rest.getProductLines(sku['productline'],"", 1).subscribe
-            (getPLResponse => {
-              if (getPLResponse.length == 0) {
-                reject(Error("Could not find product line " + sku['productline'] + " for SKU " + sku['skuname']));
-              } else {
-                console.log("Get PL response: ", getPLResponse);
-                var skus = getPLResponse[0]['skus'];
-                skus.push({
-                  sku: createSkuResponse['_id']
-                });
-                console.log("SKUs", skus);
-                this.rest.modifyProductLine(sku['productline'], sku['productline'], skus).subscribe(modifyPLResponse => {
-                  if (modifyPLResponse['ok'] == 1) {
-
-                    var numMLsProcessed = 0;
-                    for (let ml of sku['manufacturinglines']) {
-                      this.rest.getLine(ml, "$a", ml, "", 1).subscribe(mlResponse => {
-                        if (mlResponse.length == 0) {
-                          reject(Error("Could not find manufacturing line " + ml + " for SKU " + sku['skuname']));
-                        } else {
-                          var containsSKU = false;
-                          for (let currentSKU of mlResponse[0]['skus']) {
-                            if (currentSKU['skuname'] == sku['skuname']) {
-                              containsSKU = true;
-                            }
-                          }
-                          if (containsSKU) {
-                            numMLsProcessed++;
-                            if (numMLsProcessed >= sku['manufacturinglines'].length) {
-                              resolve();
-                            }
-                          } else {
-                            mlResponse[0]['skus'].push({
-                              sku: createSkuResponse['_id']
-                            });
-                            this.rest.modifyLine(mlResponse[0]['linename'], mlResponse[0]['linename'], mlResponse[0]['shortname'], mlResponse[0]['skus'], mlResponse[0]['comment']).subscribe(mlCreateResponse => {
-                              if (mlCreateResponse['linename'] == mlResponse[0]['linename']) {
-                                numMLsProcessed++;
-                                if (numMLsProcessed >= sku['manufacturinglines'].length) {
-                                  resolve();
-                                }
-                              } else {
-                                reject(Error("Could not add SKU " + sku['skuname'] + " to Manufacturing Line " + mlCreateResponse['linename']));
-                              }
-                            });
-                          }
-                        }
-                      });
-                    }
-
-
-                    resolve();
-                  } else {
-                    reject(Error("Could not modify Product Line " + sku['productline'] + " for SKU " + sku['skuname']));
-                  }
-                });
-              }
-            });
-        } else {
-          reject(Error("Could not create SKU " + sku['skuname']));
-        }
-      });
-    });
-  }
-
-  private updateSKU(oldsku, newsku): Promise<any> {
-    return new Promise((resolve, reject) => {
-      var numCompleted = 0;
-      var numToComplete = 5;
-      console.log("OLDSKU",oldsku);
-      console.log("NEWSKU:",newsku);
-      this.rest.getFormulas("",newsku['formula'],0,1).subscribe(formulas => {
-        if (formulas.length == 0) {
-          reject(Error("Could not get formula " + newsku['formula'] + " for SKU " + newsku['skuname']));
-        } else {
-          console.log("Formula: ",formulas[0]);
-          this.rest.modifySku(oldsku['skuname'], newsku['skuname'], newsku['skunumber'], newsku['caseupcnumber'], newsku['unitupcnumber'], ""+newsku['unitsize'], newsku['countpercase'], newsku['formula'], newsku['formulascalingfactor'], newsku['manufacturingrate'], newsku['comment']).subscribe(response => {
-            if (response['ok'] == 1) {
-              resolve();
-            } else {
-              console.log(response);
-              reject(Error("Could not update sku " + oldsku['skuname']));
-            }
-          });
-        }
-      });
-      
-    });
-  }
-
-  private importNewSKUs(newSKUs, index): Promise<any> {
-    return new Promise((resolve, reject) => {
-      this.importSKU(newSKUs[index]).then(() => {
-        if (index >= newSKUs.length - 1) {
-          resolve();
-        } else {
-          this.importNewSKUs(newSKUs, index + 1).then(() => {
-            resolve();
-          }).catch(err => {
-            reject(Error(err));
-          });
-        }
-      }).catch(err => {
-        reject(Error(err));
-      });
-    });
-  }
-
-  private updateSKUs(skus, index): Promise<any> {
-    return new Promise((resolve, reject) => {
-      this.updateSKU(skus[index]['old'][0], skus[index]['new']).then(() => {
-        if (index >= skus.length - 1) {
-          resolve();
-        } else {
-          this.updateSKUs(skus, index + 1).then(() => {
-            resolve();
-          }).catch(err => {
-            reject(Error(err));
-          });
-        }
-      }).catch(err => {
-        reject(Error(err));
-      })
-    });
-  }
-
-  private importSKUs(skus): Promise<any> {
-    return new Promise((resolve, reject) => {
-      var numSKUsProcessed = 0;
-      var totalSKUs = skus['new'].length + this.numConflictedSelectNewOfSection(skus);
-      if (totalSKUs == 0) {
-        resolve();
+    }
+    for (let ingredient of ingredients['new']) {
+      var result = await this.restv2.createIngredient(ingredient['ingredientname'], ingredient['ingredientnumber'], ingredient['vendorinformation'], ingredient['unitofmeasure'], ingredient['amount'], ingredient['costperpackage'], ingredient['comment']);
+      if (result['ingredientname'] != ingredient['ingredientname']) {
+        throw Error("Could not create ingredient " + ingredient['ingredientname']);
       }
-      //the problem here is that all of the updates are occurring at the same time so there is a race condition where both SKUs obtain the product line before either SKU updates it.
-      //Fix: enforce that they upload sequentially
-      if (skus['new'].length > 0) {
-        this.importNewSKUs(skus['new'], 0).then(() => {
-          numSKUsProcessed += skus['new'].length;
-          if (numSKUsProcessed >= totalSKUs) {
-            resolve();
-          }
-        }).catch(err => {
-          reject(err);
-        });
-      }
-      var conflictsToUpdate = skus['conflicts'].filter((value, index, array) => {
-        return value['select'] == 'new';
-      });
-      if (conflictsToUpdate.length > 0) {
-        this.updateSKUs(conflictsToUpdate, 0).then(() => {
-          numSKUsProcessed += conflictsToUpdate.length;
-          if (numSKUsProcessed >= totalSKUs) {
-            resolve();
-          }
-        }).catch(err => {
-          reject(err);
-        });
-      }
-    });
+    }
   }
 
-  private importProductLines(productLines): Promise<any> {
-    return new Promise((resolve, reject) => {
-      var numPLsProcessed = 0;
-      var totalPLs = productLines['new'].length + this.numConflictedSelectNewOfSection(productLines);
-      if (totalPLs == 0) {
-        resolve();
+  private async importFormula(formula): Promise<void> {
+    var ingredientsAndQuantities = [];
+
+    for (let ingredientAndQuantity of formula['ingredientsandquantities']) {
+      var ingredientnum = ingredientAndQuantity['ingredient'];
+      var response = await this.restv2.getIngredients(AndVsOr.AND, null, null, ingredientnum, 1);
+      if (response.length == 0) {
+        throw Error("Could not find ingredient " + ingredientnum + " for formula " + formula['formulaname']);
       }
-      productLines['new'].forEach(productLine => {
-        this.rest.createProductLine(productLine['Name'], []).subscribe(result => {
-          if (result['productlinename'] == productLine['Name']) {
-            if (++numPLsProcessed == totalPLs) {
-              resolve();
-            }
-          } else {
-            reject(result);
-          }
-        });
+      var ingredientID = response[0]['_id'];
+      ingredientsAndQuantities.push({
+        ingredient: "" + ingredientID,
+        quantity: ingredientAndQuantity['quantity']
       });
+    }
+
+    var createResponse = await this.restv2.createFormula(formula['formulaname'], formula['formulanumber'], ingredientsAndQuantities, formula['comment'] || "");
+    if (createResponse['formulaname'] != formula['formulaname']) {
+      throw Error("Error creating formula.");
+    }
+  }
+
+  private async updateFormula(oldname, formula): Promise<void> {
+    var ingredientsAndQuantities = [];
+
+    for (let ingredientAndQuantity of formula['ingredientsandquantities']) {
+      var ingredientnum = ingredientAndQuantity['ingredient'];
+      var response = await this.restv2.getIngredients(AndVsOr.AND, null, null, ingredientnum, 1);
+      if (response.length == 0) {
+        throw Error("Could not find ingredient " + ingredientnum + " for formula " + formula['formulaname']);
+      }
+      var ingredientID = response[0]['_id'];
+      ingredientsAndQuantities.push({
+        ingredient: "" + ingredientID,
+        quantity: ingredientAndQuantity['quantity']
+      });
+    }
+
+    var modifyResponse = await this.restv2.modifyFormula(AndVsOr.AND, oldname, formula['formulaname'], formula['formulanumber'], ingredientsAndQuantities, formula['comment'] || "");
+    if (modifyResponse['ok'] == 1) {
+      throw Error("Error creating formula.");
+    }
+  }
+
+  private async importFormulas(formulas): Promise<void> {
+    for (let formula of formulas['new']) {
+      await this.importFormula(formula);
+    }
+    for (let conflict of formulas['conflicts']) {
+      if (conflict['select'] == 'new') {
+        await this.updateFormula(conflict['old'][0]['formulaname'], conflict['new']);
+      }
+    }
+  }
+
+  private async importSKU(sku): Promise<void> {
+    var createSkuResponse = await this.restv2.createSku(sku['skuname'], sku['skunumber'], sku['caseupcnumber'], sku['unitupcnumber'], "" + sku['unitsize'], sku['countpercase'], sku['formula'], sku['formulascalingfactor'], sku['manufacturingrate'], sku['comment']);
+    if (createSkuResponse['skuname'] != sku['skuname']) {
+      throw Error("Could not create SKU " + sku['skuname']);
+    }
+
+    var getPLResponse = await this.restv2.getProductLines(AndVsOr.AND, sku['productline'], name, 1);
+    if (getPLResponse.length == 0) {
+      throw Error("Could not find product line " + sku['productline'] + " for SKU " + sku['skuname']);
+    }
+    var skus = getPLResponse[0]['skus'];
+    skus.push({
+      sku: createSkuResponse['_id']
     });
+    var modifyPLResponse = await this.restv2.modifyProductLine(AndVsOr.AND, sku['productline'], sku['productline'], skus);
+    if (modifyPLResponse['ok'] != 1) {
+      throw Error("Could not modify Product Line " + sku['productline'] + " for SKU " + sku['skuname']);
+    }
+
+    for (let ml of sku['manufacturinglines']) {
+      var mlResponse = await this.restv2.getLine(AndVsOr.AND, ml, null, ml, null, 1);
+      if (mlResponse.length == 0) {
+        throw Error("Could not find manufacturing line " + ml + " for SKU " + sku['skuname']);
+      }
+      var containsSKU = false;
+      for (let currentSKU of mlResponse[0]['skus']) {
+        if (currentSKU['skuname'] == sku['skuname']) {
+          containsSKU = true;
+        }
+      }
+      if (!containsSKU) {
+        mlResponse[0]['skus'].push({
+          sku: createSkuResponse['_id']
+        });
+        var mlCreateResponse = await this.restv2.modifyLine(AndVsOr.AND, mlResponse[0]['linename'], mlResponse[0]['linename'], mlResponse[0]['shortname'], mlResponse[0]['skus'], mlResponse[0]['comment']);
+        console.log("ML Response: ",mlResponse);
+        console.log("ML Create Response: ",mlCreateResponse);
+        if (mlCreateResponse['ok'] != 1 || mlCreateResponse['nModified'] != 1) {
+          throw Error("Could not add SKU " + sku['skuname'] + " to Manufacturing Line " + mlCreateResponse['linename']);
+        }
+      }
+    }
+  }
+
+  private async updateSKU(oldsku, newsku): Promise<void> {
+    var formulas = await this.restv2.getFormulas(AndVsOr.AND, null, null, newsku['formula'], null, null, 1);
+    if (formulas.length == 0) {
+      throw Error("Could not get formula " + newsku['formula'] + " for SKU " + newsku['skuname']);
+    }
+    var response = await this.restv2.modifySku(AndVsOr.AND, oldsku['skuname'], newsku['skuname'], newsku['skunumber'], newsku['caseupcnumber'], newsku['unitupcnumber'], "" + newsku['unitsize'], newsku['countpercase'], newsku['formula'], newsku['formulascalingfactor'], newsku['manufacturingrate'], newsku['comment']);
+    if (response['ok'] != 1) {
+      throw Error("Could not update sku " + oldsku['skuname']);
+    }
+  }
+
+  private async importNewSKUs(newSKUs, index): Promise<void> {
+    await this.importSKU(newSKUs[index]);
+    if (!(index >= newSKUs.length - 1)) {
+      await this.importNewSKUs(newSKUs, index + 1);
+    }
+  }
+
+  private async updateSKUs(skus, index): Promise<void> {
+    await this.updateSKU(skus[index]['old'][0], skus[index]['new']);
+    if (!(index >= skus.length - 1)) {
+      await this.updateSKUs(skus, index + 1);
+    }
+  }
+
+  private async importSKUs(skus): Promise<void> {
+    //the problem here is that all of the updates are occurring at the same time so there is a race condition where both SKUs obtain the product line before either SKU updates it.
+    //Fix: enforce that they upload sequentially
+    if (skus['new'].length > 0) {
+      await this.importNewSKUs(skus['new'], 0);
+    }
+    var conflictsToUpdate = skus['conflicts'].filter((value, index, array) => {
+      return value['select'] == 'new';
+    });
+    if (conflictsToUpdate.length > 0) {
+      await this.updateSKUs(conflictsToUpdate, 0);
+    }
+  }
+
+  private async importProductLines(productLines): Promise<void> {
+    for (let productLine of productLines['new']) {
+      var result = await this.restv2.createProductLine(productLine['Name'], []);
+      if (result['productlinename'] != productLine['Name']) {
+        throw Error("Could not create product line " + result['productlinename']);
+      }
+    }
   }
 
 }
