@@ -9,11 +9,11 @@ import { RestServiceV2, AndVsOr } from '../restv2.service';
 export class SalesReportComponent implements OnInit {
 
   productLines: any[] = [];
-  allProductLinesSelected: boolean = false;
+  allProductLinesSelected: boolean = true;
   selectedProductLines: any[] = [];
 
   customers: any[] = [];
-  allCustomersSelected: boolean = false;
+  allCustomersSelected: boolean = true;
   selectedCustomers: any[] = [];
 
   constructor(public restv2: RestServiceV2) { }
@@ -25,8 +25,13 @@ export class SalesReportComponent implements OnInit {
   async onInit(): Promise<any> {
     this.productLines = await this.restv2.getProductLines(AndVsOr.OR, null, null, 10000);
     for (let productLine of this.productLines) {
-      productLine['checked'] = false;
+      productLine['checked'] = true;
     }
+    this.customers = await this.restv2.getCustomers(AndVsOr.OR, null, null, null, 10000);
+    for (let customer of this.customers) {
+      customer['checked'] = true;
+    }
+    this.refreshSelected();
     console.log(this.productLines);
   }
 
