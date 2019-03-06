@@ -73,6 +73,7 @@ import { VisComponent } from './manufacturing-schedule/vis/vis.component';
 import { NewSkuFormulaComponent } from './new-sku-formula/new-sku-formula.component';
 import {MatDialogModule} from '@angular/material/dialog';
 import { SalesReportComponent } from './sales-report/sales-report.component';
+import {MatTabsModule} from '@angular/material/tabs'; 
 
 const appRoutes: Routes = [
   { path: 'login', component: LoginComponent, data: { title: 'Log In' }, canActivate: [AlreadyLoggedInRouteGuardService] },
@@ -177,7 +178,8 @@ const appRoutes: Routes = [
     MatAutocompleteModule,   
     DragDropModule,
     MatDatepickerModule,
-    MatDialogModule
+    MatDialogModule,
+    MatTabsModule
   ],
   providers: [],
   bootstrap: [AppComponent],

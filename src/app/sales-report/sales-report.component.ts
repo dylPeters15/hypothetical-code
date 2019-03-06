@@ -10,9 +10,11 @@ export class SalesReportComponent implements OnInit {
 
   productLines: any[] = [];
   allProductLinesSelected: boolean = false;
+  selectedProductLines: any[] = [];
 
   customers: any[] = [];
   allCustomersSelected: boolean = false;
+  selectedCustomers: any[] = [];
 
   constructor(public restv2: RestServiceV2) { }
 
@@ -28,48 +30,50 @@ export class SalesReportComponent implements OnInit {
     console.log(this.productLines);
   }
 
-  productLineSelectionsChanged(event, productLineName): void {
+  refreshSelected(): void {
+    this.selectedProductLines = this.productLines.filter((value, index, array) => {
+      return value['checked'];
+    });
+
+    this.selectedCustomers = this.customers.filter((value, index, array) => {
+      return value['checked'];
+    });
+  }
+
+  productLineSelectionsChanged(): void {
     var areAllSelected = true;
     for (let productLine of this.productLines) {
-      if (productLineName == productLine['productlinename']) {
-        if (!event) {
-          areAllSelected = false;
-        }
-      } else {
-        if (!productLine['checked']) {
-          areAllSelected = false;
-        }
+      if (!productLine['checked']) {
+        areAllSelected = false;
       }
     }
     this.allProductLinesSelected = areAllSelected;
+    this.refreshSelected();
   }
 
   selectDeselectAllProductLines(): void {
     for (let productLine of this.productLines) {
-      productLine['checked'] = !this.allProductLinesSelected;
+      productLine['checked'] = this.allProductLinesSelected;
     }
+    this.refreshSelected();
   }
 
-  customerSelectionsChanged(event, customerName): void {
+  customerSelectionsChanged(): void {
     var areAllSelected = true;
     for (let customer of this.customers) {
-      if (customerName == customer['customername']) {
-        if (!event) {
-          areAllSelected = false;
-        }
-      } else {
-        if (!customer['checked']) {
-          areAllSelected = false;
-        }
+      if (!customer['checked']) {
+        areAllSelected = false;
       }
     }
     this.allCustomersSelected = areAllSelected;
+    this.refreshSelected();
   }
 
   selectDeselectAllCustomers(): void {
     for (let customer of this.customers) {
-      customer['checked'] = !this.allCustomersSelected;
+      customer['checked'] = this.allCustomersSelected;
     }
+    this.refreshSelected();
   }
 
 }
