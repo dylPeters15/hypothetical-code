@@ -69,6 +69,7 @@ import { TermsAndConditionsDialogComponent } from './footer/terms-and-conditions
 import { UserManagementComponent } from './user-management/user-management.component';
 import { UserNotificationDialogComponent } from './user-notification-dialog/user-notification-dialog.component';
 import { UserRouteGuardService } from './user-route-guard.service';
+import { VisComponent } from './manufacturing-schedule/vis/vis.component';
 import { NewSkuFormulaComponent } from './new-sku-formula/new-sku-formula.component';
 import {MatDialogModule} from '@angular/material/dialog';
 import { SalesReportComponent } from './sales-report/sales-report.component';
@@ -147,6 +148,7 @@ const appRoutes: Routes = [
     ManufactoringScheduleTableComponent,
     ManufacturingLinesTableComponent,
     ConfirmDeletionDialogComponent,
+    VisComponent,
     SalesReportComponent
   ],
   imports: [

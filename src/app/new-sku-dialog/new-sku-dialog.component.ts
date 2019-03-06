@@ -129,7 +129,6 @@ export class NewSkuDialogComponent implements OnInit {
 
   addFormulaToSku(edit, formulaname, scalingFactor) {
     const dialogConfig = new MatDialogConfig();
-    console.log("About to go here. data sent: name: " + formulaname);
     dialogConfig.data = {edit: edit, present_name: formulaname, present_scalingFactor: scalingFactor};
     this.newFormulaDialogRef = this.dialog.open(NewSkuFormulaComponent, dialogConfig);
     //this.newIngredientDialogRef.componentInstance.amount = this.return_amount;
@@ -141,19 +140,12 @@ export class NewSkuDialogComponent implements OnInit {
 
       // get object id from formula name
       this.rest.getFormulas(new_formula,0, 0, 1).subscribe(response => {
-        if (response.length == 0) {
-          console.log("problem in formula looks like");
-          this.snackBar.open("Error adding formula. Please refresh and try again", "close", {
-            duration: 2000,
-               });
-        } 
-        else {
-          console.log("success mon");
+        this.snackBar.open("Successfully added formula " + new_formula, "close", {
+          duration: 2000,
+             });
           this.formula = response[0]['formulanumber'];
           this.formulaname = response[0]['formulaname'];
-          console.log("name: " + this.formulaname);
-          console.log("num: " + this.formulascalingfactor);
-        }
+        
         this.refreshData();
         });
         });
@@ -191,33 +183,20 @@ export class NewSkuDialogComponent implements OnInit {
     if (this.edit == false)
     {
       this.rest.createSku(this.skuname, this.skunumber, this.caseupcnumber, this.unitupcnumber, this.unitsize, this.countpercase, this.formula, this.formulascalingfactor, this.manufacturingrate, this.comment).subscribe(response => {
-        if (response['success']) {
-               this.snackBar.open("Successfully created sku " + this.skuname + ".", "close", {
-                 duration: 2000,
-               });
-             } else {
-               this.snackBar.open("Error creating user " + this.skuname + ". Please refresh and try again.", "close", {
-                 duration: 2000,
-               });
-             }
-             this.closeDialog();
+        this.snackBar.open("Successfully created sku " + this.skuname + ".", "close", {
+          duration: 2000,
+        });
+        this.closeDialog();
            });
       }
 
     else{
       this.rest.modifySku(this.oldskuname, this.skuname, this.skunumber, this.caseupcnumber, this.unitupcnumber, this.unitsize, this.countpercase, this.formula, this.formulascalingfactor, this.manufacturingrate, this.comment).subscribe(response => {
-        
-         if (response['success']) {
-           this.snackBar.open("Successfully modifyed sku " + this.skuname + ".", "close", {
-             duration: 2000,
-           });
-         } else {
-           this.snackBar.open("Error modifying sku " + this.skuname + ". Please refresh and try again.", "close", {
-             duration: 2000,
-           });
-         }
-         this.closeDialog();
-       });
+        this.snackBar.open("Successfully modifyed sku " + this.skuname + ".", "close", {
+          duration: 2000,
+        });
+        this.closeDialog();
+      });
     }
     this.refreshData();
   }
