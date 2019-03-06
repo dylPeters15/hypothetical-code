@@ -69,8 +69,7 @@ function createFederatedUser(netidtoken, clientid) {
             createUser({
                 username: netid,
                 admin: false,
-                localuser: false,
-                sysadmin: false
+                localuser: false
             }).then(response => {
                 resolve(response);
             }).catch(err => {

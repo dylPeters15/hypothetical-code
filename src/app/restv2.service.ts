@@ -66,34 +66,31 @@ export class RestServiceV2 {
   }
 
   ///////////////////// users /////////////////////
-  getUsers(andVsOr: AndVsOr, username: string, usernameregex: string, admin: boolean, sysadmin: boolean, localuser: boolean, limit: number): Promise<any> {
+  getUsers(andVsOr: AndVsOr, username: string, usernameregex: string, admin: boolean, localuser: boolean, limit: number): Promise<any> {
     var header = this.generateHeaderWithFilterSchema(andVsOr, [
       { username: username },
       { username: usernameregex?{ $regex: usernameregex }:null },
       { admin: admin },
-      { sysadmin: sysadmin },
       { localuser: localuser }
     ], limit);
     console.log(header);
     return this.http.get(endpoint + 'users', header).toPromise();
   }
 
-  createUser(username: string, password: string, admin: boolean, sysadmin: boolean): Promise<any> {
+  createUser(username: string, password: string, admin: boolean): Promise<any> {
     return this.http.put(endpoint + 'users', {
       username: username,
       password: password,
       admin: admin,
-      sysadmin: sysadmin,
       localuser: true
     },
       this.generateHeaderWithFilterSchema()).toPromise();
   }
 
-  modifyUser(andVsOr: AndVsOr, username: string, localuser: boolean, newpassword: string, newadmin: boolean, newsysadmin: boolean): Promise<any> {
+  modifyUser(andVsOr: AndVsOr, username: string, localuser: boolean, newpassword: string, newadmin: boolean): Promise<any> {
     return this.http.post(endpoint + 'users', this.generateBodyWithOptions({
       password: newpassword,
-      admin: newadmin,
-      sysadmin: newsysadmin
+      admin: newadmin
     }),
       this.generateHeaderWithFilterSchema(andVsOr, [
         {username: username},
@@ -302,7 +299,7 @@ export class RestServiceV2 {
 
   getUserName(): Promise<any> {
     return new Promise((resolve, reject) => {
-      this.getUsers(AndVsOr.AND, auth.getUsername(), null, null, null, auth.getLocal(), null).then(response => {
+      this.getUsers(AndVsOr.AND, auth.getUsername(), null, null, auth.getLocal(), null).then(response => {
         setTimeout(function () {
           resolve(response[0]['_id']);;
         }, 300);

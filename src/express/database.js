@@ -55,11 +55,6 @@ var userSchema = new mongoose.Schema({
     type: Boolean,
     required: true,
     unique: false
-  },
-  sysadmin: {
-    type: Boolean,
-    required: true,
-    unique: false
   }
 });
 userSchema.index({ username: 1, localuser: 1 }, { unique: true }); //the combination of username and localuser should be unique
