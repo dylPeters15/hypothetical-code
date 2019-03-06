@@ -7,6 +7,7 @@ import { NewIngredientDialogComponent } from '../new-ingredient-dialog/new-ingre
 import { auth } from '../auth.service';
 import {ExportToCsv} from 'export-to-csv';
 import {MatIconModule} from '@angular/material/icon'
+import { ConfirmDeletionDialogComponent } from '../confirm-deletion-dialog/confirm-deletion-dialog.component';
 
 export interface IngredientForTable {
   ingredientname: string;
@@ -53,7 +54,7 @@ export class IngredientComponent  implements OnInit {
   constructor(public rest:RestService, private snackBar: MatSnackBar, private dialog: MatDialog) { }
   allReplacement = 54321;
   displayedColumns: string[] = ['checked', 'ingredientname', 'ingredientnumber',
-    'vendorinformation', 'packagesize', 'costperpackage', 'comment', 'modify'];
+    'vendorinformation', 'packagesize', 'costperpackage', 'comment', 'actions'];
   data: IngredientForTable[] = [];
   dialogRef: MatDialogRef<MoreInfoDialogComponent>;
   newDialogRef: MatDialogRef<NewIngredientDialogComponent>;
@@ -69,12 +70,12 @@ export class IngredientComponent  implements OnInit {
   }
 
   getPageSizeOptions() {
-    return [5, 10, 20, this.allReplacement];
+    return [20, 50, 100, this.allReplacement];
   }
 
   refreshData(filterQueryData?) {
-    filterQueryData = filterQueryData ? ".*"+filterQueryData+".*" : ".*"+this.filterQuery+".*"; //this returns things that have the pattern anywhere in the string
-    this.rest.getIngredients("", filterQueryData, 1, this.paginator.pageSize*10).subscribe(response => {
+    filterQueryData = filterQueryData ? "(?i).*"+filterQueryData+".*" : ".*"+this.filterQuery+".*"; //this returns things that have the pattern anywhere in the string
+    this.rest.getIngredients("", filterQueryData, -1, this.paginator.pageSize*10).subscribe(response => {
       console.log("in ingredient: ", response);
       this.data = response;
       this.data.forEach(user => {
@@ -184,12 +185,67 @@ export class IngredientComponent  implements OnInit {
   }
 
   deleteSelected() {
-        this.data.forEach(ingredient => {
-          if (ingredient.checked) {
+    this.data.forEach(ingredient => {
+      var affectedFormulas = [];
+      var affectedFormulaNames = [];
+      if (ingredient.checked) {
+        var thisobject = this;
+        let promise1 = new Promise((resolve, reject) => {
+          thisobject.rest.getFormulas("", -1, ingredient['_id'], 10).subscribe(formulas => {
+            console.log(formulas)
+            formulas.forEach((formula) => {
+              if (formula['formulaname']) {
+                affectedFormulas.push(formula);
+                affectedFormulaNames.push(formula['formulaname'])
+              }
+            });
+            resolve();
+          });
+        });
+        promise1.then(() => {
+          if (affectedFormulas.length == 0) {
             this.deleteIngredient(ingredient.ingredientname);
           }
-        });
+          else {
+            const dialogRef = this.dialog.open(ConfirmDeletionDialogComponent, {
+              width: '250px',
+              data: {ingredient: ingredient['ingredientname'],
+                  affectedFormulaNames: affectedFormulaNames}
+            }); 
+              
+            dialogRef.afterClosed().subscribe(closeData => {
+              if (closeData && closeData['confirmed']) {
+                this.deleteIngredient(ingredient['ingredientname']);
+                affectedFormulas.forEach((formula) => {
+                  var newIngredients = []
+                  formula['ingredientsandquantities'].forEach((ingredienttuple) => {
+                    console.log(ingredienttuple['ingredient'])
+                    if((ingredienttuple['ingredient']['_id'] != ingredient['_id'])) {
+                      newIngredients.push(ingredienttuple);
+                    }
+                  });
+                  this.rest.modifyFormula(formula['formulaname'], formula['formulaname'], 
+                  formula['formulanumber'], newIngredients, formula['comment']).subscribe(response => {
+                    if (response['nModified']) {
+                      this.snackBar.open("Successfully modified formula " + formula['formulaname'] + ".", "close", {
+                        duration: 2000,
+                      });
+                      console.log('success')
+                    } else {
+                      console.log(response)
+                      this.snackBar.open("Error modifying formula " + formula['formulaname'] + ".", "close", {
+                        duration: 2000,
+                      });
+                    }
+                  })
+                })        
+              }
+            });
+          }
+        })
       }
+    });
+  }
 
   deselectAll() {
     this.data.forEach(ingredient => {

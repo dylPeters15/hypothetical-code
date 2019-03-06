@@ -12,7 +12,7 @@ export class ManufacturingGoal {
   activities: String;
   activityCount: number;
   name: String;
-  date: Date;
+  date: String;
   checked: boolean;
   constructor(name, activities, activityCount, date, checked){
     this.activityCount = activityCount;
@@ -52,7 +52,7 @@ export class ManufacturingGoalsComponent implements OnInit {
   constructor(public rest:RestService, private route: ActivatedRoute, private router: Router, private snackBar: MatSnackBar, private dialog: MatDialog) {  }
 
   getPageSizeOptions() {
-    return [5, 10, 20, this.allReplacement];
+    return [20, 50, 100, this.allReplacement];
   }
 
   newGoal() {
@@ -67,27 +67,31 @@ export class ManufacturingGoalsComponent implements OnInit {
   refreshData() {
     this.data = [];
     this.rest.getUserName().then(result => {
-      this.rest.getGoals(result.toString(), "", ".*", true, 5).subscribe(data => {
+      this.rest.getGoals(result.toString(), "", "", true, 5).subscribe(data => {
         this.goals = data;
-        this.rest.getGoals(result.toString(), "", ".*", false, 5).subscribe(data => {
-            this.goals.push(data);
             var i;
             this.dataSource = new MatTableDataSource<ManufacturingGoal>(this.data);
             for(i = 0; i<this.goals.length; i++){
               let name = this.goals[i]['goalname'];
               let activities = this.goals[i]['activities'];
               if(activities != undefined){
+                console.log("ACTIVITES: " + JSON.stringify(activities))
                 var j;
                 let activityCount = activities.length;
                 let activityString = '';
-                for(j = 0; j<activities.length; j++){
+                for(j = 0; j<activities.length; j++){                  
                   let currentActivity =  activities[j]['activity']
-                  let hoursString = currentActivity['sethours'] != null ? currentActivity['sethours'] : currentActivity['calculatedhours'];
+                  console.log("Activity: " + JSON.stringify(currentActivity))
+                  if(currentActivity != null && currentActivity != undefined){
+                    let hoursString = currentActivity['sethours'] != null ? currentActivity['sethours'] : currentActivity['calculatedhours'];
                     activityString += "SKU: " + currentActivity['sku']['skuname'] + ": Hours Required: " + hoursString + '\n'; 
+                  }
+                 
                 }
                 activityString = activityString.substring(0,activityString.length-1)
-                let date = this.goals[i]['date'];
-                let currentGoal = new ManufacturingGoal(name, activityString, activityCount, date, false);
+                let date = new Date(this.goals[i]['date']);
+                let dateString = date.getMonth()+1 + '/' + date.getDate() + '/' + date.getFullYear();
+                let currentGoal = new ManufacturingGoal(name, activityString, activityCount, dateString, false);
                 this.data.push(currentGoal);
               }
               
@@ -100,7 +104,6 @@ export class ManufacturingGoalsComponent implements OnInit {
             this.dataSource.paginator = this.paginator;
         })
       })
-    })
     
   }
 

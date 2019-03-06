@@ -4,12 +4,12 @@
           <mat-card-title>Formulas</mat-card-title>
       </mat-card-header>
       <mat-card-content>
-          <button mat-raised-button (click)="selectAll()" style="color: white; background-color: green;"> Select All </button>
-          <button mat-raised-button (click)="deselectAll()" style="color: white; background-color: green;" > Deselect All </button>
-          <button mat-raised-button (click)="exportSelected()" style="color: white; background-color: green;" > Export Selected </button>
-          <button mat-raised-button *ngIf="admin" (click)="deleteSelected()" style="color: white; background-color: red;" > Delete Selected </button>
-          <button mat-raised-button *ngIf="admin" (click)="modifySelected()" style="color: white; background-color: red;" > Modify Selected </button>
-          <button mat-raised-button *ngIf="admin" (click)="newFormulaButton()" style="color: white; background-color: orange;" > New Formula </button>          
+          <button mat-raised-button (click)="selectAll()"> Select All </button>
+          <button mat-raised-button (click)="deselectAll()"> Deselect All </button>
+          <button mat-raised-button (click)="exportSelected()"> Export Selected </button>
+          <button mat-raised-button *ngIf="admin" (click)="deleteSelected()" color="warn" [disabled]="noneSelected()"> Delete Selected </button>
+          <!-- <button mat-raised-button *ngIf="admin" (click)="modifySelected()" > Modify Selected </button> -->
+          <button mat-raised-button *ngIf="admin" (click)="newFormulaButton()" color="primary"> New Formula </button>          
           <mat-form-field>
             <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter">
           </mat-form-field>
@@ -39,7 +39,10 @@
             <ng-container matColumnDef="ingredientsandquantities">
               <mat-header-cell *matHeaderCellDef mat-sort-header>Ingredients and Quantities</mat-header-cell>
               <mat-cell *matCellDef="let formula">
-                {{formula['ingredientsandquantities']}}
+                <div *ngFor="let ingredienttuple of formula['ingredientsandquantities']">
+                    {{ingredienttuple['ingredient']['ingredientname']}}, {{ingredienttuple['quantity']}}<br />
+                </div>
+                
               </mat-cell>
             </ng-container>
           
@@ -49,11 +52,13 @@
                 {{formula['comment']}}
               </mat-cell>
             </ng-container>
-          
+
             <ng-container matColumnDef="actions">
               <mat-header-cell *matHeaderCellDef mat-sort-header>Actions</mat-header-cell>
               <mat-cell *matCellDef="let formula">
-                <button mat-raised-button (click)="deleteFormula(element['formulaname'])" style="color: white; background-color: red;"> Delete formula </button>
+                  <button mat-button *ngIf="admin" (click)="modifyFormulaConfirmed(formula)" color="primary"> 
+                    <mat-icon>edit</mat-icon>
+                  </button>
               </mat-cell>
             </ng-container>
           

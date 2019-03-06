@@ -12,10 +12,10 @@
         <div class="example-box" *ngFor="let activity of _value['activities']" cdkDrag>
             <div class="dateInfo">
                 <div class="startDate">
-                    {{startDate}}
+                    Start: {{activity['startdatestring']}}
                 </div>
                 <div class="endDate">
-                    {{endDate}}
+                    End: {{activity['enddatestring']}}
                 </div>
             </div>
             <div>

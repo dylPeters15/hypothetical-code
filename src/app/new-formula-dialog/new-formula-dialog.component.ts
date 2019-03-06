@@ -43,6 +43,8 @@ export class NewFormulaDialogComponent implements OnInit {
     this.ingredientsandquantities = this.data.present_ingredientsandquantities;
     this.comment = this.data.present_comment;
     //console.log("my test array is " + this.testArray);
+
+    // update ingredients and amounts to display
     for(let i=0; i<this.ingredientsandquantities.length; i++){
       this.arrayIngredients.push(this.ingredientsandquantities[i].ingredient);
       this.arrayQuantity.push(this.ingredientsandquantities[i].quantity);
@@ -91,7 +93,7 @@ export class NewFormulaDialogComponent implements OnInit {
       console.log("okay we are back again. ingredient: " + new_ingredient + ", amount: " +  new_amount);
 
       // get object id from ingredient name
-      this.rest.getIngredients(new_ingredient,"", 0, 1).subscribe(response => {
+      this.rest.getIngredients(new_ingredient,"$a", -1, 1).subscribe(response => {
         if (response.length == 0) {
           this.snackBar.open("Error adding ingredient.", "close", {
             duration: 2000,
@@ -99,7 +101,7 @@ export class NewFormulaDialogComponent implements OnInit {
         } 
         else {
           console.log("located the ingredient. " + response);
-          new_objectid = response[0]['_id'];
+          new_objectid = response[0];
           console.log("mah object id fam " + new_objectid);
           let new_ingredienttuple = new ingredienttuple();
           //new_ingredienttuple.create({

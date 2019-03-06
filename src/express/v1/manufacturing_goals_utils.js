@@ -1,4 +1,4 @@
-const database = require('./database.js');
+const database = require('../database.js');
 
    
 function getGoals(username, enabled, goalname, goalnameregex, limit) {
@@ -41,6 +41,7 @@ function createGoal(goalObject) {
 }
 
 function modifyGoal(goalname, newGoalObject) {
+    console.log("NEW OBJ: " + JSON.stringify(newGoalObject))
     return new Promise((resolve, reject) => {
         var filterSchema = {
             goalname: goalname

@@ -7,6 +7,7 @@ import { MatDialogRef, MatDialog, MatDialogConfig, MatTableDataSource,MatPaginat
 import {ExportToCsv} from 'export-to-csv';
 import {CdkDragDrop, moveItemInArray, transferArrayItem} from '@angular/cdk/drag-drop';
 import { DisplayableActivity } from '../new-goal-dialog/new-goal-dialog.component';
+import { scheduleMicroTask } from '@angular/core/src/util';
 
 var moment = require('moment');
 require('moment-weekday-calc');
@@ -28,7 +29,8 @@ export class DataForLinesTable{
   constructor(shortname, activities){
     this.shortname = shortname;
     this.activities = activities;
-  }
+  };
+  schedule: ManufacturingScheduleComponent;
 }
 
 
@@ -53,18 +55,19 @@ export class ManufacturingScheduleComponent implements OnInit {
   totalHours: number;
 
   ngOnInit() {
-    this.refreshData();
+    // this.refreshData();
     this.selectionChange();
-
   }
 
 
   refreshData() {
+    var thisobject = this;
+    console.log("Refresh data");
     this.goalsData = [];
     this.rest.getUserName().then(result => {
         this.rest.getGoals(result.toString(), "", "", true, 5).subscribe(goals => {
           goals.forEach(goal => {
-            let activityList = [];
+            var activityList = [];
             if(goal['enabled']){
             goal['activities'].forEach(activity => {
               if(activity['activity']['line'] == null || activity['activity']['line'] == undefined){
@@ -83,23 +86,40 @@ export class ManufacturingScheduleComponent implements OnInit {
   this.rest.getLine('','.*','','.*',100).subscribe(response => {
     response.forEach(line => {
       var currentLineName = line['shortname'];
-      let currentActivities = [];
+      var currentActivities = [];
       this.rest.getActivities(null,100,line['_id']).subscribe(activities => {
         if(activities.length > 0){
           activities.forEach(activity => {
-            currentActivities.push(activity);
+            var activityStart = new Date(activity['startdate'])
+            var activityEnd = new Date(activityStart);
+            let hours = activity['sethours'] || activity['calculatedhours'];
+            const NUM_HOURS_PER_DAY = 10;
+      
+            while (moment().isoWeekdayCalc([activityStart.getUTCFullYear(), activityStart.getUTCMonth(), activityStart.getUTCDay()], [activityStart.getUTCFullYear(), activityEnd.getUTCMonth(), activityEnd.getUTCDay()], [2, 3, 4, 5, 6]) * NUM_HOURS_PER_DAY < hours) {
+              activityEnd.setDate(activityEnd.getDate() + 1);
+            }
+            activity['startdatestring'] = activityStart.getMonth()+1 + "/" + activityStart.getDate() + "/" + activityStart.getFullYear();
+            activity['enddatestring'] = activityEnd.getMonth()+1 + "/" + activityEnd.getDate() + "/" + activityEnd.getFullYear();
+
+            if(currentActivities.indexOf(activity) == -1){
+              currentActivities.push(activity);
+            }
           })
-          
         }
         let newLine = new DataForLinesTable(currentLineName, currentActivities);
         this.linesData.push(newLine);
-      })
-      this.linesDataSource = new MatTableDataSource<DataForLinesTable>(this.linesData);
+      });
+
     })
+
   })
+  this.linesDataSource = new MatTableDataSource<DataForLinesTable>(this.linesData);
+
   this.totalHours = (this.HOURS_PER_DAY * this.numberOfDays);
 
 }
+
+
   
   openEnableGoalsDialog() {
     const dialogConfig = new MatDialogConfig();

@@ -4,15 +4,17 @@ import { auth } from './auth.service'
 import { Observable } from 'rxjs';
 import { start } from 'repl';
 
-// const endpoint = 'https://vcm-8238.vm.duke.edu:8443/'; // Ben
-// const endpoint = 'https://vcm-8405.vm.duke.edu:8443/'; // Noah
-// const endpoint = 'https://vcm-8205.vm.duke.edu:8443/'; // Prod
-const endpoint = 'https://localhost:8443/'; // localhost
+// export const endpoint = 'https://vcm-8238.vm.duke.edu:8443/'; // Ben
+// export const endpoint = 'https://vcm-8405.vm.duke.edu:8443/'; // Noah
+// export const endpoint = 'https://vcm-8205.vm.duke.edu:8443/'; // Prod
+export const endpoint = 'https://localhost:8443/'; // localhost
 
 @Injectable({
   providedIn: 'root'
 })
 export class RestService {
+
+  static endpoint = endpoint;
 
   constructor(private http: HttpClient) { }
 
@@ -55,7 +57,6 @@ export class RestService {
 
   loginRequest(username, password, netidtoken?): Observable<any> {
     if (netidtoken) {
-
       return this.http.get(endpoint + 'login', {
         headers: new HttpHeaders({
           netidtoken: netidtoken,
@@ -113,14 +114,6 @@ export class RestService {
 
 ///////////////////// formulas /////////////////////
 getFormulas(formulaname: string, formulanumber: number, ingredient: number, limit: number, formulanameregex?: string, sku?: number): Observable<any> {
-  console.log("limit", limit);
-  console.log("formulaname",formulaname);
-  console.log("formulanumber",formulanumber);
-  console.log("ingredient",ingredient);
-  console.log("limit",limit);
-  console.log("formulanameregex",formulanameregex);
-  console.log("sku",sku);
-
   var header = {
     formulaname: formulaname||"",
     formulanameregex: formulanameregex||"$a",
@@ -158,16 +151,16 @@ modifyFormula(oldname: string, formulaname: string, formulanumber: number, ingre
   }));
 }
 
-deleteFormula(sku: number, ingredient: number): Observable<any> {
+deleteFormula(formulanumber: number): Observable<any> {
   return this.http.delete(endpoint + "formulas", this.generateHeader({
-    sku: sku,
-    ingredient: ingredient
+    // formulanumber: JSON.stringify(formulanumber)
+    formulanumber: formulanumber
   }));
 }
 
  ///////////////////// skus /////////////////////
  getSkus(skuName: String, skunameregex: String, skuNumber: number, caseUpcNumber: number, unitUpcNumber: number, formula: String, limit: number): Observable<any> {
-   console.log("formula number rest", formula)
+
   return this.http.get(endpoint + "skus", this.generateHeader({
     skuname: skuName,
     skunameregex: skunameregex,
@@ -392,12 +385,10 @@ deleteGoal(goalname: String): Observable<any> {
     }, this.generateHeader());
   }
 
-  deleteActivity(sku: string, numcases: number, calculatedhours: number, startdate: Date){
+  deleteActivity(activityId: string){
+
     return this.http.delete(endpoint + "manufacturing-activities", this.generateHeader({
-      sku: sku,
-      numcases: numcases.toString(),
-      calculatedhours: calculatedhours.toString(),
-      startdate: startdate.toString()
+      _id: activityId
     }));
   }
 

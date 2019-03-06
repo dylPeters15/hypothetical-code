@@ -22,56 +22,57 @@ export class NewSkuFormulaComponent implements OnInit {
   removeable = true;
   addOnBlue = true;
   seperatorKeysCodes: number[] = [ENTER, COMMA]
-  ingredientCtrl = new FormControl();
-  filteredIngredients: Observable<String[]>;
-  selectedIngredientNames: string[] = [];
-  selectedIngredients: any = [];
-  ingredientList: any = [];
-  ingredientNameList: string[] = [];
-  ingredientName: string;
-  amount: number = 0;
-  ingredientsandquantities: any[];
+  formulaCtrl = new FormControl();
+  filteredFormulas: Observable<String[]>;
+  selectedFormulaNames: string[] = [];
+  formulaNameList: string[] = [];
+  formulaList: any = [];
+  formulaName: string;
+  formulaId: any;
+  scalingFactor: number = 0;
 
-  @ViewChild('ingredientInput') ingredientInput: ElementRef<HTMLInputElement>;
+  @ViewChild('formulaInput') formulaInput: ElementRef<HTMLInputElement>;
   @ViewChild('auto') matAutocomplete: MatAutocomplete;
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: any, private dialogRef: MatDialogRef<NewSkuFormulaComponent>, public rest:RestService, private snackBar: MatSnackBar) {
-    this.filteredIngredients = this.ingredientCtrl.valueChanges.pipe(
+    this.filteredFormulas = this.formulaCtrl.valueChanges.pipe(
       startWith(null),
-      map((ingredient: string | null) => ingredient ? this._filter(ingredient) : this.ingredientNameList.slice()));
+      map((formula: string | null) => formula ? this._filter(formula) : this.formulaNameList.slice()));
    }
 
   ngOnInit() {
-
+    console.log("in init fam");
     this.edit = this.data.edit;
-    this.amount = this.data.present_amount;
-    this.ingredientsandquantities = this.data.present_ingredientsandquantities;
+    this.scalingFactor = this.data.present_scalingFactor;
+    this.formulaName = this.data.present_name;
+    console.log("edit: " + this.edit);
+    console.log("scalingFactor: " + this.scalingFactor);
+    console.log("formulaName: " + this.formulaName);
+
 
     // edit == true if formula is being modified, false if a new formula is being created
     if (this.edit == true)
     {
-      this.dialog_title = "Modify Ingredient";
+      this.dialog_title = "Change SKU's Formula";
     }
-    else this.dialog_title = "Add Ingredient to Formula";
+    else this.dialog_title = "Add SKU's Formula";
 
-    this.rest.getIngredients('','.*',0,5).subscribe(response => {
-      this.ingredientList = response;
-      this.ingredientList.forEach(element => {
-        this.ingredientNameList.push(element.ingredientname)
+    this.rest.getFormulas('',0,0,5,'.*').subscribe(response => {
+      this.formulaList = response;
+      this.formulaList.forEach(element => {
+        this.formulaNameList.push(element.formulaname)
       });
     });
   }
 
   closeDialog() {
-    this.selectedIngredientNames = [];
-    this.ingredientList = [];
-    this.selectedIngredients = [];
+    this.formulaList = [];
+    this.selectedFormulaNames = [];
 
-    //this.ingredientname = "abc";
     //this.amount = 5;
-    console.log("Let's send the data back! new ingredient: " + this.ingredientName + ". Amount: " + this.amount);
-    this.dialogRef.componentInstance.ingredientName = this.ingredientName;
-    this.dialogRef.componentInstance.amount = this.amount;
+    console.log("Let's send the data back! new ingredient: " + this.formulaName + ". Amount: " + this.scalingFactor);
+    this.dialogRef.componentInstance.formulaName = this.formulaName;
+    this.dialogRef.componentInstance.scalingFactor = this.scalingFactor;
     this.dialogRef.close();
 
     //this.dialogRef.close();
@@ -80,21 +81,21 @@ export class NewSkuFormulaComponent implements OnInit {
     //this.amount = this.data.present_amount;
   }
 
-  addIngredient() {
+  addFormula() {
     this.closeDialog()
   }
 
   add(event: MatChipInputEvent): void {
-    // Add ingredient only when MatAutocomplete is not open
+    // Add formula only when MatAutocomplete is not open
     // To make sure this does not conflict with OptionSelected Event
     if (!this.matAutocomplete.isOpen) {
       const input = event.input;
       const value = event.value;
 
-
-      // Add our ingredient
+      // Add our formula
       if ((value || '').trim()) {
-        this.selectedIngredientNames.push(value.trim());
+        this.formulaName = value.trim();
+        this.selectedFormulaNames.push(value.trim());
       }
 
       // Reset the input value
@@ -102,36 +103,37 @@ export class NewSkuFormulaComponent implements OnInit {
         input.value = '';
       }
 
-      this.ingredientCtrl.setValue(null);
+      this.formulaCtrl.setValue(null);
     }
   }
 
-  remove(ingredient: string): void {
-    const index = this.selectedIngredientNames.indexOf(ingredient);
+  remove(formula: string): void {
+    this.formulaName = "";
+    const index = this.selectedFormulaNames.indexOf(formula);
 
     if (index >= 0) {
-      this.selectedIngredientNames.splice(index, 1);
+      this.selectedFormulaNames.splice(index, 1);
     }
   }
-
+  
   selected(event: MatAutocompleteSelectedEvent): void {
-    this.selectedIngredientNames.push(event.option.viewValue);
-    console.log(event.option.viewValue)
-    this.ingredientName = event.option.viewValue;
-    this.rest.getIngredients(event.option.viewValue, '', 0, 5).subscribe(response => {
+    this.formulaName = event.option.viewValue;
+    this.selectedFormulaNames.push(event.option.viewValue);
+
+    this.rest.getFormulas(event.option.viewValue, 0,0,5).subscribe(response => {
       var i;
       for(i = 0; i<response.length; i++){
-        this.selectedIngredients.push({ingredient: response[i]['_id']})
+        this.formulaId = {formula: response[i]['_id']};
       }
     });
-    this.ingredientInput.nativeElement.value = '';
-    this.ingredientCtrl.setValue(null);
+    this.formulaInput.nativeElement.value = '';
+    this.formulaCtrl.setValue(null);
   }
 
   private _filter(value: string): string[] {
     const filterValue = value.toLowerCase();
 
-    return this.ingredientNameList.filter(ingredient => ingredient.toLowerCase().indexOf(filterValue) === 0);
+    return this.formulaNameList.filter(formula => formula.toLowerCase().indexOf(filterValue) === 0);
   }
 
 }

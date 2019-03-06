@@ -7,6 +7,9 @@ import { NewSkuDialogComponent } from '../new-sku-dialog/new-sku-dialog.componen
 import { AfterViewChecked } from '@angular/core';
 import { auth } from '../auth.service';
 import {ExportToCsv} from 'export-to-csv';
+import { LineToLineMappedSource } from 'webpack-sources';
+import { ConfirmDeletionDialogComponent } from '../confirm-deletion-dialog/confirm-deletion-dialog.component';
+
 
 // skuname', 'skunumber','caseupcnumber', 'unitupcnumber', 'unitsize', 'countpercase', 'formula', 'formulascalingfactor', "manufacturingrate", "comment"
 
@@ -61,26 +64,29 @@ export class SkuComponent  implements OnInit {
 
   constructor(public rest:RestService, private snackBar: MatSnackBar, private dialog: MatDialog) { }
   allReplacement = 54321;
-  displayedColumns: string[] = ['checked', 'skuname', 'skunumber','caseupcnumber', 'unitupcnumber', 'unitsize', 'countpercase', 'formula', 'formulascalingfactor', "manufacturingrate", "comment"];
+  displayedColumns: string[] = ['checked', 'skuname', 'skunumber','caseupcnumber', 'unitupcnumber', 'unitsize', 'countpercase', 'formula', 'formulascalingfactor', "manufacturingrate", "comment", 'actions'];
   data: UserForTable[] = [];
   dialogRef: MatDialogRef<MoreInfoDialogComponent>;
   newDialogRef: MatDialogRef<NewSkuDialogComponent>;
   dataSource =  new MatTableDataSource<UserForTable>(this.data);
   admin: boolean = false;
+  filterQuery: string = "";
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
   ngOnInit() {
+    this.paginator.pageSize = 20;
     this.admin = auth.isAuthenticatedForAdminOperation();
     this.refreshData();
   }
 
   getPageSizeOptions() {
-    return [5, 10, 20, this.allReplacement];
+    return [20, 50, 100, this.allReplacement];
   }
 
-  refreshData() {
-    this.rest.getSkus("",".*",null,null,null,"",100).subscribe(response => {
+  refreshData(filterQueryData?) {
+    filterQueryData = filterQueryData ? ".*"+filterQueryData+".*" : ".*"+this.filterQuery+".*"; //this returns things that have the pattern anywhere in the string
+    this.rest.getSkus("", filterQueryData, null, null, null, "", this.paginator.pageSize*10).subscribe(response => {
       this.data = response;
       this.data.forEach(user => {
         user['checked'] = false;
@@ -88,9 +94,8 @@ export class SkuComponent  implements OnInit {
       console.log(this.data);
       this.dataSource =  new MatTableDataSource<UserForTable>(this.data);
       this.dataSource.sort = this.sort;
-    this.dataSource.paginator = this.paginator;
+      this.dataSource.paginator = this.paginator;
     });
-    
   }
 
   seeInfo(type, content) {
@@ -124,18 +129,15 @@ export class SkuComponent  implements OnInit {
   }
 
   deleteSkuConfirmed(sku) {
-    // this.rest.sendAdminDeleteSkuRequest(sku.name).subscribe(response => {
-    //   for (var i=0; i<sku.ingredientTuples.length-1; i = i+2) {
-    //     this.removeIngredient(sku.ingredientTuples[i], sku.name);
-    //   }
-    //   this.snackBar.open("Sku " + name + " deleted successfully.", "close", {
-    //     duration: 2000,
-    //   });
-    //   this.data = this.data.filter((value, index, arr) => {
-    //     return value.name != name;
-    //   });
-    //   this.refreshData();
-    // });
+    this.rest.deleteSku(sku['skuname']).subscribe(response => {
+      this.snackBar.open("Stock Keeping Unit " + sku['skuname'] + " deleted successfully.", "close", {
+        duration: 2000,
+      });
+      this.data = this.data.filter((value, index, arr) => {
+        return value.skuname != sku['skuname'];
+      });
+      this.refreshData();
+    });
   }
 
   modifySkuConfirmed(present_name, present_skuNumber, present_caseUpcNumber, present_unitUpcNumber,present_unitSize,present_countPerCase,present_productLine,present_ingredientTuples, present_comment, present_id) {
@@ -143,10 +145,131 @@ export class SkuComponent  implements OnInit {
   }
 
   deleteSelected() {
-    const dialogConfig = new MatDialogConfig();
     this.data.forEach(sku => {
+      var affectedManufacturingLines = [];
+      var affectedManufacturingLineNames = [];
+      var affectedProductLines = [];
+      var affectedProductLineNames = [];
       if (sku.checked) {
-        this.deleteSkuConfirmed(sku);
+        var thisobject = this;
+        let promise1 = new Promise((resolve, reject) => {
+          thisobject.rest.getLine('', '.*','','',50).subscribe(lines => {
+            console.log(lines)
+            lines.forEach((line) => {
+              console.log(line)
+              line['skus'].forEach((skuinline) => {
+                console.log('skuinline', skuinline['sku'], sku)
+                if (skuinline['sku']['_id'] == sku['_id']) {
+                  affectedManufacturingLines.push(line);
+                  affectedManufacturingLineNames.push(line['linename'])
+                }
+              })
+              
+            });
+            resolve();
+          });
+        });
+        let promise2 = new Promise((resolve, reject) => {
+          thisobject.rest.getProductLines("",".*", 50).subscribe(lines => {
+            console.log(lines)
+            lines.forEach((line) => {
+              line['skus'].forEach((skuinline) => {
+                console.log('skuinline', skuinline['sku'], sku)
+                if (skuinline['sku']['_id'] == sku['_id']) {
+                  affectedProductLines.push(line);
+                  affectedProductLineNames.push(line['productlinename'])
+                }
+              })
+            });
+            resolve();
+          });
+        });
+        promise1.then(() => {
+          promise2.then(() => {
+            if (affectedManufacturingLines.length == 0 && affectedProductLines.length == 0) {
+              this.deleteSkuConfirmed(sku);
+            }
+            else {
+              var totalAffected = [];
+              console.log(affectedProductLineNames);
+              totalAffected.push(affectedManufacturingLineNames);
+              totalAffected.push(affectedProductLineNames);
+              const dialogRef = this.dialog.open(ConfirmDeletionDialogComponent, {
+                width: '250px',
+                data: {ingredient: sku['skuname'],
+                    affectedFormulaNames: totalAffected}
+              }); 
+                
+              dialogRef.afterClosed().subscribe(closeData => {
+                if (closeData && closeData['confirmed']) {
+                  this.deleteSkuConfirmed(sku);
+                  affectedManufacturingLines.forEach((line) => {
+                    let newSkus; 
+                    line['skus'].forEach((oldsku) => {
+                      console.log(oldsku)
+                      if((oldsku['sku']['_id'] != sku['_id'])) {
+                        if (newSkus) {
+                          newSkus.push(oldsku);
+                        }
+                        else {
+                          newSkus = oldsku;
+                        } 
+                      }
+                    });
+                    console.log('oldsku', line['skus'])
+                    console.log('modified', newSkus)
+                    this.rest.modifyLine(line['linename'], line['linename'], line['shortname'],
+                    newSkus, line['comment']).subscribe(response => {
+                      if (response['nModified']) {
+                        this.snackBar.open("Successfully modified line " + line['linename'] + ".", "close", {
+                          duration: 2000,
+                        });
+                        console.log('success')
+                      } else {
+                        console.log(response)
+                        this.snackBar.open("Error modifying line " + line['linename'] + ".", "close", {
+                          duration: 2000,
+                        });
+                      }
+                    })
+                  }) 
+                  affectedProductLines.forEach((line) => {
+                    let newSkus;
+                    line['skus'].forEach((oldsku) => {
+                      console.log(oldsku)
+                      if((oldsku['sku']['_id'] != sku['_id'])) {
+                        if (newSkus) {
+                          newSkus.push(oldsku);
+                        }
+                        else {
+                          newSkus = oldsku;
+                        }
+                      }
+                    });
+                    console.log('oldsku', line['skus'])
+                    console.log('modified', newSkus)
+                    this.rest.modifyProductLine(line['productlinename'], line['productlinename'],
+                    newSkus).subscribe(response => {
+                      if (response['nModified']) {
+                        this.snackBar.open("Successfully modified line " + line['productlinename'] + ".", "close", {
+                          duration: 2000,
+                        });
+                        console.log('success')
+                      } else {
+                        console.log(response)
+                        this.snackBar.open("Error modifying line " + line['productlinename'] + ".", "close", {
+                          duration: 2000,
+                        });
+                      }
+                    })
+                  })       
+                }
+              });
+            }
+          })
+          
+          
+        })
       }
     });
   }
@@ -175,31 +298,8 @@ export class SkuComponent  implements OnInit {
       csvExporter.generateCsv(exportData);
   }
 
-   modifySelected() {
-    const dialogConfig = new MatDialogConfig();
-    let counter: number = 0;
-    this.data.forEach(user => {
-      if (user.checked) {
-        counter++;
-      }
-    });
-    if (counter == 0) {
-      this.snackBar.open("Please select a sku to modify", "close", {
-        duration: 2000,
-      });
-    }
-    else if (counter != 1) {
-      this.snackBar.open("Please only select one sku to modify", "close", {
-        duration: 2000,
-      });
-    }
-    else{
-      this.data.forEach(user => {
-        if (user.checked) {
-          this.modifySkuConfirmed(user.skuname, user.skunumber, user.caseupcnumber, user.unitupcnumber, user.unitsize, user.countpercase, user.formula, user.formulascalingfactor, user.manufacturingrate, user.comment);
-        }
-      });
-    }   
+   modifySelected(oldSku) {
+      this.modifySkuConfirmed(oldSku.skuname, oldSku.skunumber, oldSku.caseupcnumber, oldSku.unitupcnumber, oldSku.unitsize, oldSku.countpercase, oldSku.formula, oldSku.formulascalingfactor, oldSku.manufacturingrate, oldSku.comment); 
   }
 
   removeIngredient(ingredient, sku) {
@@ -253,6 +353,15 @@ export class SkuComponent  implements OnInit {
         }
       }
     }
+  }
+
+  noneSelected(): boolean {
+    for (var i = 0; i < this.data.length; i++) {
+      if (this.data[i].checked) {
+        return false;
+      }
+    }
+    return true;
   }
 
 }

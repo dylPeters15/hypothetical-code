@@ -27,25 +27,36 @@
         <input matInput [(ngModel)]="countpercase" placeholder="Count Per Case" required>
       </mat-form-field>
 
+      <div  class="dropdown-content" [hidden]="formulaDoesNotExist">
+        <p> {{chosen_formula}} | {{chosen_scaling_factor}} <button type="submit" (click)="addFormulaButton()">Edit</button></p>
+      </div>
 
-      <mat-dialog-actions align="center">
-          <button class="mat-raised-button" (click)="addFormulaButton()">Add Formula</button>
+      <div  class="add-form-button" [hidden]="formulaExists">
+        <mat-dialog-actions align="center" >
+          <button class="mat-raised-button" (click)="addFormulaButton()">Add Existing Formula</button>
         </mat-dialog-actions>
+      </div>
 
+      <br /> 
+      <br /> 
+
+        <mat-dialog-actions align="center" >
+          <button class="mat-raised-button" (click)="newFormulaButton()">Create New Formula</button>
+        </mat-dialog-actions>
+ 
         <br /> 
         <br /> 
 
       <mat-form-field>
-        <input matInput [(ngModel)]="manufacturingrate" placeholder="Manufacturing Rate">
+        <input matInput [(ngModel)]="manufacturingrate" placeholder="Manufacturing Rate" (keydown.enter)="createSku()" required>
       </mat-form-field>
 
-      <mat-form-field>
-        <input matInput [(ngModel)]="comment" placeholder="Additional Comments">
-      </mat-form-field>
+      <textarea rows="5" cols="50" style="border:inset 4px grey;" matInput [(ngModel)]="comment" placeholder="Additional Comments"> </textarea>
+
     </mat-card-content>
   </mat-card>
 </mat-dialog-content>
 <mat-dialog-actions align="center">
-  <button class="mat-raised-button" (click)="closeDialog()">Cancel</button>
-  <button class="mat-raised-button" (click)="createSku()" [disabled]="username==''" color="primary">Create</button>
+  <button mat-raised-button (click)="closeDialog()">Cancel</button>
+  <button mat-raised-button (click)="createSku()" [disabled]="manufacturingrate==''||!manufacturingrate" color="primary">{{ submit_title }}</button>
 </mat-dialog-actions>

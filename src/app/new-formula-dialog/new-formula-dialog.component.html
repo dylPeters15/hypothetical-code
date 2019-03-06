@@ -10,8 +10,8 @@
         <input matInput [(ngModel)]="formulanumber" placeholder="Formula #">
       </mat-form-field>
 
-      <div *ngFor="let item of arrayIngredients">
-        <p>{{item}} | {{arrayQuantity[$index]}} <button type="submit">Edit</button><button type="submit">X</button></p>
+      <div *ngFor="let item of arrayIngredients;let i = index">
+        <p>{{item['ingredientname']}} | {{arrayQuantity[i]}} <button type="submit">Edit</button><button type="submit">X</button></p>
      </div>
 
       <!---<p>Beans | 10 lbs <button type="submit">Edit</button><button type="submit">X</button></p> -->
@@ -24,7 +24,7 @@
       <br> 
 
 
-        <textarea rows="5" cols="50" style="border:inset 4px orange;" matInput [(ngModel)]="comment" placeholder="Additional Comments"> </textarea>
+        <textarea rows="5" cols="50" style="border:inset 4px grey;" matInput [(ngModel)]="comment" placeholder="Additional Comments"> </textarea>
 
     </mat-card-content>
   </mat-card>

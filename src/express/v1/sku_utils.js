@@ -1,4 +1,4 @@
-const database = require('./database.js');
+const database = require('../database.js');
 const formula_utils = require('./formula_utils.js');
 
 
@@ -110,11 +110,38 @@ function createSku(name, number, case_upc, unit_upc, unit_size, count, formulanu
 }
 
 function modifySku(oldName, name, number, case_upc, unit_upc, unit_size, count, formulanum, formulascalingfactor, manufacturingrate, comment) {
-
+    
     return new Promise(function (resolve, reject) {
         formula_utils.getFormulas("","$a",formulanum,null,1).then(response => {
             if (response.length == 0) {
-                reject(Error("Could not find formula " + formulanum + " for SKU " + name));
+                //reject(Error("Could not find formula " + formulanum + " for SKU " + name));
+                var formulaID = response[0]['_id'];
+                const filterschema = {
+                    skuname: oldName
+        
+                };
+                database.skuModel.updateOne(filterschema, {
+                    $set: {
+                        skuname: name,
+                        skunumber: number,
+                        caseupcnumber: case_upc,
+                        unitupcnumber: unit_upc,
+                        unitsize: unit_size,
+                        countpercase: count,
+                        formula: null,
+                        formulascalingfactor: formulascalingfactor,
+                        manufacturingrate: manufacturingrate,
+                        comment: comment
+                    }
+                }, (err, response) => {
+                    if (err) {
+                        reject(Error(err));
+                        return
+                    }
+                    resolve(response);
+                });
+
+                
             } else {
                 var formulaID = response[0]['_id'];
                 const filterschema = {

@@ -9,9 +9,7 @@
       <mat-list>
         <mat-list-item *ngFor="let activity of displayableActivities">
           SKU: {{activity.skuname}}: {{activity.hours}} Hours
-          <button mat-button (click)="deleteActivity(activity)">
-            <mat-icon>delete</mat-icon> 
-           </button></mat-list-item>
+        </mat-list-item>
         </mat-list>
 
       <div class="activities">
@@ -24,14 +22,14 @@
         </mat-autocomplete>
       </mat-form-field>
       <mat-form-field class="right">
-        <input matInput [(ngModel)]="quantity" placeholder="Quantity" required>
+        <input matInput [(ngModel)]="quantity" placeholder="Quantity">
       </mat-form-field>
     </div>
     <button class="mat-raised-button" (click)="addActivity()">Add Activity</button>
 
       <mat-form-field>
         <input matInput [matDatepicker]="picker" placeholder="Choose the goal's Deadline" [formControl] = "dateCtrl"
-        (dateInput)="addDate('input', $event)" (dateChange)="addDate('change', $event)">
+        (dateInput)="addDate('input', $event)" required (dateChange)="addDate('change', $event)">
         <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
         <mat-datepicker #picker></mat-datepicker>
       </mat-form-field>
@@ -39,6 +37,6 @@
   </mat-card>
 </mat-dialog-content>
 <mat-dialog-actions align="center">
-  <button class="mat-raised-button" (click)="closeDialog()">Cancel</button>
-  <button class="mat-raised-button" (click)="createGoal()" [disabled]="username==''" color="primary">Create</button>
+  <button mat-raised-button (click)="closeDialog()">Cancel</button>
+  <button mat-raised-button (click)="createGoal()" [disabled]="username=='' || name=='' || date=='Invalid Date'" color="primary">Create</button>
 </mat-dialog-actions>
