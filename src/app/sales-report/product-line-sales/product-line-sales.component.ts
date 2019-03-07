@@ -1,6 +1,5 @@
 import { Component, Input, forwardRef, OnInit } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { RestServiceV2, AndVsOr } from '../../restv2.service';
 
 const customValueProvider = {
   provide: NG_VALUE_ACCESSOR,
@@ -18,9 +17,8 @@ export class ProductLineSalesComponent implements OnInit, ControlValueAccessor {
 
   productLine: any;
   skus: any[] = [];
-  sales: any = {};
 
-  constructor(public restv2: RestServiceV2) { }
+  constructor() { }
 
   ngOnInit() {
 
@@ -29,15 +27,6 @@ export class ProductLineSalesComponent implements OnInit, ControlValueAccessor {
   async refreshData() {
     this.productLine = this._value;
     this.skus = this.productLine['skus'];
-    this.sales = {};
-    for (var i = 0; i < this.skus.length; i++) {
-      this.skus[i] = this.skus[i]['sku'];
-    }
-    for (let sku of this.skus) {
-      this.sales[sku['skuname']] = await this.restv2.getSales(AndVsOr.AND, sku['_id'], null, null, null, 10000);
-    }
-    console.log("This.skus: ",this.skus);
-    console.log("This.sales: ", this.sales);
   }
 
   _value = '';
@@ -53,7 +42,6 @@ export class ProductLineSalesComponent implements OnInit, ControlValueAccessor {
       this._value = value;
       this.stringified = JSON.stringify(value);
       this.keys = Object.keys(value);
-      console.log(this._value);
       this.refreshData();
     }
   }

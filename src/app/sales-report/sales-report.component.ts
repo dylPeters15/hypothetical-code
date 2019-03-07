@@ -11,6 +11,7 @@ export class SalesReportComponent implements OnInit {
   productLines: any[] = [];
   allProductLinesSelected: boolean = true;
   selectedProductLines: any[] = [];
+  allReplacement = 54321;
 
   customers: any[] = [];
   allCustomersSelected: boolean = true;

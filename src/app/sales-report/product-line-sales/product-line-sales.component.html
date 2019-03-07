@@ -1,5 +1,7 @@
 <div *ngFor="let sku of skus;">
-  <p>
-      {{sku['skuname']}}
-  </p>
+  <br>
+  <app-sku-sales [(ngModel)]="sku['sku']">
+  </app-sku-sales>
+  <br>
+  <br>
 </div>
