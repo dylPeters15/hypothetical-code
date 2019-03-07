@@ -36,13 +36,17 @@ export class SalesReportComponent implements OnInit {
   }
 
   refreshSelected(): void {
+    this.selectedCustomers = this.customers.filter((value, index, array) => {
+      return value['checked'];
+    });
+
     this.selectedProductLines = this.productLines.filter((value, index, array) => {
       return value['checked'];
     });
 
-    this.selectedCustomers = this.customers.filter((value, index, array) => {
-      return value['checked'];
-    });
+    for (let productLine of this.selectedProductLines) {
+      productLine['selectedCustomers'] = this.selectedCustomers;
+    }
   }
 
   productLineSelectionsChanged(): void {

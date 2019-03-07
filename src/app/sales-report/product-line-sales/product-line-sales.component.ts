@@ -30,8 +30,10 @@ export class ProductLineSalesComponent implements OnInit, ControlValueAccessor {
     this.productLine = this._value;
     this.skus = this.productLine['skus'];
     this.sales = {};
+    for (var i = 0; i < this.skus.length; i++) {
+      this.skus[i] = this.skus[i]['sku'];
+    }
     for (let sku of this.skus) {
-      sku = sku['sku'];
       this.sales[sku['skuname']] = await this.restv2.getSales(AndVsOr.AND, sku['_id'], null, null, null, 10000);
     }
     console.log("This.skus: ",this.skus);

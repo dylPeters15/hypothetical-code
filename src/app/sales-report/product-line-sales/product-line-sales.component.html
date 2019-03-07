@@ -1,3 +1,5 @@
-<p>
-  product-line-sales works! {{stringified}}
-</p>
+<div *ngFor="let sku of skus;">
+  <p>
+      {{[sku['skuname']}}
+  </p>
+</div>
