@@ -1,23 +1,38 @@
-<div style="float: left">
-    <mat-checkbox (change)="selectDeselectAllProductLines()" [(ngModel)]="allProductLinesSelected">Select/Deselect All</mat-checkbox>
-    <div *ngFor="let productLine of productLines">
-      <mat-checkbox (change)="productLineSelectionsChanged()" [(ngModel)]="productLine['checked']">{{productLine['productlinename']}}</mat-checkbox>
-    </div>
-    
-    <br>
-    <br>
-    <br>
-    
-    <mat-checkbox (change)="selectDeselectAllCustomers()" [(ngModel)]="allCustomersSelected">Select/Deselect All</mat-checkbox>
-    <div *ngFor="let customer of customers">
-      <mat-checkbox (change)="customerSelectionsChanged()" [(ngModel)]="customer['checked']">{{customer['customername']}}</mat-checkbox>
-    </div>
-  </div>
+<div>
+  <mat-card>
+    <mat-card-header style="align-content: center; align-items: center; justify-content: center; display: grid;">
+      <mat-card-title>Product Lines</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+
+      <div style="float: left">
+        <mat-checkbox (change)="selectDeselectAllProductLines()" [(ngModel)]="allProductLinesSelected">Select/Deselect
+          All</mat-checkbox>
+        <div *ngFor="let productLine of productLines">
+          <mat-checkbox (change)="productLineSelectionsChanged()" [(ngModel)]="productLine['checked']">
+            {{productLine['productlinename']}}</mat-checkbox>
+        </div>
+
+        <br>
+        <br>
+        <br>
+
+        <mat-checkbox (change)="selectDeselectAllCustomers()" [(ngModel)]="allCustomersSelected">Select/Deselect All
+        </mat-checkbox>
+        <div *ngFor="let customer of customers">
+          <mat-checkbox (change)="customerSelectionsChanged()" [(ngModel)]="customer['checked']">
+            {{customer['customername']}}</mat-checkbox>
+        </div>
+      </div>
 
 
-<mat-tab-group>
-  <mat-tab *ngFor="let productLine of selectedProductLines" label={{productLine.productlinename}}>
-    {{productLine['productlinename']}}
-    <app-product-line-sales [(ngModel)]="productLine"></app-product-line-sales>
-  </mat-tab>
-</mat-tab-group>
+      <mat-tab-group>
+        <mat-tab *ngFor="let productLine of selectedProductLines" label={{productLine.productlinename}}>
+          {{productLine['productlinename']}}
+          <app-product-line-sales [(ngModel)]="productLine"></app-product-line-sales>
+        </mat-tab>
+      </mat-tab-group>
+
+    </mat-card-content>
+  </mat-card>
+</div>
