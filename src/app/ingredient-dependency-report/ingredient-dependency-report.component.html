@@ -6,7 +6,7 @@
       <mat-card-content>
         <button mat-raised-button (click)="selectAll()"> Select All </button>
         <button mat-raised-button (click)="deselectAll()"> Deselect All </button>
-        <button mat-raised-button (click)="exportSelected()"> Export Selected To CSV </button>
+        <button mat-raised-button (click)="exportSelected()" [disabled]="noneSelected()"> Export Selected To CSV </button>
         <mat-form-field>
           <input matInput placeholder="Filter" [(ngModel)]="filterQuery" (ngModelChange)="refreshData($event)">
         </mat-form-field>
