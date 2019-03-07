@@ -27,6 +27,9 @@ export class ProductLineSalesComponent implements OnInit, ControlValueAccessor {
   async refreshData() {
     this.productLine = this._value;
     this.skus = this.productLine['skus'];
+    for (let sku of this.skus) {
+      sku['sku']['selectedCustomers'] = this._value['selectedCustomers'];
+    }
   }
 
   _value = '';

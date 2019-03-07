@@ -2,6 +2,7 @@ import { Component, Input, forwardRef, OnInit, ViewChild } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { RestServiceV2, AndVsOr } from '../../restv2.service';
 import { MatTableDataSource, MatPaginator } from '@angular/material';
+import { SalesReportCalcService } from '../sales-report-calc.service';
 
 const customValueProvider = {
   provide: NG_VALUE_ACCESSOR,
@@ -23,14 +24,26 @@ export class SkuSalesComponent implements OnInit, ControlValueAccessor {
   displayedColumns: string[] = ['date'];
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
-  constructor(public restv2: RestServiceV2) { }
+  constructor(public restv2: RestServiceV2, public calc: SalesReportCalcService) { }
 
   ngOnInit() {
 
   }
 
   async refreshData() {
+    console.log("Refresh data: ", this._value);
     this.sales = await this.restv2.getSales(AndVsOr.AND, this._value['_id'], null, null, null, this.allReplacement);
+    console.log("sales: ",this.sales);
+    console.log("Selected customers: ", this._value['selectedCustomers']);
+    this.sales = this.sales.filter((value, index, array) => {
+      for (let customer of this._value['selectedCustomers']) {
+        if (customer['customername'] == value['customer']['customername']) {
+          return true;
+        }
+      }
+      return false;
+    });
+    this.sales = await this.calc.summarizeSales(this.sales);
     this.salesTableData = new MatTableDataSource(this.sales);
     this.salesTableData.paginator = this.paginator;
   }
