@@ -33,7 +33,6 @@ export class SalesReportComponent implements OnInit {
       customer['checked'] = true;
     }
     this.refreshSelected();
-    console.log(this.productLines);
   }
 
   refreshSelected(): void {
