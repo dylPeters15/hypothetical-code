@@ -1,3 +1,7 @@
-<p>
-  product-line-sales works! {{stringified}}
-</p>
+<div *ngFor="let sku of skus;">
+  <br>
+  <app-sku-sales [ngModel]="{sku:sku['sku'],selectedCustomers:selectedCustomers}">
+  </app-sku-sales>
+  <br>
+  <br>
+</div>

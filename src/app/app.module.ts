@@ -74,7 +74,8 @@ import { NewSkuFormulaComponent } from './new-sku-formula/new-sku-formula.compon
 import {MatDialogModule} from '@angular/material/dialog';
 import { SalesReportComponent } from './sales-report/sales-report.component';
 import {MatTabsModule} from '@angular/material/tabs';
-import { ProductLineSalesComponent } from './sales-report/product-line-sales/product-line-sales.component'; 
+import { ProductLineSalesComponent } from './sales-report/product-line-sales/product-line-sales.component';
+import { SkuSalesComponent } from './sales-report/sku-sales/sku-sales.component'; 
 
 const appRoutes: Routes = [
   { path: 'login', component: LoginComponent, data: { title: 'Log In' }, canActivate: [AlreadyLoggedInRouteGuardService] },
@@ -152,7 +153,8 @@ const appRoutes: Routes = [
     ConfirmDeletionDialogComponent,
     VisComponent,
     SalesReportComponent,
-    ProductLineSalesComponent
+    ProductLineSalesComponent,
+    SkuSalesComponent
   ],
   imports: [
     BrowserModule,

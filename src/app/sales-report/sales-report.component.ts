@@ -11,6 +11,7 @@ export class SalesReportComponent implements OnInit {
   productLines: any[] = [];
   allProductLinesSelected: boolean = true;
   selectedProductLines: any[] = [];
+  allReplacement = 54321;
 
   customers: any[] = [];
   allCustomersSelected: boolean = true;
@@ -32,17 +33,20 @@ export class SalesReportComponent implements OnInit {
       customer['checked'] = true;
     }
     this.refreshSelected();
-    console.log(this.productLines);
   }
 
   refreshSelected(): void {
+    this.selectedCustomers = this.customers.filter((value, index, array) => {
+      return value['checked'];
+    });
+
     this.selectedProductLines = this.productLines.filter((value, index, array) => {
       return value['checked'];
     });
 
-    this.selectedCustomers = this.customers.filter((value, index, array) => {
-      return value['checked'];
-    });
+    for (let productLine of this.selectedProductLines) {
+      productLine['selectedCustomers'] = this.selectedCustomers;
+    }
   }
 
   productLineSelectionsChanged(): void {
