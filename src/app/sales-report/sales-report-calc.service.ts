@@ -33,7 +33,22 @@ export class SalesReportCalcService {
     return summarized;
   }
 
-  summarizeYear(year: string, allSalesInYear: any[], sku: any) {
+  summarizeTotal(allSales: any[]): any[] {
+    var summary = {};
+
+    var revenueSum = 0;
+    var caseSum = 0;
+    for (var sale of allSales) {
+      revenueSum += sale['numcases'] * sale['pricepercase'];
+      caseSum += sale['numcases'];
+    }
+    summary['revenuesum'] = revenueSum;
+    summary['averagerevenuepercase'] = revenueSum/caseSum;
+
+    return [summary];
+  }
+
+  private summarizeYear(year: string, allSalesInYear: any[], sku: any) {
     var summary = {};
     summary['year'] = year;
     summary['sku'] = sku;

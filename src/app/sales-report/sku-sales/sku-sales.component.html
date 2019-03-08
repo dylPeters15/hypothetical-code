@@ -32,3 +32,78 @@
   <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
   <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
 </mat-table>
+
+
+<mat-table [dataSource]="summaryTableData" class="mat-elevation-z8">
+
+    <ng-container matColumnDef="revenuesum">
+      <mat-header-cell *matHeaderCellDef>Revenue Sum</mat-header-cell>
+      <mat-cell *matCellDef="let summary">
+        ${{summary['revenuesum'].toFixed(2)}}
+      </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="averagemanufacturingrunsize">
+      <mat-header-cell *matHeaderCellDef>Average Manufacturing Run Size</mat-header-cell>
+      <mat-cell *matCellDef="let summary">
+        <!-- {{summary['averagemanufacturingrunsize'].toFixed(2)}} -->
+      </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="ingredientcostpercase">
+      <mat-header-cell *matHeaderCellDef>Ingredient Cost Per Case</mat-header-cell>
+      <mat-cell *matCellDef="let summary">
+        <!-- ${{summary['ingredientcostpercase'].toFixed(2)}} -->
+      </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="averagemanufacturingsetupcostpercase">
+      <mat-header-cell *matHeaderCellDef>Average Manufacturing Setup Cost Per Case</mat-header-cell>
+      <mat-cell *matCellDef="let summary">
+        <!-- ${{summary['averagemanufacturingsetupcostpercase'].toFixed(2)}} -->
+      </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="manufacturingruncostpercase">
+      <mat-header-cell *matHeaderCellDef>Manufacturing Run Cost Per Case</mat-header-cell>
+      <mat-cell *matCellDef="let summary">
+        <!-- ${{summary['manufacturingruncostpercase'].toFixed(2)}} -->
+      </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="totalcogspercase">
+      <mat-header-cell *matHeaderCellDef>Total COGS Per Case</mat-header-cell>
+      <mat-cell *matCellDef="let summary">
+        <!-- {{summary['totalcogspercase']}} -->
+      </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="averagerevenuepercase">
+      <mat-header-cell *matHeaderCellDef>Average Revenue Per Case</mat-header-cell>
+      <mat-cell *matCellDef="let summary">
+        ${{summary['averagerevenuepercase'].toFixed(2)}}
+      </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="averageprofitpercase">
+      <mat-header-cell *matHeaderCellDef>Average Profit Per Case</mat-header-cell>
+      <mat-cell *matCellDef="let summary">
+        <!-- ${{summary['averageprofitpercase'].toFixed(2)}} -->
+      </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="profitmargin">
+      <mat-header-cell *matHeaderCellDef>Profit Margin (%)</mat-header-cell>
+      <mat-cell *matCellDef="let summary">
+        <!-- {{summary['profitmargin'].toFixed(2)}} -->
+      </mat-cell>
+    </ng-container>
+
+
+  <mat-header-row
+    *matHeaderRowDef="['revenuesum', 'averagemanufacturingrunsize', 'ingredientcostpercase', 'averagemanufacturingsetupcostpercase', 'manufacturingruncostpercase', 'totalcogspercase', 'averagerevenuepercase', 'averageprofitpercase', 'profitmargin']">
+  </mat-header-row>
+  <mat-row
+    *matRowDef="let row; columns: ['revenuesum', 'averagemanufacturingrunsize', 'ingredientcostpercase', 'averagemanufacturingsetupcostpercase', 'manufacturingruncostpercase', 'totalcogspercase', 'averagerevenuepercase', 'averageprofitpercase', 'profitmargin'];">
+  </mat-row>
+</mat-table>

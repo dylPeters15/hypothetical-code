@@ -22,6 +22,7 @@ export class SkuSalesComponent implements OnInit, ControlValueAccessor {
   selectedCustomers: any[] = [];
   sales: any[] = [];
   salesTableData: any = new MatTableDataSource(this.sales);
+  summaryTableData: any = new MatTableDataSource([]);
   displayedColumns: string[] = ['year', 'sku', 'totalrevenue', 'averagerevenuepercase'];
 
   constructor(public restv2: RestServiceV2, public calc: SalesReportCalcService) { }
@@ -42,9 +43,11 @@ export class SkuSalesComponent implements OnInit, ControlValueAccessor {
       }
       return false;
     });
+    var allSales = this.sales;
     this.sales = this.calc.summarizeSales(this.sales, this.sku);
     console.log("summarized: ",this.sales);
     this.salesTableData = new MatTableDataSource(this.sales);
+    this.summaryTableData = new MatTableDataSource(this.calc.summarizeTotal(allSales));
   }
 
   _value = '';
