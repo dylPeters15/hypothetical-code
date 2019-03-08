@@ -35,10 +35,7 @@ export class SkuSalesComponent implements OnInit, ControlValueAccessor {
   async refreshData() {
     this.sku = this._value['sku'];
     this.selectedCustomers = this._value['selectedCustomers'];
-    console.log("Refresh data: ", this._value);
     this.sales = await this.restv2.getSales(AndVsOr.AND, this.sku['_id'], null, null, null, this.allReplacement);
-    console.log("sales: ",this.sales);
-    console.log("Selected customers: ", this._value['selectedCustomers']);
     this.sales = this.sales.filter((value, index, array) => {
       for (let customer of this.selectedCustomers) {
         if (customer['customername'] == value['customer']['customername']) {
