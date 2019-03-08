@@ -27,11 +27,11 @@ async function initializeCustomers() {
 }
 
 async function initializeSalesForCustomer(customerName) {
+    var skus = await sku_utils.getSkus({},10000);
     for (var i = 0; i < 100; i++) {
         var date = new Date();
         date.setFullYear(date.getFullYear()-Math.random()*20, Math.random()*12, Math.random()*28);
-        console.log("Date: ",date);
-        var skuid = (await sku_utils.getSkus({}, 1))[0]['_id'];
+        var skuid = skus[parseInt(Math.random()*skus.length)]['_id'];
         var customerid = (await customer_utils.getCustomers({
             customername: customerName
         }, 1))[0]['_id'];

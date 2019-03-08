@@ -16,15 +16,16 @@ export class SalesReportCalcService {
     for (let sale of allSales) {
       var dateOfSale: Date = new Date(sale['date']);
       var yearOfSale = dateOfSale.getFullYear();
-      console.log("Date of Sale: ", dateOfSale);
+      // console.log("Date of Sale: ", dateOfSale);
       if (!salesByYear[yearOfSale]){
         salesByYear[yearOfSale] = [];
       }
       salesByYear[yearOfSale].push(sale);
     }
     console.log("Sales by year: ", salesByYear);
-    var summarized = [];
+    return allSales;
+    // var summarized = [];
 
-    return summarized;
+    // return summarized;
   }
 }
