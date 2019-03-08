@@ -178,6 +178,8 @@ var skuSchema = new mongoose.Schema({
   }
 });
 skuSchema.plugin(uniqueValidator);
+skuSchema.plugin(deepPopulate);
+
 var skuModel = mongoose.model('sku', skuSchema);
 
 /**
@@ -199,6 +201,7 @@ var productLineSchema = new mongoose.Schema({
 
 });
 productLineSchema.plugin(uniqueValidator);
+productLineSchema.plugin(deepPopulate);
 
 var productLineModel = mongoose.model('productline', productLineSchema);
 
