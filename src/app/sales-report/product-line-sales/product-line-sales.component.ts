@@ -17,6 +17,7 @@ export class ProductLineSalesComponent implements OnInit, ControlValueAccessor {
 
   productLine: any;
   skus: any[] = [];
+  selectedCustomers: any[] = [];
 
   constructor() { }
 
@@ -25,11 +26,9 @@ export class ProductLineSalesComponent implements OnInit, ControlValueAccessor {
   }
 
   async refreshData() {
-    this.productLine = this._value;
+    this.productLine = this._value['productLine'];
     this.skus = this.productLine['skus'];
-    for (let sku of this.skus) {
-      sku['sku']['selectedCustomers'] = this._value['selectedCustomers'];
-    }
+    this.selectedCustomers = this._value['selectedCustomers'];
   }
 
   _value = '';
