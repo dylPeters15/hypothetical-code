@@ -23,7 +23,7 @@ export class SkuSalesComponent implements OnInit, ControlValueAccessor {
   sales: any[] = [];
   salesTableData: any = new MatTableDataSource(this.sales);
   allReplacement = 54321;
-  displayedColumns: string[] = ['date'];
+  displayedColumns: string[] = ['year', 'sku', 'totalrevenue', 'averagerevenuepercase'];
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
   constructor(public restv2: RestServiceV2, public calc: SalesReportCalcService) { }
@@ -44,7 +44,8 @@ export class SkuSalesComponent implements OnInit, ControlValueAccessor {
       }
       return false;
     });
-    this.sales = await this.calc.summarizeSales(this.sales);
+    this.sales = this.calc.summarizeSales(this.sales, this.sku);
+    console.log("summarized: ",this.sales);
     this.salesTableData = new MatTableDataSource(this.sales);
     this.salesTableData.paginator = this.paginator;
   }

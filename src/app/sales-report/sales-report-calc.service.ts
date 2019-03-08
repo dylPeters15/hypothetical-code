@@ -7,7 +7,7 @@ export class SalesReportCalcService {
 
   constructor() { }
 
-  async summarizeSales(allSales: any[]): Promise<any> {
+  summarizeSales(allSales: any[], sku: any): any[] {
     var currentDate: Date = new Date();
     var currentYear: Number = currentDate.getFullYear();
     console.log(currentYear);
@@ -23,9 +23,25 @@ export class SalesReportCalcService {
       salesByYear[yearOfSale].push(sale);
     }
     console.log("Sales by year: ", salesByYear);
-    return allSales;
-    // var summarized = [];
+    var summarized = [];
+    for (let year of Object.keys(salesByYear)) {
+      summarized.push(this.summarizeYear(year, salesByYear[year], sku));
+    }
+    return summarized;
+  }
 
-    // return summarized;
+  summarizeYear(year: string, allSalesInYear: any[], sku: any) {
+    var summary = {};
+    summary['year'] = year;
+    summary['sku'] = sku;
+    var totalRevenue = 0;
+    var totalNumCases = 0;
+    for (let sale of allSalesInYear) {
+      totalRevenue += sale['numcases'] * sale['pricepercase'];
+      totalNumCases += sale['numcases'];
+    }
+    summary['totalrevenue'] = totalRevenue;
+    summary['averagerevenuepercase'] = totalRevenue/totalNumCases;
+    return summary;
   }
 }
