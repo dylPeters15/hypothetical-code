@@ -51,7 +51,7 @@ export class SkuSalesComponent implements OnInit, ControlValueAccessor {
   }
 
   getPageSizeOptions() {
-    return [5, 20, 50, 100, this.allReplacement];
+    return [11, 20, 50, 100, this.allReplacement];
   }
 
   _value = '';

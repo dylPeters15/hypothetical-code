@@ -27,6 +27,9 @@ export class SalesReportCalcService {
     for (let year of Object.keys(salesByYear)) {
       summarized.push(this.summarizeYear(year, salesByYear[year], sku));
     }
+    summarized = summarized.filter((value,index,array) => {
+      return Number(value['year']) >= currentYear - 10;
+    });
     return summarized;
   }
 
@@ -41,7 +44,7 @@ export class SalesReportCalcService {
       totalNumCases += sale['numcases'];
     }
     summary['totalrevenue'] = totalRevenue;
-    summary['averagerevenuepercase'] = totalRevenue/totalNumCases;
+    summary['averagerevenuepercase'] = (totalRevenue/totalNumCases);
     return summary;
   }
 }

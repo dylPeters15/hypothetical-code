@@ -18,14 +18,14 @@
   <ng-container matColumnDef="totalrevenue">
     <mat-header-cell *matHeaderCellDef>Total Revenue</mat-header-cell>
     <mat-cell *matCellDef="let sale">
-      {{sale['totalrevenue']}}
+      ${{sale['totalrevenue'].toFixed(2)}}
     </mat-cell>
   </ng-container>
 
   <ng-container matColumnDef="averagerevenuepercase">
     <mat-header-cell *matHeaderCellDef>Average Revenue Per Case</mat-header-cell>
     <mat-cell *matCellDef="let sale">
-      {{sale['averagerevenuepercase']}}
+      ${{sale['averagerevenuepercase'].toFixed(2)}}
     </mat-cell>
   </ng-container>
 
