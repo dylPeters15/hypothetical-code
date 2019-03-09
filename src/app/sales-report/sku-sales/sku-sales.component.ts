@@ -22,9 +22,8 @@ export class SkuSalesComponent implements OnInit, ControlValueAccessor {
   selectedCustomers: any[] = [];
   sales: any[] = [];
   salesTableData: any = new MatTableDataSource(this.sales);
-  allReplacement = 54321;
-  displayedColumns: string[] = ['date'];
-  @ViewChild(MatPaginator) paginator: MatPaginator;
+  summaryTableData: any = new MatTableDataSource([]);
+  displayedColumns: string[] = ['year', 'sku', 'totalrevenue', 'averagerevenuepercase'];
 
   constructor(public restv2: RestServiceV2, public calc: SalesReportCalcService) { }
 
@@ -35,7 +34,7 @@ export class SkuSalesComponent implements OnInit, ControlValueAccessor {
   async refreshData() {
     this.sku = this._value['sku'];
     this.selectedCustomers = this._value['selectedCustomers'];
-    this.sales = await this.restv2.getSales(AndVsOr.AND, this.sku['_id'], null, null, null, this.allReplacement);
+    this.sales = await this.restv2.getSales(AndVsOr.AND, this.sku['_id'], null, null, null, 54321);
     this.sales = this.sales.filter((value, index, array) => {
       for (let customer of this.selectedCustomers) {
         if (customer['customername'] == value['customer']['customername']) {
@@ -44,13 +43,11 @@ export class SkuSalesComponent implements OnInit, ControlValueAccessor {
       }
       return false;
     });
-    this.sales = await this.calc.summarizeSales(this.sales);
+    var allSales = this.sales;
+    this.sales = this.calc.summarizeSales(this.sales, this.sku);
     this.salesTableData = new MatTableDataSource(this.sales);
-    this.salesTableData.paginator = this.paginator;
-  }
-
-  getPageSizeOptions() {
-    return [5, 20, 50, 100, this.allReplacement];
+    var summary = await this.calc.summarizeTotal(allSales, this.sku);
+    this.summaryTableData = new MatTableDataSource(summary);
   }
 
   _value = '';

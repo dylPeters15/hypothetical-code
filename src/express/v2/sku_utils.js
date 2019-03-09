@@ -1,5 +1,7 @@
+const mongoose = require('mongoose');
 const database = require('../database.js');
 const formula_utils = require('./formula_utils.js');
+var deepPopulate = require('mongoose-deep-populate')(mongoose);
 
 
 function getSkus(filterSchema, limit) {
