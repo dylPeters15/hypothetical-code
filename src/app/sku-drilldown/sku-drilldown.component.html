@@ -6,6 +6,20 @@
     <mat-card-content style="display: flex;">
 
       <div>
+        <mat-form-field>
+          <input matInput [matDatepicker]="startpicker" placeholder="Choose a start date"
+            [(ngModel)]="startDate" (dateChange)="selectionChange()">
+          <mat-datepicker-toggle matSuffix [for]="startpicker"></mat-datepicker-toggle>
+          <mat-datepicker #startpicker></mat-datepicker>
+        </mat-form-field>
+        <br>
+        <mat-form-field>
+          <input matInput [matDatepicker]="endpicker" placeholder="Choose an end date" [(ngModel)]="endDate"
+            (dateChange)="selectionChange()">
+          <mat-datepicker-toggle matSuffix [for]="endpicker"></mat-datepicker-toggle>
+          <mat-datepicker #endpicker></mat-datepicker>
+        </mat-form-field>
+        <br>
         <mat-checkbox (change)="selectDeselectAllCustomers()" [(ngModel)]="allCustomersSelected">Select/Deselect All
         </mat-checkbox>
         <div *ngFor="let customer of customers">

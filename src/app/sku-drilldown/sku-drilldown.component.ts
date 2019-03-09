@@ -10,6 +10,10 @@ import { RestServiceV2, AndVsOr } from '../restv2.service';
 export class SkuDrilldownComponent implements OnInit {
 
   sku: any = {};
+  prevStartDate = new Date();
+  startDate = new Date();
+  prevEndDate = new Date(new Date().setUTCFullYear(new Date().getUTCFullYear()+1));
+  endDate = new Date(new Date().setUTCFullYear(new Date().getUTCFullYear()+1));
 
   customers: any[] = [];
   allCustomersSelected: boolean = true;
@@ -62,6 +66,22 @@ export class SkuDrilldownComponent implements OnInit {
       customer['checked'] = this.allCustomersSelected;
     }
     this.refreshSelected();
+  }
+
+  selectionChange() {
+    if (this.startDate < this.endDate) {
+      console.log("valid");
+      this.prevStartDate = this.startDate;
+      this.prevEndDate = this.endDate;
+    } else {
+      console.log("invalid");
+      this.startDate = this.prevStartDate;
+      this.endDate = this.prevEndDate;
+    }
+    console.log("prevStartDate", this.prevStartDate);
+    console.log("startDate", this.startDate);
+    console.log("prevEndDate", this.prevEndDate);
+    console.log("endDate", this.endDate);
   }
 
 }
