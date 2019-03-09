@@ -18,6 +18,7 @@ export class SkuDrilldownComponent implements OnInit {
   customers: any[] = [];
   allCustomersSelected: boolean = true;
   selectedCustomers: any[] = [];
+  sales: any[] = [];
 
   constructor(public restv2: RestServiceV2, private dialogRef: MatDialogRef<SkuDrilldownComponent>, @Inject(MAT_DIALOG_DATA) public initData: any) { }
 
@@ -43,6 +44,17 @@ export class SkuDrilldownComponent implements OnInit {
     }
     this.refreshSelected();
   }
+  async refreshData(): Promise<void> {
+    this.sales = await this.restv2.getSales(AndVsOr.AND, this.sku['_id'], null, null, null, 54321);
+    this.sales = this.sales.filter((value, index, array) => {
+      for (let customer of this.selectedCustomers) {
+        if (customer['customername'] == value['customer']['customername']) {
+          return true;
+        }
+      }
+      return false;
+    });
+  }
 
   refreshSelected(): void {
     var areAllSelected = true;
@@ -55,6 +67,7 @@ export class SkuDrilldownComponent implements OnInit {
     this.selectedCustomers = this.customers.filter((value, index, array) => {
       return value['checked'];
     });
+    this.refreshData();
   }
 
   customerSelectionsChanged(): void {
@@ -82,6 +95,7 @@ export class SkuDrilldownComponent implements OnInit {
     console.log("startDate", this.startDate);
     console.log("prevEndDate", this.prevEndDate);
     console.log("endDate", this.endDate);
+    this.refreshData();
   }
 
 }
