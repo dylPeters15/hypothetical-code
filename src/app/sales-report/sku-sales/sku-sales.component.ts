@@ -50,6 +50,10 @@ export class SkuSalesComponent implements OnInit, ControlValueAccessor {
     this.summaryTableData = new MatTableDataSource(summary);
   }
 
+  displayDrilldown(): void {
+    console.log("Display Drilldown");
+  }
+
   _value = '';
   stringified = '';
   keys = [];
