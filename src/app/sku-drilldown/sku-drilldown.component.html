@@ -7,8 +7,8 @@
 
       <div>
         <mat-form-field>
-          <input matInput [matDatepicker]="startpicker" placeholder="Choose a start date"
-            [(ngModel)]="startDate" (dateChange)="refreshData()">
+          <input matInput [matDatepicker]="startpicker" placeholder="Choose a start date" [(ngModel)]="startDate"
+            (dateChange)="refreshData()">
           <mat-datepicker-toggle matSuffix [for]="startpicker"></mat-datepicker-toggle>
           <mat-datepicker #startpicker></mat-datepicker>
         </mat-form-field>
@@ -21,19 +21,20 @@
         </mat-form-field>
         <br>
         <mat-radio-group [(ngModel)]="selectedCustomerId" (ngModelChange)="refreshData();">
-            <mat-radio-button value="all">
-              Select All
+          <mat-radio-button value="all">
+            Select All
+          </mat-radio-button>
+          <div *ngFor="let customer of customers">
+            <mat-radio-button value={{customer._id}}>
+              {{customer['customername']}}
             </mat-radio-button>
-            <div *ngFor="let customer of customers">
-                <mat-radio-button value={{customer._id}}>
-                  {{customer['customername']}}
-                </mat-radio-button>
-            </div>
-          </mat-radio-group>
+          </div>
+        </mat-radio-group>
       </div>
 
       <div>
-      <mat-table [dataSource]="salesTableData" style="width: 100%;">
+        <app-sales-summary-row [ngModel]="{sku:sku,allSales:allSales}"></app-sales-summary-row>
+        <mat-table [dataSource]="salesTableData" style="width: 100%;">
 
           <ng-container matColumnDef="year">
             <mat-header-cell *matHeaderCellDef>Year</mat-header-cell>
@@ -83,11 +84,16 @@
               {{summary['revenue']}}
             </mat-cell>
           </ng-container>
-        
-          <mat-header-row *matHeaderRowDef="['year', 'weeknumber', 'customernumber', 'customername', 'numsales', 'pricepercase', 'revenue']"></mat-header-row>
-          <mat-row *matRowDef="let row; columns: ['year', 'weeknumber', 'customernumber', 'customername', 'numsales', 'pricepercase', 'revenue'];"></mat-row>
+
+          <mat-header-row
+            *matHeaderRowDef="['year', 'weeknumber', 'customernumber', 'customername', 'numsales', 'pricepercase', 'revenue']">
+          </mat-header-row>
+          <mat-row
+            *matRowDef="let row; columns: ['year', 'weeknumber', 'customernumber', 'customername', 'numsales', 'pricepercase', 'revenue'];">
+          </mat-row>
         </mat-table>
-        <mat-paginator id="elementsTablePaginator" [pageSizeOptions]="getPageSizeOptions()" showFirstLastButtons></mat-paginator>
+        <mat-paginator id="elementsTablePaginator" [pageSizeOptions]="getPageSizeOptions()" showFirstLastButtons>
+        </mat-paginator>
       </div>
     </mat-card-content>
   </mat-card>

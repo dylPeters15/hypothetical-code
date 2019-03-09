@@ -11,6 +11,7 @@ import { SkuDrilldownCalcService } from './sku-drilldown-calc.service';
 export class SkuDrilldownComponent implements OnInit {
 
   sku: any = {};
+  allSales: any[] = [];
   prevStartDate = new Date();
   startDate = new Date();
   prevEndDate = new Date(new Date().setUTCFullYear(new Date().getUTCFullYear()+1));
@@ -49,8 +50,8 @@ export class SkuDrilldownComponent implements OnInit {
     console.log("startDate", this.startDate);
     console.log("prevEndDate", this.prevEndDate);
     console.log("endDate", this.endDate);
-    var sales = await this.restv2.getSales(AndVsOr.AND, this.sku['_id'], this.selectedCustomerId=="all"?null:this.selectedCustomerId, this.startDate, this.endDate, 54321);
-    this.salesTableData = new MatTableDataSource(this.calc.formatSalesForTable(sales));
+    this.allSales = await this.restv2.getSales(AndVsOr.AND, this.sku['_id'], this.selectedCustomerId=="all"?null:this.selectedCustomerId, this.startDate, this.endDate, 54321);
+    this.salesTableData = new MatTableDataSource(this.calc.formatSalesForTable(this.allSales));
     this.salesTableData.paginator = this.paginator;
   }
   
