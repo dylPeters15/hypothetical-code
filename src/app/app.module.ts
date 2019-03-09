@@ -76,8 +76,8 @@ import { SalesReportComponent } from './sales-report/sales-report.component';
 import {MatTabsModule} from '@angular/material/tabs';
 import { ProductLineSalesComponent } from './sales-report/product-line-sales/product-line-sales.component';
 import { SkuSalesComponent } from './sales-report/sku-sales/sku-sales.component';
-import { SkuDrilldownComponent } from './sku-drilldown/sku-drilldown.component';
-import { SalesSummaryRowComponent } from './sales-summary-row/sales-summary-row.component';
+import { SkuDrilldownComponent } from './sales-report/sku-drilldown/sku-drilldown.component';
+import { SalesSummaryRowComponent } from './sales-report/sales-summary-row/sales-summary-row.component';
 
 const appRoutes: Routes = [
   { path: 'login', component: LoginComponent, data: { title: 'Log In' }, canActivate: [AlreadyLoggedInRouteGuardService] },

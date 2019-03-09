@@ -1,6 +1,6 @@
 import { Component, OnInit, Inject, ViewChild } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA, MatTableDataSource, MatPaginator } from "@angular/material";
-import { RestServiceV2, AndVsOr } from '../restv2.service';
+import { RestServiceV2, AndVsOr } from '../../restv2.service';
 import { SkuDrilldownCalcService } from './sku-drilldown-calc.service';
 
 @Component({

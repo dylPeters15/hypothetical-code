@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { RestServiceV2, AndVsOr } from '../restv2.service';
+import { RestServiceV2, AndVsOr } from '../../restv2.service';
 
 @Injectable({
   providedIn: 'root'
