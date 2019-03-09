@@ -31,50 +31,6 @@ export class SalesReportCalcService {
     return summarized;
   }
 
-  async summarizeTotal(allSales: any[], sku: any): Promise<any[]> {
-    var summary = {};
-
-    var revenueSum = 0;
-    var caseSum = 0;
-    for (var sale of allSales) {
-      revenueSum += sale['numcases'] * sale['pricepercase'];
-      caseSum += sale['numcases'];
-    }
-    summary['revenuesum'] = revenueSum;
-    summary['averagerevenuepercase'] = revenueSum/caseSum;
-
-    summary['averagemanufacturingrunsize'] = await this.avgManufacturingRunSize(sku);
-    summary['ingredientcostpercase'] = this.ingredientCostPerCase(sku);
-    summary['averagemanufacturingsetupcostpercase'] = sku['manufacturingsetupcost']/summary['averagemanufacturingrunsize'];
-    summary['manufacturingruncostpercase'] = sku['manufacturingruncost']/summary['averagemanufacturingrunsize'];
-    summary['totalcogspercase'] = summary['ingredientcostpercase'] + summary['averagemanufacturingsetupcostpercase'] + summary['manufacturingruncostpercase'];
-    summary['averageprofitpercase'] = summary['averagerevenuepercase'] - summary['totalcogspercase'];
-    summary['profitmargin'] = summary['averagerevenuepercase']/summary['totalcogspercase'] - 1;
-    
-    return [summary];
-  }
-
-  ingredientCostPerCase(sku: any): Number {
-    var totalCost = 0;
-    for (let ingredientandquantity of sku['formula']['ingredientsandquantities']) {
-      totalCost += ingredientandquantity['ingredient']['costperpackage'] * ingredientandquantity['quantity'];
-    }
-    return totalCost;
-  }
-
-  private async avgManufacturingRunSize(sku: any): Promise<Number> {
-    var startDate: Date = new Date(new Date().getFullYear()-10,0,0,0,0,0,0);
-    var activities = await this.restv2.getActivities(AndVsOr.AND, {$gte:startDate}, {$ne:null}, sku['_id'], 10000);
-    if (activities.length == 0) {
-      return sku['manufacturingrate']*10; //assume 1 day of manufacturing
-    }
-    var totalNumCases = 0;
-    for (let activity of activities) {
-      totalNumCases += activity['numcases'];
-    }
-    return totalNumCases/activities.length;
-  }
-
   private summarizeYear(year: string, allSalesInYear: any[], sku: any) {
     var summary = {};
     summary['year'] = year;

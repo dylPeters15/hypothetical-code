@@ -1,6 +1,7 @@
-import { Component, OnInit, Inject } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material";
+import { Component, OnInit, Inject, ViewChild } from '@angular/core';
+import { MatDialogRef, MAT_DIALOG_DATA, MatTableDataSource, MatPaginator } from "@angular/material";
 import { RestServiceV2, AndVsOr } from '../restv2.service';
+import { SkuDrilldownCalcService } from './sku-drilldown-calc.service';
 
 @Component({
   selector: 'app-sku-drilldown',
@@ -10,65 +11,32 @@ import { RestServiceV2, AndVsOr } from '../restv2.service';
 export class SkuDrilldownComponent implements OnInit {
 
   sku: any = {};
+  allSales: any[] = [];
   prevStartDate = new Date();
   startDate = new Date();
   prevEndDate = new Date(new Date().setUTCFullYear(new Date().getUTCFullYear()+1));
   endDate = new Date(new Date().setUTCFullYear(new Date().getUTCFullYear()+1));
 
   customers: any[] = [];
-  allCustomersSelected: boolean = true;
-  selectedCustomers: any[] = [];
+  selectedCustomerId: string = "all";
+  
+  salesTableData: MatTableDataSource<any> = new MatTableDataSource();
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+  allReplacement = 54321;
 
-  constructor(public restv2: RestServiceV2, private dialogRef: MatDialogRef<SkuDrilldownComponent>, @Inject(MAT_DIALOG_DATA) public initData: any) { }
+  constructor(public restv2: RestServiceV2, private dialogRef: MatDialogRef<SkuDrilldownComponent>, @Inject(MAT_DIALOG_DATA) public initData: any, public calc: SkuDrilldownCalcService) { }
 
   ngOnInit() {
     if (this.initData['sku']) {
       this.sku = this.initData['sku'];
     }
-    this.onInit().then(() => {
-      console.log(this.initData);
-      for(var i = 0; i < this.customers.length && this.initData && this.initData['selectedCustomers']; i++) {
-        this.customers[i]['checked'] = this.initData['selectedCustomers'].filter((value,index,array) => {
-          return value['customername'] == this.customers[i]['customername'];
-        }).length == 1;
-      }
-      this.refreshSelected();
+    this.restv2.getCustomers(AndVsOr.OR, null, null, null, 10000).then(response => {
+      this.customers = response;
+      this.refreshData();
     });
   }
 
-  async onInit(): Promise<void> {
-    this.customers = await this.restv2.getCustomers(AndVsOr.OR, null, null, null, 10000);
-    for (let customer of this.customers) {
-      customer['checked'] = true;
-    }
-    this.refreshSelected();
-  }
-
-  refreshSelected(): void {
-    var areAllSelected = true;
-    for (let customer of this.customers) {
-      if (!customer['checked']) {
-        areAllSelected = false;
-      }
-    }
-    this.allCustomersSelected = areAllSelected;
-    this.selectedCustomers = this.customers.filter((value, index, array) => {
-      return value['checked'];
-    });
-  }
-
-  customerSelectionsChanged(): void {
-    this.refreshSelected();
-  }
-
-  selectDeselectAllCustomers(): void {
-    for (let customer of this.customers) {
-      customer['checked'] = this.allCustomersSelected;
-    }
-    this.refreshSelected();
-  }
-
-  selectionChange() {
+  async refreshData(): Promise<void> {
     if (this.startDate < this.endDate) {
       console.log("valid");
       this.prevStartDate = this.startDate;
@@ -82,6 +50,34 @@ export class SkuDrilldownComponent implements OnInit {
     console.log("startDate", this.startDate);
     console.log("prevEndDate", this.prevEndDate);
     console.log("endDate", this.endDate);
+    this.allSales = await this.restv2.getSales(AndVsOr.AND, this.sku['_id'], this.selectedCustomerId=="all"?null:this.selectedCustomerId, this.startDate, this.endDate, 54321);
+    this.salesTableData = new MatTableDataSource(this.calc.formatSalesForTable(this.allSales));
+    this.salesTableData.paginator = this.paginator;
   }
-
+  
+  getPageSizeOptions() {
+    return [5, 20, 50, 100, this.allReplacement];
+  }
+  ngAfterViewChecked() {
+    const matOptions = document.querySelectorAll('mat-option');
+   
+   
+    // If the replacement element was found...
+    if (matOptions) {
+      const matOptionsLen = matOptions.length;
+      // We'll iterate the array backwards since the allReplacement should be at the end of the array
+      for (let i = matOptionsLen - 1; i >= 0; i--) {
+        const matOption = matOptions[i];
+   
+        // Store the span in a variable for re-use
+        const span = matOption.querySelector('span.mat-option-text');
+        // If the spans innerHTML string value is the same as the allReplacement variables string value...
+        if ('' + span.innerHTML === '' + this.allReplacement) {
+          // Change the span text to "All"
+          span.innerHTML = 'All';
+          break;
+        }
+      }
+    }
+  }
 }
