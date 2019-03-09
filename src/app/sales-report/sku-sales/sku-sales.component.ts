@@ -22,9 +22,9 @@ export class SkuSalesComponent implements OnInit, ControlValueAccessor {
 
   sku: any = {};
   selectedCustomerId: any = "all";
+  allSales: any[] = [];
   sales: any[] = [];
   salesTableData: any = new MatTableDataSource(this.sales);
-  summaryTableData: any = new MatTableDataSource([]);
   displayedColumns: string[] = ['year', 'sku', 'totalrevenue', 'averagerevenuepercase'];
 
   constructor(public restv2: RestServiceV2, public calc: SalesReportCalcService, private dialog: MatDialog) { }
@@ -36,12 +36,9 @@ export class SkuSalesComponent implements OnInit, ControlValueAccessor {
   async refreshData() {
     this.sku = this._value['sku'];
     this.selectedCustomerId = this._value['selectedCustomerId'];
-    this.sales = await this.restv2.getSales(AndVsOr.AND, this.sku['_id'], this.selectedCustomerId=="all"?null:this.selectedCustomerId, new Date(new Date().getFullYear()-10), null, 54321);
-    var allSales = this.sales;
-    this.sales = this.calc.summarizeSales(this.sales, this.sku);
+    this.allSales = await this.restv2.getSales(AndVsOr.AND, this.sku['_id'], this.selectedCustomerId=="all"?null:this.selectedCustomerId, new Date(new Date().getFullYear()-10), null, 54321);
+    this.sales = this.calc.summarizeSales(this.allSales, this.sku);
     this.salesTableData = new MatTableDataSource(this.sales);
-    var summary = await this.calc.summarizeTotal(allSales, this.sku);
-    this.summaryTableData = new MatTableDataSource(summary);
   }
 
   displayDrilldown(): void {
