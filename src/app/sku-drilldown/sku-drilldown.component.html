@@ -1,3 +1,19 @@
-<p>
-  sku-drilldown works!
-</p>
+<div>
+  <mat-card>
+    <mat-card-header style="align-content: center; align-items: center; justify-content: center; display: grid;">
+      <mat-card-title>SKU Sales Details</mat-card-title>
+    </mat-card-header>
+    <mat-card-content style="display: flex;">
+
+      <div>
+        <mat-checkbox (change)="selectDeselectAllCustomers()" [(ngModel)]="allCustomersSelected">Select/Deselect All
+        </mat-checkbox>
+        <div *ngFor="let customer of customers">
+          <mat-checkbox (change)="customerSelectionsChanged()" [(ngModel)]="customer['checked']">
+            {{customer['customername']}}</mat-checkbox>
+        </div>
+      </div>
+
+    </mat-card-content>
+  </mat-card>
+</div>
