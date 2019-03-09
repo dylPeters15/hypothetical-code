@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
+import { RestServiceV2, AndVsOr } from '../restv2.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SalesReportCalcService {
 
-  constructor() { }
+  constructor(public restv2: RestServiceV2) { }
 
   summarizeSales(allSales: any[], sku: any): any[] {
     var currentDate: Date = new Date();
@@ -33,7 +34,7 @@ export class SalesReportCalcService {
     return summarized;
   }
 
-  summarizeTotal(allSales: any[]): any[] {
+  async summarizeTotal(allSales: any[], sku: any): Promise<any[]> {
     var summary = {};
 
     var revenueSum = 0;
@@ -45,7 +46,41 @@ export class SalesReportCalcService {
     summary['revenuesum'] = revenueSum;
     summary['averagerevenuepercase'] = revenueSum/caseSum;
 
+    summary['averagemanufacturingrunsize'] = await this.avgManufacturingRunSize(sku);
+    summary['ingredientcostpercase'] = this.ingredientCostPerCase(sku);
+    summary['averagemanufacturingsetupcostpercase'] = sku['manufacturingsetupcost']/summary['averagemanufacturingrunsize'];
+    summary['manufacturingruncostpercase'] = sku['manufacturingruncost']/summary['averagemanufacturingrunsize'];
+    summary['totalcogspercase'] = summary['ingredientcostpercase'] + summary['averagemanufacturingsetupcostpercase'] + summary['manufacturingruncostpercase'];
+    summary['averageprofitpercase'] = summary['averagerevenuepercase'] - summary['totalcogspercase'];
+    summary['profitmargin'] = summary['averagerevenuepercase']/summary['totalcogspercase'] - 1;
+
+    console.log((await this.avgManufacturingRunSize(sku)));
+    console.log(this.ingredientCostPerCase(sku));
     return [summary];
+  }
+
+  ingredientCostPerCase(sku: any): Number {
+    console.log("SKU: ",sku);
+    var totalCost = 0;
+    for (let ingredientandquantity of sku['formula']['ingredientsandquantities']) {
+      totalCost += ingredientandquantity['ingredient']['costperpackage'] * ingredientandquantity['quantity'];
+    }
+    return totalCost;
+  }
+
+  private async avgManufacturingRunSize(sku: any): Promise<Number> {
+    var startDate: Date = new Date(new Date().getFullYear()-10,0,0,0,0,0,0);
+    var activities = await this.restv2.getActivities(AndVsOr.AND, {$gte:startDate}, {$ne:null}, sku['_id'], 10000);
+    if (activities.length == 0) {
+      return sku['manufacturingrate']*10; //assume 1 day of manufacturing
+    }
+    var totalNumCases = 0;
+    for (let activity of activities) {
+      totalNumCases += activity['numcases'];
+    }
+    console.log("Total num cases: ",totalNumCases);
+    console.log("activites.length: ", activities.length);
+    return totalNumCases/activities.length;
   }
 
   private summarizeYear(year: string, allSalesInYear: any[], sku: any) {
