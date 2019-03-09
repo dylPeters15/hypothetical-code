@@ -21,7 +21,7 @@ const customValueProvider = {
 export class SkuSalesComponent implements OnInit, ControlValueAccessor {
 
   sku: any = {};
-  selectedCustomers: any[] = [];
+  selectedCustomerId: any = "all";
   sales: any[] = [];
   salesTableData: any = new MatTableDataSource(this.sales);
   summaryTableData: any = new MatTableDataSource([]);
@@ -35,16 +35,8 @@ export class SkuSalesComponent implements OnInit, ControlValueAccessor {
 
   async refreshData() {
     this.sku = this._value['sku'];
-    this.selectedCustomers = this._value['selectedCustomers'];
-    this.sales = await this.restv2.getSales(AndVsOr.AND, this.sku['_id'], null, null, null, 54321);
-    this.sales = this.sales.filter((value, index, array) => {
-      for (let customer of this.selectedCustomers) {
-        if (customer['customername'] == value['customer']['customername']) {
-          return true;
-        }
-      }
-      return false;
-    });
+    this.selectedCustomerId = this._value['selectedCustomerId'];
+    this.sales = await this.restv2.getSales(AndVsOr.AND, this.sku['_id'], this.selectedCustomerId=="all"?null:this.selectedCustomerId, new Date(new Date().getFullYear()-10), null, 54321);
     var allSales = this.sales;
     this.sales = this.calc.summarizeSales(this.sales, this.sku);
     this.salesTableData = new MatTableDataSource(this.sales);
@@ -59,7 +51,7 @@ export class SkuSalesComponent implements OnInit, ControlValueAccessor {
     dialogConfig.height = '95%';
     dialogConfig.data = {
       sku: this.sku,
-      selectedCustomers: this.selectedCustomers
+      selectedCustomerId: this.selectedCustomerId
     }
     this.dialog.open(SkuDrilldownComponent, dialogConfig);
   }

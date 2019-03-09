@@ -9,7 +9,7 @@
         <mat-checkbox (change)="selectDeselectAllProductLines()" [(ngModel)]="allProductLinesSelected">Select/Deselect
           All</mat-checkbox>
         <div *ngFor="let productLine of productLines">
-          <mat-checkbox (change)="productLineSelectionsChanged()" [(ngModel)]="productLine['checked']">
+          <mat-checkbox (change)="refreshData()" [(ngModel)]="productLine['checked']">
             {{productLine['productlinename']}}</mat-checkbox>
         </div>
 
@@ -17,18 +17,22 @@
         <br>
         <br>
 
-        <mat-checkbox (change)="selectDeselectAllCustomers()" [(ngModel)]="allCustomersSelected">Select/Deselect All
-        </mat-checkbox>
-        <div *ngFor="let customer of customers">
-          <mat-checkbox (change)="customerSelectionsChanged()" [(ngModel)]="customer['checked']">
-            {{customer['customername']}}</mat-checkbox>
-        </div>
+        <mat-radio-group [(ngModel)]="selectedCustomerId" (ngModelChange)="refreshData();">
+            <mat-radio-button value="all">
+              Select All
+            </mat-radio-button>
+            <div *ngFor="let customer of customers">
+                <mat-radio-button value={{customer._id}}>
+                  {{customer['customername']}}
+                </mat-radio-button>
+            </div>
+          </mat-radio-group>
       </div>
 
 
       <mat-tab-group style="width: 85%;">
         <mat-tab *ngFor="let productLine of selectedProductLines" label={{productLine.productlinename}}>
-          <app-product-line-sales [ngModel]="{productLine:productLine,selectedCustomers:selectedCustomers}"></app-product-line-sales>
+          <app-product-line-sales [ngModel]="{productLine:productLine,selectedCustomerId:selectedCustomerId}"></app-product-line-sales>
         </mat-tab>
       </mat-tab-group>
 
