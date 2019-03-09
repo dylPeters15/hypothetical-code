@@ -1,6 +1,7 @@
 import { Component, OnInit, Inject } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material";
+import { MatDialogRef, MAT_DIALOG_DATA, MatTableDataSource } from "@angular/material";
 import { RestServiceV2, AndVsOr } from '../restv2.service';
+import { SkuDrilldownCalcService } from './sku-drilldown-calc.service';
 
 @Component({
   selector: 'app-sku-drilldown',
@@ -16,72 +17,23 @@ export class SkuDrilldownComponent implements OnInit {
   endDate = new Date(new Date().setUTCFullYear(new Date().getUTCFullYear()+1));
 
   customers: any[] = [];
-  allCustomersSelected: boolean = true;
-  selectedCustomers: any[] = [];
-  sales: any[] = [];
+  selectedCustomerId: string = "all";
+  
+  salesTableData: MatTableDataSource<any> = new MatTableDataSource();
 
-  constructor(public restv2: RestServiceV2, private dialogRef: MatDialogRef<SkuDrilldownComponent>, @Inject(MAT_DIALOG_DATA) public initData: any) { }
+  constructor(public restv2: RestServiceV2, private dialogRef: MatDialogRef<SkuDrilldownComponent>, @Inject(MAT_DIALOG_DATA) public initData: any, public calc: SkuDrilldownCalcService) { }
 
   ngOnInit() {
     if (this.initData['sku']) {
       this.sku = this.initData['sku'];
     }
-    this.onInit().then(() => {
-      console.log(this.initData);
-      for(var i = 0; i < this.customers.length && this.initData && this.initData['selectedCustomers']; i++) {
-        this.customers[i]['checked'] = this.initData['selectedCustomers'].filter((value,index,array) => {
-          return value['customername'] == this.customers[i]['customername'];
-        }).length == 1;
-      }
-      this.refreshSelected();
+    this.restv2.getCustomers(AndVsOr.OR, null, null, null, 10000).then(response => {
+      this.customers = response;
+      this.refreshData();
     });
   }
 
-  async onInit(): Promise<void> {
-    this.customers = await this.restv2.getCustomers(AndVsOr.OR, null, null, null, 10000);
-    for (let customer of this.customers) {
-      customer['checked'] = true;
-    }
-    this.refreshSelected();
-  }
   async refreshData(): Promise<void> {
-    this.sales = await this.restv2.getSales(AndVsOr.AND, this.sku['_id'], null, null, null, 54321);
-    this.sales = this.sales.filter((value, index, array) => {
-      for (let customer of this.selectedCustomers) {
-        if (customer['customername'] == value['customer']['customername']) {
-          return true;
-        }
-      }
-      return false;
-    });
-  }
-
-  refreshSelected(): void {
-    var areAllSelected = true;
-    for (let customer of this.customers) {
-      if (!customer['checked']) {
-        areAllSelected = false;
-      }
-    }
-    this.allCustomersSelected = areAllSelected;
-    this.selectedCustomers = this.customers.filter((value, index, array) => {
-      return value['checked'];
-    });
-    this.refreshData();
-  }
-
-  customerSelectionsChanged(): void {
-    this.refreshSelected();
-  }
-
-  selectDeselectAllCustomers(): void {
-    for (let customer of this.customers) {
-      customer['checked'] = this.allCustomersSelected;
-    }
-    this.refreshSelected();
-  }
-
-  selectionChange() {
     if (this.startDate < this.endDate) {
       console.log("valid");
       this.prevStartDate = this.startDate;
@@ -95,7 +47,8 @@ export class SkuDrilldownComponent implements OnInit {
     console.log("startDate", this.startDate);
     console.log("prevEndDate", this.prevEndDate);
     console.log("endDate", this.endDate);
-    this.refreshData();
+    var sales = await this.restv2.getSales(AndVsOr.AND, this.sku['_id'], this.selectedCustomerId=="all"?null:this.selectedCustomerId, this.startDate, this.endDate, 54321);
+    this.salesTableData = new MatTableDataSource(this.calc.formatSalesForTable(sales));
   }
 
 }
