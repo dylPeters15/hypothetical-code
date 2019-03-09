@@ -3,40 +3,6 @@
     <button mat-raised-button style="display: inline;" (click)="displayDrilldown();">Details</button>
 </div>
 
-<mat-table [dataSource]="salesTableData" class="mat-elevation-z8">
-
-  <ng-container matColumnDef="year">
-    <mat-header-cell *matHeaderCellDef>Year</mat-header-cell>
-    <mat-cell *matCellDef="let sale">
-      {{sale['year']}}
-    </mat-cell>
-  </ng-container>
-
-  <ng-container matColumnDef="sku">
-    <mat-header-cell *matHeaderCellDef>SKU Name/#</mat-header-cell>
-    <mat-cell *matCellDef="let sale">
-      {{sale['sku']['skuname']}}/{{sale['sku']['skunumber']}}
-    </mat-cell>
-  </ng-container>
-
-  <ng-container matColumnDef="totalrevenue">
-    <mat-header-cell *matHeaderCellDef>Total Revenue</mat-header-cell>
-    <mat-cell *matCellDef="let sale">
-      ${{sale['totalrevenue'].toFixed(2)}}
-    </mat-cell>
-  </ng-container>
-
-  <ng-container matColumnDef="averagerevenuepercase">
-    <mat-header-cell *matHeaderCellDef>Average Revenue Per Case</mat-header-cell>
-    <mat-cell *matCellDef="let sale">
-      ${{sale['averagerevenuepercase'].toFixed(2)}}
-    </mat-cell>
-  </ng-container>
-
-  <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-  <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
-</mat-table>
-
 
 <mat-table [dataSource]="summaryTableData" class="mat-elevation-z8">
 
@@ -110,4 +76,38 @@
   <mat-row
     *matRowDef="let row; columns: ['revenuesum', 'averagemanufacturingrunsize', 'ingredientcostpercase', 'averagemanufacturingsetupcostpercase', 'manufacturingruncostpercase', 'totalcogspercase', 'averagerevenuepercase', 'averageprofitpercase', 'profitmargin'];">
   </mat-row>
+</mat-table>
+
+<mat-table [dataSource]="salesTableData" class="mat-elevation-z8">
+
+  <ng-container matColumnDef="year">
+    <mat-header-cell *matHeaderCellDef>Year</mat-header-cell>
+    <mat-cell *matCellDef="let sale">
+      {{sale['year']}}
+    </mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="sku">
+    <mat-header-cell *matHeaderCellDef>SKU Name/#</mat-header-cell>
+    <mat-cell *matCellDef="let sale">
+      {{sale['sku']['skuname']}}/{{sale['sku']['skunumber']}}
+    </mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="totalrevenue">
+    <mat-header-cell *matHeaderCellDef>Total Revenue</mat-header-cell>
+    <mat-cell *matCellDef="let sale">
+      ${{sale['totalrevenue'].toFixed(2)}}
+    </mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="averagerevenuepercase">
+    <mat-header-cell *matHeaderCellDef>Average Revenue Per Case</mat-header-cell>
+    <mat-cell *matCellDef="let sale">
+      ${{sale['averagerevenuepercase'].toFixed(2)}}
+    </mat-cell>
+  </ng-container>
+
+  <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+  <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
 </mat-table>

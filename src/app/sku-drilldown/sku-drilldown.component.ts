@@ -1,5 +1,5 @@
-import { Component, OnInit, Inject } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA, MatTableDataSource } from "@angular/material";
+import { Component, OnInit, Inject, ViewChild } from '@angular/core';
+import { MatDialogRef, MAT_DIALOG_DATA, MatTableDataSource, MatPaginator } from "@angular/material";
 import { RestServiceV2, AndVsOr } from '../restv2.service';
 import { SkuDrilldownCalcService } from './sku-drilldown-calc.service';
 
@@ -20,6 +20,8 @@ export class SkuDrilldownComponent implements OnInit {
   selectedCustomerId: string = "all";
   
   salesTableData: MatTableDataSource<any> = new MatTableDataSource();
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+  allReplacement = 54321;
 
   constructor(public restv2: RestServiceV2, private dialogRef: MatDialogRef<SkuDrilldownComponent>, @Inject(MAT_DIALOG_DATA) public initData: any, public calc: SkuDrilldownCalcService) { }
 
@@ -49,6 +51,32 @@ export class SkuDrilldownComponent implements OnInit {
     console.log("endDate", this.endDate);
     var sales = await this.restv2.getSales(AndVsOr.AND, this.sku['_id'], this.selectedCustomerId=="all"?null:this.selectedCustomerId, this.startDate, this.endDate, 54321);
     this.salesTableData = new MatTableDataSource(this.calc.formatSalesForTable(sales));
+    this.salesTableData.paginator = this.paginator;
   }
-
+  
+  getPageSizeOptions() {
+    return [5, 20, 50, 100, this.allReplacement];
+  }
+  ngAfterViewChecked() {
+    const matOptions = document.querySelectorAll('mat-option');
+   
+   
+    // If the replacement element was found...
+    if (matOptions) {
+      const matOptionsLen = matOptions.length;
+      // We'll iterate the array backwards since the allReplacement should be at the end of the array
+      for (let i = matOptionsLen - 1; i >= 0; i--) {
+        const matOption = matOptions[i];
+   
+        // Store the span in a variable for re-use
+        const span = matOption.querySelector('span.mat-option-text');
+        // If the spans innerHTML string value is the same as the allReplacement variables string value...
+        if ('' + span.innerHTML === '' + this.allReplacement) {
+          // Change the span text to "All"
+          span.innerHTML = 'All';
+          break;
+        }
+      }
+    }
+  }
 }
