@@ -3,6 +3,8 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { RestServiceV2, AndVsOr } from '../../restv2.service';
 import { MatTableDataSource, MatPaginator } from '@angular/material';
 import { SalesReportCalcService } from '../sales-report-calc.service';
+import { MatDialog, MatDialogConfig, MatDialogRef } from "@angular/material";
+import { SkuDrilldownComponent } from '../../sku-drilldown/sku-drilldown.component';
 
 const customValueProvider = {
   provide: NG_VALUE_ACCESSOR,
@@ -25,7 +27,7 @@ export class SkuSalesComponent implements OnInit, ControlValueAccessor {
   summaryTableData: any = new MatTableDataSource([]);
   displayedColumns: string[] = ['year', 'sku', 'totalrevenue', 'averagerevenuepercase'];
 
-  constructor(public restv2: RestServiceV2, public calc: SalesReportCalcService) { }
+  constructor(public restv2: RestServiceV2, public calc: SalesReportCalcService, private dialog: MatDialog) { }
 
   ngOnInit() {
 
@@ -52,6 +54,14 @@ export class SkuSalesComponent implements OnInit, ControlValueAccessor {
 
   displayDrilldown(): void {
     console.log("Display Drilldown");
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.width = '95%';
+    dialogConfig.height = '95%';
+    dialogConfig.data = {
+      sku: this.sku,
+      selectedCustomers: this.selectedCustomers
+    }
+    this.dialog.open(SkuDrilldownComponent, dialogConfig);
   }
 
   _value = '';
