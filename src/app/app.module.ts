@@ -78,6 +78,7 @@ import { ProductLineSalesComponent } from './sales-report/product-line-sales/pro
 import { SkuSalesComponent } from './sales-report/sku-sales/sku-sales.component';
 import { SkuDrilldownComponent } from './sales-report/sku-drilldown/sku-drilldown.component';
 import { SalesSummaryRowComponent } from './sales-report/sales-summary-row/sales-summary-row.component';
+import { SkuGraphComponent } from './sales-report/sku-drilldown/sku-graph/sku-graph.component';
 
 const appRoutes: Routes = [
   { path: 'login', component: LoginComponent, data: { title: 'Log In' }, canActivate: [AlreadyLoggedInRouteGuardService] },
@@ -158,7 +159,8 @@ const appRoutes: Routes = [
     ProductLineSalesComponent,
     SkuSalesComponent,
     SkuDrilldownComponent,
-    SalesSummaryRowComponent
+    SalesSummaryRowComponent,
+    SkuGraphComponent
   ],
   imports: [
     BrowserModule,
