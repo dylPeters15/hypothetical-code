@@ -33,68 +33,77 @@
       </div>
 
       <div>
-        <app-sku-graph [ngModel]="{sku:sku,allSales:allSales}"></app-sku-graph>
-        <app-sales-summary-row [ngModel]="{sku:sku,allSales:allSales}"></app-sales-summary-row>
-        <mat-table [dataSource]="salesTableData" style="width: 100%;">
+          <mat-tab-group style="width:100%;">
+              <mat-tab label="Revenue Graph">
+                  <app-sku-graph [ngModel]="{sku:sku,allSales:allSales}"></app-sku-graph>
 
-          <ng-container matColumnDef="year">
-            <mat-header-cell *matHeaderCellDef>Year</mat-header-cell>
-            <mat-cell *matCellDef="let summary">
-              {{summary['year']}}
-            </mat-cell>
-          </ng-container>
-
-          <ng-container matColumnDef="weeknumber">
-            <mat-header-cell *matHeaderCellDef>Week Number</mat-header-cell>
-            <mat-cell *matCellDef="let summary">
-              {{summary['weeknumber']}}
-            </mat-cell>
-          </ng-container>
-
-          <ng-container matColumnDef="customernumber">
-            <mat-header-cell *matHeaderCellDef>Customer Number</mat-header-cell>
-            <mat-cell *matCellDef="let summary">
-              {{summary['customernumber']}}
-            </mat-cell>
-          </ng-container>
-
-          <ng-container matColumnDef="customername">
-            <mat-header-cell *matHeaderCellDef>Customer Name</mat-header-cell>
-            <mat-cell *matCellDef="let summary">
-              {{summary['customername']}}
-            </mat-cell>
-          </ng-container>
-
-          <ng-container matColumnDef="numsales">
-            <mat-header-cell *matHeaderCellDef>Number of Sales</mat-header-cell>
-            <mat-cell *matCellDef="let summary">
-              {{summary['numsales']}}
-            </mat-cell>
-          </ng-container>
-
-          <ng-container matColumnDef="pricepercase">
-            <mat-header-cell *matHeaderCellDef>Average Price Per Case</mat-header-cell>
-            <mat-cell *matCellDef="let summary">
-              {{summary['pricepercase']}}
-            </mat-cell>
-          </ng-container>
-
-          <ng-container matColumnDef="revenue">
-            <mat-header-cell *matHeaderCellDef>Revenue</mat-header-cell>
-            <mat-cell *matCellDef="let summary">
-              {{summary['revenue']}}
-            </mat-cell>
-          </ng-container>
-
-          <mat-header-row
-            *matHeaderRowDef="['year', 'weeknumber', 'customernumber', 'customername', 'numsales', 'pricepercase', 'revenue']">
-          </mat-header-row>
-          <mat-row
-            *matRowDef="let row; columns: ['year', 'weeknumber', 'customernumber', 'customername', 'numsales', 'pricepercase', 'revenue'];">
-          </mat-row>
-        </mat-table>
-        <mat-paginator id="elementsTablePaginator" [pageSizeOptions]="getPageSizeOptions()" showFirstLastButtons>
-        </mat-paginator>
+              </mat-tab>
+              <mat-tab label="Revenue Table">
+                <div>
+                    <app-sales-summary-row [ngModel]="{sku:sku,allSales:allSales}"></app-sales-summary-row>
+                    <mat-table [dataSource]="salesTableData" style="width: 100%;">
+            
+                      <ng-container matColumnDef="year">
+                        <mat-header-cell *matHeaderCellDef>Year</mat-header-cell>
+                        <mat-cell *matCellDef="let summary">
+                          {{summary['year']}}
+                        </mat-cell>
+                      </ng-container>
+            
+                      <ng-container matColumnDef="weeknumber">
+                        <mat-header-cell *matHeaderCellDef>Week Number</mat-header-cell>
+                        <mat-cell *matCellDef="let summary">
+                          {{summary['weeknumber']}}
+                        </mat-cell>
+                      </ng-container>
+            
+                      <ng-container matColumnDef="customernumber">
+                        <mat-header-cell *matHeaderCellDef>Customer Number</mat-header-cell>
+                        <mat-cell *matCellDef="let summary">
+                          {{summary['customernumber']}}
+                        </mat-cell>
+                      </ng-container>
+            
+                      <ng-container matColumnDef="customername">
+                        <mat-header-cell *matHeaderCellDef>Customer Name</mat-header-cell>
+                        <mat-cell *matCellDef="let summary">
+                          {{summary['customername']}}
+                        </mat-cell>
+                      </ng-container>
+            
+                      <ng-container matColumnDef="numsales">
+                        <mat-header-cell *matHeaderCellDef>Number of Sales</mat-header-cell>
+                        <mat-cell *matCellDef="let summary">
+                          {{summary['numsales']}}
+                        </mat-cell>
+                      </ng-container>
+            
+                      <ng-container matColumnDef="pricepercase">
+                        <mat-header-cell *matHeaderCellDef>Average Price Per Case</mat-header-cell>
+                        <mat-cell *matCellDef="let summary">
+                          {{summary['pricepercase']}}
+                        </mat-cell>
+                      </ng-container>
+            
+                      <ng-container matColumnDef="revenue">
+                        <mat-header-cell *matHeaderCellDef>Revenue</mat-header-cell>
+                        <mat-cell *matCellDef="let summary">
+                          {{summary['revenue']}}
+                        </mat-cell>
+                      </ng-container>
+            
+                      <mat-header-row
+                        *matHeaderRowDef="['year', 'weeknumber', 'customernumber', 'customername', 'numsales', 'pricepercase', 'revenue']">
+                      </mat-header-row>
+                      <mat-row
+                        *matRowDef="let row; columns: ['year', 'weeknumber', 'customernumber', 'customername', 'numsales', 'pricepercase', 'revenue'];">
+                      </mat-row>
+                    </mat-table>
+                    <mat-paginator id="elementsTablePaginator" [pageSizeOptions]="getPageSizeOptions()" showFirstLastButtons>
+                    </mat-paginator>
+                </div>
+              </mat-tab>
+            </mat-tab-group>
       </div>
     </mat-card-content>
   </mat-card>

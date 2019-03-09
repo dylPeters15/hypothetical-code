@@ -26,8 +26,8 @@ export class SkuGraphComponent implements OnInit, ControlValueAccessor {
 
   refreshData() {
     this.options = {
-      labels: ["Date", this._value['sku']['skuname'] + " Sales"],
-      title: this._value['sku']['skuname'] + " Sales"
+      labels: ["Date", this._value['sku']['skuname'] + " Revenue"],
+      title: this._value['sku']['skuname'] + " Revenue"
     };
     this.data = "2009/07/12,100\n" +
     "2009/07/19,150\n";
