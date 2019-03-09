@@ -11,19 +11,16 @@ export class SalesReportCalcService {
   summarizeSales(allSales: any[], sku: any): any[] {
     var currentDate: Date = new Date();
     var currentYear: Number = currentDate.getFullYear();
-    console.log(currentYear);
 
     var salesByYear = {};
     for (let sale of allSales) {
       var dateOfSale: Date = new Date(sale['date']);
       var yearOfSale = dateOfSale.getFullYear();
-      // console.log("Date of Sale: ", dateOfSale);
       if (!salesByYear[yearOfSale]){
         salesByYear[yearOfSale] = [];
       }
       salesByYear[yearOfSale].push(sale);
     }
-    console.log("Sales by year: ", salesByYear);
     var summarized = [];
     for (let year of Object.keys(salesByYear)) {
       summarized.push(this.summarizeYear(year, salesByYear[year], sku));
@@ -53,14 +50,11 @@ export class SalesReportCalcService {
     summary['totalcogspercase'] = summary['ingredientcostpercase'] + summary['averagemanufacturingsetupcostpercase'] + summary['manufacturingruncostpercase'];
     summary['averageprofitpercase'] = summary['averagerevenuepercase'] - summary['totalcogspercase'];
     summary['profitmargin'] = summary['averagerevenuepercase']/summary['totalcogspercase'] - 1;
-
-    console.log((await this.avgManufacturingRunSize(sku)));
-    console.log(this.ingredientCostPerCase(sku));
+    
     return [summary];
   }
 
   ingredientCostPerCase(sku: any): Number {
-    console.log("SKU: ",sku);
     var totalCost = 0;
     for (let ingredientandquantity of sku['formula']['ingredientsandquantities']) {
       totalCost += ingredientandquantity['ingredient']['costperpackage'] * ingredientandquantity['quantity'];
@@ -78,8 +72,6 @@ export class SalesReportCalcService {
     for (let activity of activities) {
       totalNumCases += activity['numcases'];
     }
-    console.log("Total num cases: ",totalNumCases);
-    console.log("activites.length: ", activities.length);
     return totalNumCases/activities.length;
   }
 

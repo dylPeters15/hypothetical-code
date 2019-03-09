@@ -45,7 +45,6 @@ export class SkuSalesComponent implements OnInit, ControlValueAccessor {
     });
     var allSales = this.sales;
     this.sales = this.calc.summarizeSales(this.sales, this.sku);
-    console.log("summarized: ",this.sales);
     this.salesTableData = new MatTableDataSource(this.sales);
     var summary = await this.calc.summarizeTotal(allSales, this.sku);
     this.summaryTableData = new MatTableDataSource(summary);
