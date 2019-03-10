@@ -14,7 +14,7 @@
             </mat-chip>
             <input placeholder="Enter a SKU" #skuInput [formControl]="skuCtrl" [matAutocomplete]="auto"
               [matChipInputFor]="chipList" [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-              [matChipInputAddOnBlur]="true" (matChipInputTokenEnd)="add($event)" [hidden]="!selectedSKU">
+              [matChipInputAddOnBlur]="true" (matChipInputTokenEnd)="add($event)" [hidden]="selectedSKU">
           </mat-chip-list>
           <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
             <mat-option *ngFor="let skuOption of autoCompleteSKUs | async" [value]="skuOption">

@@ -138,11 +138,14 @@ export class SkuDrilldownComponent implements OnInit {
       this._value = value;
       this.stringified = JSON.stringify(value);
       this.keys = Object.keys(value);
-      if (value && value['_id']) {
-        this.sku = value;
-        this.selectedSKU = value;
-        this.refreshData();
+      if (value && value['selectedSKU'] && value['selectedSKU']['_id']) {
+        this.sku = value['selectedSKU'];
+        this.selectedSKU = value['selectedSKU'];
       }
+      if (value && value['selectedCustomerId']) {
+        this.selectedCustomerId = value['selectedCustomerId'];
+      }
+      this.refreshData();
     }
   }
 
