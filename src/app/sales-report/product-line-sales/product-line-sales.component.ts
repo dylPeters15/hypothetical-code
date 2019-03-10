@@ -25,6 +25,14 @@ export class ProductLineSalesComponent implements OnInit, ControlValueAccessor {
 
   }
 
+  modelChanged(event) {
+    if (event && event['selectedIndex'] == 1) {
+      this._value['selectedIndex'] = 1;
+      this._value['selectedSKU'] = event['selectedSKU'];
+      this.propagateChange(this._value);
+    }
+  }
+
   async refreshData() {
     this.productLine = this._value['productLine'];
     this.skus = this.productLine['skus'];
