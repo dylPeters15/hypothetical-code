@@ -5,12 +5,28 @@ import { MatTableDataSource, MatPaginator } from '@angular/material';
 import { SalesReportCalcService } from '../sales-report-calc.service';
 import { MatDialog, MatDialogConfig, MatDialogRef } from "@angular/material";
 import { SkuDrilldownComponent } from '../sku-drilldown/sku-drilldown.component';
+import {ExportToCsv} from 'export-to-csv';
 
 const customValueProvider = {
   provide: NG_VALUE_ACCESSOR,
   useExisting: forwardRef(() => SkuSalesComponent),
   multi: true
 };
+
+class exportableSales {
+  date;
+  skuname;
+  skunumber;
+  revenue;
+  avgrevenuepercase;
+  constructor(dataIn) {
+    this.date = dataIn.year;
+    this.skuname = dataIn.sku.skuname;
+    this.skunumber = dataIn.sku.skunumber;
+    this.revenue = dataIn.totalrevenue;
+    this.avgrevenuepercase = dataIn.averagerevenuepercase;
+  }
+}
 
 @Component({
   selector: 'app-sku-sales',
@@ -31,6 +47,27 @@ export class SkuSalesComponent implements OnInit, ControlValueAccessor {
 
   ngOnInit() {
 
+  }
+
+  export(){
+    var exportData = [];
+    for (var sale of this.sales) {
+      exportData.push(new exportableSales(sale));
+    }
+      const options = { 
+        fieldSeparator: ',',
+        filename: this.sku['skuname'] + " sales",
+        quoteStrings: '',
+        decimalSeparator: '.',
+        showLabels: true, 
+        showTitle: false,
+        title: this.sku['skuname'],
+        useTextFile: false,
+        useBom: true,
+        headers: ["Year","SKU Name","SKU Number", "Total Revenue", "Average Revenue Per Case"]
+      };
+      const csvExporter = new ExportToCsv(options);
+      csvExporter.generateCsv(exportData);
   }
 
   async refreshData() {

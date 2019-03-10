@@ -1,6 +1,7 @@
 <div>
     <h3 style="display: inline;">{{sku['skuname']}}</h3>
     <button mat-raised-button style="display: inline;" (click)="displayDrilldown();">Details</button>
+    <button mat-raised-button style="display: inline;" (click)="export();">Export</button>
 </div>
 
 <app-sales-summary-row [ngModel]="{sku:sku,allSales:allSales}"></app-sales-summary-row>
