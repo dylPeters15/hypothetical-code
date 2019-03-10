@@ -5,6 +5,7 @@ import { MatTableDataSource, MatPaginator } from '@angular/material';
 import { SalesReportCalcService } from '../sales-report-calc.service';
 import { MatDialog, MatDialogConfig, MatDialogRef } from "@angular/material";
 import { SkuDrilldownComponent } from '../sku-drilldown/sku-drilldown.component';
+import { SalesSummaryRowCalcService } from '../sales-summary-row/sales-summary-row-calc.service';
 
 const customValueProvider = {
   provide: NG_VALUE_ACCESSOR,
@@ -27,10 +28,15 @@ export class SkuSalesComponent implements OnInit, ControlValueAccessor {
   salesTableData: any = new MatTableDataSource(this.sales);
   displayedColumns: string[] = ['year', 'sku', 'totalrevenue', 'averagerevenuepercase'];
 
-  constructor(public restv2: RestServiceV2, public calc: SalesReportCalcService, private dialog: MatDialog) { }
+  constructor(public restv2: RestServiceV2, public calc: SalesReportCalcService, private dialog: MatDialog, public sumCalc: SalesSummaryRowCalcService) { }
 
   ngOnInit() {
 
+  }
+
+  export() {
+    this.calc.exportSKU(this.sku, this.selectedCustomerId);
+    this.sumCalc.exportSKUSummary(this.sku, this.selectedCustomerId);
   }
 
   async refreshData() {

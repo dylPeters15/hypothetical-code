@@ -1,12 +1,14 @@
 import { Injectable } from '@angular/core';
+import { RestServiceV2, AndVsOr } from 'src/app/restv2.service';
 var moment = require('moment');
+import { ExportToCsv } from 'export-to-csv';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SkuDrilldownCalcService {
 
-  constructor() { }
+  constructor(public restv2: RestServiceV2) { }
 
   formatSalesForTable(allSales: any[]): any[] {
     var salesByYearAndWeek = this.salesByYearAndWeek(allSales);
@@ -63,5 +65,31 @@ export class SkuDrilldownCalcService {
       }
     }
     return summedSales;
+  }
+
+  async exportSKUDrilldown(sku, selectedCustomerId) {
+    var allSales = await this.restv2.getSales(AndVsOr.AND, sku['_id'], selectedCustomerId=="all"?null:selectedCustomerId, new Date(new Date().getFullYear()-10), null, 54321);
+    var sales = this.formatSalesForTable(allSales);
+      const options = { 
+        fieldSeparator: ',',
+        filename: sku['skuname'] + " sales drilldown",
+        quoteStrings: '',
+        decimalSeparator: '.',
+        showLabels: true, 
+        showTitle: false,
+        title: sku['skuname'],
+        useTextFile: false,
+        useBom: true,
+        // headers: ["Year",
+          // "Week Number",
+          // "Customer Number",
+          // "Customer Name",
+          // "Number of Sales",
+          // "Average Price Per Case",
+          // "Revenue"]
+          useKeysAsHeaders: true
+      };
+      const csvExporter = new ExportToCsv(options);
+      csvExporter.generateCsv(sales);
   }
 }
