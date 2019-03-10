@@ -29,20 +29,20 @@
         </mat-radio-group>
       </div>
 
-      <mat-tab-group mat-stretch-tabs [(selectedIndex)]="selectedIndex">
-        <mat-tab label="Summary">
+      <mat-tab-group mat-stretch-tabs [(selectedIndex)]="selectedIndex"  style="width:100%;">
+        <mat-tab label="Summary"  style="width:100%;">
           <br>
           <mat-card-header style="align-content: center; align-items: center; justify-content: center; display: grid;">
             <mat-card-title>SKU Sales Summary</mat-card-title>
           </mat-card-header>
-          <mat-tab-group style="width: 85%;">
+          <mat-tab-group>
             <mat-tab *ngFor="let productLine of selectedProductLines" label={{productLine.productlinename}}>
               <app-product-line-sales [ngModel]="{productLine:productLine,selectedCustomerId:selectedCustomerId,selectedIndex:selectedIndex}" (ngModelChange)="modelChanged($event)">
               </app-product-line-sales>
             </mat-tab>
           </mat-tab-group>
         </mat-tab>
-        <mat-tab label="Details">
+        <mat-tab label="Details"  style="width:100%;">
           <app-sku-drilldown [ngModel]="{selectedSKU:selectedSKU,selectedCustomerId:selectedCustomerId}">
           </app-sku-drilldown>
         </mat-tab>
