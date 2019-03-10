@@ -25,6 +25,8 @@ export class SkuDrilldownComponent implements OnInit {
   @ViewChild('auto') matAutocomplete: MatAutocomplete;
   remove() {
     this.selectedSKU = null;
+    this.sku = {};
+    this.refreshData();
   }
   selected(event){
     console.log(event);
@@ -81,6 +83,11 @@ export class SkuDrilldownComponent implements OnInit {
       console.log("endDate", this.endDate);
       this.allSales = await this.restv2.getSales(AndVsOr.AND, this.sku['_id'], this.selectedCustomerId=="all"?null:this.selectedCustomerId, this.startDate, this.endDate, 54321);
       this.salesByWeek = this.calc.formatSalesForTable(this.allSales);
+      this.salesTableData = new MatTableDataSource(this.salesByWeek);
+      this.salesTableData.paginator = this.paginator;
+    } else {
+      this.allSales = [];
+      this.salesByWeek = [];
       this.salesTableData = new MatTableDataSource(this.salesByWeek);
       this.salesTableData.paginator = this.paginator;
     }

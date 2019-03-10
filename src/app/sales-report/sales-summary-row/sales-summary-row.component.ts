@@ -25,7 +25,7 @@ export class SalesSummaryRowComponent implements OnInit, ControlValueAccessor {
   }
 
   async refreshData() {
-    var summary = await this.calc.summarizeTotal(this._value['allSales'], this._value['sku']);
+    var summary = this._value['sku']['_id']?(await this.calc.summarizeTotal(this._value['allSales'], this._value['sku'])):[];
     this.summaryTableData = new MatTableDataSource(summary);
   }
 
@@ -42,7 +42,7 @@ export class SalesSummaryRowComponent implements OnInit, ControlValueAccessor {
       this._value = value;
       this.stringified = JSON.stringify(value);
       this.keys = Object.keys(value);
-      if (this._value['allSales'] && this._value['sku'] && Object.keys(this._value['sku']).length > 0) {
+      if (this._value['allSales'] && this._value['sku']) {
         this.refreshData();
       }
     }

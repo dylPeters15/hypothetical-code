@@ -39,6 +39,8 @@ export class SalesSummaryRowCalcService {
     for (let ingredientandquantity of sku['formula']['ingredientsandquantities']) {
       totalCost += ingredientandquantity['ingredient']['costperpackage'] * ingredientandquantity['quantity'];
     }
+    console.log("Ingredient cost per case: ", totalCost);
+    console.log("sku: ", sku);
     return totalCost;
   }
 
