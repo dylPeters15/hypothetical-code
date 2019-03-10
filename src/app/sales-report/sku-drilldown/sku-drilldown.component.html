@@ -34,6 +34,7 @@
           <mat-datepicker-toggle matSuffix [for]="endpicker"></mat-datepicker-toggle>
           <mat-datepicker #endpicker></mat-datepicker>
         </mat-form-field>
+        <button mat-raised-button (click)="export();" [disabled]="!selectedSKU">Export</button>
 
 
 
@@ -44,7 +45,6 @@
           </mat-tab>
           <mat-tab label="Revenue Table">
             <div>
-              <button mat-raised-button (click)="export();" [disabled]="!selectedSKU">Export</button>
               <app-sales-summary-row [ngModel]="{sku:sku,allSales:allSales}"></app-sales-summary-row>
               <mat-table [dataSource]="salesTableData" style="width: 100%;">
 
