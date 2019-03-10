@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject, ViewChild } from '@angular/core';
+import { Component, OnInit, Inject, ViewChild, Optional } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA, MatTableDataSource, MatPaginator } from "@angular/material";
 import { RestServiceV2, AndVsOr } from '../../restv2.service';
 import { SkuDrilldownCalcService } from './sku-drilldown-calc.service';
@@ -25,10 +25,10 @@ export class SkuDrilldownComponent implements OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   allReplacement = 54321;
 
-  constructor(public restv2: RestServiceV2, private dialogRef: MatDialogRef<SkuDrilldownComponent>, @Inject(MAT_DIALOG_DATA) public initData: any, public calc: SkuDrilldownCalcService) { }
+  constructor(public restv2: RestServiceV2, public calc: SkuDrilldownCalcService, @Optional() private dialogRef: MatDialogRef<SkuDrilldownComponent>, @Optional() @Inject(MAT_DIALOG_DATA) public initData: any) { }
 
   ngOnInit() {
-    if (this.initData['sku']) {
+    if (this.initData && this.initData['sku']) {
       this.sku = this.initData['sku'];
     }
     this.restv2.getCustomers(AndVsOr.OR, null, null, null, 10000).then(response => {
@@ -38,23 +38,25 @@ export class SkuDrilldownComponent implements OnInit {
   }
 
   async refreshData(): Promise<void> {
-    if (this.startDate < this.endDate) {
-      console.log("valid");
-      this.prevStartDate = this.startDate;
-      this.prevEndDate = this.endDate;
-    } else {
-      console.log("invalid");
-      this.startDate = this.prevStartDate;
-      this.endDate = this.prevEndDate;
+    if (this.sku['_id']) {
+      if (this.startDate < this.endDate) {
+        console.log("valid");
+        this.prevStartDate = this.startDate;
+        this.prevEndDate = this.endDate;
+      } else {
+        console.log("invalid");
+        this.startDate = this.prevStartDate;
+        this.endDate = this.prevEndDate;
+      }
+      console.log("prevStartDate", this.prevStartDate);
+      console.log("startDate", this.startDate);
+      console.log("prevEndDate", this.prevEndDate);
+      console.log("endDate", this.endDate);
+      this.allSales = await this.restv2.getSales(AndVsOr.AND, this.sku['_id'], this.selectedCustomerId=="all"?null:this.selectedCustomerId, this.startDate, this.endDate, 54321);
+      this.salesByWeek = this.calc.formatSalesForTable(this.allSales);
+      this.salesTableData = new MatTableDataSource(this.salesByWeek);
+      this.salesTableData.paginator = this.paginator;
     }
-    console.log("prevStartDate", this.prevStartDate);
-    console.log("startDate", this.startDate);
-    console.log("prevEndDate", this.prevEndDate);
-    console.log("endDate", this.endDate);
-    this.allSales = await this.restv2.getSales(AndVsOr.AND, this.sku['_id'], this.selectedCustomerId=="all"?null:this.selectedCustomerId, this.startDate, this.endDate, 54321);
-    this.salesByWeek = this.calc.formatSalesForTable(this.allSales);
-    this.salesTableData = new MatTableDataSource(this.salesByWeek);
-    this.salesTableData.paginator = this.paginator;
   }
   
   getPageSizeOptions() {
