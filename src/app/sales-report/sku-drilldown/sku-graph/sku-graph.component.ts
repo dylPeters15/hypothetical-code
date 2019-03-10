@@ -1,5 +1,6 @@
 import { Component, Input, forwardRef, OnInit } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+var moment = require('moment');
 
 const customValueProvider = {
   provide: NG_VALUE_ACCESSOR,
@@ -36,8 +37,10 @@ export class SkuGraphComponent implements OnInit, ControlValueAccessor {
     console.log(this._value['salesByWeek']);
     for (let sale of this._value['salesByWeek']) {
       console.log("Sale", sale);
-      toReturn += "01/01/2010"
-
+      var date: Date = new Date(Number(sale['year']),0,0,0,0,0,0);
+      var dateAsString = moment(date).add(Number(sale['weeknumber']), 'weeks').format('MM/DD/YYYY');
+      console.log("Date as string: ", dateAsString);
+      toReturn += dateAsString;
       toReturn += ",";
       toReturn += sale['revenue'];
       toReturn += "\n";
