@@ -44,7 +44,7 @@
           </mat-tab>
           <mat-tab label="Revenue Table">
             <div>
-              <button mat-raised-button (click)="export();">Export</button>
+              <button mat-raised-button (click)="export();" [disabled]="!selectedSKU">Export</button>
               <app-sales-summary-row [ngModel]="{sku:sku,allSales:allSales}"></app-sales-summary-row>
               <mat-table [dataSource]="salesTableData" style="width: 100%;">
 
