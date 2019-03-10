@@ -49,6 +49,7 @@ export class SkuSalesComponent implements OnInit, ControlValueAccessor {
 
   displayDrilldown(): void {
     this._value['selectedIndex'] = 1;
+    this._value['selectedSKU'] = this.sku;
     this.propagateChange(this._value);
     // const dialogConfig = new MatDialogConfig();
     // dialogConfig.width = '95%';

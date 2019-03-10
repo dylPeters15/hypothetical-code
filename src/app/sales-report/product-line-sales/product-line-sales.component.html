@@ -1,6 +1,6 @@
 <div *ngFor="let sku of skus;">
   <br>
-  <app-sku-sales [ngModel]="{sku:sku['sku'],selectedCustomerId:selectedCustomerId,selectedIndex:selectedIndex}" (ngModelChange)="modelChanged($event)">
+  <app-sku-sales [ngModel]="{sku:sku['sku'],selectedCustomerId:selectedCustomerId,selectedIndex:selectedIndex,selectedSKU:selectedSKU}" (ngModelChange)="modelChanged($event)">
   </app-sku-sales>
   <br>
   <br>

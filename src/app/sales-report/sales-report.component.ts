@@ -16,11 +16,14 @@ export class SalesReportComponent implements OnInit {
   selectedCustomerId: string = "all";
   selectedIndex: Number = 0;
 
+  selectedSKU = {};
+
   constructor(public restv2: RestServiceV2) { }
 
   modelChanged(event) {
     if(event && event['selectedIndex'] == 1) {
       this.selectedIndex = 1;
+      this.selectedSKU = event['selectedSKU'];
     }
   }
 

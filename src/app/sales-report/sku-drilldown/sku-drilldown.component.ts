@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject, ViewChild, Optional, ElementRef } from '@angular/core';
+import { Component, OnInit, Inject, ViewChild, Optional, ElementRef, forwardRef, Input } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA, MatTableDataSource, MatPaginator, MatAutocomplete } from "@angular/material";
 import { RestServiceV2, AndVsOr } from '../../restv2.service';
 import { SkuDrilldownCalcService } from './sku-drilldown-calc.service';
@@ -6,11 +6,19 @@ import { ENTER } from '@angular/cdk/keycodes';
 import { FormControl } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { SalesSummaryRowCalcService } from '../sales-summary-row/sales-summary-row-calc.service';
+import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+
+const customValueProvider = {
+  provide: NG_VALUE_ACCESSOR,
+  useExisting: forwardRef(() => SkuDrilldownComponent),
+  multi: true
+};
 
 @Component({
   selector: 'app-sku-drilldown',
   templateUrl: './sku-drilldown.component.html',
-  styleUrls: ['./sku-drilldown.component.css']
+  styleUrls: ['./sku-drilldown.component.css'],
+  providers: [customValueProvider]
 })
 export class SkuDrilldownComponent implements OnInit {
 
@@ -115,5 +123,37 @@ export class SkuDrilldownComponent implements OnInit {
         }
       }
     }
+  }
+
+  _value = '';
+  stringified = '';
+  keys = [];
+
+  propagateChange: any = () => { };
+
+  @Input() label: string;
+
+  writeValue(value: any) {
+    if (value) {
+      this._value = value;
+      this.stringified = JSON.stringify(value);
+      this.keys = Object.keys(value);
+      if (value && value['_id']) {
+        this.sku = value;
+        this.selectedSKU = value;
+        this.refreshData();
+      }
+    }
+  }
+
+  registerOnChange(fn) {
+    this.propagateChange = fn;
+  }
+  registerOnTouched(fn: () => void): void { }
+
+  onChange(event) {
+    this.stringified = JSON.stringify(event.target.value);
+    this.keys = Object.keys(event.target.value);
+    this.propagateChange(event.target.value);
   }
 }

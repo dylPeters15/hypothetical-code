@@ -6,134 +6,109 @@
     <mat-card-content style="display: flex;">
 
       <div>
-          <mat-form-field *ngIf="!initData">
-            <mat-chip-list #chipList>
-              <mat-chip
-                *ngIf="selectedSKU"
-                [selectable]="false"
-                [removable]="true"
-                (removed)="remove()">
-                {{selectedSKU['skuname']}}
-                <mat-icon matChipRemove>cancel</mat-icon>
-              </mat-chip>
-              <input
-                placeholder="Enter a SKU"
-                #skuInput
-                [formControl]="skuCtrl"
-                [matAutocomplete]="auto"
-                [matChipInputFor]="chipList"
-                [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-                [matChipInputAddOnBlur]="true"
-                (matChipInputTokenEnd)="add($event)">
-            </mat-chip-list>
-            <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
-              <mat-option *ngFor="let skuOption of autoCompleteSKUs | async" [value]="skuOption">
-                {{skuOption['skuname']}}
-              </mat-option>
-            </mat-autocomplete>
-          </mat-form-field>
-                
-
-        <br>
+        <mat-form-field *ngIf="!initData">
+          <mat-chip-list #chipList>
+            <mat-chip *ngIf="selectedSKU" [selectable]="false" [removable]="true" (removed)="remove()">
+              {{selectedSKU['skuname']}}
+              <mat-icon matChipRemove>cancel</mat-icon>
+            </mat-chip>
+            <input placeholder="Enter a SKU" #skuInput [formControl]="skuCtrl" [matAutocomplete]="auto"
+              [matChipInputFor]="chipList" [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+              [matChipInputAddOnBlur]="true" (matChipInputTokenEnd)="add($event)" [hidden]="!selectedSKU">
+          </mat-chip-list>
+          <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
+            <mat-option *ngFor="let skuOption of autoCompleteSKUs | async" [value]="skuOption">
+              {{skuOption['skuname']}}
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
         <mat-form-field>
           <input matInput [matDatepicker]="startpicker" placeholder="Choose a start date" [(ngModel)]="startDate"
             (dateChange)="refreshData()">
           <mat-datepicker-toggle matSuffix [for]="startpicker"></mat-datepicker-toggle>
           <mat-datepicker #startpicker></mat-datepicker>
         </mat-form-field>
-        <br>
         <mat-form-field>
           <input matInput [matDatepicker]="endpicker" placeholder="Choose an end date" [(ngModel)]="endDate"
             (dateChange)="refreshData()">
           <mat-datepicker-toggle matSuffix [for]="endpicker"></mat-datepicker-toggle>
           <mat-datepicker #endpicker></mat-datepicker>
         </mat-form-field>
-        <br>
-        <mat-radio-group [(ngModel)]="selectedCustomerId" (ngModelChange)="refreshData();">
-          <mat-radio-button value="all">
-            Select All
-          </mat-radio-button>
-          <div *ngFor="let customer of customers">
-            <mat-radio-button value={{customer._id}}>
-              {{customer['customername']}}
-            </mat-radio-button>
-          </div>
-        </mat-radio-group>
-      </div>
 
-      <div>
-          <mat-tab-group style="width:100%;">
-              <mat-tab label="Revenue Graph">
-                  <app-sku-graph [ngModel]="{sku:sku,salesByWeek:salesByWeek}"></app-sku-graph>
 
-              </mat-tab>
-              <mat-tab label="Revenue Table">
-                <div>
-                    <button mat-raised-button (click)="export();">Export</button>
-                    <app-sales-summary-row [ngModel]="{sku:sku,allSales:allSales}"></app-sales-summary-row>
-                    <mat-table [dataSource]="salesTableData" style="width: 100%;">
-            
-                      <ng-container matColumnDef="year">
-                        <mat-header-cell *matHeaderCellDef>Year</mat-header-cell>
-                        <mat-cell *matCellDef="let summary">
-                          {{summary['year']}}
-                        </mat-cell>
-                      </ng-container>
-            
-                      <ng-container matColumnDef="weeknumber">
-                        <mat-header-cell *matHeaderCellDef>Week Number</mat-header-cell>
-                        <mat-cell *matCellDef="let summary">
-                          {{summary['weeknumber']}}
-                        </mat-cell>
-                      </ng-container>
-            
-                      <ng-container matColumnDef="customernumber">
-                        <mat-header-cell *matHeaderCellDef>Customer Number</mat-header-cell>
-                        <mat-cell *matCellDef="let summary">
-                          {{summary['customernumber']}}
-                        </mat-cell>
-                      </ng-container>
-            
-                      <ng-container matColumnDef="customername">
-                        <mat-header-cell *matHeaderCellDef>Customer Name</mat-header-cell>
-                        <mat-cell *matCellDef="let summary">
-                          {{summary['customername']}}
-                        </mat-cell>
-                      </ng-container>
-            
-                      <ng-container matColumnDef="numsales">
-                        <mat-header-cell *matHeaderCellDef>Number of Sales</mat-header-cell>
-                        <mat-cell *matCellDef="let summary">
-                          {{summary['numsales']}}
-                        </mat-cell>
-                      </ng-container>
-            
-                      <ng-container matColumnDef="pricepercase">
-                        <mat-header-cell *matHeaderCellDef>Average Price Per Case</mat-header-cell>
-                        <mat-cell *matCellDef="let summary">
-                          ${{summary['pricepercase'].toFixed(2)}}
-                        </mat-cell>
-                      </ng-container>
-            
-                      <ng-container matColumnDef="revenue">
-                        <mat-header-cell *matHeaderCellDef>Revenue</mat-header-cell>
-                        <mat-cell *matCellDef="let summary">
-                          ${{summary['revenue'].toFixed(2)}}
-                        </mat-cell>
-                      </ng-container>
-            
-                      <mat-header-row
-                        *matHeaderRowDef="['year', 'weeknumber', 'customernumber', 'customername', 'numsales', 'pricepercase', 'revenue']">
-                      </mat-header-row>
-                      <mat-row
-                        *matRowDef="let row; columns: ['year', 'weeknumber', 'customernumber', 'customername', 'numsales', 'pricepercase', 'revenue'];">
-                      </mat-row>
-                    </mat-table>
-                    <mat-paginator id="elementsTablePaginator" [pageSizeOptions]="getPageSizeOptions()" showFirstLastButtons>
-                    </mat-paginator>
-                </div>
-              </mat-tab>
-            </mat-tab-group>
+
+        <mat-tab-group style="width:100%;">
+          <mat-tab label="Revenue Graph">
+            <app-sku-graph [ngModel]="{sku:sku,salesByWeek:salesByWeek}"></app-sku-graph>
+
+          </mat-tab>
+          <mat-tab label="Revenue Table">
+            <div>
+              <button mat-raised-button (click)="export();">Export</button>
+              <app-sales-summary-row [ngModel]="{sku:sku,allSales:allSales}"></app-sales-summary-row>
+              <mat-table [dataSource]="salesTableData" style="width: 100%;">
+
+                <ng-container matColumnDef="year">
+                  <mat-header-cell *matHeaderCellDef>Year</mat-header-cell>
+                  <mat-cell *matCellDef="let summary">
+                    {{summary['year']}}
+                  </mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="weeknumber">
+                  <mat-header-cell *matHeaderCellDef>Week Number</mat-header-cell>
+                  <mat-cell *matCellDef="let summary">
+                    {{summary['weeknumber']}}
+                  </mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="customernumber">
+                  <mat-header-cell *matHeaderCellDef>Customer Number</mat-header-cell>
+                  <mat-cell *matCellDef="let summary">
+                    {{summary['customernumber']}}
+                  </mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="customername">
+                  <mat-header-cell *matHeaderCellDef>Customer Name</mat-header-cell>
+                  <mat-cell *matCellDef="let summary">
+                    {{summary['customername']}}
+                  </mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="numsales">
+                  <mat-header-cell *matHeaderCellDef>Number of Sales</mat-header-cell>
+                  <mat-cell *matCellDef="let summary">
+                    {{summary['numsales']}}
+                  </mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="pricepercase">
+                  <mat-header-cell *matHeaderCellDef>Average Price Per Case</mat-header-cell>
+                  <mat-cell *matCellDef="let summary">
+                    ${{summary['pricepercase'].toFixed(2)}}
+                  </mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="revenue">
+                  <mat-header-cell *matHeaderCellDef>Revenue</mat-header-cell>
+                  <mat-cell *matCellDef="let summary">
+                    ${{summary['revenue'].toFixed(2)}}
+                  </mat-cell>
+                </ng-container>
+
+                <mat-header-row
+                  *matHeaderRowDef="['year', 'weeknumber', 'customernumber', 'customername', 'numsales', 'pricepercase', 'revenue']">
+                </mat-header-row>
+                <mat-row
+                  *matRowDef="let row; columns: ['year', 'weeknumber', 'customernumber', 'customername', 'numsales', 'pricepercase', 'revenue'];">
+                </mat-row>
+              </mat-table>
+              <mat-paginator id="elementsTablePaginator" [pageSizeOptions]="getPageSizeOptions()" showFirstLastButtons>
+              </mat-paginator>
+            </div>
+          </mat-tab>
+        </mat-tab-group>
       </div>
     </mat-card-content>
   </mat-card>
