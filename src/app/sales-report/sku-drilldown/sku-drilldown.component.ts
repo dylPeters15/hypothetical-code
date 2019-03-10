@@ -1,7 +1,9 @@
-import { Component, OnInit, Inject, ViewChild, Optional } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA, MatTableDataSource, MatPaginator } from "@angular/material";
+import { Component, OnInit, Inject, ViewChild, Optional, ElementRef } from '@angular/core';
+import { MatDialogRef, MAT_DIALOG_DATA, MatTableDataSource, MatPaginator, MatAutocomplete } from "@angular/material";
 import { RestServiceV2, AndVsOr } from '../../restv2.service';
 import { SkuDrilldownCalcService } from './sku-drilldown-calc.service';
+import { ENTER } from '@angular/cdk/keycodes';
+import { FormControl } from '@angular/forms';
 
 @Component({
   selector: 'app-sku-drilldown',
@@ -9,6 +11,15 @@ import { SkuDrilldownCalcService } from './sku-drilldown-calc.service';
   styleUrls: ['./sku-drilldown.component.css']
 })
 export class SkuDrilldownComponent implements OnInit {
+
+  skuname = "asdf";
+  separatorKeysCodes: number[] = [ENTER];
+  skuCtrl = new FormControl();
+  @ViewChild('skuInput') skuInput: ElementRef<HTMLInputElement>;
+  @ViewChild('auto') matAutocomplete: MatAutocomplete;
+  remove() {
+    this.skuname = null;
+  }
 
   sku: any = {};
   allSales: any[] = [];

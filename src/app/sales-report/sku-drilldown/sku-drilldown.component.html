@@ -6,6 +6,35 @@
     <mat-card-content style="display: flex;">
 
       <div>
+          <mat-form-field *ngIf="!initData">
+            <mat-chip-list #chipList>
+              <mat-chip
+                *ngIf="skuname"
+                [selectable]="false"
+                [removable]="true"
+                (removed)="remove()">
+                {{skuname}}
+                <mat-icon matChipRemove>cancel</mat-icon>
+              </mat-chip>
+              <input
+                placeholder="Enter a SKU"
+                #skuInput
+                [formControl]="skuCtrl"
+                [matAutocomplete]="auto"
+                [matChipInputFor]="chipList"
+                [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                [matChipInputAddOnBlur]="true"
+                (matChipInputTokenEnd)="add($event)">
+            </mat-chip-list>
+            <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
+              <mat-option *ngFor="let fruit of filteredFruits | async" [value]="fruit">
+                {{fruit}}
+              </mat-option>
+            </mat-autocomplete>
+          </mat-form-field>
+                
+
+        <br>
         <mat-form-field>
           <input matInput [matDatepicker]="startpicker" placeholder="Choose a start date" [(ngModel)]="startDate"
             (dateChange)="refreshData()">
