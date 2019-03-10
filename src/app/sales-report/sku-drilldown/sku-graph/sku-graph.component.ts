@@ -34,12 +34,9 @@ export class SkuGraphComponent implements OnInit, ControlValueAccessor {
 
   formatSalesByWeek(): string {
     var toReturn = "";
-    console.log(this._value['salesByWeek']);
     for (let sale of this._value['salesByWeek']) {
-      console.log("Sale", sale);
       var date: Date = new Date(Number(sale['year']),0,0,0,0,0,0);
       var dateAsString = moment(date).add(Number(sale['weeknumber']), 'weeks').format('MM/DD/YYYY');
-      console.log("Date as string: ", dateAsString);
       toReturn += dateAsString;
       toReturn += ",";
       toReturn += sale['revenue'];

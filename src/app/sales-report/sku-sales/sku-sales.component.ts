@@ -42,7 +42,6 @@ export class SkuSalesComponent implements OnInit, ControlValueAccessor {
   }
 
   displayDrilldown(): void {
-    console.log("Display Drilldown");
     const dialogConfig = new MatDialogConfig();
     dialogConfig.width = '95%';
     dialogConfig.height = '95%';

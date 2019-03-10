@@ -14,7 +14,6 @@ export class SkuDrilldownCalcService {
   }
 
   convertYearAndWeekSalesToArray(salesByYearAndWeek): any[] {
-    console.log("Sales by year and week: ",salesByYearAndWeek);
     var toReturn = [];
     for (let year of Object.keys(salesByYearAndWeek)) {
       for (let week of Object.keys(salesByYearAndWeek[year])) {
@@ -45,10 +44,6 @@ export class SkuDrilldownCalcService {
     for (let year of Object.keys(allSalesForYearAndWeek)) {
       summedSales[year] = {};
       for (let week of Object.keys(allSalesForYearAndWeek[year])) {
-        console.log("Length: ", allSalesForYearAndWeek[year][week].length);
-        if (allSalesForYearAndWeek[year][week].length > 1) {
-          console.log(allSalesForYearAndWeek[year][week]);
-        }
         summedSales[year][week] = {};
         var customerNums = new Set();
         var customerNames = new Set();

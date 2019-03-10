@@ -9,9 +9,6 @@ export class SalesSummaryRowCalcService {
   constructor(public restv2: RestServiceV2) { }
 
   async summarizeTotal(allSales: any[], sku: any): Promise<any[]> {
-    console.log("all Sales: ",allSales);
-    console.log("Sku: ",sku);
-
     var summary = {};
 
     var revenueSum = 0;
