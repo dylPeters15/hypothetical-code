@@ -4,6 +4,7 @@ import { RestServiceV2, AndVsOr } from '../../restv2.service';
 import { SkuDrilldownCalcService } from './sku-drilldown-calc.service';
 import { ENTER } from '@angular/cdk/keycodes';
 import { FormControl } from '@angular/forms';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-sku-drilldown',
@@ -12,13 +13,26 @@ import { FormControl } from '@angular/forms';
 })
 export class SkuDrilldownComponent implements OnInit {
 
-  skuname = "asdf";
+  selectedSKU = null;
   separatorKeysCodes: number[] = [ENTER];
   skuCtrl = new FormControl();
+  autoCompleteSKUs: Observable<string[]> = new Observable(observer => {
+    this.skuCtrl.valueChanges.subscribe(async newVal => {
+      observer.next(await this.restv2.getSkus(AndVsOr.AND, null, "(?i).*"+newVal+".*", null, null, null, null, 1000))
+    });
+  });
   @ViewChild('skuInput') skuInput: ElementRef<HTMLInputElement>;
   @ViewChild('auto') matAutocomplete: MatAutocomplete;
   remove() {
-    this.skuname = null;
+    this.selectedSKU = null;
+  }
+  selected(event){
+    console.log(event);
+    this.selectedSKU = event.option.value;
+  }
+  add(event) {
+    console.log(event);
+    this.skuInput.nativeElement.value = "";
   }
 
   sku: any = {};
