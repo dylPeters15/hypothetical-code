@@ -29,6 +29,8 @@ export class SkuDrilldownComponent implements OnInit {
   selected(event){
     console.log(event);
     this.selectedSKU = event.option.value;
+    this.sku = this.selectedSKU;
+    this.refreshData();
   }
   add(event) {
     console.log(event);
