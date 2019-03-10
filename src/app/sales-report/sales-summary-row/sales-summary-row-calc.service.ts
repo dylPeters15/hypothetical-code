@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { RestServiceV2, AndVsOr } from '../restv2.service';
+import { RestServiceV2, AndVsOr } from '../../restv2.service';
 
 @Injectable({
   providedIn: 'root'
@@ -21,15 +21,15 @@ export class SalesSummaryRowCalcService {
       caseSum += sale['numcases'];
     }
     summary['revenuesum'] = revenueSum;
-    summary['averagerevenuepercase'] = revenueSum/caseSum;
+    summary['averagerevenuepercase'] = caseSum==0?0:(revenueSum/caseSum);
 
     summary['averagemanufacturingrunsize'] = await this.avgManufacturingRunSize(sku);
     summary['ingredientcostpercase'] = this.ingredientCostPerCase(sku);
-    summary['averagemanufacturingsetupcostpercase'] = sku['manufacturingsetupcost']/summary['averagemanufacturingrunsize'];
-    summary['manufacturingruncostpercase'] = sku['manufacturingruncost']/summary['averagemanufacturingrunsize'];
+    summary['averagemanufacturingsetupcostpercase'] = summary['averagemanufacturingrunsize']==0?0:(sku['manufacturingsetupcost']/summary['averagemanufacturingrunsize']);
+    summary['manufacturingruncostpercase'] = summary['averagemanufacturingrunsize']==0?0:(sku['manufacturingruncost']/summary['averagemanufacturingrunsize']);
     summary['totalcogspercase'] = summary['ingredientcostpercase'] + summary['averagemanufacturingsetupcostpercase'] + summary['manufacturingruncostpercase'];
     summary['averageprofitpercase'] = summary['averagerevenuepercase'] - summary['totalcogspercase'];
-    summary['profitmargin'] = summary['averagerevenuepercase']/summary['totalcogspercase'] - 1;
+    summary['profitmargin'] = summary['totalcogspercase']==0?0:(summary['averagerevenuepercase']/summary['totalcogspercase']) - 1;
     
     return [summary];
   }

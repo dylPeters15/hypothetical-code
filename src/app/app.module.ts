@@ -76,8 +76,10 @@ import { SalesReportComponent } from './sales-report/sales-report.component';
 import {MatTabsModule} from '@angular/material/tabs';
 import { ProductLineSalesComponent } from './sales-report/product-line-sales/product-line-sales.component';
 import { SkuSalesComponent } from './sales-report/sku-sales/sku-sales.component';
-import { SkuDrilldownComponent } from './sku-drilldown/sku-drilldown.component';
-import { SalesSummaryRowComponent } from './sales-summary-row/sales-summary-row.component';
+import { SkuDrilldownComponent } from './sales-report/sku-drilldown/sku-drilldown.component';
+import { SalesSummaryRowComponent } from './sales-report/sales-summary-row/sales-summary-row.component';
+import { SkuGraphComponent } from './sales-report/sku-drilldown/sku-graph/sku-graph.component';
+import { NgDygraphsModule } from 'ng-dygraphs';
 
 const appRoutes: Routes = [
   { path: 'login', component: LoginComponent, data: { title: 'Log In' }, canActivate: [AlreadyLoggedInRouteGuardService] },
@@ -158,7 +160,8 @@ const appRoutes: Routes = [
     ProductLineSalesComponent,
     SkuSalesComponent,
     SkuDrilldownComponent,
-    SalesSummaryRowComponent
+    SalesSummaryRowComponent,
+    SkuGraphComponent
   ],
   imports: [
     BrowserModule,
@@ -187,7 +190,8 @@ const appRoutes: Routes = [
     DragDropModule,
     MatDatepickerModule,
     MatDialogModule,
-    MatTabsModule
+    MatTabsModule,
+    NgDygraphsModule
   ],
   providers: [],
   bootstrap: [AppComponent],

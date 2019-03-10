@@ -4,7 +4,7 @@ import { RestServiceV2, AndVsOr } from '../../restv2.service';
 import { MatTableDataSource, MatPaginator } from '@angular/material';
 import { SalesReportCalcService } from '../sales-report-calc.service';
 import { MatDialog, MatDialogConfig, MatDialogRef } from "@angular/material";
-import { SkuDrilldownComponent } from '../../sku-drilldown/sku-drilldown.component';
+import { SkuDrilldownComponent } from '../sku-drilldown/sku-drilldown.component';
 
 const customValueProvider = {
   provide: NG_VALUE_ACCESSOR,

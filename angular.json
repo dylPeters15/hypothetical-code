@@ -25,9 +25,11 @@
             "styles": [
               "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
               "src/styles.css",
-              "node_modules/vis/dist/vis.min.css"
+              "node_modules/vis/dist/vis.min.css",
+              "./node_modules/dygraphs/dist/dygraph.min.css"
             ],
-            "scripts": [ "node_modules/vis/dist/vis.min.js"]
+            "scripts": [ "node_modules/vis/dist/vis.min.js",
+              "./node_modules/dygraphs/dist/dygraph.min.js"]
           },
           "configurations": {
             "production": {
@@ -82,9 +84,10 @@
             "karmaConfig": "src/karma.conf.js",
             "styles": [
               "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
-              "src/styles.css"
+              "src/styles.css",
+              "./node_modules/dygraphs/dist/dygraph.min.css"
             ],
-            "scripts": [],
+            "scripts": ["./node_modules/dygraphs/dist/dygraph.min.js"],
             "assets": [
               "src/favicon.ico",
               "src/assets"
