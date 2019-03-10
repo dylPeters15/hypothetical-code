@@ -5,6 +5,7 @@ import { SkuDrilldownCalcService } from './sku-drilldown-calc.service';
 import { ENTER } from '@angular/cdk/keycodes';
 import { FormControl } from '@angular/forms';
 import { Observable } from 'rxjs';
+import { SalesSummaryRowCalcService } from '../sales-summary-row/sales-summary-row-calc.service';
 
 @Component({
   selector: 'app-sku-drilldown',
@@ -52,7 +53,7 @@ export class SkuDrilldownComponent implements OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   allReplacement = 54321;
 
-  constructor(public restv2: RestServiceV2, public calc: SkuDrilldownCalcService, @Optional() private dialogRef: MatDialogRef<SkuDrilldownComponent>, @Optional() @Inject(MAT_DIALOG_DATA) public initData: any) { }
+  constructor(public restv2: RestServiceV2, public calc: SkuDrilldownCalcService, public sumCalc: SalesSummaryRowCalcService, @Optional() private dialogRef: MatDialogRef<SkuDrilldownComponent>, @Optional() @Inject(MAT_DIALOG_DATA) public initData: any) { }
 
   ngOnInit() {
     if (this.initData && this.initData['sku']) {
@@ -62,6 +63,11 @@ export class SkuDrilldownComponent implements OnInit {
       this.customers = response;
       this.refreshData();
     });
+  }
+
+  export() {
+    this.calc.exportSKUDrilldown(this.sku, this.selectedCustomerId);
+    this.sumCalc.exportSKUSummary(this.sku, this.selectedCustomerId);
   }
 
   async refreshData(): Promise<void> {
