@@ -15,8 +15,7 @@ const customValueProvider = {
 })
 export class SkuGraphComponent implements OnInit, ControlValueAccessor {
 
-  data = "2009/07/12,100,200\n" +
-  "2009/07/19,150,201\n";
+  data = "";
   options: any = {};
 
   constructor() { }

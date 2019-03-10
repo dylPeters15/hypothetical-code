@@ -81,14 +81,14 @@
                       <ng-container matColumnDef="pricepercase">
                         <mat-header-cell *matHeaderCellDef>Average Price Per Case</mat-header-cell>
                         <mat-cell *matCellDef="let summary">
-                          {{summary['pricepercase']}}
+                          ${{summary['pricepercase'].toFixed(2)}}
                         </mat-cell>
                       </ng-container>
             
                       <ng-container matColumnDef="revenue">
                         <mat-header-cell *matHeaderCellDef>Revenue</mat-header-cell>
                         <mat-cell *matCellDef="let summary">
-                          {{summary['revenue']}}
+                          ${{summary['revenue'].toFixed(2)}}
                         </mat-cell>
                       </ng-container>
             
