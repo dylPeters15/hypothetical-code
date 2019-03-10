@@ -28,8 +28,21 @@ export class SkuGraphComponent implements OnInit, ControlValueAccessor {
       labels: ["Date", this._value['sku']['skuname'] + " Revenue"],
       title: this._value['sku']['skuname'] + " Revenue"
     };
-    this.data = "2009/07/12,100\n" +
-    "2009/07/19,150\n";
+    this.data = this.formatSalesByWeek();
+  }
+
+  formatSalesByWeek(): string {
+    var toReturn = "";
+    console.log(this._value['salesByWeek']);
+    for (let sale of this._value['salesByWeek']) {
+      console.log("Sale", sale);
+      toReturn += "01/01/2010"
+
+      toReturn += ",";
+      toReturn += sale['revenue'];
+      toReturn += "\n";
+    }
+    return toReturn;
   }
   
   _value = '';
@@ -45,7 +58,7 @@ export class SkuGraphComponent implements OnInit, ControlValueAccessor {
       this._value = value;
       this.stringified = JSON.stringify(value);
       this.keys = Object.keys(value);
-      if (this._value['sku'] && this._value['allSales']) {
+      if (this._value['sku'] && this._value['salesByWeek']) {
         this.refreshData();
       }
     }
