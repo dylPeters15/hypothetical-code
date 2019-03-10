@@ -48,14 +48,16 @@ export class SkuSalesComponent implements OnInit, ControlValueAccessor {
   }
 
   displayDrilldown(): void {
-    const dialogConfig = new MatDialogConfig();
-    dialogConfig.width = '95%';
-    dialogConfig.height = '95%';
-    dialogConfig.data = {
-      sku: this.sku,
-      selectedCustomerId: this.selectedCustomerId
-    }
-    this.dialog.open(SkuDrilldownComponent, dialogConfig);
+    this._value['selectedIndex'] = 1;
+    this.propagateChange(this._value);
+    // const dialogConfig = new MatDialogConfig();
+    // dialogConfig.width = '95%';
+    // dialogConfig.height = '95%';
+    // dialogConfig.data = {
+    //   sku: this.sku,
+    //   selectedCustomerId: this.selectedCustomerId
+    // }
+    // this.dialog.open(SkuDrilldownComponent, dialogConfig);
   }
 
   _value = '';
