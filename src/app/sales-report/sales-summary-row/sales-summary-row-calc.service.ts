@@ -9,9 +9,6 @@ export class SalesSummaryRowCalcService {
   constructor(public restv2: RestServiceV2) { }
 
   async summarizeTotal(allSales: any[], sku: any): Promise<any[]> {
-    console.log("all Sales: ",allSales);
-    console.log("Sku: ",sku);
-
     var summary = {};
 
     var revenueSum = 0;
@@ -39,8 +36,6 @@ export class SalesSummaryRowCalcService {
     for (let ingredientandquantity of sku['formula']['ingredientsandquantities']) {
       totalCost += ingredientandquantity['ingredient']['costperpackage'] * ingredientandquantity['quantity'];
     }
-    console.log("Ingredient cost per case: ", totalCost);
-    console.log("sku: ", sku);
     return totalCost;
   }
 

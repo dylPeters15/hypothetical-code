@@ -29,13 +29,11 @@ export class SkuDrilldownComponent implements OnInit {
     this.refreshData();
   }
   selected(event){
-    console.log(event);
     this.selectedSKU = event.option.value;
     this.sku = this.selectedSKU;
     this.refreshData();
   }
   add(event) {
-    console.log(event);
     this.skuInput.nativeElement.value = "";
   }
 
@@ -69,18 +67,12 @@ export class SkuDrilldownComponent implements OnInit {
   async refreshData(): Promise<void> {
     if (this.sku['_id']) {
       if (this.startDate < this.endDate) {
-        console.log("valid");
         this.prevStartDate = this.startDate;
         this.prevEndDate = this.endDate;
       } else {
-        console.log("invalid");
         this.startDate = this.prevStartDate;
         this.endDate = this.prevEndDate;
       }
-      console.log("prevStartDate", this.prevStartDate);
-      console.log("startDate", this.startDate);
-      console.log("prevEndDate", this.prevEndDate);
-      console.log("endDate", this.endDate);
       this.allSales = await this.restv2.getSales(AndVsOr.AND, this.sku['_id'], this.selectedCustomerId=="all"?null:this.selectedCustomerId, this.startDate, this.endDate, 54321);
       this.salesByWeek = this.calc.formatSalesForTable(this.allSales);
       this.salesTableData = new MatTableDataSource(this.salesByWeek);
