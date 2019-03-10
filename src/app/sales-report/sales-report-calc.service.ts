@@ -1,5 +1,21 @@
 import { Injectable } from '@angular/core';
 import { RestServiceV2, AndVsOr } from '../restv2.service';
+import {ExportToCsv} from 'export-to-csv';
+
+class exportableSales {
+  date;
+  skuname;
+  skunumber;
+  revenue;
+  avgrevenuepercase;
+  constructor(dataIn) {
+    this.date = dataIn.year;
+    this.skuname = dataIn.sku.skuname;
+    this.skunumber = dataIn.sku.skunumber;
+    this.revenue = dataIn.totalrevenue;
+    this.avgrevenuepercase = dataIn.averagerevenuepercase;
+  }
+}
 
 @Injectable({
   providedIn: 'root'
@@ -44,5 +60,29 @@ export class SalesReportCalcService {
     summary['totalrevenue'] = totalRevenue;
     summary['averagerevenuepercase'] = (totalRevenue/totalNumCases);
     return summary;
+  }
+
+  async exportSKU(sku, selectedCustomerId) {
+    var allSales = await this.restv2.getSales(AndVsOr.AND, sku['_id'], selectedCustomerId=="all"?null:selectedCustomerId, new Date(new Date().getFullYear()-10), null, 54321);
+    var sales = this.summarizeSales(allSales, sku);
+
+    var exportData = [];
+    for (var sale of sales) {
+      exportData.push(new exportableSales(sale));
+    }
+      const options = { 
+        fieldSeparator: ',',
+        filename: sku['skuname'] + " sales",
+        quoteStrings: '',
+        decimalSeparator: '.',
+        showLabels: true, 
+        showTitle: false,
+        title: sku['skuname'],
+        useTextFile: false,
+        useBom: true,
+        headers: ["Year","SKU Name","SKU Number", "Total Revenue", "Average Revenue Per Case"]
+      };
+      const csvExporter = new ExportToCsv(options);
+      csvExporter.generateCsv(exportData);
   }
 }
