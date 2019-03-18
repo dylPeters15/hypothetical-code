@@ -3,7 +3,7 @@
   <mat-card>
     <mat-card-content style="display: grid; width: 100%; justify-items: center;">
       <mat-form-field>
-        <input matInput [(ngModel)]="linename" placeholder="Linename" required (keydown.enter)="createLine()" maxlength="32">
+        <input matInput [(ngModel)]="linename" placeholder="Linename" required (keydown.enter)="createLine()" maxlength="32" [errorStateMatcher]="linenameErrorMatcher" (input)="linenameChanged()">
         <mat-error>Linename is required and must be unique.</mat-error>
       </mat-form-field>
 
@@ -46,5 +46,5 @@
 </mat-dialog-content>
 <mat-dialog-actions align="center">
   <button mat-raised-button (click)="closeDialog()">Cancel</button>
-  <button mat-raised-button (click)="createLine()" [disabled]="linename==''||shortname==''" color="primary">Create</button>
+  <button mat-raised-button (click)="createLine()" [disabled]="linename==''||shortname==''||shortnameError||linenameError" color="primary">Create</button>
 </mat-dialog-actions>

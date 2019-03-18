@@ -93,7 +93,7 @@ export class NewLineDialogComponent implements OnInit {
   }
 
   createLine() {
-    if (this.linename!='' && this.shortname!='') {
+    if (this.linename!='' && this.shortname!='' && !this.shortnameError && !this.linenameError) {
       if(this.edit == false){
         this.rest.createLine(this.linename, this.shortname, this.selectedSkus, this.comment).subscribe(response => {
           this.snackBar.open("Successfully created Line: " + this.linename + ".", "close", {
@@ -185,6 +185,17 @@ export class NewLineDialogComponent implements OnInit {
   shortnameErrorMatcher = {
     isErrorState: (control: FormControl, form: FormGroupDirective): boolean => {
       return this.shortnameError;
+    }
+  }
+
+  linenameError: boolean = false;
+  async linenameChanged(): Promise<void> {
+    var lines = await this.restv2.getLine(AndVsOr.OR, this.linename, null, null, null, 1);
+    this.linenameError = lines.length > 0;
+  }
+  linenameErrorMatcher = {
+    isErrorState: (control: FormControl, form: FormGroupDirective): boolean => {
+      return this.linenameError;
     }
   }
 }
