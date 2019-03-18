@@ -8,7 +8,7 @@
       </mat-form-field>
 
       <mat-form-field>
-        <input matInput [(ngModel)]="shortname" placeholder="shortname" required (keydown.enter)="createLine() "maxlength="5">
+        <input matInput [(ngModel)]="shortname" placeholder="shortname" required (keydown.enter)="createLine() "maxlength="5" [errorStateMatcher]="shortnameErrorMatcher" (input)="shortnameChanged()">
         <mat-error>Shortname is required and must be unique.</mat-error>
       </mat-form-field>
 
