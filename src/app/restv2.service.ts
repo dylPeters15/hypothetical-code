@@ -160,7 +160,7 @@ export class RestServiceV2 {
 
   createSku(skuname: String, skunumber: number,
     caseupcnumber: number, unitupcnumber: number, unitsize: string,
-    countpercase: number, formulanum: Number, formulascalingfactor: Number, manufacturingrate: Number, manufacturingsetupcost: Number, manufacturingruncost: Number, comment: String): Promise<any> {
+    countpercase: number, formulaid: String, formulascalingfactor: Number, manufacturingrate: Number, manufacturingsetupcost: Number, manufacturingruncost: Number, comment: String): Promise<any> {
     return this.http.put(endpoint + "skus", {
       skuname: skuname,
       skunumber: skunumber,
@@ -168,7 +168,7 @@ export class RestServiceV2 {
       unitupcnumber: unitupcnumber,
       unitsize: unitsize,
       countpercase: countpercase,
-      formulanum: formulanum,
+      formula: formulaid,
       formulascalingfactor: formulascalingfactor,
       manufacturingrate: manufacturingrate,
       manufacturingsetupcost: manufacturingsetupcost,
@@ -180,21 +180,21 @@ export class RestServiceV2 {
 
   modifySku(andVsOr: AndVsOr, oldSkuName: String, skuname: String, skunumber: number,
     caseupcnumber: number, unitupcnumber: number, unitsize: string,
-    countpercase: number, formulanum: Number, formulascalingfactor: Number, manufacturingrate: Number, manufacturingsetupcost: Number, manufacturingruncost: Number, comment: String): Promise<any> {
-    return this.http.post(endpoint + "skus", [
-      {skuname: skuname},
-      {skunumber: skunumber},
-      {caseupcnumber: caseupcnumber},
-      {unitupcnumber: unitupcnumber},
-      {unitsize: unitsize},
-      {countpercase: countpercase},
-      {formulanum: formulanum},
-      {formulascalingfactor: formulascalingfactor},
-      {manufacturingrate: manufacturingrate},
-      {manufacturingsetupcost: manufacturingsetupcost},
-      {manufacturingruncost: manufacturingruncost},
-      {comment: comment}
-    ],
+    countpercase: number, formulaid: string, formulascalingfactor: Number, manufacturingrate: Number, manufacturingsetupcost: Number, manufacturingruncost: Number, comment: String): Promise<any> {
+    return this.http.post(endpoint + "skus", this.generateBodyWithOptions({
+      skuname: skuname,
+      skunumber: skunumber,
+      caseupcnumber: caseupcnumber,
+      unitupcnumber: unitupcnumber,
+      unitsize: unitsize,
+      countpercase: countpercase,
+      formula: formulaid,
+      formulascalingfactor: formulascalingfactor,
+      manufacturingrate: manufacturingrate,
+      manufacturingsetupcost: manufacturingsetupcost,
+      manufacturingruncost: manufacturingruncost,
+      comment: comment
+    }),
       this.generateHeaderWithFilterSchema(andVsOr, [
         {skuname: oldSkuName}
       ])).toPromise();
@@ -345,10 +345,11 @@ export class RestServiceV2 {
 
 
   ///////////////////// Manufacturing Activities /////////////////////
-  getActivities(andVsOr: AndVsOr, startdate: Date, line: string, limit: number): Promise<any> {
+  getActivities(andVsOr: AndVsOr, startdate: any, line: any, skuid: String, limit: number): Promise<any> {
     return this.http.get(endpoint + "manufacturing-activities", this.generateHeaderWithFilterSchema(andVsOr, [
       {startdate: startdate},
-      {line: line}
+      {line: line},
+      {sku: skuid}
     ], limit)).toPromise();
   }
 

@@ -6,7 +6,13 @@ const activity_utils = require('./manufacturing_activity_utils');
 const product_line_utils = require('./product_line_utils.js');
 const sku_utils = require('./sku_utils.js');
 const goals_utils = require('./manufacturing_goals_utils.js')
+<<<<<<< HEAD
 const scraper = require('./sales_scraper.js')
+=======
+const customer_utils = require('./customer_utils.js')
+const sales_utils = require('./sales_utils.js')
+
+>>>>>>> a997796303fadccd5b8f2fb27fe30bee36981fd1
 function startServerV2(app) {
     ///////////////////// Utilities /////////////////////
     function getFilterSchemaFromHeaders(headers) {
@@ -260,6 +266,60 @@ function startServerV2(app) {
         });
     }).delete((req, res) => {
         product_line_utils.deleteProductLine(getFilterSchemaFromHeaders(req.headers)).then(response => {
+            res.send(response);
+        }).catch(err => {
+            resolveError(err, res);
+        });
+    });
+
+    ///////////////////// customers /////////////////////
+    app.route('/api/v2/customers').get((req, res) => {
+        customer_utils.getCustomers(getFilterSchemaFromHeaders(req.headers), getLimitFromHeaders(req.headers)).then(customers => {
+            res.send(customers);
+        }).catch(err => {
+            resolveError(err, res);
+        });
+    }).put((req, res) => {
+        customer_utils.createCustomer(req.body).then(response => {
+            res.send(response);
+        }).catch(err => {
+            resolveError(err, res);
+        });
+    }).post((req, res) => {
+        customer_utils.modifyCustomer(getFilterSchemaFromHeaders(req.headers), req.body).then(response => {
+            res.send(response);
+        }).catch(err => {
+            resolveError(err, res);
+        });
+    }).delete((req, res) => {
+        customer_utils.deleteCustomer(getFilterSchemaFromHeaders(req.headers)).then(response => {
+            res.send(response);
+        }).catch(err => {
+            resolveError(err, res);
+        });
+    });
+
+    ///////////////////// sales /////////////////////
+    app.route('/api/v2/sales').get((req, res) => {
+        sales_utils.getSales(getFilterSchemaFromHeaders(req.headers), getLimitFromHeaders(req.headers)).then(sales => {
+            res.send(sales);
+        }).catch(err => {
+            resolveError(err, res);
+        });
+    }).put((req, res) => {
+        sales_utils.createSale(req.body).then(response => {
+            res.send(response);
+        }).catch(err => {
+            resolveError(err, res);
+        });
+    }).post((req, res) => {
+        sales_utils.modifySale(getFilterSchemaFromHeaders(req.headers), req.body).then(response => {
+            res.send(response);
+        }).catch(err => {
+            resolveError(err, res);
+        });
+    }).delete((req, res) => {
+        sales_utils.deleteSale(getFilterSchemaFromHeaders(req.headers)).then(response => {
             res.send(response);
         }).catch(err => {
             resolveError(err, res);

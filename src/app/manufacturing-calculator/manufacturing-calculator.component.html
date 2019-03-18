@@ -1,37 +1,46 @@
-  <!-- <div class="manufacturing-calculator"> -->
+<div>
+  <mat-card>
     <mat-card-header style="align-content: center; align-items: center; justify-content: center; display: grid;">
       <mat-card-title>Manufacturing Calculator</mat-card-title>
     </mat-card-header>
-  <h1 style="align-content: center; align-items: center; justify-content: center; display: grid;"> Select a Saved Manufacturing Goal:</h1>
-  <mat-form-field style="align-content: center; align-items: center; justify-content: center; display: grid;">
-    <mat-select [(ngModel)]="selectedValue">
-      <mat-option *ngFor="let goal of goals" value ="{{goal.goalname}}">{{goal.goalname}}</mat-option>
-    </mat-select>
-    <br><br>
-  </mat-form-field>
-<button mat-raised-button (click)="getGoalByName(selectedValue)" color="primary">Show Details</button>
-<div [hidden]="!showDetails" >
-<h1> {{selectedValue}}</h1>
-<mat-table [dataSource]="dataSource" class="mat-elevation-z8">
-<ng-container matColumnDef="ingredientName">
-  <mat-header-cell *matHeaderCellDef>Ingredient</mat-header-cell>
-  <mat-cell *matCellDef="let element">{{element.ingredientName}}</mat-cell>
-</ng-container>
+    <mat-card-content>
 
-<ng-container matColumnDef="packages">
-  <mat-header-cell *matHeaderCellDef>Packages</mat-header-cell>
-  <mat-cell *matCellDef="let element">{{element.packages}}</mat-cell>
-</ng-container>
+      <h1 style="align-content: center; align-items: center; justify-content: center; display: grid;"> Select a Saved
+        Manufacturing Goal:</h1>
+      <mat-form-field style="align-content: center; align-items: center; justify-content: center; display: grid;">
+        <mat-select [(ngModel)]="selectedValue">
+          <mat-option *ngFor="let goal of goals" value="{{goal.goalname}}">{{goal.goalname}}</mat-option>
+        </mat-select>
+        <br><br>
+      </mat-form-field>
+      <button mat-raised-button (click)="getGoalByName(selectedValue)" color="primary">Show Details</button>
+      <div [hidden]="!showDetails">
+        <h1> {{selectedValue}}</h1>
+        <mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+          <ng-container matColumnDef="ingredientName">
+            <mat-header-cell *matHeaderCellDef>Ingredient</mat-header-cell>
+            <mat-cell *matCellDef="let element">{{element.ingredientName}}</mat-cell>
+          </ng-container>
 
-<ng-container matColumnDef="packagesMeasured">
-  <mat-header-cell *matHeaderCellDef>Packages With Units</mat-header-cell>
-  <mat-cell *matCellDef="let element">{{element.packagesMeasured}}</mat-cell>
-</ng-container>
+          <ng-container matColumnDef="packages">
+            <mat-header-cell *matHeaderCellDef>Packages</mat-header-cell>
+            <mat-cell *matCellDef="let element">{{element.packages}}</mat-cell>
+          </ng-container>
 
-<mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-<mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
-</mat-table>
-<mat-paginator id="elementsTablePaginator" [pageSizeOptions]="getPageSizeOptions()" showFirstLastButtons></mat-paginator>
-<button mat-raised-button (click)="exportToCsv()">Export to CSV</button>
+          <ng-container matColumnDef="packagesMeasured">
+            <mat-header-cell *matHeaderCellDef>Packages With Units</mat-header-cell>
+            <mat-cell *matCellDef="let element">{{element.packagesMeasured}}</mat-cell>
+          </ng-container>
+
+          <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+          <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+        </mat-table>
+        <mat-paginator id="elementsTablePaginator" [pageSizeOptions]="getPageSizeOptions()" showFirstLastButtons>
+        </mat-paginator>
+        <button mat-raised-button (click)="exportToCsv()">Export to CSV</button>
+      </div>
+      <!-- </div> -->
+
+    </mat-card-content>
+  </mat-card>
 </div>
-<!-- </div> -->

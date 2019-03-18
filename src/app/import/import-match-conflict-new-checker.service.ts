@@ -56,9 +56,12 @@ export class ImportMatchConflictNewCheckerService {
       && sku['unitupcnumber'] == responseSku['unitupcnumber']
       && sku['unitsize'] == responseSku['unitsize']
       && sku['countpercase'] == responseSku['countpercase']
+      && (sku['formula'] && (responseSku['formula'] != undefined))
       && sku['formula'] == responseSku['formula']['formulanumber']
       && sku['formulascalingfactor'] == responseSku['formulascalingfactor']
       && sku['manufacturingrate'] == responseSku['manufacturingrate']
+      && sku['manufacturingsetupcost'] == responseSku['manufacturingsetupcost']
+      && sku['manufacturingruncost'] == responseSku['manufacturingruncost']
       && sku['comment'] == responseSku['comment'];
 
     if (match) {

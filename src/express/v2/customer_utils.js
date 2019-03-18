@@ -51,8 +51,8 @@ function deleteCustomer(filterSchema) {
 
 
 module.exports = {
-    getSales: getSales,
-    createSale: createSale,
-    modifySale: modifySale,
-    deleteSale: deleteSale
+    getCustomers: getCustomers,
+    createCustomer: createCustomer,
+    modifyCustomer: modifyCustomer,
+    deleteCustomer: deleteCustomer
 };

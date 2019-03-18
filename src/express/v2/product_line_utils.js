@@ -1,8 +1,10 @@
+const mongoose = require('mongoose');
 const database = require('../database.js');
+var deepPopulate = require('mongoose-deep-populate')(mongoose);
 
 function getProductLines(filterSchema, limit) {
     return new Promise(function (resolve, reject) {
-        database.productLineModel.find(filterSchema).limit(limit).populate('skus.sku').exec((err, productLines) => {
+        database.productLineModel.find(filterSchema).limit(limit).deepPopulate('skus.sku.formula.ingredientsandquantities.ingredient').exec((err, productLines) => {
             if (err) {
                 reject(Error(err));
                 return;

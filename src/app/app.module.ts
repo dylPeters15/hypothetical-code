@@ -69,9 +69,17 @@ import { TermsAndConditionsDialogComponent } from './footer/terms-and-conditions
 import { UserManagementComponent } from './user-management/user-management.component';
 import { UserNotificationDialogComponent } from './user-notification-dialog/user-notification-dialog.component';
 import { UserRouteGuardService } from './user-route-guard.service';
+import { VisComponent } from './manufacturing-schedule/vis/vis.component';
 import { NewSkuFormulaComponent } from './new-sku-formula/new-sku-formula.component';
 import {MatDialogModule} from '@angular/material/dialog';
 import { SalesReportComponent } from './sales-report/sales-report.component';
+import {MatTabsModule} from '@angular/material/tabs';
+import { ProductLineSalesComponent } from './sales-report/product-line-sales/product-line-sales.component';
+import { SkuSalesComponent } from './sales-report/sku-sales/sku-sales.component';
+import { SkuDrilldownComponent } from './sales-report/sku-drilldown/sku-drilldown.component';
+import { SalesSummaryRowComponent } from './sales-report/sales-summary-row/sales-summary-row.component';
+import { SkuGraphComponent } from './sales-report/sku-drilldown/sku-graph/sku-graph.component';
+import { NgDygraphsModule } from 'ng-dygraphs';
 
 const appRoutes: Routes = [
   { path: 'login', component: LoginComponent, data: { title: 'Log In' }, canActivate: [AlreadyLoggedInRouteGuardService] },
@@ -147,7 +155,13 @@ const appRoutes: Routes = [
     ManufactoringScheduleTableComponent,
     ManufacturingLinesTableComponent,
     ConfirmDeletionDialogComponent,
-    SalesReportComponent
+    VisComponent,
+    SalesReportComponent,
+    ProductLineSalesComponent,
+    SkuSalesComponent,
+    SkuDrilldownComponent,
+    SalesSummaryRowComponent,
+    SkuGraphComponent
   ],
   imports: [
     BrowserModule,
@@ -175,12 +189,14 @@ const appRoutes: Routes = [
     MatAutocompleteModule,   
     DragDropModule,
     MatDatepickerModule,
-    MatDialogModule
+    MatDialogModule,
+    MatTabsModule,
+    NgDygraphsModule
   ],
   providers: [],
   bootstrap: [AppComponent],
 
-  entryComponents: [ConfirmDeletionDialogComponent, DeleteProductLineDialogComponent, UserNotificationDialogComponent, NewUserDialogComponent, PasswordConfirmationDialogComponent, PrivacyPolicyDialogComponent, TermsAndConditionsDialogComponent, MoreInfoDialogComponent, NewSkuDialogComponent, NewFormulaDialogComponent, NewFormulaIngredientDialogComponent, NewIngredientDialogComponent, NewGoalDialogComponent, NewProductLineDialogComponent, NewSkuFormulaComponent, ConfirmActionDialogComponent, ImportPreviewDialogComponent, NewLineDialogComponent, EnableGoalsDialogComponent, ModifyActivityDialogComponent]
+  entryComponents: [ConfirmDeletionDialogComponent, DeleteProductLineDialogComponent, UserNotificationDialogComponent, NewUserDialogComponent, PasswordConfirmationDialogComponent, PrivacyPolicyDialogComponent, TermsAndConditionsDialogComponent, MoreInfoDialogComponent, NewSkuDialogComponent, NewFormulaDialogComponent, NewFormulaIngredientDialogComponent, NewIngredientDialogComponent, NewGoalDialogComponent, NewProductLineDialogComponent, NewSkuFormulaComponent, ConfirmActionDialogComponent, ImportPreviewDialogComponent, NewLineDialogComponent, EnableGoalsDialogComponent, ModifyActivityDialogComponent, SkuDrilldownComponent]
 
 })
 export class AppModule { 
