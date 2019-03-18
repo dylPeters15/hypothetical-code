@@ -4,11 +4,12 @@
     <mat-card-content style="display: grid; width: 100%; justify-items: center;">
       <mat-form-field>
         <input matInput [(ngModel)]="linename" placeholder="Linename" required (keydown.enter)="createLine()">
+        <mat-error>Linename must be 32 characters or less.</mat-error>
       </mat-form-field>
 
       <mat-form-field>
         <input matInput [(ngModel)]="shortname" placeholder="shortname" required (keydown.enter)="createLine()">
-        <mat-hint>Enter Shortname (no spaces)</mat-hint>
+        <mat-error>Shortname must be 5 characters or less.</mat-error>
       </mat-form-field>
 
       <mat-form-field class="example-chip-list">
