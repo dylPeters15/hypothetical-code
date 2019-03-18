@@ -2,10 +2,11 @@ import { Component, OnInit, ElementRef, ViewChild, Inject } from '@angular/core'
 import { MatDialogRef, MAT_DIALOG_DATA} from "@angular/material";
 import { RestService } from '../rest.service';
 import {MatSnackBar, MatAutocompleteSelectedEvent, MatChipInputEvent, MatAutocomplete} from '@angular/material';
-import {FormControl} from '@angular/forms';
+import {FormControl, FormGroupDirective} from '@angular/forms';
 import {Observable} from 'rxjs';
 import {map, startWith} from 'rxjs/operators';
 import {COMMA, ENTER} from '@angular/cdk/keycodes';
+import { RestServiceV2, AndVsOr } from '../restv2.service';
 
 @Component({
   selector: 'app-new-line-dialog',
@@ -33,7 +34,7 @@ export class NewLineDialogComponent implements OnInit {
   @ViewChild('skuInput') skuInput: ElementRef<HTMLInputElement>;
   @ViewChild('auto') matAutocomplete: MatAutocomplete;
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: any, private dialogRef: MatDialogRef<NewLineDialogComponent>, public rest:RestService, private snackBar: MatSnackBar) { 
+  constructor(public restv2: RestServiceV2, @Inject(MAT_DIALOG_DATA) public data: any, private dialogRef: MatDialogRef<NewLineDialogComponent>, public rest:RestService, private snackBar: MatSnackBar) { 
     this.filteredSkus = this.skuCtrl.valueChanges.pipe(
       startWith(null),
       map((sku: string | null) => sku ? this._filter(sku) : this.skuNameList.slice()));
@@ -92,7 +93,7 @@ export class NewLineDialogComponent implements OnInit {
   }
 
   createLine() {
-    if (this.linename!='' && this.shortname!='') {
+    if (this.linename!='' && this.shortname!='' && !this.shortnameError && !this.linenameError) {
       if(this.edit == false){
         this.rest.createLine(this.linename, this.shortname, this.selectedSkus, this.comment).subscribe(response => {
           this.snackBar.open("Successfully created Line: " + this.linename + ".", "close", {
@@ -174,5 +175,27 @@ export class NewLineDialogComponent implements OnInit {
     const filterValue = value.toLowerCase();
 
     return this.skuNameList.filter(sku => sku.toLowerCase().indexOf(filterValue) === 0);
+  }
+
+  shortnameError: boolean = false;
+  async shortnameChanged(): Promise<void> {
+    var lines = await this.restv2.getLine(AndVsOr.OR, null, null, this.shortname, null, 1);
+    this.shortnameError = lines.length > 0;
+  }
+  shortnameErrorMatcher = {
+    isErrorState: (control: FormControl, form: FormGroupDirective): boolean => {
+      return this.shortnameError;
+    }
+  }
+
+  linenameError: boolean = false;
+  async linenameChanged(): Promise<void> {
+    var lines = await this.restv2.getLine(AndVsOr.OR, this.linename, null, null, null, 1);
+    this.linenameError = lines.length > 0;
+  }
+  linenameErrorMatcher = {
+    isErrorState: (control: FormControl, form: FormGroupDirective): boolean => {
+      return this.linenameError;
+    }
   }
 }
