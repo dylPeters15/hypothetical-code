@@ -4,12 +4,12 @@
     <mat-card-content style="display: grid; width: 100%; justify-items: center;">
       <mat-form-field>
         <input matInput [(ngModel)]="linename" placeholder="Linename" required (keydown.enter)="createLine()" maxlength="32">
-        <mat-error>Linename must be unique.</mat-error>
+        <mat-error>Linename is required and must be unique.</mat-error>
       </mat-form-field>
 
       <mat-form-field>
         <input matInput [(ngModel)]="shortname" placeholder="shortname" required (keydown.enter)="createLine() "maxlength="5">
-        <mat-error>Shortname must be unique.</mat-error>
+        <mat-error>Shortname is required and must be unique.</mat-error>
       </mat-form-field>
 
       <mat-form-field class="example-chip-list">
