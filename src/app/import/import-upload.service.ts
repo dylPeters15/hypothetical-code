@@ -133,7 +133,7 @@ export class ImportUploadService {
     }
 
     for (let ml of sku['manufacturinglines']) {
-      var mlResponse = await this.restv2.getLine(AndVsOr.AND, ml, null, ml, null, 1);
+      var mlResponse = await this.restv2.getLine(AndVsOr.OR, null, null, ml, null, 1);
       if (mlResponse.length == 0) {
         throw Error("Could not find manufacturing line " + ml + " for SKU " + sku['skuname']);
       }

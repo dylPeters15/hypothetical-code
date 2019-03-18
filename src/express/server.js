@@ -25,7 +25,7 @@ const server = https.createServer({
     console.log('Server started!');
 });
 
-scraper.scrape();
+scraper.scrapeAll();
 
 module.exports = server;
 
