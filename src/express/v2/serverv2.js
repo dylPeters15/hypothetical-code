@@ -271,6 +271,60 @@ function startServerV2(app) {
         });
     });
 
+     ///////////////////// customers /////////////////////
+     app.route('/api/v2/customers').get((req, res) => {
+        customer_utils.getCustomers(getFilterSchemaFromHeaders(req.headers), getLimitFromHeaders(req.headers)).then(customers => {
+            res.send(customers);
+        }).catch(err => {
+            resolveError(err, res);
+        });
+    }).put((req, res) => {
+        customer_utils.createCustomer(req.body).then(response => {
+            res.send(response);
+        }).catch(err => {
+            resolveError(err, res);
+        });
+    }).post((req, res) => {
+        customer_utils.modifyCustomer(getFilterSchemaFromHeaders(req.headers), req.body).then(response => {
+            res.send(response);
+        }).catch(err => {
+            resolveError(err, res);
+        });
+    }).delete((req, res) => {
+        customer_utils.deleteCustomer(getFilterSchemaFromHeaders(req.headers)).then(response => {
+            res.send(response);
+        }).catch(err => {
+            resolveError(err, res);
+        });
+    });
+
+    ///////////////////// sales /////////////////////
+    app.route('/api/v2/sales').get((req, res) => {
+        sales_utils.getSales(getFilterSchemaFromHeaders(req.headers), getLimitFromHeaders(req.headers)).then(sales => {
+            res.send(sales);
+        }).catch(err => {
+            resolveError(err, res);
+        });
+    }).put((req, res) => {
+        sales_utils.createSale(req.body).then(response => {
+            res.send(response);
+        }).catch(err => {
+            resolveError(err, res);
+        });
+    }).post((req, res) => {
+        sales_utils.modifySale(getFilterSchemaFromHeaders(req.headers), req.body).then(response => {
+            res.send(response);
+        }).catch(err => {
+            resolveError(err, res);
+        });
+    }).delete((req, res) => {
+        sales_utils.deleteSale(getFilterSchemaFromHeaders(req.headers)).then(response => {
+            res.send(response);
+        }).catch(err => {
+            resolveError(err, res);
+        });
+    });
+
     ///////////////////// login /////////////////////
     app.route('/api/v2/login').get((req, res) => {
         if (req.headers['netidtoken']) {
