@@ -6,19 +6,37 @@ const url = 'http://hypomeals-sales.colab.duke.edu:8080'; // /?sku=1&year=2010
 
 
 async function scrapeAll(){
+  console.log("scraping");
   var result = await database.skuModel.find({}).exec().catch(err => {
     if (err) {
       throw err;
-  }
+    }
   });
-    for(sku of result) {
-      var year = 0;
-      for(year = 1999; year <= new Date().getFullYear(); year++){
-          await scrape(sku.skunumber, year);
-      }
-
+  for(sku of result) {
+    var year = 0;
+    for(year = 1999; year <= new Date().getFullYear(); year++){
+        await scrape(sku.skunumber, year);
     }
 
+  }
+}
+
+async function scrapeSku(sku) {
+  let skus = [];
+  skus.push(sku);
+  var year = 0;
+  for(year = 1999; year <= new Date().getFullYear(); year++){
+    await scrape(sku.skunumber, year);
+}
+}
+
+async function scrapeAllFromCurrentYear(){
+  var result = await database.skuModel.find({}).exec().catch(err => {
+    if (err) {
+      throw err;
+    }
+  });
+  await scrape(new Date().getFullYear(), result);
 }
 
 
@@ -49,11 +67,11 @@ async function scrape(skunumber, year){
             if(err){
               throw err;
             }
-            
+            console.log(result)
             var sale = {
               "date": date,
               "sku": sku['_id'],
-              "customer":  result['id'],
+              // "customer":  result['id'],
               "numcases": children.eq(5).text(),
               "pricepercase": children.eq(6).text().trim()
           };
@@ -72,6 +90,8 @@ async function scrape(skunumber, year){
 }
 
 module.exports = {
-    scrapeAll: scrapeAll
+    scrapeAll: scrapeAll,
+    scrapeAllFromCurrentYear: scrapeAllFromCurrentYear,
+    scrapeSku: scrapeSku
 }
 

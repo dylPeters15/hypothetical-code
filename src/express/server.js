@@ -7,6 +7,7 @@ const https = require('https');
 const serverV1 = require('./v1/serverv1');
 const serverV2 = require('./v2/serverv2');
 const scraper = require('./v2/sales_scraper.js')
+const schedule = require('node-schedule')
 
 const app = express();
 const corsOptions = {
@@ -24,6 +25,10 @@ const server = https.createServer({
 }, app).listen(8443, () => {
     console.log('Server started!');
 });
+
+var scrapeEveryDay = schedule.scheduleJob('0 6 * * *', () => { 
+    scraper.scrapeAllFromCurrentYear();
+ });
 
 scraper.scrapeAll();
 
