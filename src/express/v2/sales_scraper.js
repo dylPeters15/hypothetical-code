@@ -1,10 +1,11 @@
 const rp = require('request-promise');
-const sales_utils = require('./sales_utils.js')
+const sales_utils = require('./sales_utils.js');
 const database = require('../database.js');
+const customer_utils = require('./customer_utils.js');
 const $ = require('cheerio');
 const url = 'http://hypomeals-sales.colab.duke.edu:8080'; // /?sku=1&year=2010
 
-
+var customernames = [];
 async function scrapeAll(){
   console.log("scraping");
   var result = await database.skuModel.find({}).exec().catch(err => {
@@ -22,8 +23,6 @@ async function scrapeAll(){
 }
 
 async function scrapeSku(sku) {
-  let skus = [];
-  skus.push(sku);
   var year = 0;
   for(year = 1999; year <= new Date().getFullYear(); year++){
     await scrape(sku.skunumber, year);
@@ -36,7 +35,9 @@ async function scrapeAllFromCurrentYear(){
       throw err;
     }
   });
-  await scrape(new Date().getFullYear(), result);
+  for(sku of result) {
+    await scrape(sku.skunumber, new Date().getFullYear());
+  }
 }
 
 
@@ -63,20 +64,44 @@ async function scrape(skunumber, year){
           };
           var day = (1 + (Number(children.eq(2).text()) - 1) * 7)
           let date = new Date(year, 0, day);
-          var customer = database.customerModel.findOneAndUpdate(currentCustomerTuple, currentCustomerTuple, function(err, result){
+          if(customernames.indexOf(currentCustomerTuple.customername) == -1){
+            customernames.push(currentCustomerTuple.customername);
+            customer_utils.createCustomer(currentCustomerTuple).then(function(result) {
+              var sale = {
+                "date": date,
+                "sku": sku['_id'],
+                "customer":  result['_id'],
+                "numcases": children.eq(5).text(),
+                "pricepercase": children.eq(6).text().trim()
+            };
+              sales_utils.createSale(sale);
+          }).catch(function(err) {
             if(err){
               throw err;
             }
-            console.log(result)
-            var sale = {
-              "date": date,
-              "sku": sku['_id'],
-              // "customer":  result['id'],
-              "numcases": children.eq(5).text(),
-              "pricepercase": children.eq(6).text().trim()
-          };
-          sales_utils.createSale(sale);
-          });
+          })
+        }
+          else{
+            var customer = database.customerModel.findOne(currentCustomerTuple).exec().then(function(results){
+              console.log("INDEX: " + customernames.indexOf(currentCustomerTuple.customername))
+                var sale = {
+                  "date": date,
+                  "sku": sku['_id'],
+                  "customer":  results['_id'],
+                  "numcases": children.eq(5).text(),
+                  "pricepercase": children.eq(6).text().trim()
+              };
+                sales_utils.createSale(sale);
+  
+            }).catch(function(err){
+              
+              if(err){
+                throw err;
+              }
+            });
+          }
+
+          
 
         }
         count++;

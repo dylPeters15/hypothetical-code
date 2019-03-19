@@ -14,6 +14,7 @@ function getSales(filterSchema, limit) {
 }
 
 function createSale(newObject) {
+    console.log("CREATING SALE")
     return new Promise(function (resolve, reject) {
         let sale = new database.saleModel(newObject);
         sale.save().then(result => {
