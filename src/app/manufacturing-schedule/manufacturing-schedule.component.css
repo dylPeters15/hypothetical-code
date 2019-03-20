@@ -29,6 +29,25 @@ body {
   width: 100%;
   border: 1px solid lightgray;
 }
+
+li.item {
+  list-style: none;
+  width: 150px;
+  color: #1A1A1A;
+  background-color: #D5DDF6;
+  border: 1px solid #97B0F8;
+  border-radius: 2px;
+  margin-bottom: 5px;
+  padding: 5px 12px;
+}
+
+li.item:before {
+  content: "≣";
+  font-family: Arial, sans-serif;
+  display: inline-block;
+  font-size: inherit;
+  cursor: move;
+}
 /* .ng-star-inserted {
     width: 100%;
     display: inline-block;
