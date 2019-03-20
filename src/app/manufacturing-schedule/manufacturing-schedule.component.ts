@@ -69,7 +69,7 @@ export class ManufacturingScheduleComponent implements OnInit {
     html += "<b>content: </b>" + newItem_dropped.content + "<br>";
     html += "<b>start: </b>" + newItem_dropped.start + "<br>";
     html += "<b>end: </b>" + newItem_dropped.end + "<br>";
-    document.getElementById('output').innerHTML = html;
+    // document.getElementById('output').innerHTML = html;
   }
 
   getTimelineGroups() {
