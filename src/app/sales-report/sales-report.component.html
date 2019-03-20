@@ -1,3 +1,53 @@
-<p>
-  sales-report works!
-</p>
+<div>
+  <mat-card>
+    <mat-card-header style="align-content: center; align-items: center; justify-content: center; display: grid;">
+      <mat-card-title>Sales Report</mat-card-title>
+    </mat-card-header>
+    <mat-card-content style="display: flex;">
+
+      <div>
+        <mat-checkbox (change)="selectDeselectAllProductLines()" [(ngModel)]="allProductLinesSelected">Select/Deselect
+          All</mat-checkbox>
+        <div *ngFor="let productLine of productLines">
+          <mat-checkbox (change)="refreshData()" [(ngModel)]="productLine['checked']">
+            {{productLine['productlinename']}}</mat-checkbox>
+        </div>
+
+        <br>
+        <br>
+        <br>
+
+        <mat-radio-group [(ngModel)]="selectedCustomerId" (ngModelChange)="refreshData();">
+          <mat-radio-button value="all">
+            Select All
+          </mat-radio-button>
+          <div *ngFor="let customer of customers">
+            <mat-radio-button value={{customer._id}}>
+              {{customer['customername']}}
+            </mat-radio-button>
+          </div>
+        </mat-radio-group>
+      </div>
+
+      <mat-tab-group mat-stretch-tabs [(selectedIndex)]="selectedIndex"  style="width:100%;">
+        <mat-tab label="Summary"  style="width:100%;">
+          <br>
+          <mat-card-header style="align-content: center; align-items: center; justify-content: center; display: grid;">
+            <mat-card-title>SKU Sales Summary</mat-card-title>
+          </mat-card-header>
+          <mat-tab-group>
+            <mat-tab *ngFor="let productLine of selectedProductLines" label={{productLine.productlinename}}>
+              <app-product-line-sales [ngModel]="{productLine:productLine,selectedCustomerId:selectedCustomerId,selectedIndex:selectedIndex}" (ngModelChange)="modelChanged($event)">
+              </app-product-line-sales>
+            </mat-tab>
+          </mat-tab-group>
+        </mat-tab>
+        <mat-tab label="Details"  style="width:100%;">
+          <app-sku-drilldown [ngModel]="{selectedSKU:selectedSKU,selectedCustomerId:selectedCustomerId}">
+          </app-sku-drilldown>
+        </mat-tab>
+      </mat-tab-group>
+
+    </mat-card-content>
+  </mat-card>
+</div>

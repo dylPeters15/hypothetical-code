@@ -136,17 +136,19 @@ export class ParseCsvService {
       var currentSKU = skusObject[i];
       var newSKU = {};
       newSKU['skuname'] = currentSKU['Name'];
-      newSKU['skunumber'] = currentSKU['SKU#'];
-      newSKU['caseupcnumber'] = currentSKU['Case UPC'];
-      newSKU['unitupcnumber'] = currentSKU['Unit UPC'];
+      newSKU['skunumber'] = this.getNumber(currentSKU['SKU#']);
+      newSKU['caseupcnumber'] = this.getNumber(currentSKU['Case UPC']);
+      newSKU['unitupcnumber'] = this.getNumber(currentSKU['Unit UPC']);
       newSKU['unitsize'] = currentSKU['Unit size'];
-      newSKU['countpercase'] = currentSKU['Count per case'];
+      newSKU['countpercase'] = this.getNumber(currentSKU['Count per case']);
       newSKU['productline'] = currentSKU['PL Name'];
-      newSKU['formula'] = currentSKU['Formula#'];
-      newSKU['formulascalingfactor'] = currentSKU['Formula factor'];
-      newSKU['manufacturingrate'] = currentSKU['Rate'];
+      newSKU['formula'] = this.getNumber(currentSKU['Formula#']);
+      newSKU['formulascalingfactor'] = this.getNumber(currentSKU['Formula factor']);
+      newSKU['manufacturingrate'] = this.getNumber(currentSKU['Rate']);
       newSKU['comment'] = currentSKU['Comment']||"";
       newSKU['manufacturinglines'] = currentSKU["ML Shortnames"]?currentSKU["ML Shortnames"].split(","):[];
+      newSKU['manufacturingsetupcost'] = this.getNumber(currentSKU['Mfg setup cost']);
+      newSKU['manufacturingruncost'] = this.getNumber(currentSKU['Mfg run cost']);
       objectToReturn.push(newSKU);
     }
     return objectToReturn;
@@ -162,14 +164,14 @@ export class ParseCsvService {
         newFormula = this.arrayObjectWithKeyVal(objectToReturn, 'formulaname', currentFormula['Name']);
       } else {
         newFormula['formulaname'] = currentFormula['Name'];
-        newFormula['formulanumber'] = currentFormula['Formula#'];
+        newFormula['formulanumber'] = this.getNumber(currentFormula['Formula#']);
         newFormula['ingredientsandquantities'] = [];
         newFormula['comment'] = currentFormula['Comment']||"";
         objectToReturn.push(newFormula);
       }
       newFormula['ingredientsandquantities'].push({
-        ingredient: currentFormula['Ingr#'],
-        quantity: currentFormula['Quantity']
+        ingredient: this.getNumber(currentFormula['Ingr#']),
+        quantity: this.getNumber(currentFormula['Quantity'])
       });
     }
 
@@ -183,16 +185,20 @@ export class ParseCsvService {
       var newIngredient = {};
 
       newIngredient['ingredientname'] = currentIngredient['Name'];
-      newIngredient['ingredientnumber'] = currentIngredient['Ingr#'];
+      newIngredient['ingredientnumber'] = this.getNumber(currentIngredient['Ingr#']);
       newIngredient['vendorinformation'] = currentIngredient['Vendor Info'];
       newIngredient['unitofmeasure'] = currentIngredient['Size'].toLowerCase().match('[a-z]+')[0];
-      newIngredient['amount'] = Number(currentIngredient['Size'].toLowerCase().match('[0-9]+')[0]);
-      newIngredient['costperpackage'] = isNaN(currentIngredient['Cost'])?Number(currentIngredient['Cost'].toLowerCase().match('[0-9\.]+')[0]):currentIngredient['Cost'];
+      newIngredient['amount'] = this.getNumber(currentIngredient['Size']);
+      newIngredient['costperpackage'] = this.getNumber(currentIngredient['Cost']);
       newIngredient['comment'] = currentIngredient['Comment']||"";
 
       objectToReturn.push(newIngredient);
     }
     return objectToReturn;
+  }
+
+  private getNumber(stringIn: any) {
+    return typeof stringIn == "string"?Number(stringIn.match('[0-9\.]+')[0]):stringIn;
   }
 
 }

@@ -213,4 +213,13 @@ export class IngredientDependencyComponent implements OnInit {
       const csvExporter = new ExportToCsv(options);
       csvExporter.generateCsv(exportData);
   }
+
+  noneSelected(): boolean {
+    for (var i = 0; i < this.data.length; i++) {
+      if (this.data[i].checked) {
+        return false;
+      }
+    }
+    return true;
+  }
 }

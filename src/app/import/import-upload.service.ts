@@ -110,7 +110,11 @@ export class ImportUploadService {
   }
 
   private async importSKU(sku): Promise<void> {
-    var createSkuResponse = await this.restv2.createSku(sku['skuname'], sku['skunumber'], sku['caseupcnumber'], sku['unitupcnumber'], "" + sku['unitsize'], sku['countpercase'], sku['formula'], sku['formulascalingfactor'], sku['manufacturingrate'], 1, 1, sku['comment']); //TODO
+    var formulas = await this.restv2.getFormulas(AndVsOr.AND, null, null, sku['formula'], null, null, 1);
+    if (formulas.length == 0) {
+      throw Error("Could not get formula " + sku['formula'] + " for SKU " + sku['skuname']);
+    }
+    var createSkuResponse = await this.restv2.createSku(sku['skuname'], sku['skunumber'], sku['caseupcnumber'], sku['unitupcnumber'], "" + sku['unitsize'], sku['countpercase'], formulas[0]['_id'], sku['formulascalingfactor'], sku['manufacturingrate'], sku['manufacturingsetupcost'], sku['manufacturingruncost'], sku['comment']);
     if (createSkuResponse['skuname'] != sku['skuname']) {
       throw Error("Could not create SKU " + sku['skuname']);
     }
@@ -129,7 +133,7 @@ export class ImportUploadService {
     }
 
     for (let ml of sku['manufacturinglines']) {
-      var mlResponse = await this.restv2.getLine(AndVsOr.AND, ml, null, ml, null, 1);
+      var mlResponse = await this.restv2.getLine(AndVsOr.OR, null, null, ml, null, 1);
       if (mlResponse.length == 0) {
         throw Error("Could not find manufacturing line " + ml + " for SKU " + sku['skuname']);
       }
@@ -158,7 +162,8 @@ export class ImportUploadService {
     if (formulas.length == 0) {
       throw Error("Could not get formula " + newsku['formula'] + " for SKU " + newsku['skuname']);
     }
-    var response = await this.restv2.modifySku(AndVsOr.AND, oldsku['skuname'], newsku['skuname'], newsku['skunumber'], newsku['caseupcnumber'], newsku['unitupcnumber'], "" + newsku['unitsize'], newsku['countpercase'], newsku['formula'], newsku['formulascalingfactor'], newsku['manufacturingrate'], 1,1, newsku['comment']); //TODO
+    var response = await this.restv2.modifySku(AndVsOr.AND, oldsku['skuname'], newsku['skuname'], newsku['skunumber'], newsku['caseupcnumber'], newsku['unitupcnumber'], "" + newsku['unitsize'], newsku['countpercase'], formulas[0]['_id'], newsku['formulascalingfactor'], newsku['manufacturingrate'], newsku['manufacturingsetupcost'], newsku['manufacturingruncost'], newsku['comment']);
+    console.log("Reponse: ", response);
     if (response['ok'] != 1) {
       throw Error("Could not update sku " + oldsku['skuname']);
     }
