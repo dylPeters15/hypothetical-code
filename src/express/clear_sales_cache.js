@@ -7,25 +7,11 @@ clearCache().then(() => {
 
 async function clearCache(){
     try{
-        var salesCleared = await database.saleModel.deleteMany({}, (err, response) => {
-            if(err) {
-              throw err;
-            }
-            if(response){
-                console.log("sales cleared!")
-            };
-          });
-          var customersCleared = await database.customerModel.deleteMany({}, (err, response) => {
-              if(err) {
-                throw err;
-              }
-              if(response){
-                  console.log("customers cleared!")
-              };
-            });
-            if(customersCleared && salesCleared){
-                await scraper.scrapeAll();
-            }
+        var salesCleared = await database.saleModel.deleteMany({}).exec();
+        console.log("sales cleared");
+        var customersCleared = await database.customerModel.deleteMany({}).exec();
+        console.log("customers cleared.");
+        await scraper.scrapeAll();
             
     }
     catch(e){

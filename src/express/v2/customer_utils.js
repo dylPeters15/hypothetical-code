@@ -14,7 +14,6 @@ function getCustomers(filterSchema, limit) {
 }
 
 function createCustomer(newObject) {
-    console.log("OBJECT: " + JSON.stringify(newObject))
     return new Promise(function (resolve, reject) {
         let customer = new database.customerModel(newObject);
         customer.save().then(result => {
