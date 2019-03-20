@@ -13,10 +13,14 @@
     [cdkDropListData]="_value['skus']"
     class="example-list"
     (cdkDropListDropped)="drop($event)">
-    <div class="example-box" *ngFor="let item of _value['skus']" cdkDrag>{{item['sku']['skuname']}}</div>
+    <div class="example-box" *ngFor="let item of _value['skus']" cdkDrag>
+      {{item['sku']['skuname']}}:{{item['sku']['unitsize']}} * {{item['sku']['countpercase']}}
+    </div>
   </div>
   <div *ngIf="!admin"
   class="example-list">
-    <div class="example-box" *ngFor="let item of _value['skus']">{{item['sku']['skuname']}}</div>
+    <div class="example-box" *ngFor="let item of _value['skus']">
+        {{item['sku']['skuname']}}:{{item['sku']['unitsize']}} * {{item['sku']['countpercase']}}
+    </div>
   </div>
 </div>

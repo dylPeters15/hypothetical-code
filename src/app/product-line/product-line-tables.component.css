@@ -5,15 +5,15 @@
   }
 
 .example-list {
-    width: 500px;
-    max-width: fit-content;
+    /* width: 500px; */
+    width: 150px;
     border: solid 1px #ccc;
     min-height: 60px;
     display: block;
     background: white;
     border-radius: 4px;
     overflow: hidden;
-    min-width: 100px;
+    /* min-width: 100px; */
   }
   
   .example-box {
