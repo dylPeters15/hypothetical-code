@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const database = require('../database.js');
 const formula_utils = require('./formula_utils.js');
 var deepPopulate = require('mongoose-deep-populate')(mongoose);
-
+const scraper = require('./sales_scraper.js')
 
 function getSkus(filterSchema, limit) {
     return new Promise(function (resolve, reject) {
@@ -20,6 +20,7 @@ function createSku(newObject) {
     return new Promise(function (resolve, reject) {
         let sku = new database.skuModel(newObject);
         sku.save().then(response => {
+            scraper.createdSkus.push(response);
             resolve(response);
         }).catch(err => {
             reject(Error(err));

@@ -5,6 +5,8 @@ const customer_utils = require('./customer_utils.js');
 const $ = require('cheerio');
 const url = 'http://hypomeals-sales.colab.duke.edu:8080'; // /?sku=1&year=2010
 
+createdSkus = [];
+
 async function scrapeAll(){
   console.log("scraping");
   var result = await database.skuModel.find({}).exec().catch(err => {
@@ -32,6 +34,7 @@ async function scrapeSku(sku) {
 }
 
 async function scrapeAllFromCurrentYear(){
+  console.log("current year")
   var result = await database.skuModel.find({}).exec().catch(err => {
     if (err) {
       throw err;
@@ -93,6 +96,15 @@ async function parseRow(html, year, sku){
         });
 }
 
+async function startScrapeService(){
+  
+    while(createdSkus.length > 0){
+      console.log("new sku!")
+      let sku = createdSkus.pop();
+      await scrapeSku(sku)
+    }
+}
+
 async function scrapeCustomers(){
   var customers = await database.customerModel.find({}).exec().catch(err => {
     if (err) {
@@ -136,6 +148,8 @@ async function scrapeCustomers(){
 module.exports = {
     scrapeAll: scrapeAll,
     scrapeAllFromCurrentYear: scrapeAllFromCurrentYear,
-    scrapeSku: scrapeSku
+    scrapeSku: scrapeSku,
+    createdSkus: createdSkus,
+    startScrapeService: startScrapeService
 }
 
