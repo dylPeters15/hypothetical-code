@@ -22,6 +22,7 @@ export class SkuDrilldownCalcService {
         toReturn.push(salesByYearAndWeek[year][week]);
         toReturn[toReturn.length-1]['year'] = year;
         toReturn[toReturn.length-1]['weeknumber'] = week;
+        toReturn[toReturn.length-1]['date'] = moment(new Date(Number(year), 0)).isoWeek(Number(week)).format('MM/DD/YYYY');
       }
     }
     return toReturn;
