@@ -8,6 +8,7 @@ const serverV1 = require('./v1/serverv1');
 const serverV2 = require('./v2/serverv2');
 const scraper = require('./v2/sales_scraper.js')
 const schedule = require('node-schedule')
+const cron = require('node-cron')
 
 const app = express();
 const corsOptions = {
@@ -29,6 +30,10 @@ const server = https.createServer({
 var scrapeEveryDay = schedule.scheduleJob('0 6 * * *', () => { 
     scraper.scrapeAllFromCurrentYear();
  });
+ var checkForNewSkus = cron.schedule('*/0.5 * * * * *', function() {
+    scraper.startScrapeService();
+})
+
 
 scraper.scrapeAll();
 
@@ -36,3 +41,4 @@ module.exports = server;
 
 serverV1.startServerV1(app);
 serverV2.startServerV2(app);
+
