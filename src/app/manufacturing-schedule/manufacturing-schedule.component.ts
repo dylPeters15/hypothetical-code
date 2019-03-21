@@ -1,6 +1,31 @@
 import { AfterViewInit, Component, OnInit, ElementRef, ViewChild } from '@angular/core';
 import * as vis from 'vis';
+import { MatDialogRef, MatDialog, MatDialogConfig, MatTableDataSource,MatPaginator, MatSnackBar } from "@angular/material";
+import { EnableGoalsDialogComponent } from '../enable-goals-dialog/enable-goals-dialog.component'
+import { RestService } from '../rest.service';
+
 // declare var vis = require('vis');
+
+export class DataForGoalsTable{
+  goalname: string;
+  activities: [];
+  id: '';
+  constructor(goalname, activities){
+    this.goalname = goalname;
+    this.activities = activities;
+  }
+}
+
+export class DataForLinesTable{
+  shortname: string;
+  activities: [];
+  id: '';
+  constructor(shortname, activities){
+    this.shortname = shortname;
+    this.activities = activities;
+  };
+  schedule: ManufacturingScheduleComponent;
+}
 
 @Component({
   selector: 'app-manufacturing-schedule',
@@ -17,35 +42,66 @@ export class ManufacturingScheduleComponent implements OnInit {
   groups: any;
   options: {};
   unscheduledData: any;
+  enableGoalsDialogRef: MatDialogRef<EnableGoalsDialogComponent>;
+  goalsData: DataForGoalsTable[] = [];
+  goalsDataSource = new MatTableDataSource<DataForGoalsTable>(this.goalsData);
+  linesData: DataForLinesTable[] =[];
+  linesDataSource = new MatTableDataSource<DataForLinesTable>(this.linesData);
 
-  constructor() { 
+  constructor(public rest:RestService, private dialog: MatDialog, myElement: ElementRef) { 
       this.getTimelineData();
       this.getTimelineGroups();
       this.getOptions();
   }
 
   ngOnInit() {
+    this.refreshData(); 
   }
 
   ngAfterViewInit() {     
     this.tlContainer = this.timelineContainer.nativeElement;       
-    this.timeline = new vis.Timeline(this.tlContainer, null, this.options);      
+    this.timeline = new vis.Timeline(this.tlContainer, null, this.options);  
+    // this.refreshData();    
     this.timeline.setGroups(this.groups);
     this.timeline.setItems(this.data);
-
+    
    
   }
 
+  refreshData() {
+    var thisobject = this;
+    console.log("Refresh data");
+    this.goalsData = [];
+    this.rest.getUserName().then(result => {
+        this.rest.getGoals(result.toString(), "", "", true, 5).subscribe(goals => {
+          goals.forEach(goal => {
+            var activityList = [];
+            if(goal['enabled']){
+            goal['activities'].forEach(activity => {
+              if(activity['activity']['line'] == null || activity['activity']['line'] == undefined){
+                activityList.push(activity['activity'])
+              }
+            })
+            let goalTable = new DataForGoalsTable(goal['goalname'], activityList)
+            this.goalsData.push(goalTable)
+            }
+        });
+        this.goalsDataSource = new MatTableDataSource<DataForGoalsTable>(this.goalsData);
+        console.log(this.goalsDataSource)
+      });
+  })
+  }
+
   handleDragStart(event) {
-    console.log('start drag')
+    console.log('start drag', event)
     var dragSrcEl = event.target;
 
     event.dataTransfer.effectAllowed = 'move';
-    var itemType = event.target.innerHTML.split('-')[1].trim();
+    var itemType = 'range';
     var item = {
         id: new Date(),
         type: itemType,
-        content: event.target.innerHTML.split('-')[0].trim()
+        content: event.target.innerHTML.trim()
     };
     // set event.target ID with item ID
     event.target.id = new Date(item.id).toISOString();
@@ -80,6 +136,22 @@ export class ManufacturingScheduleComponent implements OnInit {
       {id: 3, content: 'Truck&nbsp;3'},
       {id: 4, content: 'Truck&nbsp;4'}
     ]);
+
+    this.groups = new vis.DataSet();
+    this.rest.getLine('','.*','','.*',100).subscribe(lines => {
+      var i = 1;
+      lines.forEach(line => {
+        var currentLineName = line['shortname'];
+        var currentActivities = [];
+        var currentId = i;
+        i ++;
+        this.groups.add({
+          id: currentId, 
+          content: currentLineName})
+      })
+
+    })
+    // this.linesDataSource = new MatTableDataSource<DataForLinesTable>(this.linesData);
     }
 
   getTimelineData() {
@@ -92,55 +164,44 @@ export class ManufacturingScheduleComponent implements OnInit {
     var max : any = 0.02;
 
     // create 4 truck groups, then order inside each group
-    for (var j = 0; j < 4; j++) {
-      var date = new Date();
-      for (var i = 0; i < count/4; i++) {
+    // for (var j = 0; j < 4; j++) {
+    //   var date = new Date();
+    //   for (var i = 0; i < count/4; i++) {
         
-        date.setHours(date.getHours() +  4 * Math.random());
-        var start = new Date(date);
+    //     date.setHours(date.getHours() +  4 * Math.random());
+    //     var start = new Date(date);
 
-        date.setHours(date.getHours() + 2 + Math.floor(Math.random()*4));
-        var end = new Date(date);
+    //     date.setHours(date.getHours() + 2 + Math.floor(Math.random()*4));
+    //     var end = new Date(date);
 
-        this.data.add({
-          id: order,
-          group: truck,
-          start: start,
-          end: end,
-          content: 'Order ' + order
-        });
+    //     this.data.add({
+    //       id: order,
+    //       group: truck,
+    //       start: start,
+    //       end: end,
+    //       content: 'Order ' + order
+    //     });
 
-        order++;
-      }
-      truck++;
-    }
-    // var items = document.querySelectorAll('.ManufacturingSchedule .mat-card .items .item');
-    // var items = document.getElementsByClassName('item');
-    // console.log(items)
-    // // this.unscheduledData.addEventListener('dragstart', this.handleDragStart.bind(this), false);
-    // console.log(items.length)
-
-    // for (var i = items.length - 1; i >= 0; i--) {
-    //   var item = items[i];
-    //   console.log('test')
-    //   item.addEventListener('dragstart', this.handleDragStart.bind(this), false);
-    //   console.log('item')
-    // }  
+    //     order++;
+    //   }
+    //   truck++;
+    // }
+   
     var thisObject = this;
-    window.addEventListener("load", function(event) {
-      // console.log(document.getElementsByClassName('gtableheader').length);
-      var items = document.getElementsByClassName('item');
-    console.log(items)
-    // this.unscheduledData.addEventListener('dragstart', this.handleDragStart.bind(this), false);
-    console.log(items.length)
+  //   window.addEventListener("load", function(event) {
+  //     // console.log(document.getElementsByClassName('gtableheader').length);
+  //     var items = document.getElementsByClassName('item');
+  //   console.log(items)
+  //   // this.unscheduledData.addEventListener('dragstart', this.handleDragStart.bind(this), false);
+  //   console.log(items.length)
 
-    for (var i = items.length - 1; i >= 0; i--) {
-      var item = items[i];
-      console.log('test')
-      item.addEventListener('dragstart', thisObject.handleDragStart.bind(thisObject), false);
-      console.log('item')
-    }  
-  });
+  //   for (var i = items.length - 1; i >= 0; i--) {
+  //     var item = items[i];
+  //     console.log('test')
+  //     item.addEventListener('dragstart', thisObject.handleDragStart.bind(thisObject), false);
+  //     console.log('item')
+  //   }  
+  // });
   }
 
   getOptions() {
@@ -160,6 +221,14 @@ export class ManufacturingScheduleComponent implements OnInit {
         alert('dropped object with content: "' + objectData.content + '" to item: "' + item.content + '"');
     }
     };
+  }
+
+  openEnableGoalsDialog() {
+    const dialogConfig = new MatDialogConfig();
+    this.enableGoalsDialogRef = this.dialog.open(EnableGoalsDialogComponent, dialogConfig);
+    this.enableGoalsDialogRef.afterClosed().subscribe(event => {
+      this.refreshData();
+    });
   }
 
 }

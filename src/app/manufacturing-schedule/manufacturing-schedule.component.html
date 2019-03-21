@@ -1,18 +1,24 @@
 <!-- <div id="visualization"></div> -->
 <div>
     <mat-card class="ManufacturingSchedule">
-        <h1 style="text-align:center"> Demo Timeline Groups </h1>
-
+        <h1 style="text-align:center"> Manufacturing Schedule </h1>
+        <button mat-raised-button (click)="openEnableGoalsDialog()"> Enable/Disable Goals </button>
         <div id="timeline" #timeline></div>
 
-        <ul class="items">
+        <!-- <ul class="items">
             <li draggable="true" class="item">
                 item 1 - box
             </li>
             <li draggable="true" class="item">
                 item 2 - range
             </li>
-        </ul>
+        </ul> -->
+        <div [ngClass]="['items']"  *ngFor="let goal of goalsDataSource['data']">
+            <h2>{{goal['goalname']}}</h2>
+            <div draggable="true" (dragstart)="handleDragStart($event)" [ngClass]="['item']" *ngFor="let activity of goal['activities']">
+                {{activity['sku']['skuname']}}
+            </div>
+        </div>
     </mat-card>
 
     

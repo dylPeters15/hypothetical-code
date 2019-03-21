@@ -30,7 +30,7 @@ body {
   border: 1px solid lightgray;
 }
 
-li.item {
+div.item {
   list-style: none;
   width: 150px;
   color: #1A1A1A;
@@ -41,7 +41,7 @@ li.item {
   padding: 5px 12px;
 }
 
-li.item:before {
+div.item:before {
   content: "≣";
   font-family: Arial, sans-serif;
   display: inline-block;
