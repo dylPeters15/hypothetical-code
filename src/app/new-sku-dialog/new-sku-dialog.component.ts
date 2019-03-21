@@ -28,6 +28,7 @@ export class NewSkuDialogComponent implements OnInit {
   formula: any = null;
   formulascalingfactor: number = 0;
   manufacturingrate: number = 0;
+  productline: any = null;
   comment: String = '';
 
   formulaname: String = ''; // for displaying purposes.
@@ -42,6 +43,8 @@ export class NewSkuDialogComponent implements OnInit {
   
   newFormulaDialogRef: MatDialogRef<NewSkuFormulaComponent>;
   newDialogRef: MatDialogRef<NewFormulaDialogComponent>;
+  newProductLineDialogRef: MatDialogRef<NewFormulaDialogComponent>;
+
 
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: any, private dialogRef: MatDialogRef<NewSkuDialogComponent>, public rest:RestService, private snackBar: MatSnackBar, private dialog: MatDialog) { }
@@ -59,6 +62,7 @@ export class NewSkuDialogComponent implements OnInit {
     this.formula = this.data.present_formula;
     this.formulascalingfactor = this.data.present_formulascalingfactor;
     this.manufacturingrate = this.data.present_manufacturingrate;
+    this.productline = this.data.present_productline;
     this.comment = this.data.present_comment;
 
     // update formula and scaling factor to display
@@ -120,6 +124,7 @@ export class NewSkuDialogComponent implements OnInit {
     this.formula = this.data.present_formula;
     this.formulascalingfactor = this.data.present_formulascalingfactor;
     this.manufacturingrate = this.data.present_manufacturingrate;
+    this.productline = this.data.present_productline;
     this.comment = this.data.present_comment;
   }
 
@@ -178,6 +183,32 @@ export class NewSkuDialogComponent implements OnInit {
       this.refreshData();
     });
   }
+
+
+  // Brings up a popup which allows you to search for a product line to add.
+  addProductLine(edit, present_productlinename) {
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.data = {edit: edit, present_name: formulaname};
+    this.newFormulaDialogRef = this.dialog.open(NewSkuFormulaComponent, dialogConfig);
+    //this.newIngredientDialogRef.componentInstance.amount = this.return_amount;
+    //this.newIngredientDialogRef.componentInstance.ingredientNameList = this.ingredientNameList;
+    this.newFormulaDialogRef.afterClosed().subscribe(event => {
+      // grab the new formula values
+      var new_formula = this.newFormulaDialogRef.componentInstance.formulaName;
+      this.formulascalingfactor = this.newFormulaDialogRef.componentInstance.scalingFactor;
+
+      // get object id from formula name
+      this.rest.getFormulas(new_formula,0, 0, 1).subscribe(response => {
+        this.snackBar.open("Successfully added formula " + new_formula, "close", {
+          duration: 2000,
+             });
+          this.formula = response[0]['formulanumber'];
+          this.formulaname = response[0]['formulaname'];
+        
+        this.refreshData();
+        });
+        });
+      }
   
   createSku() {
     if (this.edit == false)
