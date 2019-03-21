@@ -16,6 +16,17 @@ export class DataForGoalsTable{
   }
 }
 
+export class DataForLinesTable{
+  shortname: string;
+  activities: [];
+  id: '';
+  constructor(shortname, activities){
+    this.shortname = shortname;
+    this.activities = activities;
+  };
+  schedule: ManufacturingScheduleComponent;
+}
+
 @Component({
   selector: 'app-manufacturing-schedule',
   templateUrl: './manufacturing-schedule.component.html',
@@ -34,6 +45,8 @@ export class ManufacturingScheduleComponent implements OnInit {
   enableGoalsDialogRef: MatDialogRef<EnableGoalsDialogComponent>;
   goalsData: DataForGoalsTable[] = [];
   goalsDataSource = new MatTableDataSource<DataForGoalsTable>(this.goalsData);
+  linesData: DataForLinesTable[] =[];
+  linesDataSource = new MatTableDataSource<DataForLinesTable>(this.linesData);
 
   constructor(public rest:RestService, private dialog: MatDialog, myElement: ElementRef) { 
       this.getTimelineData();
@@ -123,6 +136,22 @@ export class ManufacturingScheduleComponent implements OnInit {
       {id: 3, content: 'Truck&nbsp;3'},
       {id: 4, content: 'Truck&nbsp;4'}
     ]);
+
+    this.groups = new vis.DataSet();
+    this.rest.getLine('','.*','','.*',100).subscribe(lines => {
+      var i = 1;
+      lines.forEach(line => {
+        var currentLineName = line['shortname'];
+        var currentActivities = [];
+        var currentId = i;
+        i ++;
+        this.groups.add({
+          id: currentId, 
+          content: currentLineName})
+      })
+
+    })
+    // this.linesDataSource = new MatTableDataSource<DataForLinesTable>(this.linesData);
     }
 
   getTimelineData() {
@@ -135,28 +164,28 @@ export class ManufacturingScheduleComponent implements OnInit {
     var max : any = 0.02;
 
     // create 4 truck groups, then order inside each group
-    for (var j = 0; j < 4; j++) {
-      var date = new Date();
-      for (var i = 0; i < count/4; i++) {
+    // for (var j = 0; j < 4; j++) {
+    //   var date = new Date();
+    //   for (var i = 0; i < count/4; i++) {
         
-        date.setHours(date.getHours() +  4 * Math.random());
-        var start = new Date(date);
+    //     date.setHours(date.getHours() +  4 * Math.random());
+    //     var start = new Date(date);
 
-        date.setHours(date.getHours() + 2 + Math.floor(Math.random()*4));
-        var end = new Date(date);
+    //     date.setHours(date.getHours() + 2 + Math.floor(Math.random()*4));
+    //     var end = new Date(date);
 
-        this.data.add({
-          id: order,
-          group: truck,
-          start: start,
-          end: end,
-          content: 'Order ' + order
-        });
+    //     this.data.add({
+    //       id: order,
+    //       group: truck,
+    //       start: start,
+    //       end: end,
+    //       content: 'Order ' + order
+    //     });
 
-        order++;
-      }
-      truck++;
-    }
+    //     order++;
+    //   }
+    //   truck++;
+    // }
    
     var thisObject = this;
   //   window.addEventListener("load", function(event) {
