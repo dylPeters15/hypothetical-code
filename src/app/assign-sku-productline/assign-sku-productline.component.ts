@@ -118,7 +118,7 @@ export class AssignSkuProductlineComponent implements OnInit {
         this.productlineId = {formula: response[i]['_id']};
       }
     });
-    this.formulaInput.nativeElement.value = '';
+    this.productlineInput.nativeElement.value = '';
     this.productlineCtrl.setValue(null);
   }
 
