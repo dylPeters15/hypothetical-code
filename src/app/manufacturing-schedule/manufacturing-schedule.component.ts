@@ -201,11 +201,12 @@ export class ManufacturingScheduleComponent implements OnInit {
               id: activity['_id'],
               group: line['_id'],
               start: activity['startdate'],
-              end: new Date(1000 * 60 * 60 * duration + (new Date()).valueOf()),
+              end: new Date(1000 * 60 * 60 * duration + activity['startdate']),
               content: activity['sku']['skuname']
             })
           })
         }
+        console.log(this.data)
       })
     })
     // create 4 truck groups, then order inside each group
