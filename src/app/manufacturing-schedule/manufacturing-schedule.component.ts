@@ -3,6 +3,7 @@ import * as vis from 'vis';
 import { MatDialogRef, MatDialog, MatDialogConfig, MatTableDataSource,MatPaginator, MatSnackBar } from "@angular/material";
 import { EnableGoalsDialogComponent } from '../enable-goals-dialog/enable-goals-dialog.component'
 import { RestService } from '../rest.service';
+import { RestServiceV2, AndVsOr } from '../restv2.service';
 
 // declare var vis = require('vis');
 
@@ -48,7 +49,7 @@ export class ManufacturingScheduleComponent implements OnInit {
   linesData: DataForLinesTable[] =[];
   linesDataSource = new MatTableDataSource<DataForLinesTable>(this.linesData);
 
-  constructor(public rest:RestService, private dialog: MatDialog, myElement: ElementRef) { 
+  constructor(public rest:RestService, private restv2: RestServiceV2, private dialog: MatDialog, myElement: ElementRef) { 
       this.getTimelineData();
       this.getTimelineGroups();
       this.getOptions();
@@ -117,25 +118,43 @@ export class ManufacturingScheduleComponent implements OnInit {
     event.target.addEventListener('dragend', this.handleDragEnd.bind(this), false);
   }
 
-  handleDragEnd(event) {
+  async handleDragEnd(event): Promise<void> {
     // Last item that just been dragged, its ID is the same of event.target
+    console.log('end', event)
     var newItem_dropped = this.timeline.itemsData.get(event.target.id);
-
-    var html = "<b>id: </b>" + newItem_dropped.id + "<br>";
-    html += "<b>content: </b>" + newItem_dropped.content + "<br>";
-    html += "<b>start: </b>" + newItem_dropped.start + "<br>";
-    html += "<b>end: </b>" + newItem_dropped.end + "<br>";
+    console.log(newItem_dropped)
+    var newGroup = this.groups.get(newItem_dropped.group)
+    var response = await this.restv2.getSkus(AndVsOr.OR, newItem_dropped.content, null, null, null, null, null, 1);
+    console.log(response[0])
+    this.rest.getLine("","", newGroup.content, "", 1).subscribe(line => {
+      console.log(line)
+      if (line[0]['skus']) {
+        console.log(line[0]['skus'])
+        var count = 0;
+        line[0]['skus'].forEach(sku => {
+          if (sku['sku']['skuname'] == response[0]['skuname']) {
+            count ++;
+          }
+        });
+        if (count == 1) {
+          
+        }
+        else {
+          console.log('wrong')
+          this.timeline.itemsData.remove(event.target.id);
+        }
+        
+      }
+    })
+    // var html = "<b>id: </b>" + newItem_dropped.id + "<br>";
+    // html += "<b>content: </b>" + newItem_dropped.content + "<br>";
+    // html += "<b>start: </b>" + newItem_dropped.start + "<br>";
+    // html += "<b>end: </b>" + newItem_dropped.end + "<br>";
     // document.getElementById('output').innerHTML = html;
   }
 
   getTimelineGroups() {
      // create groups
-    this.groups = new vis.DataSet([
-      {id: 1, content: 'Truck&nbsp;1'},
-      {id: 2, content: 'Truck&nbsp;2'},
-      {id: 3, content: 'Truck&nbsp;3'},
-      {id: 4, content: 'Truck&nbsp;4'}
-    ]);
 
     this.groups = new vis.DataSet();
     this.rest.getLine('','.*','','.*',100).subscribe(lines => {
@@ -188,20 +207,7 @@ export class ManufacturingScheduleComponent implements OnInit {
     // }
    
     var thisObject = this;
-  //   window.addEventListener("load", function(event) {
-  //     // console.log(document.getElementsByClassName('gtableheader').length);
-  //     var items = document.getElementsByClassName('item');
-  //   console.log(items)
-  //   // this.unscheduledData.addEventListener('dragstart', this.handleDragStart.bind(this), false);
-  //   console.log(items.length)
 
-  //   for (var i = items.length - 1; i >= 0; i--) {
-  //     var item = items[i];
-  //     console.log('test')
-  //     item.addEventListener('dragstart', thisObject.handleDragStart.bind(thisObject), false);
-  //     console.log('item')
-  //   }  
-  // });
   }
 
   getOptions() {
@@ -210,7 +216,12 @@ export class ManufacturingScheduleComponent implements OnInit {
       stack: false,
       start: new Date(),
       end: new Date(1000*60*60*24 + (new Date()).valueOf()),
-      editable: true,
+      editable: {
+        add: true,         // add new items by double tapping
+        updateTime: true,  // drag items horizontally
+        updateGroup: true, // drag items from one group to another
+        remove: true       // delete an item by tapping the delete button top right
+      },
       margin: {
         item: 10, // minimal margin between items
         axis: 5   // minimal margin between items and the axis
