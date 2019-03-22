@@ -40,33 +40,27 @@ export class AssignSkuProductlineComponent implements OnInit {
    }
 
   ngOnInit() {
-    console.log("in init fam");
     this.edit = this.data.edit;
-    this.scalingFactor = this.data.present_scalingFactor;
-    this.formulaName = this.data.present_name;
-    console.log("edit: " + this.edit);
-    console.log("scalingFactor: " + this.scalingFactor);
-    console.log("formulaName: " + this.formulaName);
-
+    this.productlineName = this.data.present_productlinename;
 
     // edit == true if formula is being modified, false if a new formula is being created
     if (this.edit == true)
     {
-      this.dialog_title = "Change SKU's Formula";
+      this.dialog_title = "Change SKU's Product Line";
     }
-    else this.dialog_title = "Add SKU's Formula";
+    else this.dialog_title = "Add SKU's Product Line";
 
-    this.rest.getFormulas('',0,0,5,'.*').subscribe(response => {
-      this.formulaList = response;
-      this.formulaList.forEach(element => {
-        this.formulaNameList.push(element.formulaname)
+    this.rest.getProductLines('','.*',5).subscribe(response => {
+      this.productlineList = response;
+      this.productlineList.forEach(element => {
+        this.productlineNameList.push(element.formulaname)
       });
     });
   }
 
   closeDialog() {
-    this.formulaList = [];
-    this.selectedFormulaNames = [];
+    this.productlineList = [];
+    this.selectedProductlineNames = [];
 
     //this.amount = 5;
     console.log("Let's send the data back! new ingredient: " + this.formulaName + ". Amount: " + this.scalingFactor);
