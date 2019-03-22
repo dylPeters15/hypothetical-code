@@ -57,7 +57,7 @@ export class SalesReportCalcService {
       totalRevenue += sale['numcases'] * sale['pricepercase'];
       totalNumCases += sale['numcases'];
     }
-    summary['totalrevenue'] = totalRevenue;
+    summary['totalrevenue'] = totalRevenue.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
     summary['averagerevenuepercase'] = (totalRevenue/totalNumCases);
     return summary;
   }
