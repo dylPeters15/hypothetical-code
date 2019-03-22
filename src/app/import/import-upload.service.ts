@@ -127,6 +127,7 @@ export class ImportUploadService {
     skus.push({
       sku: createSkuResponse['_id']
     });
+    console.log("SKU: ",sku);
     var modifyPLResponse = await this.restv2.modifyProductLine(AndVsOr.AND, sku['productline'], sku['productline'], skus);
     if (modifyPLResponse['ok'] != 1) {
       throw Error("Could not modify Product Line " + sku['productline'] + " for SKU " + sku['skuname']);

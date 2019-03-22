@@ -52,12 +52,13 @@ export class ImportComponent implements OnInit {
     var errors = false;
 
     var csvResult = await this.parser.parseCSVFiles(this.fileSelector.nativeElement.files).catch(err => {
+      console.log(err);
       errors = true;
       //popup a dialog telling the user there was an error
       const dialogConfig = new MatDialogConfig();
       dialogConfig.data = {
         title: "Error!",
-        message: "" + err
+        message: "" + err&&err.message?err.message:err
       };
       this.dialog.open(UserNotificationDialogComponent, dialogConfig);
     });
@@ -67,12 +68,13 @@ export class ImportComponent implements OnInit {
     }
 
     var checkResult = await this.importChecker.checkAll(csvResult).catch(err => {
+      console.log(err);
       errors = true;
       //popup a dialog telling the user there was an error
       const dialogConfig = new MatDialogConfig();
       dialogConfig.data = {
         title: "Error!",
-        message: "" + err
+        message: "" + err&&err.message?err.message:err
       };
       this.dialog.open(UserNotificationDialogComponent, dialogConfig);
     });

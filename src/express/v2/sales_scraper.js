@@ -67,6 +67,8 @@ async function scrape(skunumber, year){
         
         count++;
       });
+      console.log("skuname: " + sku['skuname'] + " skunumber: " + skunumber + " year: " + year + "current time: " + new Date().getSeconds());
+
 }
 
 async function parseRow(html, year, sku){
