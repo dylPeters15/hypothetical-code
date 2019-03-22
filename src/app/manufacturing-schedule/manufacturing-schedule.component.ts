@@ -93,8 +93,9 @@ export class ManufacturingScheduleComponent implements OnInit {
   })
   }
 
-  handleDragStart(event) {
+  handleDragStart(event, activity) {
     console.log('start drag', event)
+    console.log(activity)
     var dragSrcEl = event.target;
 
     event.dataTransfer.effectAllowed = 'move';
@@ -107,11 +108,11 @@ export class ManufacturingScheduleComponent implements OnInit {
     // set event.target ID with item ID
     event.target.id = new Date(item.id).toISOString();
 
-    var isFixedTimes = (event.target.innerHTML.split('-')[2] && event.target.innerHTML.split('-')[2].trim() == 'fixed times')
-    if (isFixedTimes) {
-        this.data.start = new Date();
-        this.data.end = new Date(1000 * 60 * 10 + (new Date()).valueOf());
-    }
+    // var isFixedTimes = (event.target.innerHTML.split('-')[2] && event.target.innerHTML.split('-')[2].trim() == 'fixed times')
+    // if (isFixedTimes) {
+    //     this.data.start = new Date();
+    //     this.data.end = new Date(1000 * 60 * 10 + (new Date()).valueOf());
+    // }
     event.dataTransfer.setData("text", JSON.stringify(item));
 
     // Trigger on from the new item dragged when this item drag is finish
@@ -126,31 +127,34 @@ export class ManufacturingScheduleComponent implements OnInit {
     var newGroup = this.groups.get(newItem_dropped.group)
     var response = await this.restv2.getSkus(AndVsOr.OR, newItem_dropped.content, null, null, null, null, null, 1);
     console.log(response[0])
-    this.rest.getLine("","", newGroup.content, "", 1).subscribe(line => {
-      console.log(line)
-      if (line[0]['skus']) {
-        console.log(line[0]['skus'])
-        var count = 0;
-        line[0]['skus'].forEach(sku => {
-          if (sku['sku']['skuname'] == response[0]['skuname']) {
-            count ++;
-          }
-        });
-        if (count == 1) {
+    var line = await this.restv2.getLine(AndVsOr.OR, "","", newGroup.content, "", 1)
+    console.log(line)
+    if (line[0]['skus']) {
+      console.log(line[0]['skus'])
+      var count = 0;
+      var skuObject;
+      line[0]['skus'].forEach(sku => {
+        if (sku['sku']['skuname'] == response[0]['skuname']) {
+          count ++;
+          skuObject = sku['sku']
+        }
+      });
+      if (count == 1) {
+        var activity = await this.restv2.getActivities(AndVsOr.OR, null, null, skuObject['_id'], 1)
+        console.log(activity)
+        var modify = await this.restv2.modifyActivity(AndVsOr.OR, activity[0]['sku']['_id'], activity[0]['sku']['_id'], 
+        activity[0]['numcases'], activity[0]['calculatedhours'], activity[0]['sethours'], 
+        newItem_dropped['start'], line[0]['_id']);
+        var activity = await this.restv2.getActivities(AndVsOr.OR, null, null, skuObject['_id'], 1)
+        console.log(activity)
           
-        }
-        else {
-          console.log('wrong')
-          this.timeline.itemsData.remove(event.target.id);
-        }
-        
       }
-    })
-    // var html = "<b>id: </b>" + newItem_dropped.id + "<br>";
-    // html += "<b>content: </b>" + newItem_dropped.content + "<br>";
-    // html += "<b>start: </b>" + newItem_dropped.start + "<br>";
-    // html += "<b>end: </b>" + newItem_dropped.end + "<br>";
-    // document.getElementById('output').innerHTML = html;
+      else {
+        console.log('wrong')
+        this.timeline.itemsData.remove(event.target.id);
+      }
+      
+    }
   }
 
   getTimelineGroups() {
@@ -158,12 +162,10 @@ export class ManufacturingScheduleComponent implements OnInit {
 
     this.groups = new vis.DataSet();
     this.rest.getLine('','.*','','.*',100).subscribe(lines => {
-      var i = 1;
       lines.forEach(line => {
         var currentLineName = line['shortname'];
         var currentActivities = [];
-        var currentId = i;
-        i ++;
+        var currentId = line['_id'];
         this.groups.add({
           id: currentId, 
           content: currentLineName})
@@ -173,15 +175,33 @@ export class ManufacturingScheduleComponent implements OnInit {
     // this.linesDataSource = new MatTableDataSource<DataForLinesTable>(this.linesData);
     }
 
-  getTimelineData() {
+  async getTimelineData(): Promise<void> {
       // Create a DataSet (allows two way data-binding)
     // create items
     this.data = new vis.DataSet();
-    var count = 100;
-    var order = 1;
-    var truck = 1;
-    var max : any = 0.02;
 
+    var lines = await this.restv2.getLine(AndVsOr.OR, "", ".*", "", ".*", 100);
+    console.log('lines', lines)
+    lines.forEach(line => {
+      this.rest.getActivities(null, 100, line['_id']).subscribe(activities => {
+        console.log('activites', activities)
+        if (activities.length > 0) {
+          activities.forEach(activity => {
+            var duration = activity['calculatedhours'];
+            if (activity['sethours']) {
+              duration = activity['sethours'];
+            }
+            this.data.add({
+              id: activity['_id'],
+              group: line['_id'],
+              start: activity['startdate'],
+              end: new Date(1000 * 60 * 60 * duration + (new Date()).valueOf()),
+              content: activity['sku']['skuname']
+            })
+          })
+        }
+      })
+    })
     // create 4 truck groups, then order inside each group
     // for (var j = 0; j < 4; j++) {
     //   var date = new Date();
