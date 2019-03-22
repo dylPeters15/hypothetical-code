@@ -71,7 +71,6 @@ export class NewSkuDialogComponent implements OnInit {
     this.formulascalingfactor = this.data.present_formulascalingfactor;
     this.productline = this.data.present_productline;
     this.manufacturingrate = this.data.present_manufacturingrate;
-    this.productline = this.data.present_productline;
     this.comment = this.data.present_comment;
 
     // update formula and scaling factor to display
@@ -236,9 +235,6 @@ export class NewSkuDialogComponent implements OnInit {
         }        
     }
 
-
-
-  
   createSku() {
     if (this.edit == false)
     {

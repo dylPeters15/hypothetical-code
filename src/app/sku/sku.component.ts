@@ -22,6 +22,7 @@ export interface UserForTable {
   countpercase: Number;
   formula: any;
   formulascalingfactor: Number;
+  productline: any;
   manufacturingrate: Number;
   comment: String;
   checked: boolean;
@@ -36,6 +37,7 @@ export class ExportableSKU {
   countpercase: Number;
   formula: any;
   formulascalingfactor: Number;
+  productline: any;
   manufacturingrate: Number;
   comment: String;
   constructor(userForTable){
@@ -47,6 +49,7 @@ export class ExportableSKU {
     this.countpercase = userForTable.countpercase;
     this.formula = userForTable.formula;
     this.formulascalingfactor = userForTable.formulascalingfactor;
+    this.productline = userForTable.productline;
     this.manufacturingrate = userForTable.manufacturingrate;
     this.comment = userForTable.comment;
   }
@@ -64,7 +67,7 @@ export class SkuComponent  implements OnInit {
 
   constructor(public rest:RestService, private snackBar: MatSnackBar, private dialog: MatDialog) { }
   allReplacement = 54321;
-  displayedColumns: string[] = ['checked', 'skuname', 'skunumber','caseupcnumber', 'unitupcnumber', 'unitsize', 'countpercase', 'formula', 'formulascalingfactor', "manufacturingrate", "comment", 'actions'];
+  displayedColumns: string[] = ['checked', 'skuname', 'skunumber','caseupcnumber', 'unitupcnumber', 'unitsize', 'countpercase', 'formula', 'formulascalingfactor', 'productline', 'manufacturingrate', 'comment', 'actions'];
   data: UserForTable[] = [];
   dialogRef: MatDialogRef<MoreInfoDialogComponent>;
   newDialogRef: MatDialogRef<NewSkuDialogComponent>;
