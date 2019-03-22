@@ -161,6 +161,7 @@ export class ManufacturingScheduleComponent implements OnInit {
       
     }
     this.refreshData();
+    this.getTimelineData();
   }
 
   getTimelineGroups() {
@@ -201,7 +202,7 @@ export class ManufacturingScheduleComponent implements OnInit {
               id: activity['_id'],
               group: line['_id'],
               start: activity['startdate'],
-              end: new Date(1000 * 60 * 60 * duration + activity['startdate']),
+              end: new Date(1000 * 60 * 60 * duration + (new Date(activity['startdate'])).valueOf()),
               content: activity['sku']['skuname']
             })
           })
@@ -209,32 +210,6 @@ export class ManufacturingScheduleComponent implements OnInit {
         console.log(this.data)
       })
     })
-    // create 4 truck groups, then order inside each group
-    // for (var j = 0; j < 4; j++) {
-    //   var date = new Date();
-    //   for (var i = 0; i < count/4; i++) {
-        
-    //     date.setHours(date.getHours() +  4 * Math.random());
-    //     var start = new Date(date);
-
-    //     date.setHours(date.getHours() + 2 + Math.floor(Math.random()*4));
-    //     var end = new Date(date);
-
-    //     this.data.add({
-    //       id: order,
-    //       group: truck,
-    //       start: start,
-    //       end: end,
-    //       content: 'Order ' + order
-    //     });
-
-    //     order++;
-    //   }
-    //   truck++;
-    // }
-   
-    var thisObject = this;
-
   }
 
   getOptions() {
