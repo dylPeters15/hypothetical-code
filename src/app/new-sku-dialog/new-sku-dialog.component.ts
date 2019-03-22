@@ -38,7 +38,7 @@ export class NewSkuDialogComponent implements OnInit {
   // I know this is weird with the double boolean.
   // They are used to show/hide html content. Idk a better way to do it
   //////////////////////////////////////////////////////////////////////
-  
+
   formulaDoesNotExist: Boolean = true; // for displaying purposes.
   formulaExists: Boolean = false; // for displaying purposes.
 
@@ -47,12 +47,13 @@ export class NewSkuDialogComponent implements OnInit {
 
   ///////////////////////////////////////////////////////////////////////
 
+  chosen_productline: String
   chosen_formula: String
   chosen_scaling_factor: Number;
   
   newFormulaDialogRef: MatDialogRef<NewSkuFormulaComponent>;
   newDialogRef: MatDialogRef<NewFormulaDialogComponent>;
-  newProductLineDialogRef: MatDialogRef<NewFormulaDialogComponent>;
+  assignProductLineDialogRef: MatDialogRef<AssignSkuProductlineComponent>;
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: any, private dialogRef: MatDialogRef<NewSkuDialogComponent>, public rest:RestService, private snackBar: MatSnackBar, private dialog: MatDialog) { }
 
@@ -120,12 +121,9 @@ export class NewSkuDialogComponent implements OnInit {
     console.log("right here it's " + this.formulaname);
 
      // update formula and scaling factor to display
-    this.formulaDoesNotExist = this.formulaname == "";
-    this.formulaExists = !this.formulaDoesNotExist;
-    console.log("should add form button be hidden? " + this.formulaExists);
-    this.chosen_formula = this.formulaname;
-    this.chosen_scaling_factor = this.formulascalingfactor;
-
+    this.productLineDoesNotExist = this.productlinename == "";
+    this.productLineExists = !this.productLineDoesNotExist;
+    this.chosen_productline = this.productlinename;
   }
 
   closeDialog() {
@@ -201,12 +199,12 @@ export class NewSkuDialogComponent implements OnInit {
     });
   }
 
-
-  // Brings up a popup which allows you to search for a product line to add.
-  addProductLine(edit, present_productlinename) {
+  // Product line adds
+  addProductLineToSku(edit, productlinename) {
     const dialogConfig = new MatDialogConfig();
-    dialogConfig.data = {edit: edit, present_name: formulaname};
+    dialogConfig.data = {edit: edit, present_name: productlinename};
     this.newFormulaDialogRef = this.dialog.open(NewSkuFormulaComponent, dialogConfig);
+
     //this.newIngredientDialogRef.componentInstance.amount = this.return_amount;
     //this.newIngredientDialogRef.componentInstance.ingredientNameList = this.ingredientNameList;
     this.newFormulaDialogRef.afterClosed().subscribe(event => {
@@ -226,6 +224,20 @@ export class NewSkuDialogComponent implements OnInit {
         });
         });
       }
+
+      addFormulaButton() {
+        if(this.formulaname == "")
+        {
+          this.addFormulaToSku(false, "", 1.0); //new
+        }
+        else 
+        {
+          this.addFormulaToSku(true, this.formulaname, this.formulascalingfactor); //modifying
+        }        
+    }
+
+
+
   
   createSku() {
     if (this.edit == false)
