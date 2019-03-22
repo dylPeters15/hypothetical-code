@@ -203,36 +203,36 @@ export class NewSkuDialogComponent implements OnInit {
   addProductLineToSku(edit, productlinename) {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.data = {edit: edit, present_name: productlinename};
-    this.newFormulaDialogRef = this.dialog.open(NewSkuFormulaComponent, dialogConfig);
+    this.assignProductLineDialogRef = this.dialog.open(AssignSkuProductlineComponent, dialogConfig);
 
     //this.newIngredientDialogRef.componentInstance.amount = this.return_amount;
     //this.newIngredientDialogRef.componentInstance.ingredientNameList = this.ingredientNameList;
-    this.newFormulaDialogRef.afterClosed().subscribe(event => {
-      // grab the new formula values
-      var new_formula = this.newFormulaDialogRef.componentInstance.formulaName;
-      this.formulascalingfactor = this.newFormulaDialogRef.componentInstance.scalingFactor;
+    this.assignProductLineDialogRef.afterClosed().subscribe(event => {
+      // grab the new product line values
+      var new_productline = this.assignProductLineDialogRef.componentInstance.productlineName;
+
+     // getProductLines(productlinename: String, productlinenameregex: String, limit: number): Observable<any> {
 
       // get object id from formula name
-      this.rest.getFormulas(new_formula,0, 0, 1).subscribe(response => {
-        this.snackBar.open("Successfully added formula " + new_formula, "close", {
+      this.rest.getProductLines(new_productline ,new_productline, 1).subscribe(response => {
+        this.snackBar.open("Successfully added formula " + new_productline, "close", {
           duration: 2000,
              });
-          this.formula = response[0]['formulanumber'];
-          this.formulaname = response[0]['formulaname'];
+          this.productlinename = response[0]['productlinename'];
         
         this.refreshData();
         });
         });
       }
 
-      addFormulaButton() {
-        if(this.formulaname == "")
+      addProductLineButton() {
+        if(this.productlinename == "")
         {
-          this.addFormulaToSku(false, "", 1.0); //new
+          this.addProductLineToSku(false, ""); // new
         }
         else 
         {
-          this.addFormulaToSku(true, this.formulaname, this.formulascalingfactor); //modifying
+          this.addProductLineToSku(true, this.productlinename); // modifying
         }        
     }
 
