@@ -67,8 +67,6 @@ async function scrape(skunumber, year){
         
         count++;
       });
-      console.log("skuname: " + sku['skuname'] + " skunumber: " + skunumber + " year: " + year + "current time: " + new Date().getSeconds());
-
 }
 
 async function parseRow(html, year, sku){
@@ -91,11 +89,24 @@ async function parseRow(html, year, sku){
           "numcases": children.eq(5).text(),
           "pricepercase": children.eq(6).text().trim()
       };
+      var saleExists = await database.saleModel.findOne(sale).exec().catch(err => {
+        if(err){
+          throw err;
+        }
+      })
+      var foundCustomer = await database.customerModel.findOne(newCustomer).exec().catch(err => {
+        if(err){
+          throw err;
+        }
+      })
+      if(saleExists == null){
         sales_utils.createSale(sale).catch(err => {
           if(err){
             throw err;
           }
         });
+      }
+
 }
 
 async function startScrapeService(){
