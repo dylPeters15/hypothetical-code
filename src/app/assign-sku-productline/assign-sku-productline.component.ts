@@ -53,7 +53,7 @@ export class AssignSkuProductlineComponent implements OnInit {
     this.rest.getProductLines('','.*',5).subscribe(response => {
       this.productlineList = response;
       this.productlineList.forEach(element => {
-        this.productlineNameList.push(element.formulaname)
+        this.productlineNameList.push(element.productlinename)
       });
     });
   }
@@ -63,9 +63,8 @@ export class AssignSkuProductlineComponent implements OnInit {
     this.selectedProductlineNames = [];
 
     //this.amount = 5;
-    console.log("Let's send the data back! new ingredient: " + this.formulaName + ". Amount: " + this.scalingFactor);
-    this.dialogRef.componentInstance.formulaName = this.formulaName;
-    this.dialogRef.componentInstance.scalingFactor = this.scalingFactor;
+    console.log("Let's send the data back! new ingredient: " + this.productlineName);
+    this.dialogRef.componentInstance.productlineName = this.productlineName;
     this.dialogRef.close();
 
     //this.dialogRef.close();
@@ -87,8 +86,8 @@ export class AssignSkuProductlineComponent implements OnInit {
 
       // Add our formula
       if ((value || '').trim()) {
-        this.formulaName = value.trim();
-        this.selectedFormulaNames.push(value.trim());
+        this.productlineName = value.trim();
+        this.selectedProductlineNames.push(value.trim());
       }
 
       // Reset the input value
@@ -96,37 +95,37 @@ export class AssignSkuProductlineComponent implements OnInit {
         input.value = '';
       }
 
-      this.formulaCtrl.setValue(null);
+      this.productlineCtrl.setValue(null);
     }
   }
 
   remove(formula: string): void {
-    this.formulaName = "";
-    const index = this.selectedFormulaNames.indexOf(formula);
+    this.productlineName = "";
+    const index = this.selectedProductlineNames.indexOf(formula);
 
     if (index >= 0) {
-      this.selectedFormulaNames.splice(index, 1);
+      this.selectedProductlineNames.splice(index, 1);
     }
   }
   
   selected(event: MatAutocompleteSelectedEvent): void {
-    this.formulaName = event.option.viewValue;
-    this.selectedFormulaNames.push(event.option.viewValue);
+    this.productlineName = event.option.viewValue;
+    this.selectedProductlineNames.push(event.option.viewValue);
 
     this.rest.getFormulas(event.option.viewValue, 0,0,5).subscribe(response => {
       var i;
       for(i = 0; i<response.length; i++){
-        this.formulaId = {formula: response[i]['_id']};
+        this.productlineId = {formula: response[i]['_id']};
       }
     });
     this.formulaInput.nativeElement.value = '';
-    this.formulaCtrl.setValue(null);
+    this.productlineCtrl.setValue(null);
   }
 
   private _filter(value: string): string[] {
     const filterValue = value.toLowerCase();
 
-    return this.formulaNameList.filter(formula => formula.toLowerCase().indexOf(filterValue) === 0);
+    return this.productlineNameList.filter(formula => formula.toLowerCase().indexOf(filterValue) === 0);
   }
 
 }
