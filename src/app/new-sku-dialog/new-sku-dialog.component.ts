@@ -6,7 +6,7 @@ import {MatSnackBar} from '@angular/material';
 import {MAT_DIALOG_DATA} from '@angular/material';
 import { NewSkuFormulaComponent } from '../new-sku-formula/new-sku-formula.component';
 import { NewFormulaDialogComponent } from '../new-formula-dialog/new-formula-dialog.component';
-
+import { AssignSkuProductlineComponent } from '../assign-sku-productline/assign-sku-productline.component';
 
 @Component({
   selector: 'app-new-sku-dialog',
@@ -32,11 +32,20 @@ export class NewSkuDialogComponent implements OnInit {
   comment: String = '';
 
   formulaname: String = ''; // for displaying purposes.
+  productlinename: String = ''; // for displaying purposes.
+
 
   // I know this is weird with the double boolean.
   // They are used to show/hide html content. Idk a better way to do it
+  //////////////////////////////////////////////////////////////////////
+  
   formulaDoesNotExist: Boolean = true; // for displaying purposes.
   formulaExists: Boolean = false; // for displaying purposes.
+
+  productLineDoesNotExist: Boolean = true; // for displaying purposes.
+  productLineExists: Boolean = false; // for displaying purposes.
+
+  ///////////////////////////////////////////////////////////////////////
 
   chosen_formula: String
   chosen_scaling_factor: Number;
@@ -44,8 +53,6 @@ export class NewSkuDialogComponent implements OnInit {
   newFormulaDialogRef: MatDialogRef<NewSkuFormulaComponent>;
   newDialogRef: MatDialogRef<NewFormulaDialogComponent>;
   newProductLineDialogRef: MatDialogRef<NewFormulaDialogComponent>;
-
-
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: any, private dialogRef: MatDialogRef<NewSkuDialogComponent>, public rest:RestService, private snackBar: MatSnackBar, private dialog: MatDialog) { }
 
@@ -61,6 +68,7 @@ export class NewSkuDialogComponent implements OnInit {
     this.countpercase = this.data.present_countPerCase;
     this.formula = this.data.present_formula;
     this.formulascalingfactor = this.data.present_formulascalingfactor;
+    this.productline = this.data.present_productline;
     this.manufacturingrate = this.data.present_manufacturingrate;
     this.productline = this.data.present_productline;
     this.comment = this.data.present_comment;
@@ -83,14 +91,8 @@ export class NewSkuDialogComponent implements OnInit {
     }
   }
 
-
   refreshData() {
      // Get formula name from id
-
-     console.log("woah mateyy " + this.formula);
-
-     console.log("right here first it's " + this.formulaname);
-
     if(this.formula == null)
     {
       this.formulaname = "";
@@ -98,6 +100,22 @@ export class NewSkuDialogComponent implements OnInit {
     else if (this.formula['formulaname'] != null)
     {
       this.formulaname = this.formula['formulaname'];
+    }
+
+     // update formula and scaling factor to display
+    this.formulaDoesNotExist = this.formulaname == "";
+    this.formulaExists = !this.formulaDoesNotExist;
+    this.chosen_formula = this.formulaname;
+    this.chosen_scaling_factor = this.formulascalingfactor;
+
+
+    if(this.productline == null)
+    {
+      this.productline = "";
+    } 
+    else if (this.productline['productlinename'] != null)
+    {
+      this.productlinename = this.productline['productlinename'];
     }
     console.log("right here it's " + this.formulaname);
 
@@ -107,8 +125,7 @@ export class NewSkuDialogComponent implements OnInit {
     console.log("should add form button be hidden? " + this.formulaExists);
     this.chosen_formula = this.formulaname;
     this.chosen_scaling_factor = this.formulascalingfactor;
-    console.log("okayy finn: name is " + this.formulaname);
-    console.log("okay ya: scale factor is " + this.formulascalingfactor);
+
   }
 
   closeDialog() {

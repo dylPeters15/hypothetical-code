@@ -47,6 +47,18 @@
         <br /> 
         <br /> 
 
+
+        <div  class="dropdown-content" [hidden]="productLineDoesNotExist">
+          <p> {{chosen_productline}} <button type="submit" (click)="addProductLineButton()">Edit</button></p>
+        </div>
+  
+        <div  class="add-form-button" [hidden]="productLineExists">
+          <mat-dialog-actions align="center" >
+            <button class="mat-raised-button" (click)="addProductLineButton()">Add Product Line</button>
+          </mat-dialog-actions>
+        </div>  
+
+
       <mat-form-field>
         <input matInput [(ngModel)]="manufacturingrate" placeholder="Manufacturing Rate" (keydown.enter)="createSku()" required>
       </mat-form-field>
