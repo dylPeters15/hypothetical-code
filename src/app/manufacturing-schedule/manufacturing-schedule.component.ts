@@ -79,6 +79,11 @@ export class ManufacturingScheduleComponent implements OnInit {
             var activityList = [];
             if(goal['enabled']){
             goal['activities'].forEach(activity => {
+              console.log('activity', activity)
+              this.rest.getActivities( null, 100).subscribe(sameActivity => {
+                console.log('sameActivity', sameActivity)
+              })
+              
               if(activity['activity']['line'] == null || activity['activity']['line'] == undefined){
                 activityList.push(activity['activity'])
               }
@@ -155,6 +160,7 @@ export class ManufacturingScheduleComponent implements OnInit {
       }
       
     }
+    this.refreshData();
   }
 
   getTimelineGroups() {
