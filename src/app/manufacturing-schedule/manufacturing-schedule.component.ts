@@ -118,10 +118,13 @@ export class ManufacturingScheduleComponent implements OnInit {
     var newItem_dropped = this.timeline.itemsData.get(event.target.id);
     console.log(newItem_dropped)
     var newGroup = this.groups.get(newItem_dropped.group)
-    var isValid = this.checkLine(newItem_dropped, newGroup);
-    if (!isValid) {
-      this.timeline.itemsData.remove(newItem_dropped);
-    }
+    this.checkLine(newItem_dropped, newGroup).then(isValid => {
+      console.log('isValid', isValid)
+      if (!isValid) {
+        this.timeline.itemsData.remove(newItem_dropped);
+      }
+    })
+    
     
   }
 
@@ -240,17 +243,19 @@ export class ManufacturingScheduleComponent implements OnInit {
           thisObject.refreshData();
           thisObject.data.remove(item['id']);
           thisObject.getTimelineData();
+          callback(item)
         });  
       },
       
       onMove: async function(item, callback): Promise<void> {
         console.log(item, callback);
         var newGroup = thisObject.groups.get(item);
-        var isValid = thisObject.checkLine(item, newGroup);
+        thisObject.checkLine(item, newGroup).then(isValid => {
+          console.log('isValid', isValid)
         if (!isValid) {
-          callback(item)
+          callback(null)
         }
-
+        })
       }
     };
   }
