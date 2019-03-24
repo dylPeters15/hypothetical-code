@@ -95,7 +95,7 @@ export class ManufacturingScheduleComponent implements OnInit {
         this.goalsDataSource = new MatTableDataSource<DataForGoalsTable>(this.goalsData);
         console.log(this.goalsDataSource)
       });
-  })
+    })
   }
 
   handleDragStart(event, activity) {
@@ -147,9 +147,10 @@ export class ManufacturingScheduleComponent implements OnInit {
       if (count == 1) {
         var activity = await this.restv2.getActivities(AndVsOr.OR, null, null, skuObject['_id'], 1)
         console.log(activity)
-        var modify = await this.restv2.modifyActivity(AndVsOr.OR, activity[0]['sku']['_id'], activity[0]['sku']['_id'], 
+        var modify = await this.restv2.modifyActivity(AndVsOr.AND, activity[0]['_id'], activity[0]['sku']['_id'], 
         activity[0]['numcases'], activity[0]['calculatedhours'], activity[0]['sethours'], 
         newItem_dropped['start'], line[0]['_id']);
+        console.log(modify)
         var activity = await this.restv2.getActivities(AndVsOr.OR, null, null, skuObject['_id'], 1)
         console.log(activity)
           
@@ -186,6 +187,7 @@ export class ManufacturingScheduleComponent implements OnInit {
       // Create a DataSet (allows two way data-binding)
     // create items
     this.data = new vis.DataSet();
+    this.data.clear();
 
     var lines = await this.restv2.getLine(AndVsOr.OR, "", ".*", "", ".*", 100);
     console.log('lines', lines)
@@ -212,8 +214,9 @@ export class ManufacturingScheduleComponent implements OnInit {
     })
   }
 
-  getOptions() {
+  async getOptions(): Promise<void> {
      // specify options
+    var thisObject = this;
     this.options = {
       stack: false,
       start: new Date(),
@@ -229,10 +232,22 @@ export class ManufacturingScheduleComponent implements OnInit {
         axis: 5   // minimal margin between items and the axis
       },
       orientation: 'top',
-      onDropObjectOnItem: function(objectData, item, callback) {
-        if (!item) { return; }
-        alert('dropped object with content: "' + objectData.content + '" to item: "' + item.content + '"');
-    }
+      onRemove: async function(item, callback): Promise<void> {
+        console.log(item);
+        var getSku = await thisObject.restv2.getSkus(AndVsOr.OR, item['content'], null, null, null, null, null, 1);
+        var activity = await thisObject.restv2.getActivities(AndVsOr.AND, item['start'], null, getSku[0]['_id'], 1);
+        console.log('activity to delete', activity, activity[0]['startdate'])
+        console.log(item['id'], activity[0]['_id'])
+        thisObject.rest.modifyActivity(activity[0]['_id'], activity[0]['sku']['_id'], 
+        activity[0]['numcases'], activity[0]['calculatedhours'], activity[0]['sethours'], 
+        activity[0]['startdate'], null).subscribe(response => {
+          console.log(response) 
+          thisObject.refreshData();
+          thisObject.getTimelineData();
+        });
+        
+        
+      }
     };
   }
 

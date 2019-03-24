@@ -5,6 +5,7 @@ const ingredientUtils = require('./v1/ingredient_utils.js')
 const formulaUtils = require('./v1/formula_utils.js')
 const skuUtils = require('./v1/sku_utils.js')
 const productLineUtils = require('./v1/product_line_utils.js')
+const manufacturingLineUtils = require('./v1/manufacturing_line_utils.js')
 const serverName = '127.0.0.1:27017';
 const dbName = 'hypothetical-code-db';
 const connectionString = `mongodb://${serverName}/${dbName}`;
@@ -66,45 +67,66 @@ let testIngredient = ingredientUtils.createIngredient('salt', 1, 'salty', 'g', 5
 //     console.log(err)
 // });
 // console.log(saltIng._id)
-let testFormula = {
-    formulaname: 'formula1',
-    formulanumber: '1',
-    ingredientsandquantities: [{
-        ingredient: testIngredient._id,
-        quantity: 5
-    }],
-    comment: 'work'
-}
-formulaUtils.createFormula(testFormula)
-let testSku = new database_library.skuModel({
-    skuname: 'Tomato Soup',
-    skunumber: 2,
-    caseupcnumber: 012312312312,
-    unitupcnumber: 163728391922,
-    unitsize: '28oz',
-    countpercase: 10,
-    formula: testFormula,
-    formulascalingfactor: 1.5,
-    manufacturingrate: 2,
-    comment: 'Enjoy this lovely can of tomato soup!'
-});
+// let testFormula = {
+//     formulaname: 'formula1',
+//     formulanumber: '1',
+//     ingredientsandquantities: [{
+//         ingredient: testIngredient._id,
+//         quantity: 5
+//     }],
+//     comment: 'work'
+// }
+// formulaUtils.createFormula(testFormula)
+// let testSku = new database_library.skuModel({
+//     skuname: 'Tomato Soup',
+//     skunumber: 2,
+//     caseupcnumber: 012312312312,
+//     unitupcnumber: 163728391922,
+//     unitsize: '28oz',
+//     countpercase: 10,
+//     formula: testFormula,
+//     formulascalingfactor: 1.5,
+//     manufacturingrate: 2,
+//     comment: 'Enjoy this lovely can of tomato soup!'
+// });
 
-testSku.save().then(
-    doc => {
-        console.log(doc);
-    }
-).catch(
-    err => {
-        console.log(err);
-    }
-);
+// testSku.save().then(
+//     doc => {
+//         console.log(doc);
+//     }
+// ).catch(
+//     err => {
+//         console.log(err);
+//     }
+// );
 
+let MP1 = new database_library.manufacturingLineModel({
+    linename: 'Meat Product 1',
+    shortname: 'MP1'
+})
+manufacturingLineUtils.createLine(MP1)
 
+let MP2 = new database_library.manufacturingLineModel({
+    linename: 'Meat Product 2',
+    shortname: 'MP2'
+})
+manufacturingLineUtils.createLine(MP2)
+
+let VP1 = new database_library.manufacturingLineModel({
+    linename: 'Vegan Product 1',
+    shortname: 'VP1'
+})
+manufacturingLineUtils.createLine(VP1)
+
+let VP2 = new database_library.manufacturingLineModel({
+    linename: 'Vegan Product 2',
+    shortname: 'VP2'
+})
+manufacturingLineUtils.createLine(VP2)
 
 
 let testProductLine = new database_library.productLineModel({
-    productlinename: 'Soups',
-    skus: [testSku]
+    productlinename: 'Soups'
 })
 productLineUtils.createProductLine(testProductLine)
 //   testSku.save().then(
