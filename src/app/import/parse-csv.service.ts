@@ -171,7 +171,7 @@ export class ParseCsvService {
       }
       newFormula['ingredientsandquantities'].push({
         ingredient: this.getNumber(currentFormula['Ingr#']),
-        quantity: this.getNumber(currentFormula['Quantity'])
+        quantity: currentFormula['Quantity']
       });
     }
 
