@@ -393,7 +393,7 @@ deleteGoal(goalname: String): Observable<any> {
     }));
   }
 
-  modifyActivity(sku: string, newsku: string, numcases: number, calculatedhours: number, sethours: number, startdate: Date, line: string){
+  modifyActivity(activityId: string, newsku: string, numcases: number, calculatedhours: number, sethours: number, startdate: Date, line: string){
     console.log("rest set", sethours)
     return this.http.post(endpoint + 'manufacturing-activities',{
       sku: newsku,
@@ -403,7 +403,7 @@ deleteGoal(goalname: String): Observable<any> {
       startdate: startdate,
       line: line
     }, this.generateHeader({
-      sku: sku,
+      _id: activityId,
       numcases: numcases.toString(),
       calculatedhours: calculatedhours.toString(),
       startdate: startdate.toString()

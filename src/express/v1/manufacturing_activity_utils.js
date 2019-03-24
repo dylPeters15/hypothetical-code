@@ -38,11 +38,11 @@ function createActivity(activityObject) {
     });
 }
 
-function modifyActivity(sku, numcases, calculatedhours, startdate, newActivityObject) {
+function modifyActivity(activityId, numcases, calculatedhours, startdate, newActivityObject) {
     console.log("NEW OBJ: " + JSON.stringify(newActivityObject))
     return new Promise((resolve, reject) => {
         var filterSchema = {
-            sku: sku,
+            _id: activityId,
             numcases: numcases,
             calculatedhours: calculatedhours,
             startdate: startdate
