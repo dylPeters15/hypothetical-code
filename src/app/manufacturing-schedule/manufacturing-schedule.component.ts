@@ -239,13 +239,15 @@ export class ManufacturingScheduleComponent implements OnInit {
         console.log('activity to delete', activity, activity[0]['startdate'])
         console.log(item['id'], activity[0]['_id'])
         
-        var response = await thisObject.restv2.modifyActivity(AndVsOr.AND, activity[0]['_id'], activity[0]['sku']['_id'], 
+        thisObject.rest.modifyActivity(activity[0]['_id'], activity[0]['sku']['_id'], 
         activity[0]['numcases'], activity[0]['calculatedhours'], activity[0]['sethours'], 
-        activity[0]['startdate'], null);
+        activity[0]['startdate'], null).subscribe(response => {
           console.log(response) 
           thisObject.refreshData();
           thisObject.data.remove(item['id']);
           thisObject.getTimelineData();
+        });
+          
         
         
         
