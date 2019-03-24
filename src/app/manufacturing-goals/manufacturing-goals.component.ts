@@ -3,6 +3,7 @@ import {HttpClient} from '@angular/common/http';
 import { RestService } from '../rest.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NewGoalDialogComponent, DisplayableActivity } from '../new-goal-dialog/new-goal-dialog.component'
+import {ManufacturingCalculatorComponent} from '../manufacturing-calculator/manufacturing-calculator.component'
 import { MatDialogRef, MatDialog, MatDialogConfig, MatTableDataSource,MatPaginator, MatSnackBar } from "@angular/material";
 import {ExportToCsv} from 'export-to-csv';
 import { RestServiceV2, AndVsOr } from '../restv2.service';
@@ -44,11 +45,12 @@ export class ExportableGoal {
 export class ManufacturingGoalsComponent implements OnInit {
   allReplacement = 54321;
   goals:any = [];
-  displayedColumns: string[] = ['checked', 'name', 'activities', 'date', 'export', 'actions'];
+  displayedColumns: string[] = ['checked', 'name', 'activities', 'date', 'export', 'actions', 'calculator'];
   data: ManufacturingGoal[] = [];
   dataSource = new MatTableDataSource<ManufacturingGoal>(this.data);
   @ViewChild(MatPaginator) paginator: MatPaginator;
   newDialogRef: MatDialogRef<NewGoalDialogComponent>;
+  calculatorDialogRef: MatDialogRef<ManufacturingCalculatorComponent>;
 
   constructor(public restv2: RestServiceV2,public rest:RestService, private route: ActivatedRoute, private router: Router, private snackBar: MatSnackBar, private dialog: MatDialog) {  }
 
@@ -190,6 +192,17 @@ export class ManufacturingGoalsComponent implements OnInit {
     dialogConfig.data = {edit: edit, present_name: present_name, present_activities: present_activities, present_date:present_date };
     this.newDialogRef = this.dialog.open(NewGoalDialogComponent, dialogConfig);
     this.newDialogRef.afterClosed().subscribe(event => {
+      this.refreshData();
+    });
+  }
+
+  async showCalculator(goal){
+    const dialogConfig = new MatDialogConfig();
+    var actualGoal = await this.restv2.getGoals(AndVsOr.OR, null, goal['name'], null,null,1);
+    dialogConfig.data = {goal: actualGoal};
+    // dialogConfig.height = '500px';
+    this.calculatorDialogRef = this.dialog.open(ManufacturingCalculatorComponent, dialogConfig);
+    this.calculatorDialogRef.afterClosed().subscribe(event => {
       this.refreshData();
     });
   }
