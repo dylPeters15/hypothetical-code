@@ -79,7 +79,7 @@ export class IngredientDependencyComponent implements OnInit {
 
   async refreshData(filterQueryData?) {
     this.data = []
-    filterQueryData = filterQueryData ? "(?i).*"+filterQueryData+".*" : ".*"+this.filterQuery+".*"; //this returns things that have the pattern anywhere in the string  
+    filterQueryData = filterQueryData ? "(?i).*"+filterQueryData+".*" : "(?i).*"+this.filterQuery+".*"; //this returns things that have the pattern anywhere in the string  
     var numingredients;
     var rest = this.rest;
     var thisobject = this;
