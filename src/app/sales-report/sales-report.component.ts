@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { RestServiceV2, AndVsOr } from '../restv2.service';
+import { SalesSummaryExportService } from './sales-summary-export.service';
 
 @Component({
   selector: 'app-sales-report',
@@ -18,7 +19,11 @@ export class SalesReportComponent implements OnInit {
 
   selectedSKU = {};
 
-  constructor(public restv2: RestServiceV2) { }
+  constructor(public restv2: RestServiceV2, public exporter: SalesSummaryExportService) { }
+
+  exportSummary() {
+    this.exporter.exportSalesSummary(this.selectedProductLines, this.selectedCustomerId);
+  }
 
   modelChanged(event) {
     if(event && event['selectedIndex'] == 1) {
