@@ -118,9 +118,20 @@ export class ManufacturingScheduleComponent implements OnInit {
     var newItem_dropped = this.timeline.itemsData.get(event.target.id);
     console.log(newItem_dropped)
     var newGroup = this.groups.get(newItem_dropped.group)
-    var response = await this.restv2.getSkus(AndVsOr.OR, newItem_dropped.content, null, null, null, null, null, 1);
+    this.checkLine(newItem_dropped, newGroup).then(isValid => {
+      console.log('isValid', isValid)
+      if (!isValid) {
+        this.timeline.itemsData.remove(newItem_dropped);
+      }
+    })
+    
+    
+  }
+
+  async checkLine(item, group): Promise<Boolean> {
+    var response = await this.restv2.getSkus(AndVsOr.OR, item.content, null, null, null, null, null, 1);
     console.log(response[0])
-    var line = await this.restv2.getLine(AndVsOr.OR, "","", newGroup.content, "", 1)
+    var line = await this.restv2.getLine(AndVsOr.OR, "","", group.content, "", 1)
     console.log(line)
     if (line[0]['skus']) {
       console.log(line[0]['skus'])
@@ -137,14 +148,16 @@ export class ManufacturingScheduleComponent implements OnInit {
         console.log(activity)
         var modify = await this.restv2.modifyActivity(AndVsOr.AND, activity[0]['_id'], activity[0]['sku']['_id'], 
         activity[0]['numcases'], activity[0]['calculatedhours'], activity[0]['sethours'], 
-        newItem_dropped['start'], line[0]['_id']);
+        item['start'], line[0]['_id']);
         console.log(modify)
         var activity = await this.restv2.getActivities(AndVsOr.OR, null, null, skuObject['_id'], 1)
-        console.log(activity)   
+        console.log(activity)  
+        return true; 
       }
       else {
         console.log('wrong')
-        this.timeline.itemsData.remove(event.target.id);
+        return false;
+        // this.timeline.itemsData.remove(item);
       }
     }
     this.refreshData();
@@ -215,9 +228,9 @@ export class ManufacturingScheduleComponent implements OnInit {
         axis: 5   // minimal margin between items and the axis
       },
       orientation: 'top',
-
+      
       onRemove: async function(item, callback): Promise<void> {
-        console.log(item);
+        console.log(item, callback);
         var getSku = await thisObject.restv2.getSkus(AndVsOr.OR, item['content'], null, null, null, null, null, 1);
         var activity = await thisObject.restv2.getActivities(AndVsOr.AND, item['start'], null, getSku[0]['_id'], 1);
         console.log('activity to delete', activity, activity[0]['startdate'])
@@ -230,9 +243,20 @@ export class ManufacturingScheduleComponent implements OnInit {
           thisObject.refreshData();
           thisObject.data.remove(item['id']);
           thisObject.getTimelineData();
+          callback(item)
         });  
       },
       
+      onMove: async function(item, callback): Promise<void> {
+        console.log(item, callback);
+        var newGroup = thisObject.groups.get(item);
+        thisObject.checkLine(item, newGroup).then(isValid => {
+          console.log('isValid', isValid)
+        if (!isValid) {
+          callback(null)
+        }
+        })
+      }
     };
   }
 
