@@ -5,8 +5,6 @@ import { EnableGoalsDialogComponent } from '../enable-goals-dialog/enable-goals-
 import { RestService } from '../rest.service';
 import { RestServiceV2, AndVsOr } from '../restv2.service';
 
-// declare var vis = require('vis');
-
 export class DataForGoalsTable{
   goalname: string;
   activities: [];
@@ -61,12 +59,9 @@ export class ManufacturingScheduleComponent implements OnInit {
 
   ngAfterViewInit() {     
     this.tlContainer = this.timelineContainer.nativeElement;       
-    this.timeline = new vis.Timeline(this.tlContainer, null, this.options);  
-    // this.refreshData();    
+    this.timeline = new vis.Timeline(this.tlContainer, null, this.options);      
     this.timeline.setGroups(this.groups);
-    this.timeline.setItems(this.data);
-    
-   
+    this.timeline.setItems(this.data); 
   }
 
   refreshData() {
@@ -82,12 +77,11 @@ export class ManufacturingScheduleComponent implements OnInit {
               console.log('activity', activity)
               this.rest.getActivities( null, 100).subscribe(sameActivity => {
                 console.log('sameActivity', sameActivity)
-              })
-              
+              });
               if(activity['activity']['line'] == null || activity['activity']['line'] == undefined){
                 activityList.push(activity['activity'])
               }
-            })
+            });
             let goalTable = new DataForGoalsTable(goal['goalname'], activityList)
             this.goalsData.push(goalTable)
             }
@@ -112,12 +106,6 @@ export class ManufacturingScheduleComponent implements OnInit {
     };
     // set event.target ID with item ID
     event.target.id = new Date(item.id).toISOString();
-
-    // var isFixedTimes = (event.target.innerHTML.split('-')[2] && event.target.innerHTML.split('-')[2].trim() == 'fixed times')
-    // if (isFixedTimes) {
-    //     this.data.start = new Date();
-    //     this.data.end = new Date(1000 * 60 * 10 + (new Date()).valueOf());
-    // }
     event.dataTransfer.setData("text", JSON.stringify(item));
 
     // Trigger on from the new item dragged when this item drag is finish
@@ -152,22 +140,19 @@ export class ManufacturingScheduleComponent implements OnInit {
         newItem_dropped['start'], line[0]['_id']);
         console.log(modify)
         var activity = await this.restv2.getActivities(AndVsOr.OR, null, null, skuObject['_id'], 1)
-        console.log(activity)
-          
+        console.log(activity)   
       }
       else {
         console.log('wrong')
         this.timeline.itemsData.remove(event.target.id);
       }
-      
     }
     this.refreshData();
     this.getTimelineData();
   }
 
   getTimelineGroups() {
-     // create groups
-
+    // create groups
     this.groups = new vis.DataSet();
     this.rest.getLine('','.*','','.*',100).subscribe(lines => {
       lines.forEach(line => {
@@ -177,10 +162,8 @@ export class ManufacturingScheduleComponent implements OnInit {
         this.groups.add({
           id: currentId, 
           content: currentLineName})
+        })
       })
-
-    })
-    // this.linesDataSource = new MatTableDataSource<DataForLinesTable>(this.linesData);
     }
 
   async getTimelineData(): Promise<void> {
@@ -232,6 +215,7 @@ export class ManufacturingScheduleComponent implements OnInit {
         axis: 5   // minimal margin between items and the axis
       },
       orientation: 'top',
+
       onRemove: async function(item, callback): Promise<void> {
         console.log(item);
         var getSku = await thisObject.restv2.getSkus(AndVsOr.OR, item['content'], null, null, null, null, null, 1);
@@ -246,13 +230,9 @@ export class ManufacturingScheduleComponent implements OnInit {
           thisObject.refreshData();
           thisObject.data.remove(item['id']);
           thisObject.getTimelineData();
-        });
-          
-        
-        
-        
-        
-      }
+        });  
+      },
+      
     };
   }
 
@@ -263,5 +243,4 @@ export class ManufacturingScheduleComponent implements OnInit {
       this.refreshData();
     });
   }
-
 }
