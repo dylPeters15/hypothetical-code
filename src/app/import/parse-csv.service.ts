@@ -1,14 +1,15 @@
 import { Injectable } from '@angular/core';
 import { Papa } from 'ngx-papaparse';
+import { RestServiceV2, AndVsOr } from '../restv2.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ParseCsvService {
 
-  constructor(private papa: Papa) { }
+  constructor(private papa: Papa, public restv2: RestServiceV2) { }
 
-  parseCSVFiles(files: { [key: string]: File }): Promise<any> {
+  async parseCSVFiles(files: { [key: string]: File }): Promise<any> {
     return new Promise((resolve, reject) => {
       var filesAsArray: File[] = [];
       for (let key in files) {
@@ -27,7 +28,7 @@ export class ParseCsvService {
           filesWithText[file.name] = result;
           numFilesRead = numFilesRead + 1;
           if (numFilesRead == filesAsArray.length) {
-            this.parseFilesWithNames(filesWithText).then(result => {
+            this.parseFilesWithNames(filesWithText).then(async result => {
               var objectToReturn = {};
               objectToReturn['skus'] = [];
               objectToReturn['ingredients'] = [];
@@ -39,7 +40,7 @@ export class ParseCsvService {
                 } else if (filename.startsWith("ingredients")) {
                   objectToReturn['ingredients'] = objectToReturn['ingredients'].concat(this.parseIngredients(result[filename]));
                 } else if (filename.startsWith("formulas")) {
-                  objectToReturn['formulas'] = objectToReturn['formulas'].concat(this.consolidateFormulas(result[filename]));
+                  objectToReturn['formulas'] = objectToReturn['formulas'].concat(await this.consolidateFormulas(result[filename]));
                 } else if (filename.startsWith("product_lines")) {
                   objectToReturn['productlines'] = objectToReturn['productlines'].concat(result[filename]);
                 } else {
@@ -102,7 +103,7 @@ export class ParseCsvService {
       }
     });
   }
-  
+
   private arrayContainsObjectWithKey(array: any[], key: string): boolean {
     for (var i = 0; i < array.length; i++) {
       if (Object.keys(array[i]).includes(key)) {
@@ -145,16 +146,16 @@ export class ParseCsvService {
       newSKU['formula'] = this.getNumber(currentSKU['Formula#']);
       newSKU['formulascalingfactor'] = this.getNumber(currentSKU['Formula factor']);
       newSKU['manufacturingrate'] = this.getNumber(currentSKU['Rate']);
-      newSKU['comment'] = currentSKU['Comment']||"";
-      newSKU['manufacturinglines'] = currentSKU["ML Shortnames"]?currentSKU["ML Shortnames"].split(","):[];
+      newSKU['comment'] = currentSKU['Comment'] || "";
+      newSKU['manufacturinglines'] = currentSKU["ML Shortnames"] ? currentSKU["ML Shortnames"].split(",") : [];
       newSKU['manufacturingsetupcost'] = this.getNumber(currentSKU['Mfg setup cost']);
       newSKU['manufacturingruncost'] = this.getNumber(currentSKU['Mfg run cost']);
       objectToReturn.push(newSKU);
     }
     return objectToReturn;
   }
-  
-  private consolidateFormulas(formulasObject): any[] {
+
+  private async consolidateFormulas(formulasObject): Promise<any[]> {
     var objectToReturn = [];
 
     for (var i = 0; i < formulasObject.length; i++) {
@@ -166,16 +167,36 @@ export class ParseCsvService {
         newFormula['formulaname'] = currentFormula['Name'];
         newFormula['formulanumber'] = this.getNumber(currentFormula['Formula#']);
         newFormula['ingredientsandquantities'] = [];
-        newFormula['comment'] = currentFormula['Comment']||"";
+        newFormula['comment'] = currentFormula['Comment'] || "";
         objectToReturn.push(newFormula);
       }
+      var quantity = await this.convertQuantity(currentFormula['Quantity'], this.getNumber(currentFormula['Ingr#']));
       newFormula['ingredientsandquantities'].push({
         ingredient: this.getNumber(currentFormula['Ingr#']),
-        quantity: currentFormula['Quantity']
+        quantity: quantity
       });
     }
 
     return objectToReturn;
+  }
+
+  allowedQuantities = ['oz', 'lb', 'ton', 'g', 'kg', 'floz', 'pt', 'qt', 'gal', 'mL', 'L', 'count'];
+  private async convertQuantity(quantityString: string, ingredientNum: number): Promise<Number> {
+    //if ingredientAndQuantity['quantity'] is one of the allowed quantities
+    console.log((quantityString + ""));
+    if (!this.allowedQuantities.includes((quantityString + "").match('[a-zA-Z]+')[0])) {
+      throw Error("Invalid formula unit of measure: " + quantityString);
+    }
+
+    var ingredients = await this.restv2.getIngredients(AndVsOr.AND, null, null, ingredientNum, 1);
+    if (ingredients.length != 1) {
+      throw Error("Could not find ingredient " + ingredientNum + ".");
+    }
+    var ingredient = ingredients[0];
+    
+    //convert from the given unit to the ingredient's unit here
+
+    return ingredient['ingredientnumber'];
   }
 
   private parseIngredients(ingredientsObject): any[] {
@@ -190,7 +211,7 @@ export class ParseCsvService {
       newIngredient['unitofmeasure'] = currentIngredient['Size'].toLowerCase().match('[a-z]+')[0];
       newIngredient['amount'] = this.getNumber(currentIngredient['Size']);
       newIngredient['costperpackage'] = this.getNumber(currentIngredient['Cost']);
-      newIngredient['comment'] = currentIngredient['Comment']||"";
+      newIngredient['comment'] = currentIngredient['Comment'] || "";
 
       objectToReturn.push(newIngredient);
     }
@@ -198,7 +219,7 @@ export class ParseCsvService {
   }
 
   private getNumber(stringIn: any) {
-    return typeof stringIn == "string"?Number(stringIn.match('[0-9\.]+')[0]):stringIn;
+    return typeof stringIn == "string" ? Number(stringIn.match('[0-9\.]+')[0]) : stringIn;
   }
 
 }

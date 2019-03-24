@@ -228,7 +228,6 @@ export class ImportMatchConflictNewCheckerService {
    * Objects Formulas reference that could cause errors:
    * ingredients
    */
-  allowedQuantities = ['oz', 'lb', 'ton', 'g', 'kg', 'floz', 'pt', 'qt', 'gal', 'mL', 'L', 'count'];
   private async checkFormulaReferences(formulas, ingredients): Promise<any> {
     var toReturn = {};
     toReturn['matches'] = [];
@@ -243,13 +242,6 @@ export class ImportMatchConflictNewCheckerService {
             throw Error("Could not find ingredient " + ingredientnum + " for formula " + formula['formulaname']);
           }
         }
-
-        //if ingredientAndQuantity['quantity'] is one of the allowed quantities
-        console.log((ingredientAndQuantity['quantity']+""));
-        if (!this.allowedQuantities.includes((ingredientAndQuantity['quantity']+"").match('[a-zA-Z]+')[0])) {
-          throw Error("Invalid formula unit of measure: " + ingredientAndQuantity['quantity']);
-        }
-
       }
     }
     return toReturn;
