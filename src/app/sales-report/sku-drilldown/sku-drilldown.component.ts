@@ -49,10 +49,10 @@ export class SkuDrilldownComponent implements OnInit {
   sku: any = {};
   allSales: any[] = [];
   salesByWeek: any[] = [];
-  prevStartDate = new Date();
-  startDate = new Date();
-  prevEndDate = new Date(new Date().setUTCFullYear(new Date().getUTCFullYear()+1));
-  endDate = new Date(new Date().setUTCFullYear(new Date().getUTCFullYear()+1));
+  prevStartDate = new Date(new Date().setUTCFullYear(new Date().getUTCFullYear()-1));
+  startDate = new Date(new Date().setUTCFullYear(new Date().getUTCFullYear()-1));
+  prevEndDate = new Date();
+  endDate = new Date();
 
   customers: any[] = [];
   selectedCustomerId: string = "all";
