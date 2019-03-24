@@ -5,6 +5,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { NewGoalDialogComponent, DisplayableActivity } from '../new-goal-dialog/new-goal-dialog.component'
 import { MatDialogRef, MatDialog, MatDialogConfig, MatTableDataSource,MatPaginator, MatSnackBar } from "@angular/material";
 import {ExportToCsv} from 'export-to-csv';
+import { RestServiceV2, AndVsOr } from '../restv2.service';
 import { auth } from '../auth.service';
 import { from } from 'rxjs';
 
@@ -49,10 +50,33 @@ export class ManufacturingGoalsComponent implements OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   newDialogRef: MatDialogRef<NewGoalDialogComponent>;
 
-  constructor(public rest:RestService, private route: ActivatedRoute, private router: Router, private snackBar: MatSnackBar, private dialog: MatDialog) {  }
+  constructor(public restv2: RestServiceV2,public rest:RestService, private route: ActivatedRoute, private router: Router, private snackBar: MatSnackBar, private dialog: MatDialog) {  }
 
   getPageSizeOptions() {
     return [20, 50, 100, this.allReplacement];
+  }
+
+  ngAfterViewChecked() {
+    const matOptions = document.querySelectorAll('mat-option');
+   
+   
+    // If the replacement element was found...
+    if (matOptions) {
+      const matOptionsLen = matOptions.length;
+      // We'll iterate the array backwards since the allReplacement should be at the end of the array
+      for (let i = matOptionsLen - 1; i >= 0; i--) {
+        const matOption = matOptions[i];
+   
+        // Store the span in a variable for re-use
+        const span = matOption.querySelector('span.mat-option-text');
+        // If the spans innerHTML string value is the same as the allReplacement variables string value...
+        if ('' + span.innerHTML === '' + this.allReplacement) {
+          // Change the span text to "All"
+          span.innerHTML = 'All';
+          break;
+        }
+      }
+    }
   }
 
   newGoal() {
@@ -67,7 +91,8 @@ export class ManufacturingGoalsComponent implements OnInit {
   refreshData() {
     this.data = [];
     this.rest.getUserName().then(result => {
-      this.rest.getGoals(result.toString(), "", "", true, 5).subscribe(data => {
+      console.log("USERNAME: " + result.toString());
+      this.restv2.getGoals(AndVsOr.OR, result.toString(), null,null, null, 150).then(data => {
         this.goals = data;
             var i;
             this.dataSource = new MatTableDataSource<ManufacturingGoal>(this.data);
