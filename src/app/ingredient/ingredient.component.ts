@@ -74,7 +74,7 @@ export class IngredientComponent  implements OnInit {
   }
 
   refreshData(filterQueryData?) {
-    filterQueryData = filterQueryData ? "(?i).*"+filterQueryData+".*" : ".*"+this.filterQuery+".*"; //this returns things that have the pattern anywhere in the string
+    filterQueryData = filterQueryData ? "(?i).*"+filterQueryData+".*" : "(?i).*"+this.filterQuery+".*"; //this returns things that have the pattern anywhere in the string
     this.rest.getIngredients("", filterQueryData, -1, this.paginator.pageSize*10).subscribe(response => {
       console.log("in ingredient: ", response);
       this.data = response;
