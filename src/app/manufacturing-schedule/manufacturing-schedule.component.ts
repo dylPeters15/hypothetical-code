@@ -118,10 +118,14 @@ export class ManufacturingScheduleComponent implements OnInit {
     var newItem_dropped = this.timeline.itemsData.get(event.target.id);
     console.log(newItem_dropped)
     var newGroup = this.groups.get(newItem_dropped.group)
-    this.checkLine(newItem_dropped, newGroup);
+    var isValid = this.checkLine(newItem_dropped, newGroup);
+    if (!isValid) {
+      this.timeline.itemsData.remove(newItem_dropped);
+    }
+    
   }
 
-  async checkLine(item, group): Promise<void> {
+  async checkLine(item, group): Promise<Boolean> {
     var response = await this.restv2.getSkus(AndVsOr.OR, item.content, null, null, null, null, null, 1);
     console.log(response[0])
     var line = await this.restv2.getLine(AndVsOr.OR, "","", group.content, "", 1)
@@ -144,11 +148,13 @@ export class ManufacturingScheduleComponent implements OnInit {
         item['start'], line[0]['_id']);
         console.log(modify)
         var activity = await this.restv2.getActivities(AndVsOr.OR, null, null, skuObject['_id'], 1)
-        console.log(activity)   
+        console.log(activity)  
+        return true; 
       }
       else {
         console.log('wrong')
-        this.timeline.itemsData.remove(item);
+        return false;
+        // this.timeline.itemsData.remove(item);
       }
     }
     this.refreshData();
@@ -239,6 +245,11 @@ export class ManufacturingScheduleComponent implements OnInit {
       
       onMove: async function(item, callback): Promise<void> {
         console.log(item, callback);
+        var newGroup = thisObject.groups.get(item);
+        var isValid = thisObject.checkLine(item, newGroup);
+        if (!isValid) {
+          callback(item)
+        }
 
       }
     };
