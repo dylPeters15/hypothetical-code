@@ -22,7 +22,7 @@ export class SalesReportComponent implements OnInit {
   constructor(public restv2: RestServiceV2, public exporter: SalesSummaryExportService) { }
 
   exportSummary() {
-    this.exporter.exportSalesSummary();
+    this.exporter.exportSalesSummary(this.selectedProductLines, this.selectedCustomerId);
   }
 
   modelChanged(event) {
