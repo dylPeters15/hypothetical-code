@@ -124,7 +124,8 @@ export class ManufacturingScheduleComponent implements OnInit {
         this.timeline.itemsData.remove(newItem_dropped);
       }
       else {
-        this.refreshData();
+        var item = this.data.get(newItem_dropped);
+        
       }
     })
     
@@ -154,7 +155,11 @@ export class ManufacturingScheduleComponent implements OnInit {
         item['start'], line[0]['_id']);
         console.log(modify)
         var activity = await this.restv2.getActivities(AndVsOr.OR, null, null, skuObject['_id'], 1)
-        console.log(activity)  
+        console.log(activity);
+        this.refreshData();
+        console.log('get here')
+        this.getTimelineData();
+        this.timeline.redraw();  
         return true; 
       }
       else {
@@ -163,8 +168,7 @@ export class ManufacturingScheduleComponent implements OnInit {
         // this.timeline.itemsData.remove(item);
       }
     }
-    this.refreshData();
-    this.getTimelineData();
+    
   }
 
   getTimelineGroups() {
@@ -199,11 +203,19 @@ export class ManufacturingScheduleComponent implements OnInit {
             if (activity['sethours']) {
               duration = activity['sethours'];
             }
+            console.log('startDate', activity['startdate'])
+            var endDate = new Date(1000 * 60 * 60 * (duration + (Math.floor(duration / 14)*14)) + (new Date(activity['startdate'])).valueOf()); 
+            console.log('original end date', endDate)
+            if (parseInt((activity['startdate'].split('T')[1]).split(':')[0], 10) + duration > 18) {
+              endDate = new Date(1000 * 60 * 60 * 14 + (new Date(endDate)).valueOf());
+            }
+            console.log('final end date', endDate)
+            // var endDate = new Date(1000 * 60 * 60 * duration + (new Date(activity['startdate'])).valueOf());
             this.data.add({
               id: activity['_id'],
               group: line['_id'],
               start: activity['startdate'],
-              end: new Date(1000 * 60 * 60 * duration + (new Date(activity['startdate'])).valueOf()),
+              end: endDate,
               content: activity['sku']['skuname']
             })
           })
@@ -255,13 +267,21 @@ export class ManufacturingScheduleComponent implements OnInit {
       
       onMove: async function(item, callback): Promise<void> {
         console.log(item, callback);
-        var newGroup = thisObject.groups.get(item);
+        var newGroup = thisObject.groups.get(item['group']);
+        console.log(newGroup)
         thisObject.checkLine(item, newGroup).then(isValid => {
           console.log('isValid', isValid)
-        if (!isValid) {
-          callback(null)
-        }
+          if (!isValid) {
+            callback(null)
+          }
+          else {
+            callback(item)
+          }
         })
+      },
+
+      onUpdate: async function(item, callback): Promise<void> {
+
       }
     };
   }
