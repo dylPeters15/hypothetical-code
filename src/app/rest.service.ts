@@ -174,7 +174,7 @@ deleteFormula(formulanumber: number): Observable<any> {
 
 createSku(skuname: String, skunumber: number, 
   caseupcnumber: number, unitupcnumber: number, unitsize: string, 
-  countpercase: number, formulanum: Number, formulascalingfactor: Number, manufacturingrate: Number, comment: String, productline?: String): Observable<any> {
+  countpercase: number, formulanum: Number, formulascalingfactor: Number, manufacturingrate: Number, comment: String, manufacturinglines?: any[], productline?: String): Observable<any> {
   console.log("We are now trying to create our sku. product line: " + productline);
   if(productline == undefined) productline = "No Product Line Assigned";
     return this.http.put(endpoint + "skus", {
@@ -187,6 +187,7 @@ createSku(skuname: String, skunumber: number,
     formulanum: formulanum,
     formulascalingfactor: formulascalingfactor,
     productline: productline,
+    manufacturinglines: manufacturinglines,
     manufacturingrate: manufacturingrate,
     comment: comment
   },
@@ -195,7 +196,7 @@ createSku(skuname: String, skunumber: number,
 
 modifySku(oldSkuName: String, skuname: String, skunumber: number, 
   caseupcnumber: number, unitupcnumber: number, unitsize: string, 
-  countpercase: number, formulanum: Number, formulascalingfactor: Number, manufacturingrate: Number, comment: String, productline?: String): Observable<any> {
+  countpercase: number, formulanum: Number, formulascalingfactor: Number, manufacturingrate: Number, comment: String, manufacturinglines?: any[], productline?: String): Observable<any> {
   if(productline == undefined) productline = "No Product Line Assigned";
   return this.http.post(endpoint + "skus", {
     skuname: skuname,
@@ -207,6 +208,7 @@ modifySku(oldSkuName: String, skuname: String, skunumber: number,
     formulanum: formulanum,
     formulascalingfactor: formulascalingfactor,
     productline: productline,
+    manufacturinglines: manufacturinglines,
     manufacturingrate: manufacturingrate,
     comment: comment
   },

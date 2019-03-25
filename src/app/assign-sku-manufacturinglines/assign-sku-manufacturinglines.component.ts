@@ -22,6 +22,7 @@ export class AssignSkuManufacturingLines implements OnInit {
   separatorKeysCodes: number[] = [ENTER, COMMA];
   lineCtrl = new FormControl();
   filteredLines: Observable<String[]>;
+  currentSku: any;
   //linename: string = '';
   //shortname: string = '';
   selectedLineNames: string[] = [];
@@ -31,7 +32,7 @@ export class AssignSkuManufacturingLines implements OnInit {
   lineNameList: string[] = [];
   edit: Boolean;
 
-  @ViewChild('skuInput') lineInput: ElementRef<HTMLInputElement>;
+  @ViewChild('lineInput') lineInput: ElementRef<HTMLInputElement>;
   @ViewChild('auto') matAutocomplete: MatAutocomplete;
 
   constructor(public restv2: RestServiceV2, @Inject(MAT_DIALOG_DATA) public data: any, private dialogRef: MatDialogRef<AssignSkuManufacturingLines>, public rest:RestService, private snackBar: MatSnackBar) { 
@@ -42,6 +43,7 @@ export class AssignSkuManufacturingLines implements OnInit {
 
   ngOnInit() {
     this.edit = this.data.edit;
+    this.currentSku = this.data.currentSku;
 
     // edit == true if sku is being modified, false if a new sku is being created
     if (this.edit == true)
@@ -57,7 +59,7 @@ export class AssignSkuManufacturingLines implements OnInit {
             if(response[0] != undefined){
               let currentLine = response[0];
               console.log("Line: " + JSON.stringify(currentLine))
-              this.selectedLines.push({sku: currentLine['_id']});
+              this.selectedLines.push({line: currentLine['_id']});
             }
           })
       });
@@ -72,9 +74,15 @@ export class AssignSkuManufacturingLines implements OnInit {
     this.rest.getLine('', '.*','','',100).subscribe(response => {
         this.lineList = response;
         this.lineList.forEach(element => {
-          this.lineNameList.push(element.skuname)
+          this.lineNameList.push(element.linename)
         });
       });
+  }
+
+
+
+  assignLines() {
+      this.closeDialog();
   }
 
   closeDialog() {

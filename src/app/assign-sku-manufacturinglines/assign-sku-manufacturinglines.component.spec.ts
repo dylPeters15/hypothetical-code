@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { NewLineDialogComponent } from './new-line-dialog.component';
+import { AssignSkuManufacturingLines } from './assign-sku-manufacturinglines.component';
 
-describe('NewLineDialogComponent', () => {
-  let component: NewLineDialogComponent;
-  let fixture: ComponentFixture<NewLineDialogComponent>;
+describe('AssignSkuManufacturingLines', () => {
+  let component: AssignSkuManufacturingLines;
+  let fixture: ComponentFixture<AssignSkuManufacturingLines>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ NewLineDialogComponent ]
+      declarations: [ AssignSkuManufacturingLines ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(NewLineDialogComponent);
+    fixture = TestBed.createComponent(AssignSkuManufacturingLines);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
