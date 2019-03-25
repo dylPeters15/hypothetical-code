@@ -271,7 +271,7 @@ export class NewSkuDialogComponent implements OnInit {
 
     else{
       this.rest.modifySku(this.oldskuname, this.skuname, this.skunumber, this.caseupcnumber, this.unitupcnumber, this.unitsize, this.countpercase, this.formula['formulanumber'], this.formulascalingfactor, this.manufacturingrate, this.comment, this.productlinename).subscribe(response => {
-        this.snackBar.open("Successfully modifyed sku " + this.skuname + ". specifically, product line is now " + this.productlinename, "close", {
+        this.snackBar.open("Successfully modifyed sku " + this.skuname + ".", "close", {
           duration: 2000,
         });
         this.closeDialog();
