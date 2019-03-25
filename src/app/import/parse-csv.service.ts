@@ -207,7 +207,7 @@ export class ParseCsvService {
     ounce: 'oz',
 
     lb: 'lb',
-    pound: 'pound',
+    pound: 'lb',
 
     ton: 'ton',
 
@@ -332,15 +332,14 @@ export class ParseCsvService {
 
         //check for ingredient in database
         var ingredientsInDatabase = await this.restv2.getIngredients(AndVsOr.AND, null, null, ingredientAndQuantity['ingredient'], 1);
-        var ingredient;
-        if (ingredientsInDatabase.length == 1) {
-          ingredient = ingredientsInDatabase[0];
-        } else {
-          for (var k = 0; k < ingredients.length; k++) {
-            if (ingredients[k]['ingredientnumber'] == ingredientAndQuantity['ingredient']) {
-              ingredient = ingredients[k];
-            }
+        var ingredient = null;
+        for (var k = 0; k < ingredients.length; k++) {
+          if (ingredients[k]['ingredientnumber'] == ingredientAndQuantity['ingredient']) {
+            ingredient = ingredients[k];
           }
+        }
+        if (ingredient == null && ingredientsInDatabase.length == 1) {
+          ingredient = ingredientsInDatabase[0];
         }
 
         ingredientAndQuantity['quantity'] = this.convertQuantity(ingredientAndQuantity['quantity'], ingredient);
@@ -360,6 +359,7 @@ export class ParseCsvService {
     var formulaQuantityInIngredientUnitOfMeasure = formulaQuantity * this.conversions[ingredientUnitOfMeasure + "/" + formulaUnitOfMeasure];
 
     console.log(formulaQuantity);
+    console.log(ingredientUnitOfMeasure + "/" + formulaUnitOfMeasure);
     console.log(this.conversions[ingredientUnitOfMeasure + "/" + formulaUnitOfMeasure]);
     console.log(formulaQuantityInIngredientUnitOfMeasure);
     console.log(ingredient['amount']);
@@ -367,9 +367,12 @@ export class ParseCsvService {
     var numCasesOfIngredient = formulaQuantityInIngredientUnitOfMeasure / ingredient['amount'];
 
     //temporary
-    if (isNaN(numCasesOfIngredient)) {
-      return 0;
-    }
+    // if (isNaN(numCasesOfIngredient)) {
+    //   console.log(formulaQuantityInIngredientUnitOfMeasure);
+    //   console.log(ingredient);
+    //   throw Error(ingredient);
+    //   return 0;
+    // }
 
     return numCasesOfIngredient;
   }
@@ -383,7 +386,7 @@ export class ParseCsvService {
       newIngredient['ingredientname'] = currentIngredient['Name'];
       newIngredient['ingredientnumber'] = this.getNumber(currentIngredient['Ingr#']);
       newIngredient['vendorinformation'] = currentIngredient['Vendor Info'];
-      newIngredient['unitofmeasure'] = currentIngredient['Size'].toLowerCase().match('[a-z]+')[0];
+      newIngredient['unitofmeasure'] = this.getUnitOfMeasure(currentIngredient['Size']);
       newIngredient['amount'] = this.getNumber(currentIngredient['Size']);
       newIngredient['costperpackage'] = this.getNumber(currentIngredient['Cost']);
       newIngredient['comment'] = currentIngredient['Comment'] || "";
