@@ -374,8 +374,6 @@ export class RestServiceV2 {
       line: line
     }), this.generateHeaderWithFilterSchema(andVsOr, [
       {_id: activityId},
-      {numcases: numcases},
-      {calculatedhours: calculatedhours}
     ])).toPromise();
   }
 
