@@ -123,6 +123,9 @@ export class ManufacturingScheduleComponent implements OnInit {
       if (!isValid) {
         this.timeline.itemsData.remove(newItem_dropped);
       }
+      else {
+        this.refreshData();
+      }
     })
     
     
@@ -228,6 +231,9 @@ export class ManufacturingScheduleComponent implements OnInit {
         axis: 5   // minimal margin between items and the axis
       },
       orientation: 'top',
+      hiddenDates: [
+        {start: '2013-03-29 18:00:00', end: '2013-03-30 08:00:00', repeat: 'daily'} // daily weekly monthly yearly
+    ],
       
       onRemove: async function(item, callback): Promise<void> {
         console.log(item, callback);
