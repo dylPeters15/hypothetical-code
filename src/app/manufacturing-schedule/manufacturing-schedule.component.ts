@@ -157,7 +157,6 @@ export class ManufacturingScheduleComponent implements OnInit {
         var activity = await this.restv2.getActivities(AndVsOr.OR, null, null, skuObject['_id'], 1)
         console.log(activity);
         this.refreshData();
-        console.log('get here')
         this.getTimelineData();
         this.timeline.redraw();  
         return true; 
@@ -234,7 +233,7 @@ export class ManufacturingScheduleComponent implements OnInit {
       end: new Date(1000*60*60*24 + (new Date()).valueOf()),
       editable: {
         add: true,         // add new items by double tapping
-        updateTime: true,  // drag items horizontally
+        // updateTime: true,  // drag items horizontally
         updateGroup: true, // drag items from one group to another
         remove: true       // delete an item by tapping the delete button top right
       },
@@ -280,8 +279,25 @@ export class ManufacturingScheduleComponent implements OnInit {
         })
       },
 
-      onUpdate: async function(item, callback): Promise<void> {
-
+      onUpdate: async function (item, callback): Promise<void> {
+        var getSku = await thisObject.restv2.getSkus(AndVsOr.OR, item['content'], null, null, null, null, null, 1);
+        var activity = await thisObject.restv2.getActivities(AndVsOr.AND, item['start'], null, getSku[0]['_id'], 1);
+        var newDuration = prompt('Choose new activity duration (in hours):', activity[0]['calculatedhours']);
+        console.log(newDuration)
+        
+        if (item.content != null) {
+          thisObject.rest.modifyActivity(activity[0]['_id'], activity[0]['sku']['_id'], 
+          activity[0]['numcases'], activity[0]['calculatedhours'], parseInt(newDuration, 10), 
+          activity[0]['startdate'], activity[0]['line']).subscribe(response => {
+            console.log(response) 
+            thisObject.refreshData();
+            thisObject.getTimelineData();
+            callback(item)
+        }); 
+        }
+        else {
+          callback(null); // cancel updating the item
+        }
       }
     };
   }
