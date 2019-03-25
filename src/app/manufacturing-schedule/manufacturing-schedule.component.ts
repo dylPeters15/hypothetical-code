@@ -8,10 +8,12 @@ import { RestServiceV2, AndVsOr } from '../restv2.service';
 export class DataForGoalsTable{
   goalname: string;
   activities: [];
+  date: Date;
   id: '';
-  constructor(goalname, activities){
+  constructor(goalname, activities, date){
     this.goalname = goalname;
     this.activities = activities;
+    this.date = date;
   }
 }
 
@@ -82,7 +84,7 @@ export class ManufacturingScheduleComponent implements OnInit {
                 activityList.push(activity['activity'])
               }
             });
-            let goalTable = new DataForGoalsTable(goal['goalname'], activityList)
+            let goalTable = new DataForGoalsTable(goal['goalname'], activityList, goal['date'])
             this.goalsData.push(goalTable)
             }
         });
