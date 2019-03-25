@@ -123,6 +123,10 @@ export class ManufacturingScheduleComponent implements OnInit {
       if (!isValid) {
         this.timeline.itemsData.remove(newItem_dropped);
       }
+      else {
+        var item = this.data.get(newItem_dropped);
+        
+      }
     })
     
     
@@ -151,7 +155,10 @@ export class ManufacturingScheduleComponent implements OnInit {
         item['start'], line[0]['_id']);
         console.log(modify)
         var activity = await this.restv2.getActivities(AndVsOr.OR, null, null, skuObject['_id'], 1)
-        console.log(activity)  
+        console.log(activity);
+        this.refreshData();
+        this.getTimelineData();
+        this.timeline.redraw();  
         return true; 
       }
       else {
@@ -160,8 +167,7 @@ export class ManufacturingScheduleComponent implements OnInit {
         // this.timeline.itemsData.remove(item);
       }
     }
-    this.refreshData();
-    this.getTimelineData();
+    
   }
 
   getTimelineGroups() {
@@ -196,11 +202,19 @@ export class ManufacturingScheduleComponent implements OnInit {
             if (activity['sethours']) {
               duration = activity['sethours'];
             }
+            console.log('startDate', activity['startdate'])
+            var endDate = new Date(1000 * 60 * 60 * (duration + (Math.floor(duration / 14)*14)) + (new Date(activity['startdate'])).valueOf()); 
+            console.log('original end date', endDate)
+            if (parseInt((activity['startdate'].split('T')[1]).split(':')[0], 10) + duration > 18) {
+              endDate = new Date(1000 * 60 * 60 * 14 + (new Date(endDate)).valueOf());
+            }
+            console.log('final end date', endDate)
+            // var endDate = new Date(1000 * 60 * 60 * duration + (new Date(activity['startdate'])).valueOf());
             this.data.add({
               id: activity['_id'],
               group: line['_id'],
               start: activity['startdate'],
-              end: new Date(1000 * 60 * 60 * duration + (new Date(activity['startdate'])).valueOf()),
+              end: endDate,
               content: activity['sku']['skuname']
             })
           })
@@ -219,7 +233,7 @@ export class ManufacturingScheduleComponent implements OnInit {
       end: new Date(1000*60*60*24 + (new Date()).valueOf()),
       editable: {
         add: true,         // add new items by double tapping
-        updateTime: true,  // drag items horizontally
+        // updateTime: true,  // drag items horizontally
         updateGroup: true, // drag items from one group to another
         remove: true       // delete an item by tapping the delete button top right
       },
@@ -228,6 +242,9 @@ export class ManufacturingScheduleComponent implements OnInit {
         axis: 5   // minimal margin between items and the axis
       },
       orientation: 'top',
+      hiddenDates: [
+        {start: '2013-03-29 18:00:00', end: '2013-03-30 08:00:00', repeat: 'daily'} // daily weekly monthly yearly
+    ],
       
       onRemove: async function(item, callback): Promise<void> {
         console.log(item, callback);
@@ -249,13 +266,38 @@ export class ManufacturingScheduleComponent implements OnInit {
       
       onMove: async function(item, callback): Promise<void> {
         console.log(item, callback);
-        var newGroup = thisObject.groups.get(item);
+        var newGroup = thisObject.groups.get(item['group']);
+        console.log(newGroup)
         thisObject.checkLine(item, newGroup).then(isValid => {
           console.log('isValid', isValid)
-        if (!isValid) {
-          callback(null)
-        }
+          if (!isValid) {
+            callback(null)
+          }
+          else {
+            callback(item)
+          }
         })
+      },
+
+      onUpdate: async function (item, callback): Promise<void> {
+        var getSku = await thisObject.restv2.getSkus(AndVsOr.OR, item['content'], null, null, null, null, null, 1);
+        var activity = await thisObject.restv2.getActivities(AndVsOr.AND, item['start'], null, getSku[0]['_id'], 1);
+        var newDuration = prompt('Choose new activity duration (in hours):', activity[0]['calculatedhours']);
+        console.log(newDuration)
+        
+        if (item.content != null) {
+          thisObject.rest.modifyActivity(activity[0]['_id'], activity[0]['sku']['_id'], 
+          activity[0]['numcases'], activity[0]['calculatedhours'], parseInt(newDuration, 10), 
+          activity[0]['startdate'], activity[0]['line']).subscribe(response => {
+            console.log(response) 
+            thisObject.refreshData();
+            thisObject.getTimelineData();
+            callback(item)
+        }); 
+        }
+        else {
+          callback(null); // cancel updating the item
+        }
       }
     };
   }
