@@ -53,6 +53,7 @@ import { NewFormulaDialogComponent } from './new-formula-dialog/new-formula-dial
 import { NewIngredientDialogComponent } from './new-ingredient-dialog/new-ingredient-dialog.component';
 import { NewProductLineDialogComponent } from './new-product-line-dialog/new-product-line-dialog.component';
 import { NewSkuDialogComponent } from './new-sku-dialog/new-sku-dialog.component';
+import { AssignSkuManufacturingLines } from './assign-sku-manufacturinglines/assign-sku-manufacturinglines.component';
 import { NewUserDialogComponent } from './new-user-dialog/new-user-dialog.component';
 import { NewGoalDialogComponent } from './new-goal-dialog/new-goal-dialog.component';
 import { NewLineDialogComponent } from './new-line-dialog/new-line-dialog.component';
@@ -119,6 +120,7 @@ const appRoutes: Routes = [
     IngredientComponent,
     FormulaComponent,
     NewSkuDialogComponent,
+    AssignSkuManufacturingLines,
     NewFormulaDialogComponent,
     NewFormulaIngredientDialogComponent,
     NewSkuFormulaComponent,
@@ -196,7 +198,7 @@ const appRoutes: Routes = [
   providers: [],
   bootstrap: [AppComponent],
 
-  entryComponents: [ConfirmDeletionDialogComponent, DeleteProductLineDialogComponent, UserNotificationDialogComponent, NewUserDialogComponent, PasswordConfirmationDialogComponent, PrivacyPolicyDialogComponent, TermsAndConditionsDialogComponent, MoreInfoDialogComponent, NewSkuDialogComponent, NewFormulaDialogComponent, NewFormulaIngredientDialogComponent, NewIngredientDialogComponent, NewGoalDialogComponent, NewProductLineDialogComponent, NewSkuFormulaComponent, AssignSkuProductlineComponent, ConfirmActionDialogComponent, ImportPreviewDialogComponent, NewLineDialogComponent, EnableGoalsDialogComponent, ModifyActivityDialogComponent, SkuDrilldownComponent]
+  entryComponents: [ConfirmDeletionDialogComponent, DeleteProductLineDialogComponent, UserNotificationDialogComponent, NewUserDialogComponent, PasswordConfirmationDialogComponent, PrivacyPolicyDialogComponent, TermsAndConditionsDialogComponent, MoreInfoDialogComponent, NewSkuDialogComponent, NewFormulaDialogComponent, NewFormulaIngredientDialogComponent, NewIngredientDialogComponent, AssignSkuManufacturingLines, NewGoalDialogComponent, NewProductLineDialogComponent, NewSkuFormulaComponent, AssignSkuProductlineComponent, ConfirmActionDialogComponent, ImportPreviewDialogComponent, NewLineDialogComponent, EnableGoalsDialogComponent, ModifyActivityDialogComponent, SkuDrilldownComponent]
 
 })
 export class AppModule { 
