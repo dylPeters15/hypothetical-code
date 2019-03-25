@@ -1,58 +1,19 @@
 <!-- <div id="visualization"></div> -->
 <div>
     <mat-card class="ManufacturingSchedule">
-        <h1 style="text-align:center"> Demo Timeline Groups </h1>
-
+        <h1 style="text-align:center"> Manufacturing Schedule </h1>
+        <button mat-raised-button (click)="openEnableGoalsDialog()"> Enable/Disable Goals </button>
         <div id="timeline" #timeline></div>
-
-        <ul class="items">
-            <li draggable="true" class="item">
-                item 1 - box
-            </li>
-            <li draggable="true" class="item">
-                item 2 - range
-            </li>
-        </ul>
-    </mat-card>
-
-    
-</div>
-
-
-<!-- <div class="datepicker">
-    <div class="startdate">
-        <mat-form-field>
-            <input matInput [matDatepicker]="startpicker" placeholder="Choose a start date" [(ngModel)]="startDate"
-            (dateChange)="selectionChange($event)">
-            <mat-datepicker-toggle matSuffix [for]="startpicker"></mat-datepicker-toggle>
-            <mat-datepicker #startpicker></mat-datepicker>
-        </mat-form-field>
-    </div>
-    <div class="enddate">
-        <mat-form-field>
-            <input matInput [matDatepicker]="endpicker" placeholder="Choose an end date" [(ngModel)]="endDate"
-            (dateChange)="selectionChange()">
-            <mat-datepicker-toggle matSuffix [for]="endpicker"></mat-datepicker-toggle>
-            <mat-datepicker #endpicker></mat-datepicker>
-        </mat-form-field>
-    </div>
-</div>
-
-<div class="schedule-container">
-    <button mat-raised-button (click)="openEnableGoalsDialog()"> Enable/Disable Goals </button>
-    <div cdkDropListGroup class="manufacturing-schedule-container">
-        <div class="manufacturing-goals-container">
-            <div  class='manufacturing-goals-list'>
-                <div *ngFor="let goals of goalsDataSource['data']">
-                    <app-manufacturing-schedule-tables class="goals" [(ngModel)]="goals"></app-manufacturing-schedule-tables>
+        <div class="goalsContainer">
+            <div [ngClass]="['items']"  *ngFor="let goal of goalsDataSource['data']">
+                <h2>{{goal['goalname']}}</h2>
+                <p>Deadline: {{goal['date'].valueOf().split('T')[0]}}</p>
+                <div draggable="true" (dragstart)="handleDragStart($event, activity)" [ngClass]="['item']" *ngFor="let activity of goal['activities']">
+                    {{activity['sku']['skuname']}}
                 </div>
-            </div>
             
+            </div>
         </div>
-        <div class="manufacturing-lines-container">
-            <ng-container *ngFor="let line of linesDataSource['data']">
-                <app-manufacturing-lines-table class="lines" [(ngModel)]="line"></app-manufacturing-lines-table>
-            </ng-container>
-        </div>   
-    </div>
-</div> -->
+            
+    </mat-card>    
+</div>

@@ -89,11 +89,19 @@ async function parseRow(html, year, sku){
           "numcases": children.eq(5).text(),
           "pricepercase": children.eq(6).text().trim()
       };
+      var saleExists = await database.saleModel.findOne(sale).exec().catch(err => {
+        if(err){
+          throw err;
+        }
+      })
+      if(saleExists == null){
         sales_utils.createSale(sale).catch(err => {
           if(err){
             throw err;
           }
         });
+      }
+
 }
 
 async function startScrapeService(){

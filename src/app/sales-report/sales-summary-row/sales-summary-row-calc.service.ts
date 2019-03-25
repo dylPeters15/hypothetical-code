@@ -18,7 +18,7 @@ export class SalesSummaryRowCalcService {
       revenueSum += sale['numcases'] * sale['pricepercase'];
       caseSum += sale['numcases'];
     }
-    summary['revenuesum'] = revenueSum;
+    summary['revenuesum'] = revenueSum.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
     summary['averagerevenuepercase'] = caseSum == 0 ? 0 : (revenueSum / caseSum);
 
     summary['averagemanufacturingrunsize'] = await this.avgManufacturingRunSize(sku);
@@ -27,7 +27,7 @@ export class SalesSummaryRowCalcService {
     summary['manufacturingruncostpercase'] = summary['averagemanufacturingrunsize'] == 0 ? 0 : (sku['manufacturingruncost'] / summary['averagemanufacturingrunsize']);
     summary['totalcogspercase'] = summary['ingredientcostpercase'] + summary['averagemanufacturingsetupcostpercase'] + summary['manufacturingruncostpercase'];
     summary['averageprofitpercase'] = summary['averagerevenuepercase'] - summary['totalcogspercase'];
-    summary['profitmargin'] = summary['totalcogspercase'] == 0 ? 0 : (summary['averagerevenuepercase'] / summary['totalcogspercase']) - 1;
+    summary['profitmargin'] = summary['totalcogspercase'] == 0 ? 0 : (((summary['averagerevenuepercase'] / summary['totalcogspercase']) - 1) * 100);
 
     return [summary];
   }
@@ -41,7 +41,7 @@ export class SalesSummaryRowCalcService {
   }
 
   private async avgManufacturingRunSize(sku: any): Promise<Number> {
-    var startDate: Date = new Date(new Date().getFullYear() - 10, 0, 0, 0, 0, 0, 0);
+    var startDate: Date = new Date(new Date().getFullYear() - 9, 0, 0, 0, 0, 0, 0);
     var activities = await this.restv2.getActivities(AndVsOr.AND, { $gte: startDate }, { $ne: null }, sku['_id'], 10000);
     if (activities.length == 0) {
       return sku['manufacturingrate'] * 10; //assume 1 day of manufacturing
@@ -54,7 +54,7 @@ export class SalesSummaryRowCalcService {
   }
 
   async exportSKUSummary(sku, selectedCustomerId) {
-    var allSales = await this.restv2.getSales(AndVsOr.AND, sku['_id'], selectedCustomerId == "all" ? null : selectedCustomerId, new Date(new Date().getFullYear() - 10), null, 54321);
+    var allSales = await this.restv2.getSales(AndVsOr.AND, sku['_id'], selectedCustomerId == "all" ? null : selectedCustomerId, new Date(new Date().getFullYear() - 9, 0), null, 54321);
     var sales = await this.summarizeTotal(allSales, sku);
 
     const options = {

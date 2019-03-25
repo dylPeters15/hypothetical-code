@@ -42,7 +42,7 @@ export class SalesReportCalcService {
       summarized.push(this.summarizeYear(year, salesByYear[year], sku));
     }
     summarized = summarized.filter((value,index,array) => {
-      return Number(value['year']) >= Number(currentYear) - 10;
+      return Number(value['year']) >= Number(currentYear) - 9;
     });
     return summarized;
   }
@@ -57,13 +57,13 @@ export class SalesReportCalcService {
       totalRevenue += sale['numcases'] * sale['pricepercase'];
       totalNumCases += sale['numcases'];
     }
-    summary['totalrevenue'] = totalRevenue;
+    summary['totalrevenue'] = totalRevenue.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
     summary['averagerevenuepercase'] = (totalRevenue/totalNumCases);
     return summary;
   }
 
   async exportSKU(sku, selectedCustomerId) {
-    var allSales = await this.restv2.getSales(AndVsOr.AND, sku['_id'], selectedCustomerId=="all"?null:selectedCustomerId, new Date(new Date().getFullYear()-10), null, 54321);
+    var allSales = await this.restv2.getSales(AndVsOr.AND, sku['_id'], selectedCustomerId=="all"?null:selectedCustomerId, new Date(new Date().getFullYear()-9, 0), null, 54321);
     var sales = this.summarizeSales(allSales, sku);
 
     var exportData = [];
@@ -83,6 +83,8 @@ export class SalesReportCalcService {
         headers: ["Year","SKU Name","SKU Number", "Total Revenue", "Average Revenue Per Case"]
       };
       const csvExporter = new ExportToCsv(options);
+      console.log(sku);
+      console.log(exportData);
       csvExporter.generateCsv(exportData);
   }
 }

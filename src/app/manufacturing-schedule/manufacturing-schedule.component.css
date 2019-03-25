@@ -30,7 +30,7 @@ body {
   border: 1px solid lightgray;
 }
 
-li.item {
+div.item {
   list-style: none;
   width: 150px;
   color: #1A1A1A;
@@ -41,54 +41,20 @@ li.item {
   padding: 5px 12px;
 }
 
-li.item:before {
+div.item:before {
   content: "≣";
   font-family: Arial, sans-serif;
   display: inline-block;
   font-size: inherit;
   cursor: move;
 }
-/* .ng-star-inserted {
-    width: 100%;
-    display: inline-block;
-    padding: 2px;
-  }
-  
-  button {
-    margin: 4px 2px;
-  }
 
-  .datepicker {
-    display: flex;
-    padding-top: 5px;
-    max-height: fit-content;
-  }
+.goalsContainer {
+  display: flex;
+  flex-direction: row;
+}
 
-  .manufacturing-schedule-container {
-    display: flex;
-    flex-direction: row;
-  }
-
-  .manufacturing-goals-container {
-    width: 200px;
-    float: left
-  }
-
-  .manufacturing-goals-list {
-    display: flex;
-    flex-direction: column;
-  }
-
-  .manufacturing-lines-container {
-    width: 200px;
-    float: left;
-    padding-left: 20px;
-    flex-direction: row;
-    display: flex;
-  }
-
-  .manufacturing-lines-container[_ngcontent-c10] {
-    width: 200px;
-    float: left;
-    padding-right: 10px;
-  } */
+.items {
+  padding-left: 5px;
+  padding-right: 5px;
+}

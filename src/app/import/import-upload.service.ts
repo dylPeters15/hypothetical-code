@@ -71,6 +71,8 @@ export class ImportUploadService {
     }
 
     var createResponse = await this.restv2.createFormula(formula['formulaname'], formula['formulanumber'], ingredientsAndQuantities, formula['comment'] || "");
+    console.log(ingredientsAndQuantities);
+    console.log(createResponse);
     if (createResponse['formulaname'] != formula['formulaname']) {
       throw Error("Error creating formula.");
     }
@@ -93,6 +95,8 @@ export class ImportUploadService {
     }
 
     var modifyResponse = await this.restv2.modifyFormula(AndVsOr.AND, oldname, formula['formulaname'], formula['formulanumber'], ingredientsAndQuantities, formula['comment'] || "");
+    console.log(ingredientsAndQuantities);
+    console.log(modifyResponse);
     if (modifyResponse['ok'] == 1) {
       throw Error("Error creating formula.");
     }
@@ -127,6 +131,7 @@ export class ImportUploadService {
     skus.push({
       sku: createSkuResponse['_id']
     });
+    console.log("SKU: ",sku);
     var modifyPLResponse = await this.restv2.modifyProductLine(AndVsOr.AND, sku['productline'], sku['productline'], skus);
     if (modifyPLResponse['ok'] != 1) {
       throw Error("Could not modify Product Line " + sku['productline'] + " for SKU " + sku['skuname']);

@@ -42,7 +42,7 @@ export class SkuSalesComponent implements OnInit, ControlValueAccessor {
   async refreshData() {
     this.sku = this._value['sku'];
     this.selectedCustomerId = this._value['selectedCustomerId'];
-    this.allSales = await this.restv2.getSales(AndVsOr.AND, this.sku['_id'], this.selectedCustomerId=="all"?null:this.selectedCustomerId, new Date(new Date().getFullYear()-10), null, 54321);
+    this.allSales = await this.restv2.getSales(AndVsOr.AND, this.sku['_id'], this.selectedCustomerId=="all"?null:this.selectedCustomerId, new Date(new Date().getFullYear()-9, 0), null, 54321);
     this.sales = this.calc.summarizeSales(this.allSales, this.sku);
     this.salesTableData = new MatTableDataSource(this.sales);
   }

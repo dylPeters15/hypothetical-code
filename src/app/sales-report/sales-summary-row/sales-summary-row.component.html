@@ -3,7 +3,7 @@
     <ng-container matColumnDef="revenuesum">
       <mat-header-cell *matHeaderCellDef>Revenue Sum</mat-header-cell>
       <mat-cell *matCellDef="let summary">
-        ${{summary['revenuesum'].toFixed(2)}}
+        ${{summary['revenuesum']}}
       </mat-cell>
     </ng-container>
 
@@ -59,7 +59,7 @@
     <ng-container matColumnDef="profitmargin">
       <mat-header-cell *matHeaderCellDef>Profit Margin (%)</mat-header-cell>
       <mat-cell *matCellDef="let summary">
-        {{summary['profitmargin'].toFixed(2)}}
+        {{summary['profitmargin'].toFixed(2)}}%
       </mat-cell>
     </ng-container>
 
