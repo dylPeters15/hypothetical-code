@@ -102,12 +102,13 @@ export class ManufacturingScheduleComponent implements OnInit {
     event.dataTransfer.effectAllowed = 'move';
     var itemType = 'range';
     var item = {
-        id: new Date(),
+        id: activity['_id'],
+        start: new Date(),
         type: itemType,
         content: event.target.innerHTML.trim()
     };
     // set event.target ID with item ID
-    event.target.id = new Date(item.id).toISOString();
+    event.target.id = item.id;
     event.dataTransfer.setData("text", JSON.stringify(item));
 
     // Trigger on from the new item dragged when this item drag is finish
@@ -117,6 +118,7 @@ export class ManufacturingScheduleComponent implements OnInit {
   async handleDragEnd(event): Promise<void> {
     // Last item that just been dragged, its ID is the same of event.target
     console.log('end', event)
+    console.log('itemsData', this.timeline.itemsData)
     var newItem_dropped = this.timeline.itemsData.get(event.target.id);
     console.log(newItem_dropped)
     var newGroup = this.groups.get(newItem_dropped.group)
@@ -152,7 +154,7 @@ export class ManufacturingScheduleComponent implements OnInit {
       if (count == 1) {
         var activity = await this.restv2.getActivities(AndVsOr.OR, null, null, skuObject['_id'], 1)
         console.log(activity)
-        var modify = await this.restv2.modifyActivity(AndVsOr.AND, activity[0]['_id'], activity[0]['sku']['_id'], 
+        var modify = await this.restv2.modifyActivity(AndVsOr.AND, item['id'], activity[0]['sku']['_id'], 
         activity[0]['numcases'], activity[0]['calculatedhours'], activity[0]['sethours'], 
         item['start'], line[0]['_id']);
         console.log(modify)
@@ -207,7 +209,12 @@ export class ManufacturingScheduleComponent implements OnInit {
             console.log('startDate', activity['startdate'])
             var endDate = new Date(1000 * 60 * 60 * (duration + (Math.floor(duration / 14)*14)) + (new Date(activity['startdate'])).valueOf()); 
             console.log('original end date', endDate)
-            if (parseInt((activity['startdate'].split('T')[1]).split(':')[0], 10) + duration > 18) {
+            var startTime = parseInt((activity['startdate'].split('T')[1]).split(':')[0], 10);
+            console.log('startTime', startTime, 'duration', duration)
+            if (startTime + duration > 18) {
+              endDate = new Date(1000 * 60 * 60 * 14 + (new Date(endDate)).valueOf());
+            }
+            if (startTime < 8) {
               endDate = new Date(1000 * 60 * 60 * 14 + (new Date(endDate)).valueOf());
             }
             console.log('final end date', endDate)
