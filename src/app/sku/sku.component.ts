@@ -37,7 +37,7 @@ export class ExportableSKU {
   countpercase: Number;
   formula: any;
   formulascalingfactor: Number;
-  productline: any;
+  productline: String;
   manufacturingrate: Number;
   comment: String;
   constructor(userForTable){
@@ -113,7 +113,7 @@ export class SkuComponent  implements OnInit {
   // edit
   newSku(edit, skuname, skunumber, caseupcnumber, unitupcnumber, unitsize, countpercase, formula, formulascalingfactor, productline, manufacturingrate, comment) {
     const dialogConfig = new MatDialogConfig();
-    dialogConfig.data = {edit: edit, present_name: skuname, present_skuNumber: skunumber, present_caseUpcNumber: caseupcnumber, present_unitUpcNumber: unitupcnumber, present_unitSize:unitsize, present_countPerCase:countpercase, present_formula:formula,present_formulascalingfactor:formulascalingfactor, presenut_productline:productline, present_manufacturingrate:manufacturingrate, present_comment:comment};
+    dialogConfig.data = {edit: edit, present_name: skuname, present_skuNumber: skunumber, present_caseUpcNumber: caseupcnumber, present_unitUpcNumber: unitupcnumber, present_unitSize:unitsize, present_countPerCase:countpercase, present_formula:formula,present_formulascalingfactor:formulascalingfactor, present_productline:productline, present_manufacturingrate:manufacturingrate, present_comment:comment};
     this.newDialogRef = this.dialog.open(NewSkuDialogComponent, dialogConfig);
     this.newDialogRef.afterClosed().subscribe(event => {
       this.refreshData();

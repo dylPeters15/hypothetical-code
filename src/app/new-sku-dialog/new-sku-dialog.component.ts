@@ -109,14 +109,14 @@ export class NewSkuDialogComponent implements OnInit {
     this.chosen_scaling_factor = this.formulascalingfactor;
 
 
+
     if(this.productline == null)
     {
       this.productline = "";
     } 
-    else if (this.productline['productlinename'] != null)
-    {
-      this.productlinename = this.productline['productlinename'];
-    }
+    
+    this.productlinename = this.productline;
+    
     //console.log("right here it's " + this.formulaname);
 
      // update formula and scaling factor to display
@@ -200,6 +200,7 @@ export class NewSkuDialogComponent implements OnInit {
 
   // Product line adds
   addProductLineToSku(edit, productlinename) {
+    console.log("edit product line, ed it: " + edit);
     const dialogConfig = new MatDialogConfig();
     dialogConfig.data = {edit: edit, present_name: productlinename};
     this.assignProductLineDialogRef = this.dialog.open(AssignSkuProductlineComponent, dialogConfig);
@@ -210,6 +211,7 @@ export class NewSkuDialogComponent implements OnInit {
       // grab the new product line values
       var new_productline = this.assignProductLineDialogRef.componentInstance.productlineName;
       console.log("yipee ki yay: " + new_productline);
+      this.productline = new_productline;
 
      // getProductLines(productlinename: String, productlinenameregex: String, limit: number): Observable<any> {
 
@@ -219,14 +221,26 @@ export class NewSkuDialogComponent implements OnInit {
           duration: 2000,
              });
           this.productlinename = response[0]['productlinename'];
-        
+
+          // Find sku by sku name
+          this.rest.getSkus(this.skuname,this.skuname,0,0,0,'',1).subscribe(responseSku => {
+            this.snackBar.open("Successfully added formula " + new_productline, "close", {
+              duration: 2000,
+                 });
+              var thisSku = responseSku[0]['skuname'];
+              var productline_skus = response[0]['skus'].push(thisSku);
+
+              // save updated product line name list
+              this.rest.modifyProductLine(new_productline,new_productline,productline_skus).subscribe(responseProductline => {
+                });
+            });
         this.refreshData();
         });
         });
       }
 
       addProductLineButton() {
-        if(this.productlinename == "")
+        if(this.productline == "")
         {
           this.addProductLineToSku(false, ""); // new
         }
