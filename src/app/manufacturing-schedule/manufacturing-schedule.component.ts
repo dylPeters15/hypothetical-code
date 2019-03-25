@@ -223,12 +223,13 @@ export class ManufacturingScheduleComponent implements OnInit {
               duration = activity['sethours'];
             }
             console.log('startDate', activity['startdate'], 'duration', duration)
-            var endDate = this.calculateEndDate(new Date(activity['startdate']), Math.round(duration));
+            var startTime = parseInt((activity['startdate'].split('T')[1]).split(':')[0], 10) - 7;
+            var endDate = this.calculateEndDate(new Date(activity['startdate']), Math.round(duration), startTime);
             console.log('endDate', endDate)
             // console.log('startDate', activity['startdate'])
             // var endDate = new Date(1000 * 60 * 60 * (Math.round(duration) + (Math.floor(duration / 14)*14)) + (new Date(activity['startdate'])).valueOf()); 
             // console.log('original end date', endDate)
-            // var startTime = parseInt((activity['startdate'].split('T')[1]).split(':')[0], 10);
+            
             // console.log('startTime', startTime, 'duration', duration)
             // if (startTime + (duration) > 18 || startTime + duration < 8) {
             //   var end = startTime + (duration%14);
@@ -343,7 +344,7 @@ export class ManufacturingScheduleComponent implements OnInit {
     });
   }
 
-  calculateEndDate(startDate: Date, hours: number): Date {
+  calculateEndDate(startDate: Date, hours: number, startTime: number): Date {
     var endDate = new Date((new Date(startDate)).valueOf());
     // var endDate = new Date(startDate);
     const NUM_HOURS_PER_DAY = 10;
@@ -356,6 +357,10 @@ export class ManufacturingScheduleComponent implements OnInit {
     }
     console.log('endDate', endDate)
     endDate = new Date(1000 * 60 * 60 * remainder + (new Date(endDate)).valueOf());
+
+    if (hours + startTime > 18 || hours + startTime < 8) {
+      endDate = new Date(1000 * 60 * 60 * 14 + (new Date(endDate)).valueOf());
+    }
     return endDate;
   }
 }
