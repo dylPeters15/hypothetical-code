@@ -28,7 +28,7 @@ export class NewSkuDialogComponent implements OnInit {
   formula: any = null;
   formulascalingfactor: number = 0;
   manufacturingrate: number = 0;
-  productline: any = null;
+  productline: string = '';
   comment: String = '';
 
   formulaname: String = ''; // for displaying purposes.
@@ -117,7 +117,7 @@ export class NewSkuDialogComponent implements OnInit {
     {
       this.productlinename = this.productline['productlinename'];
     }
-    console.log("right here it's " + this.formulaname);
+    //console.log("right here it's " + this.formulaname);
 
      // update formula and scaling factor to display
     this.productLineDoesNotExist = this.productlinename == "";
@@ -209,6 +209,7 @@ export class NewSkuDialogComponent implements OnInit {
     this.assignProductLineDialogRef.afterClosed().subscribe(event => {
       // grab the new product line values
       var new_productline = this.assignProductLineDialogRef.componentInstance.productlineName;
+      console.log("yipee ki yay: " + new_productline);
 
      // getProductLines(productlinename: String, productlinenameregex: String, limit: number): Observable<any> {
 
@@ -236,9 +237,10 @@ export class NewSkuDialogComponent implements OnInit {
     }
 
   createSku() {
+    console.log("time to create with product line name " + this.productlinename);
     if (this.edit == false)
     {
-      this.rest.createSku(this.skuname, this.skunumber, this.caseupcnumber, this.unitupcnumber, this.unitsize, this.countpercase, this.formula, this.formulascalingfactor, this.manufacturingrate, this.comment, this.productline).subscribe(response => {
+      this.rest.createSku(this.skuname, this.skunumber, this.caseupcnumber, this.unitupcnumber, this.unitsize, this.countpercase, this.formula, this.formulascalingfactor, this.manufacturingrate, this.comment, this.productlinename).subscribe(response => {
         this.snackBar.open("Successfully created sku " + this.skuname + ".", "close", {
           duration: 2000,
         });
@@ -247,7 +249,7 @@ export class NewSkuDialogComponent implements OnInit {
       }
 
     else{
-      this.rest.modifySku(this.oldskuname, this.skuname, this.skunumber, this.caseupcnumber, this.unitupcnumber, this.unitsize, this.countpercase, this.formula, this.formulascalingfactor, this.manufacturingrate, this.comment, this.productline).subscribe(response => {
+      this.rest.modifySku(this.oldskuname, this.skuname, this.skunumber, this.caseupcnumber, this.unitupcnumber, this.unitsize, this.countpercase, this.formula, this.formulascalingfactor, this.manufacturingrate, this.comment, this.productlinename).subscribe(response => {
         this.snackBar.open("Successfully modifyed sku " + this.skuname + ".", "close", {
           duration: 2000,
         });

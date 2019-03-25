@@ -2,7 +2,7 @@ const database = require('../database.js');
 const formula_utils = require('./formula_utils.js');
 
 
-function getSkus(skuname, skunameregex, skunumber, caseupcnumber, unitupcnumber, formula, productline, limit) {
+function getSkus(skuname, skunameregex, skunumber, caseupcnumber, unitupcnumber, formula, limit) {
     console.log("got all the way here without crashing");
     return new Promise(function (resolve, reject) {
         skuname = skuname || "";
@@ -22,14 +22,10 @@ function getSkus(skuname, skunameregex, skunumber, caseupcnumber, unitupcnumber,
             orClause.push({ formula: formula });
         }
 
-        if (productline != "" && productline != undefined) {
-            orClause.push({ productline: productline });
-        }
-
         const filterSchema = {
             $or: orClause
         }
-        database.skuModel.find(filterSchema).limit(limit).populate('formula').populate('productline').exec((err, skus) => {
+        database.skuModel.find(filterSchema).limit(limit).populate('formula').exec((err, skus) => {
             if (err) {
                 reject(Error(err));
                 return;
@@ -94,6 +90,8 @@ function createSku(name, number, case_upc, unit_upc, unit_size, count, formulanu
                                 formulascalingfactor: formulascalingfactor,
                                 productline: productline,
                                 manufacturingrate: manufacturingrate,
+                                manufacturingsetupcost: manufacturingrate,
+                                manufacturingruncost: manufacturingrate,
                                 comment: comment
                             });
                             sku.save().then(response => {
