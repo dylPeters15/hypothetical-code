@@ -159,7 +159,7 @@ export class ManufacturingScheduleComponent implements OnInit {
       });
       if (count == 1) {
         var activities = await this.restv2.getActivities(AndVsOr.OR, null, null, skuObject['_id'], 100)
-        console.log(activity)
+        
         var newActivity;
         var activityid = item.content.split("::")[1];
         activities.forEach(activity => {
@@ -344,13 +344,17 @@ export class ManufacturingScheduleComponent implements OnInit {
   }
 
   calculateEndDate(startDate: Date, hours: number): Date {
-    var endDate = new Date(startDate);
+    var endDate = new Date((new Date(startDate)).valueOf());
+    // var endDate = new Date(startDate);
     const NUM_HOURS_PER_DAY = 10;
     const remainder = hours % NUM_HOURS_PER_DAY;
-    console.log('startDate', startDate)
-    while (moment().isoWeekdayCalc([startDate.getUTCFullYear(), startDate.getUTCMonth(), startDate.getUTCDay()], [endDate.getUTCFullYear(), endDate.getUTCMonth(), endDate.getUTCDay()], [2, 3, 4, 5, 6]) * NUM_HOURS_PER_DAY < hours) {
+    console.log('startDate', endDate)
+    while (moment().isoWeekdayCalc([startDate.getUTCFullYear(), startDate.getUTCMonth(), startDate.getUTCDay()], [endDate.getUTCFullYear(), endDate.getUTCMonth(), endDate.getUTCDay()+1], [1, 2, 3, 4, 5]) < Math.floor(hours / NUM_HOURS_PER_DAY)) {
+      console.log('plus one day', moment().isoWeekdayCalc([startDate.getUTCFullYear(), startDate.getUTCMonth(), startDate.getUTCDay()], [endDate.getUTCFullYear(), endDate.getUTCMonth(), endDate.getUTCDay()+1], [1, 2, 3, 4, 5]) * NUM_HOURS_PER_DAY)
+      console.log(startDate.getUTCDay(), endDate.getUTCDay())
       endDate.setDate(endDate.getDate() + 1);
     }
+    console.log('endDate', endDate)
     endDate = new Date(1000 * 60 * 60 * remainder + (new Date(endDate)).valueOf());
     return endDate;
   }
