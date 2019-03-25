@@ -71,6 +71,8 @@ export class ImportUploadService {
     }
 
     var createResponse = await this.restv2.createFormula(formula['formulaname'], formula['formulanumber'], ingredientsAndQuantities, formula['comment'] || "");
+    console.log(ingredientsAndQuantities);
+    console.log(createResponse);
     if (createResponse['formulaname'] != formula['formulaname']) {
       throw Error("Error creating formula.");
     }

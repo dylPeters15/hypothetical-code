@@ -47,6 +47,7 @@ export class ParseCsvService {
                   reject(Error("Filename incorrect."));
                 }
               }
+              await this.convertFormulaUnitsOfMeasure(objectToReturn['formulas'], objectToReturn['ingredients']);
               resolve(objectToReturn);
             }).catch(err => {
               reject(err);
@@ -155,7 +156,7 @@ export class ParseCsvService {
     return objectToReturn;
   }
 
-  private async consolidateFormulas(formulasObject): Promise<any[]> {
+  private consolidateFormulas(formulasObject): any[] {
     var objectToReturn = [];
 
     for (var i = 0; i < formulasObject.length; i++) {
@@ -170,33 +171,207 @@ export class ParseCsvService {
         newFormula['comment'] = currentFormula['Comment'] || "";
         objectToReturn.push(newFormula);
       }
-      var quantity = await this.convertQuantity(currentFormula['Quantity'], this.getNumber(currentFormula['Ingr#']));
       newFormula['ingredientsandquantities'].push({
         ingredient: this.getNumber(currentFormula['Ingr#']),
-        quantity: quantity
+        quantity: currentFormula['Quantity']
       });
     }
 
     return objectToReturn;
   }
 
-  allowedQuantities = ['oz', 'lb', 'ton', 'g', 'kg', 'floz', 'pt', 'qt', 'gal', 'mL', 'L', 'count'];
-  private async convertQuantity(quantityString: string, ingredientNum: number): Promise<Number> {
-    //if ingredientAndQuantity['quantity'] is one of the allowed quantities
-    console.log((quantityString + ""));
-    if (!this.allowedQuantities.includes((quantityString + "").match('[a-zA-Z]+')[0])) {
-      throw Error("Invalid formula unit of measure: " + quantityString);
-    }
 
-    var ingredients = await this.restv2.getIngredients(AndVsOr.AND, null, null, ingredientNum, 1);
-    if (ingredients.length != 1) {
-      throw Error("Could not find ingredient " + ingredientNum + ".");
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  allowedQuantities = ['oz', 'lb', 'ton', 'g', 'kg', 'floz', 'pt', 'qt', 'gal', 'ml', 'l', 'count'];
+  abreviations = {
+    oz: 'oz',
+    ounce: 'oz',
+
+    lb: 'lb',
+    pound: 'pound',
+
+    ton: 'ton',
+
+    g: 'g',
+    gram: 'g',
+
+    kg: 'kg',
+    kilogram: 'kg',
+
+    floz: 'floz',
+    fluidounce: 'floz',
+
+    pt: 'pt',
+    pint: 'pt',
+
+    qt: 'qt',
+    quart: 'qt',
+
+    gal: 'gal',
+    gallon: 'gal',
+
+    ml: 'ml',
+    milliliter: 'ml',
+
+    l: 'l',
+    liter: 'l',
+
+    ct: 'ct',
+    count: 'ct'
+  };
+  conversions = {
+    'oz/oz': 1 / 1,
+    'oz/lb': 16 / 1,
+    'oz/ton': 32000 / 1,
+    'oz/g': 1 / 28.3495,
+    'oz/kg': 35.274 / 1,
+
+    'lb/oz': 1 / 16,
+    'lb/lb': 1 / 1,
+    'lb/ton': 32000 / 1,
+    'lb/g': 1 / 453.592,
+    'lb/kg': 1 / 0.453592,
+
+    'ton/oz': 1 / 32000,
+    'ton/lb': 1 / 2000,
+    'ton/ton': 1 / 1,
+    'ton/g': 1 / 907185,
+    'ton/kg': 1 / 907.185,
+
+    'g/oz': 28.3495 / 1,
+    'g/lb': 453.592 / 1,
+    'g/ton': 32000 / 1,
+    'g/g': 1 / 1,
+    'g/kg': 1000 / 1,
+
+    'kg/oz': 1 / 35.274,
+    'kg/lb': 0.453592 / 1,
+    'kg/ton': 907.185 / 1,
+    'kg/g': 1 / 1000,
+    'kg/kg': 1 / 1,
+
+    'floz/floz': 1 / 1,
+    'floz/pt': 16 / 1,
+    'floz/qt': 32 / 1,
+    'floz/gal': 128 / 1,
+    'floz/ml': 29.5735 / 1,
+    'floz/l': 33.814 / 1,
+
+    'pt/floz': 1 / 16,
+    'pt/pt': 1 / 1,
+    'pt/qt': 2 / 1,
+    'pt/gal': 8 / 1,
+    'pt/ml': 1 / 473.176,
+    'pt/l': 2.11338 / 1,
+
+    'qt/floz': 1 / 32,
+    'qt/pt': 1 / 16,
+    'qt/qt': 1 / 1,
+    'qt/gal': 4 / 1,
+    'qt/ml': 1 / 946.353,
+    'qt/l': 1 / 0.946353,
+
+    'gal/floz': 1 / 128,
+    'gal/pt': 1 / 8,
+    'gal/qt': 1 / 4,
+    'gal/gal': 1 / 1,
+    'gal/ml': 1 / 3785.41,
+    'gal/l': 1 / 3.78541,
+
+    'ml/floz': 1 / 29.5735,
+    'ml/pt': 473.176 / 1,
+    'ml/qt': 946.353 / 1,
+    'ml/gal': 3785.41 / 1,
+    'ml/ml': 1 / 1,
+    'ml/l': 1000 / 1,
+
+    'l/floz': 1 / 33.814,
+    'l/pt': 1 / 2.11338,
+    'l/qt': 0.946353 / 1,
+    'l/gal': 3.78541 / 1,
+    'l/ml': 1 / 1000,
+    'l/l': 1 / 1,
+
+    'ct/ct': 1 / 1
+  }
+  private getUnitOfMeasure(inputString) {
+    var unit = (inputString + "").toLowerCase().match('[a-zA-Z]+')[0];
+    if (unit.charAt(unit.length - 1) == "s") {
+      unit = unit.slice(0, -1)
     }
-    var ingredient = ingredients[0];
-    
+    var abbreviation = this.abreviations[unit];
+    if (abbreviation) {
+      return abbreviation;
+    }
+    throw Error("Invalid formula unit of measure: " + inputString);
+  }
+  private async convertFormulaUnitsOfMeasure(formulas, ingredients): Promise<void> {
+    for (var i = 0; i < formulas.length; i++) {
+      var formula = formulas[i];
+      for (var j = 0; j < formula['ingredientsandquantities'].length; j++) {
+        var ingredientAndQuantity = formula['ingredientsandquantities'][j];
+
+        //check for ingredient in database
+        var ingredientsInDatabase = await this.restv2.getIngredients(AndVsOr.AND, null, null, ingredientAndQuantity['ingredient'], 1);
+        var ingredient;
+        if (ingredientsInDatabase.length == 1) {
+          ingredient = ingredientsInDatabase[0];
+        } else {
+          for (var k = 0; k < ingredients.length; k++) {
+            if (ingredients[k]['ingredientnumber'] == ingredientAndQuantity['ingredient']) {
+              ingredient = ingredients[k];
+            }
+          }
+        }
+
+        ingredientAndQuantity['quantity'] = this.convertQuantity(ingredientAndQuantity['quantity'], ingredient);
+      }
+    }
+  }
+  private convertQuantity(quantityString: string, ingredient: any): Number {
     //convert from the given unit to the ingredient's unit here
+    console.log(this.conversions);
+    var formulaUnitOfMeasure = this.getUnitOfMeasure(quantityString);
+    var ingredientUnitOfMeasure = this.getUnitOfMeasure(ingredient['unitofmeasure']);
+    console.log("Formula unit of measure: ", formulaUnitOfMeasure);
+    console.log("Ingredient unit of measure: ", ingredientUnitOfMeasure);
 
-    return ingredient['ingredientnumber'];
+    //convert formula quantities to be in the same unit of measure as the ingredients
+    var formulaQuantity = this.getNumber(quantityString);
+    var formulaQuantityInIngredientUnitOfMeasure = formulaQuantity * this.conversions[ingredientUnitOfMeasure + "/" + formulaUnitOfMeasure];
+
+    console.log(formulaQuantity);
+    console.log(this.conversions[ingredientUnitOfMeasure + "/" + formulaUnitOfMeasure]);
+    console.log(formulaQuantityInIngredientUnitOfMeasure);
+    console.log(ingredient['amount']);
+
+    var numCasesOfIngredient = formulaQuantityInIngredientUnitOfMeasure / ingredient['amount'];
+
+    //temporary
+    if (isNaN(numCasesOfIngredient)) {
+      return 0;
+    }
+
+    return numCasesOfIngredient;
   }
 
   private parseIngredients(ingredientsObject): any[] {
