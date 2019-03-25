@@ -357,7 +357,9 @@ export class ManufacturingScheduleComponent implements OnInit {
     }
     console.log('endDate', endDate)
     endDate = new Date(1000 * 60 * 60 * remainder + (new Date(endDate)).valueOf());
-
+    if (startTime < 0) {
+      startTime = 24 + startTime
+    }
     if (hours + startTime > 18 || hours + startTime < 8) {
       endDate = new Date(1000 * 60 * 60 * 14 + (new Date(endDate)).valueOf());
     }
