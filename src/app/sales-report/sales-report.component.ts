@@ -1,6 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { RestServiceV2, AndVsOr } from '../restv2.service';
 import { SalesSummaryExportService } from './sales-summary-export.service';
+import { ENTER } from '@angular/cdk/keycodes';
+import { FormControl } from '@angular/forms';
+import { Observable } from 'rxjs';
+import { MatAutocomplete } from '@angular/material';
 
 @Component({
   selector: 'app-sales-report',
@@ -14,10 +18,36 @@ export class SalesReportComponent implements OnInit {
   selectedProductLines: any[] = [];
 
   customers: any[] = [];
-  selectedCustomerId: string = "all";
   selectedIndex: Number = 0;
 
   selectedSKU = {};
+
+  selectedCustomerId: string = "all";
+  selectedCustomer: any = null;
+  separatorKeysCodes: number[] = [ENTER];
+  customerCtrl = new FormControl();
+  autoCompleteCustomers: Observable<string[]> = new Observable(observer => {
+    this.customerCtrl.valueChanges.subscribe(async newVal => {
+      observer.next(await this.restv2.getCustomers(AndVsOr.AND, null, "(?i).*"+newVal+".*", null, 1000));
+    });
+  });
+  @ViewChild('customerInput') customerInput: ElementRef<HTMLInputElement>;
+  @ViewChild('auto') matAutocomplete: MatAutocomplete;
+  remove() {
+    this.selectedCustomer = null;
+    this.selectedCustomerId = "all";
+    this.refreshData();
+  }
+  selected(event){
+    this.selectedCustomer = event.option.value;
+    this.selectedCustomerId = this.selectedCustomer['_id'];
+    this.refreshData();
+  }
+  add(event) {
+    this.customerInput.nativeElement.value = "";
+  }
+
+
 
   constructor(public restv2: RestServiceV2, public exporter: SalesSummaryExportService) { }
 
