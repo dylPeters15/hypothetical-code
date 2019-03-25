@@ -102,13 +102,14 @@ export class ManufacturingScheduleComponent implements OnInit {
     event.dataTransfer.effectAllowed = 'move';
     var itemType = 'range';
     var item = {
-        id: activity['_id'],
-        start: new Date(),
+        // id: activity['_id'],
         type: itemType,
-        content: event.target.innerHTML.trim()
+        id: new Date(),
+        // content: event.target.innerHTML.trim()
+        content: event.target.innerHTML.trim() + "::" + activity['_id']
     };
     // set event.target ID with item ID
-    event.target.id = item.id;
+    event.target.id = new Date(item.id).toISOString();
     event.dataTransfer.setData("text", JSON.stringify(item));
 
     // Trigger on from the new item dragged when this item drag is finish
@@ -117,8 +118,8 @@ export class ManufacturingScheduleComponent implements OnInit {
 
   async handleDragEnd(event): Promise<void> {
     // Last item that just been dragged, its ID is the same of event.target
-    console.log('end', event)
-    console.log('itemsData', this.timeline.itemsData)
+    console.log('end', event.target.id)
+    console.log(this.timeline.itemsData)
     var newItem_dropped = this.timeline.itemsData.get(event.target.id);
     console.log(newItem_dropped)
     var newGroup = this.groups.get(newItem_dropped.group)
@@ -137,7 +138,8 @@ export class ManufacturingScheduleComponent implements OnInit {
   }
 
   async checkLine(item, group): Promise<Boolean> {
-    var response = await this.restv2.getSkus(AndVsOr.OR, item.content, null, null, null, null, null, 1);
+    var name = item.content.split("::")[0];
+    var response = await this.restv2.getSkus(AndVsOr.OR, name, null, null, null, null, null, 1);
     console.log(response[0])
     var line = await this.restv2.getLine(AndVsOr.OR, "","", group.content, "", 1)
     console.log(line)
@@ -154,7 +156,8 @@ export class ManufacturingScheduleComponent implements OnInit {
       if (count == 1) {
         var activity = await this.restv2.getActivities(AndVsOr.OR, null, null, skuObject['_id'], 1)
         console.log(activity)
-        var modify = await this.restv2.modifyActivity(AndVsOr.AND, item['id'], activity[0]['sku']['_id'], 
+        var activityid = item.content.split("::")[1];
+        var modify = await this.restv2.modifyActivity(AndVsOr.AND, activityid, activity[0]['sku']['_id'], 
         activity[0]['numcases'], activity[0]['calculatedhours'], activity[0]['sethours'], 
         item['start'], line[0]['_id']);
         console.log(modify)
@@ -206,19 +209,23 @@ export class ManufacturingScheduleComponent implements OnInit {
             if (activity['sethours']) {
               duration = activity['sethours'];
             }
-            console.log('startDate', activity['startdate'])
-            var endDate = new Date(1000 * 60 * 60 * (duration + (Math.floor(duration / 14)*14)) + (new Date(activity['startdate'])).valueOf()); 
-            console.log('original end date', endDate)
-            var startTime = parseInt((activity['startdate'].split('T')[1]).split(':')[0], 10);
-            console.log('startTime', startTime, 'duration', duration)
-            if (startTime + duration > 18) {
-              endDate = new Date(1000 * 60 * 60 * 14 + (new Date(endDate)).valueOf());
-            }
-            if (startTime < 8) {
-              endDate = new Date(1000 * 60 * 60 * 14 + (new Date(endDate)).valueOf());
-            }
-            console.log('final end date', endDate)
-            // var endDate = new Date(1000 * 60 * 60 * duration + (new Date(activity['startdate'])).valueOf());
+            // console.log('startDate', activity['startdate'])
+            // var endDate = new Date(1000 * 60 * 60 * (Math.round(duration) + (Math.floor(duration / 14)*14)) + (new Date(activity['startdate'])).valueOf()); 
+            // console.log('original end date', endDate)
+            // var startTime = parseInt((activity['startdate'].split('T')[1]).split(':')[0], 10);
+            // console.log('startTime', startTime, 'duration', duration)
+            // if (startTime + (duration) > 18 || startTime + duration < 8) {
+            //   var end = startTime + (duration%14);
+            //   endDate = new Date(1000 * 60 * 60 * 14 + (new Date(endDate)).valueOf());
+            // }
+            // if (startTime < 8) {
+            //   endDate = new Date(1000 * 60 * 60 * (8-startTime) + (new Date(endDate)).valueOf());
+            // }
+            // if (startTime > 18) {
+            //   endDate = new Date(1000 * 60 * 60 * (startTime-18+8) + (new Date(endDate)).valueOf());
+            // }
+            // console.log('final end date', endDate)
+            var endDate = new Date(1000 * 60 * 60 * duration + (new Date(activity['startdate'])).valueOf());
             this.data.add({
               id: activity['_id'],
               group: line['_id'],
@@ -251,9 +258,9 @@ export class ManufacturingScheduleComponent implements OnInit {
         axis: 5   // minimal margin between items and the axis
       },
       orientation: 'top',
-      hiddenDates: [
-        {start: '2013-03-29 18:00:00', end: '2013-03-30 08:00:00', repeat: 'daily'} // daily weekly monthly yearly
-    ],
+    //   hiddenDates: [
+    //     {start: '2013-03-29 18:00:00', end: '2013-03-30 08:00:00', repeat: 'daily'} // daily weekly monthly yearly
+    // ],
       
       onRemove: async function(item, callback): Promise<void> {
         console.log(item, callback);
