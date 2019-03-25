@@ -5,6 +5,9 @@ import { EnableGoalsDialogComponent } from '../enable-goals-dialog/enable-goals-
 import { RestService } from '../rest.service';
 import { RestServiceV2, AndVsOr } from '../restv2.service';
 
+var moment = require('moment');     //please note that you should include moment library first
+require('moment-weekday-calc');
+
 export class DataForGoalsTable{
   goalname: string;
   activities: [];
@@ -156,7 +159,7 @@ export class ManufacturingScheduleComponent implements OnInit {
       });
       if (count == 1) {
         var activities = await this.restv2.getActivities(AndVsOr.OR, null, null, skuObject['_id'], 100)
-        console.log(activity)
+        
         var newActivity;
         var activityid = item.content.split("::")[1];
         activities.forEach(activity => {
@@ -219,10 +222,14 @@ export class ManufacturingScheduleComponent implements OnInit {
             if (activity['sethours']) {
               duration = activity['sethours'];
             }
+            console.log('startDate', activity['startdate'], 'duration', duration)
+            var startTime = parseInt((activity['startdate'].split('T')[1]).split(':')[0], 10) - 7;
+            var endDate = this.calculateEndDate(new Date(activity['startdate']), Math.round(duration), startTime);
+            console.log('endDate', endDate)
             // console.log('startDate', activity['startdate'])
             // var endDate = new Date(1000 * 60 * 60 * (Math.round(duration) + (Math.floor(duration / 14)*14)) + (new Date(activity['startdate'])).valueOf()); 
             // console.log('original end date', endDate)
-            // var startTime = parseInt((activity['startdate'].split('T')[1]).split(':')[0], 10);
+            
             // console.log('startTime', startTime, 'duration', duration)
             // if (startTime + (duration) > 18 || startTime + duration < 8) {
             //   var end = startTime + (duration%14);
@@ -235,7 +242,7 @@ export class ManufacturingScheduleComponent implements OnInit {
             //   endDate = new Date(1000 * 60 * 60 * (startTime-18+8) + (new Date(endDate)).valueOf());
             // }
             // console.log('final end date', endDate)
-            var endDate = new Date(1000 * 60 * 60 * duration + (new Date(activity['startdate'])).valueOf());
+            // var endDate = new Date(1000 * 60 * 60 * duration + (new Date(activity['startdate'])).valueOf());
             this.data.add({
               id: activity['_id'],
               group: line['_id'],
@@ -268,9 +275,10 @@ export class ManufacturingScheduleComponent implements OnInit {
         axis: 5   // minimal margin between items and the axis
       },
       orientation: 'top',
-    //   hiddenDates: [
-    //     {start: '2013-03-29 18:00:00', end: '2013-03-30 08:00:00', repeat: 'daily'} // daily weekly monthly yearly
-    // ],
+      hiddenDates: [
+        {start: '2013-03-29 18:00:00', end: '2013-03-30 08:00:00', repeat: 'daily'},
+        {start: '2013-10-26 00:00:00', end: '2013-10-28 00:00:00', repeat: 'weekly'}
+    ],
       
       onRemove: async function(item, callback): Promise<void> {
         console.log(item, callback);
@@ -334,5 +342,27 @@ export class ManufacturingScheduleComponent implements OnInit {
     this.enableGoalsDialogRef.afterClosed().subscribe(event => {
       this.refreshData();
     });
+  }
+
+  calculateEndDate(startDate: Date, hours: number, startTime: number): Date {
+    var endDate = new Date((new Date(startDate)).valueOf());
+    // var endDate = new Date(startDate);
+    const NUM_HOURS_PER_DAY = 10;
+    const remainder = hours % NUM_HOURS_PER_DAY;
+    console.log('startDate', endDate)
+    while (moment().isoWeekdayCalc([startDate.getUTCFullYear(), startDate.getUTCMonth(), startDate.getUTCDay()], [endDate.getUTCFullYear(), endDate.getUTCMonth(), endDate.getUTCDay()+1], [1, 2, 3, 4, 5]) < Math.floor(hours / NUM_HOURS_PER_DAY)) {
+      console.log('plus one day', moment().isoWeekdayCalc([startDate.getUTCFullYear(), startDate.getUTCMonth(), startDate.getUTCDay()], [endDate.getUTCFullYear(), endDate.getUTCMonth(), endDate.getUTCDay()+1], [1, 2, 3, 4, 5]) * NUM_HOURS_PER_DAY)
+      console.log(startDate.getUTCDay(), endDate.getUTCDay())
+      endDate.setDate(endDate.getDate() + 1);
+    }
+    console.log('endDate', endDate)
+    endDate = new Date(1000 * 60 * 60 * remainder + (new Date(endDate)).valueOf());
+    if (startTime < 0) {
+      startTime = 24 + startTime
+    }
+    if (hours + startTime > 18 || hours + startTime < 8) {
+      endDate = new Date(1000 * 60 * 60 * 14 + (new Date(endDate)).valueOf());
+    }
+    return endDate;
   }
 }
