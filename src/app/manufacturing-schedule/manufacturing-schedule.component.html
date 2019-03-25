@@ -4,12 +4,16 @@
         <h1 style="text-align:center"> Manufacturing Schedule </h1>
         <button mat-raised-button (click)="openEnableGoalsDialog()"> Enable/Disable Goals </button>
         <div id="timeline" #timeline></div>
-        <div [ngClass]="['items']"  *ngFor="let goal of goalsDataSource['data']">
-            <h2>{{goal['goalname']}}</h2>
-            <p>Deadline: {{goal['date'].valueOf().split('T')[0]}}</p>
-            <div draggable="true" (dragstart)="handleDragStart($event, activity)" [ngClass]="['item']" *ngFor="let activity of goal['activities']">
-                {{activity['sku']['skuname']}}
+        <div class="goalsContainer">
+            <div [ngClass]="['items']"  *ngFor="let goal of goalsDataSource['data']">
+                <h2>{{goal['goalname']}}</h2>
+                <p>Deadline: {{goal['date'].valueOf().split('T')[0]}}</p>
+                <div draggable="true" (dragstart)="handleDragStart($event, activity)" [ngClass]="['item']" *ngFor="let activity of goal['activities']">
+                    {{activity['sku']['skuname']}}
+                </div>
+            
             </div>
         </div>
+            
     </mat-card>    
 </div>
