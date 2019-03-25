@@ -1,10 +1,9 @@
-import { Component, OnInit,ViewChild } from '@angular/core';
+import { Component, OnInit,ViewChild, ElementRef, Inject  } from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import { RestService } from '../rest.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import {ExportToCsv} from 'export-to-csv';
-import { MatDialogRef, MatDialog, MatDialogConfig, MatTableDataSource, MatPaginator } from "@angular/material";
-
+import { MatDialogRef, MAT_DIALOG_DATA, MatDialog, MatDialogConfig, MatTableDataSource, MatPaginator } from "@angular/material";
 export class SkuQuantityTable{
   ingredientName: any;
   packages: any;
@@ -24,17 +23,16 @@ export class SkuQuantityTable{
 
 export class ManufacturingCalculatorComponent implements OnInit {
   allReplacement = 54321;
-  goals: any = [];
-  selectedGoal: any;
+  goal: any;
   username: string;
   displayedColumns: string[] = ['ingredientName', 'packages', 'packagesMeasured'];
-  data: SkuQuantityTable[] = [];
+  dataForTable: SkuQuantityTable[] = [];
   ingredients: string[] = [];
-  dataSource = new MatTableDataSource<SkuQuantityTable>(this.data);
+  dataForTableSource = new MatTableDataSource<SkuQuantityTable>(this.dataForTable);
   showDetails:boolean = false;
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
-  constructor(public rest:RestService, private route: ActivatedRoute, private router: Router) { }
+  constructor(@Inject(MAT_DIALOG_DATA) public data: any,private dialogRef: MatDialogRef<ManufacturingCalculatorComponent>, public rest:RestService, private route: ActivatedRoute, private router: Router) { }
 
 
   getPageSizeOptions() {
@@ -42,29 +40,12 @@ export class ManufacturingCalculatorComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.rest.getUserName().then(result => {
-      this.username = result.toString();
-      this.rest.getGoals(this.username, "", ".*", false, 5).subscribe(data => {
-          this.goals = data;
-          
-      })
-    })
+    this.goal = this.data.goal[0];
+    console.log(JSON.stringify(this.goal))
+    this.calculateIngredientsAndQuantities(this.goal['activities'])
   }
 
-  getGoalByName(name) {
-    this.showDetails = true;
-    this.data = [];
-    this.ingredients = [];
-    this.dataSource = new MatTableDataSource<SkuQuantityTable>(this.data);
-      this.rest.getGoals(this.username, name, name, false, 5).subscribe(data => {
-          this.selectedGoal = data[0];
-          console.log("GOAL: " + JSON.stringify(data[0]))
-          let skus: String[] = [];
-          let activities = this.selectedGoal['activities'];
-          this.calculateIngredientsAndQuantities(activities)
-    
-        });
-    }
+
 
   calculateIngredientsAndQuantities(activitiesList) {
     var i;
@@ -74,40 +55,45 @@ export class ManufacturingCalculatorComponent implements OnInit {
       let scaleFactor = activitiesList[i]['activity']['sku']['formulascalingfactor'];
       var j;
       for(j = 0; j<ingredientsandquanties.length; j++){
-        this.addToDataSource(ingredientsandquanties[j]['ingredient'], activityQuantity, scaleFactor)
+        this.addToDataSource(ingredientsandquanties[j]['ingredient'], activityQuantity, scaleFactor, ingredientsandquanties[j]['quantity'])
       }
     }
   }
 
-  addToDataSource(ingredient, numCases, formulaScaleFactor){
+  addToDataSource(ingredient, numCases, formulaScaleFactor, ingredientQuantity){
     console.log("ING: " + JSON.stringify(ingredient))
       let name = ingredient['ingredientname'];
-      let packages = numCases * formulaScaleFactor;
-      let packagesMeasured = numCases * formulaScaleFactor * ingredient['amount'];
+      let packagesMeasured = Math.round(100*numCases * formulaScaleFactor * ingredient['amount'])/100; ;
+      let packages = Math.round(100*(packagesMeasured/ingredientQuantity))/100;
       let packagesMeasuredString = packagesMeasured + " " + ingredient['unitofmeasure']
       if(this.ingredients.indexOf(name) == -1){
         this.ingredients.push(name);
         let newIngredient = new SkuQuantityTable(name, packages, packagesMeasuredString);
-        this.data.push(newIngredient);
+        this.dataForTable.push(newIngredient);
       }
       else{
         var i;
-        for(i = 0; i< this.data.length; i++){
-          if(this.data[i].ingredientName == name){
-            let ingredientToUpdate = this.data[i];
+        for(i = 0; i< this.dataForTable.length; i++){
+          if(this.dataForTable[i].ingredientName == name){
+            let ingredientToUpdate = this.dataForTable[i];
             ingredientToUpdate.packages +=  packages;
             let oldMeasured = Number(ingredientToUpdate.packagesMeasured.substring(0,ingredientToUpdate.packagesMeasured.indexOf(" ")))
             let updatedPackagesMeasured = oldMeasured + packagesMeasured;
             ingredientToUpdate.packagesMeasured = updatedPackagesMeasured + " " + ingredient['unitofmeasure']
-            this.data.splice(i,1);
-            this.data.push(ingredientToUpdate)
+            this.dataForTable.splice(i,1);
+            this.dataForTable.push(ingredientToUpdate)
           }
         }
       }
-      this.dataSource = new MatTableDataSource<SkuQuantityTable>(this.data);
-      this.dataSource.paginator = this.paginator;
+      console.log(this.dataForTable)
+      this.dataForTableSource = new MatTableDataSource<SkuQuantityTable>(this.dataForTable);
+      this.dataForTableSource.paginator = this.paginator;
     }
 
+    closeDialog() {
+      this.dialogRef.close();
+      this.goal = null;
+    }
   exportToCsv() {
     const options = { 
       fieldSeparator: ',',
@@ -121,7 +107,7 @@ export class ManufacturingCalculatorComponent implements OnInit {
       headers: ["Ingredient", "Packages", "Packages (with Units)"]
     };
     const csvExporter = new ExportToCsv(options);
-    csvExporter.generateCsv(this.data);
+    csvExporter.generateCsv(this.dataForTable);
   }
 
 }

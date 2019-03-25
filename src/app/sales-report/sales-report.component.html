@@ -34,6 +34,7 @@
           <br>
           <mat-card-header style="align-content: center; align-items: center; justify-content: center; display: grid;">
             <mat-card-title>SKU Sales Summary</mat-card-title>
+            <button mat-raised-button (click)="exportSummary()">Export</button>
           </mat-card-header>
           <mat-tab-group>
             <mat-tab *ngFor="let productLine of selectedProductLines" label={{productLine.productlinename}}>

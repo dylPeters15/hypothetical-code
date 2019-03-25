@@ -1,22 +1,11 @@
-<div>
+    <mat-dialog-content align="center">
   <mat-card>
-    <mat-card-header style="align-content: center; align-items: center; justify-content: center; display: grid;">
-      <mat-card-title>Manufacturing Calculator</mat-card-title>
+    <mat-card-header >
+      <mat-card-title>Manufacturing Calculator: {{goal['goalname']}}</mat-card-title>
     </mat-card-header>
     <mat-card-content>
-
-      <h1 style="align-content: center; align-items: center; justify-content: center; display: grid;"> Select a Saved
-        Manufacturing Goal:</h1>
-      <mat-form-field style="align-content: center; align-items: center; justify-content: center; display: grid;">
-        <mat-select [(ngModel)]="selectedValue">
-          <mat-option *ngFor="let goal of goals" value="{{goal.goalname}}">{{goal.goalname}}</mat-option>
-        </mat-select>
-        <br><br>
-      </mat-form-field>
-      <button mat-raised-button (click)="getGoalByName(selectedValue)" color="primary">Show Details</button>
-      <div [hidden]="!showDetails">
-        <h1> {{selectedValue}}</h1>
-        <mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+        
+        <mat-table [dataSource]="dataForTableSource" class="mat-elevation-z8">
           <ng-container matColumnDef="ingredientName">
             <mat-header-cell *matHeaderCellDef>Ingredient</mat-header-cell>
             <mat-cell *matCellDef="let element">{{element.ingredientName}}</mat-cell>
@@ -37,10 +26,12 @@
         </mat-table>
         <mat-paginator id="elementsTablePaginator" [pageSizeOptions]="getPageSizeOptions()" showFirstLastButtons>
         </mat-paginator>
-        <button mat-raised-button (click)="exportToCsv()">Export to CSV</button>
-      </div>
-      <!-- </div> -->
+        
 
     </mat-card-content>
   </mat-card>
-</div>
+  </mat-dialog-content>
+  <mat-dialog-actions align="center">
+      <button mat-raised-button (click)="exportToCsv()">Export to CSV</button>
+      <button mat-raised-button (click)="closeDialog()">Done</button>
+    </mat-dialog-actions>

@@ -108,7 +108,7 @@ export class NewGoalDialogComponent implements OnInit {
   }
 
   addActivity(){
-    var hours = this.quantity/this.currentSku['manufacturingrate'];
+    var hours = Math.ceil(this.quantity/this.currentSku['manufacturingrate']);
     let newActivity = new DisplayableActivity(hours, this.currentSku['skuname']);
     
     this.displayableActivities.push(newActivity);

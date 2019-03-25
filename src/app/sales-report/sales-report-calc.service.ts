@@ -63,7 +63,7 @@ export class SalesReportCalcService {
   }
 
   async exportSKU(sku, selectedCustomerId) {
-    var allSales = await this.restv2.getSales(AndVsOr.AND, sku['_id'], selectedCustomerId=="all"?null:selectedCustomerId, new Date(new Date().getFullYear()-10), null, 54321);
+    var allSales = await this.restv2.getSales(AndVsOr.AND, sku['_id'], selectedCustomerId=="all"?null:selectedCustomerId, new Date(new Date().getFullYear()-10, 0), null, 54321);
     var sales = this.summarizeSales(allSales, sku);
 
     var exportData = [];
@@ -83,6 +83,8 @@ export class SalesReportCalcService {
         headers: ["Year","SKU Name","SKU Number", "Total Revenue", "Average Revenue Per Case"]
       };
       const csvExporter = new ExportToCsv(options);
+      console.log(sku);
+      console.log(exportData);
       csvExporter.generateCsv(exportData);
   }
 }
