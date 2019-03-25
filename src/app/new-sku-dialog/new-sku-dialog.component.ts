@@ -297,7 +297,7 @@ export class NewSkuDialogComponent implements OnInit {
       }
 
       addManufacturingLineButton() {
-        if(this.manufacturinglines.length == 0)
+        if(this.manufacturinglines == null || this.manufacturinglines.length == 0)
         {
           this.addManufacturingLineToSku(false, null); // new
         }
