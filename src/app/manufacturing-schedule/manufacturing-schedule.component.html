@@ -4,15 +4,6 @@
         <h1 style="text-align:center"> Manufacturing Schedule </h1>
         <button mat-raised-button (click)="openEnableGoalsDialog()"> Enable/Disable Goals </button>
         <div id="timeline" #timeline></div>
-
-        <!-- <ul class="items">
-            <li draggable="true" class="item">
-                item 1 - box
-            </li>
-            <li draggable="true" class="item">
-                item 2 - range
-            </li>
-        </ul> -->
         <div [ngClass]="['items']"  *ngFor="let goal of goalsDataSource['data']">
             <h2>{{goal['goalname']}}</h2>
             <p>Deadline: {{goal['date'].valueOf().split('T')[0]}}</p>
