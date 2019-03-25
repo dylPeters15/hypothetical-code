@@ -161,7 +161,8 @@ deleteFormula(formulanumber: number): Observable<any> {
 
  ///////////////////// skus /////////////////////
  getSkus(skuName: String, skunameregex: String, skuNumber: number, caseUpcNumber: number, unitUpcNumber: number, formula: String, limit: number, productline?: String): Observable<any> {
-
+  console.log("before crash. product line: " + productline);
+  if(productline == undefined) productline = "No Product Line Assigned";
   return this.http.get(endpoint + "skus", this.generateHeader({
     skuname: skuName,
     skunameregex: skunameregex,

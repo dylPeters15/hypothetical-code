@@ -3,6 +3,7 @@ const formula_utils = require('./formula_utils.js');
 
 
 function getSkus(skuname, skunameregex, skunumber, caseupcnumber, unitupcnumber, formula, productline, limit) {
+    console.log("got all the way here without crashing");
     return new Promise(function (resolve, reject) {
         skuname = skuname || "";
         skunameregex = skunameregex || "$a";

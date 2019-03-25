@@ -149,7 +149,8 @@ function startServerV1(app) {
     ///////////////////// skus /////////////////////
     app.route('/skus').get((req, res) => {
         console.log(req.headers);
-        sku_utils.getSkus(req.headers['skuname'], req.headers['skunameregex'], Number(req.headers['skunumber']), Number(req.headers['caseupcnumber']), Number(req.headers['unitupcnumber']), req.headers['formula'], req.body['productline'], Number(req.headers['limit'])).then(skus => {
+        console.log("here we are orangina");
+        sku_utils.getSkus(req.headers['skuname'], req.headers['skunameregex'], Number(req.headers['skunumber']), Number(req.headers['caseupcnumber']), Number(req.headers['unitupcnumber']), req.headers['formula'], req.headers['productline'], Number(req.headers['limit'])).then(skus => {
             res.send(skus);
         }).catch(err => {
             resolveError(err, res);
