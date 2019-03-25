@@ -63,7 +63,7 @@ export class AssignSkuProductlineComponent implements OnInit {
     this.selectedProductlineNames = [];
 
     //this.amount = 5;
-    console.log("Let's send the data back! new ingredient: " + this.productlineName);
+    console.log("Let's send the data back! new product line: " + this.productlineName);
     this.dialogRef.componentInstance.productlineName = this.productlineName;
     this.dialogRef.close();
 
@@ -73,7 +73,7 @@ export class AssignSkuProductlineComponent implements OnInit {
     //this.amount = this.data.present_amount;
   }
 
-  addFormula() {
+  addProductLine() {
     this.closeDialog()
   }
 

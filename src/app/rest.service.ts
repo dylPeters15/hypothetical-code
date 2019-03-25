@@ -178,7 +178,8 @@ deleteFormula(formulanumber: number): Observable<any> {
 createSku(skuname: String, skunumber: number, 
   caseupcnumber: number, unitupcnumber: number, unitsize: string, 
   countpercase: number, formulanum: Number, formulascalingfactor: Number, manufacturingrate: Number, comment: String, productline?: String): Observable<any> {
-  return this.http.put(endpoint + "skus", {
+  console.log("We are now trying to create our sku.");
+    return this.http.put(endpoint + "skus", {
     skuname: skuname,
     skunumber: skunumber,
     caseupcnumber: caseupcnumber,
