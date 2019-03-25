@@ -251,8 +251,15 @@ export class NewSkuDialogComponent implements OnInit {
     }
 
   createSku() {
-    console.log("right now, my formula is " + this.formula['formulanumber']);
-    if (this.edit == false)
+    console.log("right now, formula is " + this.formula);
+    if (this.formula == undefined || this.formula == null)
+    {
+      this.snackBar.open("A formula must be specified for this sku.", "close", {
+        duration: 4000,
+      });
+    }
+
+    else if (this.edit == false)
     {
       this.rest.createSku(this.skuname, this.skunumber, this.caseupcnumber, this.unitupcnumber, this.unitsize, this.countpercase, this.formula['formulanumber'], this.formulascalingfactor, this.manufacturingrate, this.comment, this.productlinename).subscribe(response => {
         this.snackBar.open("Successfully created sku " + this.skuname + ".", "close", {
