@@ -98,7 +98,8 @@ export class ManufacturingScheduleComponent implements OnInit {
     console.log('start drag', event)
     console.log(activity)
     var dragSrcEl = event.target;
-
+    
+    
     event.dataTransfer.effectAllowed = 'move';
     var itemType = 'range';
     var item = {
@@ -154,11 +155,20 @@ export class ManufacturingScheduleComponent implements OnInit {
         }
       });
       if (count == 1) {
-        var activity = await this.restv2.getActivities(AndVsOr.OR, null, null, skuObject['_id'], 1)
+        var activities = await this.restv2.getActivities(AndVsOr.OR, null, null, skuObject['_id'], 100)
         console.log(activity)
+        var newActivity;
         var activityid = item.content.split("::")[1];
-        var modify = await this.restv2.modifyActivity(AndVsOr.AND, activityid, activity[0]['sku']['_id'], 
-        activity[0]['numcases'], activity[0]['calculatedhours'], activity[0]['sethours'], 
+        activities.forEach(activity => {
+          if (activity['_id'] == activityid) {
+            newActivity = activity;
+          }
+        })
+        
+        console.log('activityid', activityid)
+        console.log(newActivity['_id'])
+        var modify = await this.restv2.modifyActivity(AndVsOr.AND, activityid, newActivity['sku']['_id'], 
+        newActivity['numcases'], newActivity['calculatedhours'], newActivity['sethours'], 
         item['start'], line[0]['_id']);
         console.log(modify)
         var activity = await this.restv2.getActivities(AndVsOr.OR, null, null, skuObject['_id'], 1)
