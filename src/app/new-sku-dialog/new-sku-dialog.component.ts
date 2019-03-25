@@ -251,10 +251,10 @@ export class NewSkuDialogComponent implements OnInit {
     }
 
   createSku() {
-    console.log("time to create with product line name " + this.productlinename);
+    console.log("right now, my formula is " + this.formula['formulanumber']);
     if (this.edit == false)
     {
-      this.rest.createSku(this.skuname, this.skunumber, this.caseupcnumber, this.unitupcnumber, this.unitsize, this.countpercase, this.formula, this.formulascalingfactor, this.manufacturingrate, this.comment, this.productlinename).subscribe(response => {
+      this.rest.createSku(this.skuname, this.skunumber, this.caseupcnumber, this.unitupcnumber, this.unitsize, this.countpercase, this.formula['formulanumber'], this.formulascalingfactor, this.manufacturingrate, this.comment, this.productlinename).subscribe(response => {
         this.snackBar.open("Successfully created sku " + this.skuname + ".", "close", {
           duration: 2000,
         });
@@ -263,8 +263,8 @@ export class NewSkuDialogComponent implements OnInit {
       }
 
     else{
-      this.rest.modifySku(this.oldskuname, this.skuname, this.skunumber, this.caseupcnumber, this.unitupcnumber, this.unitsize, this.countpercase, this.formula, this.formulascalingfactor, this.manufacturingrate, this.comment, this.productlinename).subscribe(response => {
-        this.snackBar.open("Successfully modifyed sku " + this.skuname + ".", "close", {
+      this.rest.modifySku(this.oldskuname, this.skuname, this.skunumber, this.caseupcnumber, this.unitupcnumber, this.unitsize, this.countpercase, this.formula['formulanumber'], this.formulascalingfactor, this.manufacturingrate, this.comment, this.productlinename).subscribe(response => {
+        this.snackBar.open("Successfully modifyed sku " + this.skuname + ". specifically, product line is now " + this.productlinename, "close", {
           duration: 2000,
         });
         this.closeDialog();

@@ -196,7 +196,7 @@ createSku(skuname: String, skunumber: number,
 modifySku(oldSkuName: String, skuname: String, skunumber: number, 
   caseupcnumber: number, unitupcnumber: number, unitsize: string, 
   countpercase: number, formulanum: Number, formulascalingfactor: Number, manufacturingrate: Number, comment: String, productline?: String): Observable<any> {
-    if(productline == undefined) productline = "No Product Line Assigned";
+  if(productline == undefined) productline = "No Product Line Assigned";
   return this.http.post(endpoint + "skus", {
     skuname: skuname,
     skunumber: skunumber,

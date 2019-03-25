@@ -115,7 +115,7 @@ function createSku(name, number, case_upc, unit_upc, unit_size, count, formulanu
 }
 
 function modifySku(oldName, name, number, case_upc, unit_upc, unit_size, count, formulanum, formulascalingfactor, productline, manufacturingrate, comment) {
-    
+    console.log("modifying sku to formula " + formulanum);
     return new Promise(function (resolve, reject) {
         formula_utils.getFormulas("","$a",formulanum,null,1).then(response => {
             if (response.length == 0) {
