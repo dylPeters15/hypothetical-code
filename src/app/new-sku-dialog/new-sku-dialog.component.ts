@@ -5,6 +5,7 @@ import { RestService } from '../rest.service';
 import {MatSnackBar} from '@angular/material';
 import {MAT_DIALOG_DATA} from '@angular/material';
 import { NewSkuFormulaComponent } from '../new-sku-formula/new-sku-formula.component';
+import { AssignSkuManufacturingLines } from '../assign-sku-manufacturinglines/assign-sku-manufacturinglines.component';
 import { NewFormulaDialogComponent } from '../new-formula-dialog/new-formula-dialog.component';
 import { AssignSkuProductlineComponent } from '../assign-sku-productline/assign-sku-productline.component';
 
@@ -27,6 +28,7 @@ export class NewSkuDialogComponent implements OnInit {
   countpercase: number = 0;
   formula: any = null;
   formulascalingfactor: number = 0;
+  manufacturinglines: any[];
   manufacturingrate: number = 0;
   productline: string = '';
   comment: String = '';
@@ -47,13 +49,14 @@ export class NewSkuDialogComponent implements OnInit {
 
   ///////////////////////////////////////////////////////////////////////
 
-  chosen_productline: String
-  chosen_formula: String
+  chosen_productline: String;
+  chosen_formula: String;
   chosen_scaling_factor: Number;
   
   newFormulaDialogRef: MatDialogRef<NewSkuFormulaComponent>;
   newDialogRef: MatDialogRef<NewFormulaDialogComponent>;
   assignProductLineDialogRef: MatDialogRef<AssignSkuProductlineComponent>;
+  assignManufacturingLineRef: MatDialogRef<AssignSkuManufacturingLines>;
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: any, private dialogRef: MatDialogRef<NewSkuDialogComponent>, public rest:RestService, private snackBar: MatSnackBar, private dialog: MatDialog) { }
 
@@ -70,6 +73,7 @@ export class NewSkuDialogComponent implements OnInit {
     this.formula = this.data.present_formula;
     this.formulascalingfactor = this.data.present_formulascalingfactor;
     this.productline = this.data.present_productline;
+    this.manufacturinglines = this.data.present_manufacturinglines;
     this.manufacturingrate = this.data.present_manufacturingrate;
     this.comment = this.data.present_comment;
 
@@ -250,6 +254,61 @@ export class NewSkuDialogComponent implements OnInit {
         }        
     }
 
+
+     // Manufacturing line adds
+  addManufacturingLineToSku(edit, manufacturinglines) {
+    console.log("edit product line, ed it: " + edit);
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.data = {edit: edit, present_sku: this.skuname, present_lines: manufacturinglines};
+    this.assignManufacturingLineRef = this.dialog.open(AssignSkuManufacturingLines, dialogConfig);
+
+    //this.newIngredientDialogRef.componentInstance.amount = this.return_amount;
+    //this.newIngredientDialogRef.componentInstance.ingredientNameList = this.ingredientNameList;
+    this.assignManufacturingLineRef.afterClosed().subscribe(event => {
+      // grab the new product line values
+      var new_productline = this.assignProductLineDialogRef.componentInstance.productlineName;
+      console.log("yipee ki yay: " + new_productline);
+      this.productline = new_productline;
+
+     // getProductLines(productlinename: String, productlinenameregex: String, limit: number): Observable<any> {
+
+      // get object id from formula name
+      this.rest.getProductLines(new_productline ,new_productline, 1).subscribe(response => {
+        this.snackBar.open("Successfully added formula " + new_productline, "close", {
+          duration: 2000,
+             });
+          this.productlinename = response[0]['productlinename'];
+
+          // Find sku by sku name
+          this.rest.getSkus(this.skuname,this.skuname,0,0,0,'',1).subscribe(responseSku => {
+            this.snackBar.open("Successfully added formula " + new_productline, "close", {
+              duration: 2000,
+                 });
+              var thisSku = responseSku[0]['skuname'];
+              var productline_skus = response[0]['skus'].push(thisSku);
+
+              // save updated product line name list
+              this.rest.modifyProductLine(new_productline,new_productline,productline_skus).subscribe(responseProductline => {
+                });
+            });
+        this.refreshData();
+        });
+        });
+      }
+
+      addManufacturingLineButton() {
+        if(this.manufacturinglines.length == 0)
+        {
+          this.addManufacturingLineToSku(false, null); // new
+        }
+        else 
+        {
+          this.addManufacturingLineToSku(true, this.manufacturinglines); // modifying
+        }        
+    }
+
+
+
   createSku() {
     console.log("right now, formula is " + this.formula);
     if (this.formula == undefined || this.formula == null)
@@ -261,7 +320,7 @@ export class NewSkuDialogComponent implements OnInit {
 
     else if (this.edit == false)
     {
-      this.rest.createSku(this.skuname, this.skunumber, this.caseupcnumber, this.unitupcnumber, this.unitsize, this.countpercase, this.formula['formulanumber'], this.formulascalingfactor, this.manufacturingrate, this.comment, this.productlinename).subscribe(response => {
+      this.rest.createSku(this.skuname, this.skunumber, this.caseupcnumber, this.unitupcnumber, this.unitsize, this.countpercase, this.formula['formulanumber'], this.formulascalingfactor, this.manufacturingrate, this.comment, this.manufacturinglines, this.productlinename).subscribe(response => {
         this.snackBar.open("Successfully created sku " + this.skuname + ".", "close", {
           duration: 2000,
         });
@@ -270,7 +329,7 @@ export class NewSkuDialogComponent implements OnInit {
       }
 
     else{
-      this.rest.modifySku(this.oldskuname, this.skuname, this.skunumber, this.caseupcnumber, this.unitupcnumber, this.unitsize, this.countpercase, this.formula['formulanumber'], this.formulascalingfactor, this.manufacturingrate, this.comment, this.productlinename).subscribe(response => {
+      this.rest.modifySku(this.oldskuname, this.skuname, this.skunumber, this.caseupcnumber, this.unitupcnumber, this.unitsize, this.countpercase, this.formula['formulanumber'], this.formulascalingfactor, this.manufacturingrate, this.comment, this.manufacturinglines, this.productlinename).subscribe(response => {
         this.snackBar.open("Successfully modifyed sku " + this.skuname + ".", "close", {
           duration: 2000,
         });

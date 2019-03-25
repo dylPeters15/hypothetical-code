@@ -10,7 +10,7 @@ import { RestServiceV2, AndVsOr } from '../restv2.service';
 
 @Component({
   selector: 'app-assign-sku-manufacturinglines',
-  templateUrl: './assign-sku-manufacturinglinescomponent.html',
+  templateUrl: './assign-sku-manufacturinglines.component.html',
   styleUrls: ['./assign-sku-manufacturinglines.component.css']
 })
 export class AssignSkuManufacturingLines implements OnInit {
@@ -43,7 +43,7 @@ export class AssignSkuManufacturingLines implements OnInit {
 
   ngOnInit() {
     this.edit = this.data.edit;
-    this.currentSku = this.data.currentSku;
+    this.currentSku = this.data.present_sku;
 
     // edit == true if sku is being modified, false if a new sku is being created
     if (this.edit == true)
