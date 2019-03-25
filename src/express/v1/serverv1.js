@@ -149,7 +149,7 @@ function startServerV1(app) {
     ///////////////////// skus /////////////////////
     app.route('/skus').get((req, res) => {
         console.log(req.headers);
-        sku_utils.getSkus(req.headers['skuname'], req.headers['skunameregex'], Number(req.headers['skunumber']), Number(req.headers['caseupcnumber']), Number(req.headers['unitupcnumber']), req.headers['formula'], Number(req.headers['limit'])).then(skus => {
+        sku_utils.getSkus(req.headers['skuname'], req.headers['skunameregex'], Number(req.headers['skunumber']), Number(req.headers['caseupcnumber']), Number(req.headers['unitupcnumber']), req.headers['formula'], req.body['productline'], Number(req.headers['limit'])).then(skus => {
             res.send(skus);
         }).catch(err => {
             resolveError(err, res);
@@ -157,7 +157,7 @@ function startServerV1(app) {
     }).put((req, res) => {
         sku_utils.createSku(req.body['skuname'], req.body['skunumber'],
             req.body['caseupcnumber'], req.body['unitupcnumber'],
-            req.body['unitsize'], req.body['countpercase'], req.body['formulanum'], req.body['formulascalingfactor'], req.body['manufacturingrate'], req.body['comment']).then(response => {
+            req.body['unitsize'], req.body['countpercase'], req.body['formulanum'], req.body['formulascalingfactor'], req.body['productline'], req.body['manufacturingrate'], req.body['comment']).then(response => {
                 res.send(response);
             }).catch(err => {
                 resolveError(err, res);
@@ -165,7 +165,7 @@ function startServerV1(app) {
     }).post((req, res) => {
         sku_utils.modifySku(req.headers['skuname'], req.body['skuname'], req.body['skunumber'],
             req.body['caseupcnumber'], req.body['unitupcnumber'],
-            req.body['unitsize'], req.body['countpercase'], req.body['formulanum'], req.body['formulascalingfactor'], req.body['manufacturingrate'], req.body['comment']).then(response => {
+            req.body['unitsize'], req.body['countpercase'], req.body['formulanum'], req.body['formulascalingfactor'], req.body['productline'], req.body['manufacturingrate'], req.body['comment']).then(response => {
                 res.send(response);
             }).catch(err => {
                 resolveError(err, res);

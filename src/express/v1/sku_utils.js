@@ -2,7 +2,7 @@ const database = require('../database.js');
 const formula_utils = require('./formula_utils.js');
 
 
-function getSkus(skuname, skunameregex, skunumber, caseupcnumber, unitupcnumber, formula, limit) {
+function getSkus(skuname, skunameregex, skunumber, caseupcnumber, unitupcnumber, formula, productline, limit) {
     return new Promise(function (resolve, reject) {
         skuname = skuname || "";
         skunameregex = skunameregex || "$a";
@@ -20,10 +20,15 @@ function getSkus(skuname, skunameregex, skunumber, caseupcnumber, unitupcnumber,
         if (formula != "" && formula != undefined) {
             orClause.push({ formula: formula });
         }
+
+        if (productline != "" && productline != undefined) {
+            orClause.push({ productline: productline });
+        }
+
         const filterSchema = {
             $or: orClause
         }
-        database.skuModel.find(filterSchema).limit(limit).populate('formula').exec((err, skus) => {
+        database.skuModel.find(filterSchema).limit(limit).populate('formula').populate('productline').exec((err, skus) => {
             if (err) {
                 reject(Error(err));
                 return;
@@ -31,12 +36,9 @@ function getSkus(skuname, skunameregex, skunumber, caseupcnumber, unitupcnumber,
             resolve(skus);
         });
     });
-
 }
 
-
-
-function createSku(name, number, case_upc, unit_upc, unit_size, count, formulanum, formulascalingfactor, manufacturingrate, comment) {
+function createSku(name, number, case_upc, unit_upc, unit_size, count, formulanum, formulascalingfactor, productline, manufacturingrate, comment) {
     console.log("lets make us a sku");
     return new Promise(function (resolve, reject) {
         createUniqueSkuNumber().then(response => {
@@ -76,6 +78,9 @@ function createSku(name, number, case_upc, unit_upc, unit_size, count, formulanu
                         if (response.length == 0) {
                             reject(Error("Could not find formula " + formulanum + " for SKU " + name));
                         } else {
+                            if (productline == null) {
+                                productline = "No product line assigned";
+                            }
                             var formulaID = response[0]['_id'];
                             let sku = new database.skuModel({
                                 skuname: name,
@@ -86,6 +91,7 @@ function createSku(name, number, case_upc, unit_upc, unit_size, count, formulanu
                                 countpercase: count,
                                 formula: formulaID,
                                 formulascalingfactor: formulascalingfactor,
+                                productline: productline,
                                 manufacturingrate: manufacturingrate,
                                 comment: comment
                             });
@@ -109,7 +115,7 @@ function createSku(name, number, case_upc, unit_upc, unit_size, count, formulanu
     });
 }
 
-function modifySku(oldName, name, number, case_upc, unit_upc, unit_size, count, formulanum, formulascalingfactor, manufacturingrate, comment) {
+function modifySku(oldName, name, number, case_upc, unit_upc, unit_size, count, formulanum, formulascalingfactor, productline, manufacturingrate, comment) {
     
     return new Promise(function (resolve, reject) {
         formula_utils.getFormulas("","$a",formulanum,null,1).then(response => {
@@ -130,6 +136,7 @@ function modifySku(oldName, name, number, case_upc, unit_upc, unit_size, count, 
                         countpercase: count,
                         formula: null,
                         formulascalingfactor: formulascalingfactor,
+                        productline: productline,
                         manufacturingrate: manufacturingrate,
                         comment: comment
                     }
@@ -158,6 +165,7 @@ function modifySku(oldName, name, number, case_upc, unit_upc, unit_size, count, 
                         countpercase: count,
                         formula: formulaID,
                         formulascalingfactor: formulascalingfactor,
+                        productline: productline,
                         manufacturingrate: manufacturingrate,
                         comment: comment
                     }

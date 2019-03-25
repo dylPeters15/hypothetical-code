@@ -160,7 +160,7 @@ deleteFormula(formulanumber: number): Observable<any> {
 }
 
  ///////////////////// skus /////////////////////
- getSkus(skuName: String, skunameregex: String, skuNumber: number, caseUpcNumber: number, unitUpcNumber: number, formula: String, limit: number): Observable<any> {
+ getSkus(skuName: String, skunameregex: String, skuNumber: number, caseUpcNumber: number, unitUpcNumber: number, formula: String, limit: number, productline?: String): Observable<any> {
 
   return this.http.get(endpoint + "skus", this.generateHeader({
     skuname: skuName,
@@ -169,13 +169,14 @@ deleteFormula(formulanumber: number): Observable<any> {
     caseupcnumber: JSON.stringify(caseUpcNumber),
     unitupcnumber: JSON.stringify(unitUpcNumber),
     formula: formula,
+    productline: productline,
     limit: JSON.stringify(limit)
   }));
 }
 
 createSku(skuname: String, skunumber: number, 
   caseupcnumber: number, unitupcnumber: number, unitsize: string, 
-  countpercase: number, formulanum: Number, formulascalingfactor: Number, manufacturingrate: Number, comment: String): Observable<any> {
+  countpercase: number, formulanum: Number, formulascalingfactor: Number, manufacturingrate: Number, comment: String, productline?: String): Observable<any> {
   return this.http.put(endpoint + "skus", {
     skuname: skuname,
     skunumber: skunumber,
@@ -185,6 +186,7 @@ createSku(skuname: String, skunumber: number,
     countpercase: countpercase,
     formulanum: formulanum,
     formulascalingfactor: formulascalingfactor,
+    productline: productline,
     manufacturingrate: manufacturingrate,
     comment: comment
   },
@@ -193,7 +195,7 @@ createSku(skuname: String, skunumber: number,
 
 modifySku(oldSkuName: String, skuname: String, skunumber: number, 
   caseupcnumber: number, unitupcnumber: number, unitsize: string, 
-  countpercase: number, formulanum: Number, formulascalingfactor: Number, manufacturingrate: Number, comment: String): Observable<any> {
+  countpercase: number, formulanum: Number, formulascalingfactor: Number, manufacturingrate: Number, comment: String, productline?: String): Observable<any> {
   return this.http.post(endpoint + "skus", {
     skuname: skuname,
     skunumber: skunumber,
@@ -203,6 +205,7 @@ modifySku(oldSkuName: String, skuname: String, skunumber: number,
     countpercase: countpercase,
     formulanum: formulanum,
     formulascalingfactor: formulascalingfactor,
+    productline: productline,
     manufacturingrate: manufacturingrate,
     comment: comment
   },
