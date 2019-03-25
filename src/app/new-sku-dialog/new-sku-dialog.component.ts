@@ -29,6 +29,8 @@ export class NewSkuDialogComponent implements OnInit {
   formula: any = null;
   formulascalingfactor: number = 0;
   manufacturinglines: any[];
+  manufacturinglinesNames: string[];
+
   manufacturingrate: number = 0;
   productline: string = '';
   comment: String = '';
@@ -46,6 +48,9 @@ export class NewSkuDialogComponent implements OnInit {
 
   productLineDoesNotExist: Boolean = true; // for displaying purposes.
   productLineExists: Boolean = false; // for displaying purposes.
+
+  manufacturingLineDoesNotExist: Boolean = true; // for displaying purposes.
+  manufacturingLineExists: Boolean = false; // for displaying purposes.
 
   ///////////////////////////////////////////////////////////////////////
 
@@ -127,6 +132,9 @@ export class NewSkuDialogComponent implements OnInit {
     this.productLineDoesNotExist = this.productlinename == "";
     this.productLineExists = !this.productLineDoesNotExist;
     this.chosen_productline = this.productlinename;
+
+    this.manufacturingLineDoesNotExist = this.manufacturinglines == null || this.manufacturinglines == undefined || this.manufacturinglines.length  == 0;
+    this.manufacturingLineExists = !this.manufacturingLineDoesNotExist;
   }
 
   closeDialog() {
@@ -266,33 +274,19 @@ export class NewSkuDialogComponent implements OnInit {
     //this.newIngredientDialogRef.componentInstance.ingredientNameList = this.ingredientNameList;
     this.assignManufacturingLineRef.afterClosed().subscribe(event => {
       // grab the new product line values
-      var new_productline = this.assignProductLineDialogRef.componentInstance.productlineName;
-      console.log("yipee ki yay: " + new_productline);
-      this.productline = new_productline;
+      var linesList = this.assignManufacturingLineRef.componentInstance.selectedLines;
+      console.log("yipee ki yay: " + linesList);
+      console.log("length: " + linesList.length);
 
-     // getProductLines(productlinename: String, productlinenameregex: String, limit: number): Observable<any> {
+      this.manufacturinglines = linesList;
+      var index;
+      this.manufacturinglinesNames = [];
+      for (index = 0; index < this.manufacturinglines.length; index++)
+      {
+        this.manufacturinglinesNames[index] = this.manufacturinglines[index]['shortname'];
+      } 
 
-      // get object id from formula name
-      this.rest.getProductLines(new_productline ,new_productline, 1).subscribe(response => {
-        this.snackBar.open("Successfully added formula " + new_productline, "close", {
-          duration: 2000,
-             });
-          this.productlinename = response[0]['productlinename'];
-
-          // Find sku by sku name
-          this.rest.getSkus(this.skuname,this.skuname,0,0,0,'',1).subscribe(responseSku => {
-            this.snackBar.open("Successfully added formula " + new_productline, "close", {
-              duration: 2000,
-                 });
-              var thisSku = responseSku[0]['skuname'];
-              var productline_skus = response[0]['skus'].push(thisSku);
-
-              // save updated product line name list
-              this.rest.modifyProductLine(new_productline,new_productline,productline_skus).subscribe(responseProductline => {
-                });
-            });
         this.refreshData();
-        });
         });
       }
 

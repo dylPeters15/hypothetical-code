@@ -86,11 +86,13 @@ export class AssignSkuManufacturingLines implements OnInit {
   }
 
   closeDialog() {
+    this.dialogRef.componentInstance.selectedLines = this.selectedLines;
+    console.log("on this end, listed lines is " + this.selectedLines);
     this.dialogRef.close();
-    this.selectedLineNames = [];
-    this.lineList = [];
-    this.selectedLines = [];
-    this.lineNameList = [];
+    //this.selectedLineNames = [];
+    //this.lineList = [];
+    //this.selectedLines = [];
+    //this.lineNameList = [];
   }
 
   add(event: MatChipInputEvent): void {

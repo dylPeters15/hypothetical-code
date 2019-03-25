@@ -64,11 +64,11 @@
         <br /> 
         <br /> 
 
-        <div  class="dropdown-content" [hidden]="productLineDoesNotExist">
-          <p> {{manufacturinglines}} <button type="submit" (click)="addManufacturingLineButton()">Edit</button></p>
+        <div  class="dropdown-content" [hidden]="manufacturingLineDoesNotExist">
+          <p> {{manufacturinglinesNames}} <button type="submit" (click)="addManufacturingLineButton()">Edit</button></p>
         </div>
   
-        <div  class="add-form-button" [hidden]="productLineExists">
+        <div  class="add-form-button" [hidden]="manufacturingLineExists">
           <mat-dialog-actions align="center" >
             <button class="mat-raised-button" (click)="addManufacturingLineButton()">Add Manufacturing Line(s)</button>
           </mat-dialog-actions>
