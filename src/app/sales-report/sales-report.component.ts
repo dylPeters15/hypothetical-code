@@ -34,11 +34,13 @@ export class SalesReportComponent implements OnInit {
   @ViewChild('customerInput') customerInput: ElementRef<HTMLInputElement>;
   @ViewChild('auto') matAutocomplete: MatAutocomplete;
   remove() {
+    this.selectedCustomer = null;
     this.selectedCustomerId = "all";
     this.refreshData();
   }
   selected(event){
-    this.selectedCustomerId = event.option.value;
+    this.selectedCustomer = event.option.value;
+    this.selectedCustomerId = this.selectedCustomer['_id'];
     this.refreshData();
   }
   add(event) {

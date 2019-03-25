@@ -8,13 +8,13 @@
       <div>
           <mat-form-field>
               <mat-chip-list #chipList>
-                <mat-chip *ngIf="selectedCustomerId!='all'" [selectable]="false" [removable]="true" (removed)="remove()">
-                  {{selectedCustomerId.customername}}
+                <mat-chip *ngIf="selectedCustomer" [selectable]="false" [removable]="true" (removed)="remove()">
+                  {{selectedCustomer.customername}}
                   <mat-icon matChipRemove>cancel</mat-icon>
                 </mat-chip>
                 <input placeholder="Enter a Customer to Filter By" #customerInput [formControl]="customerCtrl" [matAutocomplete]="auto"
                   [matChipInputFor]="chipList" [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-                  [matChipInputAddOnBlur]="true" (matChipInputTokenEnd)="add($event)" [hidden]="selectedCustomerId!='all'">
+                  [matChipInputAddOnBlur]="true" (matChipInputTokenEnd)="add($event)" [hidden]="selectedCustomer">
               </mat-chip-list>
               <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
                 <mat-option *ngFor="let customerOption of autoCompleteCustomers | async" [value]="customerOption">
