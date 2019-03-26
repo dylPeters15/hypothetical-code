@@ -41,7 +41,6 @@ constructor(@Inject(MAT_DIALOG_DATA) public data: any,private dialogRef: MatDial
 
 closeDialog() {
   this.dialogRef.close();
-  this.goal = null;
   this.activityStrings = null;
 }
 

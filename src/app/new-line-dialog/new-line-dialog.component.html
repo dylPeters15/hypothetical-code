@@ -32,7 +32,7 @@
         </mat-chip-list>
         <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
           <mat-option *ngFor="let sku of filteredSkus | async" [value]="sku">
-            {{sku}}
+            {{sku['skuname']}}
           </mat-option>
         </mat-autocomplete>
       </mat-form-field>
