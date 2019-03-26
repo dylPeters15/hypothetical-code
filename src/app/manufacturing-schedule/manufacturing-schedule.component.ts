@@ -324,17 +324,16 @@ export class ManufacturingScheduleComponent implements OnInit {
         var getSku = await thisObject.restv2.getSkus(AndVsOr.OR, item['content'], null, null, null, null, null, 1);
         var activity = await thisObject.restv2.getActivities(AndVsOr.AND, item['start'], null, getSku[0]['_id'], 1);
         console.log('activity to delete', activity, activity[0]['startdate'])
-        // console.log(item['id'], activity[0]['_id'])
-        
-        var response = thisObject.restv2.modifyActivity(AndVsOr.AND, activity[0]['_id'], activity[0]['sku']['_id'], 
+
+        thisObject.rest.modifyActivity(activity[0]['_id'], activity[0]['sku']['_id'], 
         activity[0]['numcases'], activity[0]['calculatedhours'], activity[0]['sethours'], 
-        activity[0]['startdate'], null);
+        activity[0]['startdate'], null).subscribe(response => {
           console.log(response) 
           thisObject.refreshData();
           thisObject.data.remove(item['id']);
           thisObject.getTimelineData();
           callback(item)
-         
+        }) 
       },
       
       onMove: async function(item, callback): Promise<void> {
@@ -382,7 +381,6 @@ export class ManufacturingScheduleComponent implements OnInit {
           item.className = className;
           item.end = endDate
           callback(item);
-        
         }
         else {
           callback(null); // cancel updating the item
@@ -395,6 +393,7 @@ export class ManufacturingScheduleComponent implements OnInit {
           callback(null);
         }
         else {
+          console.log('added item', item)
           callback(item);
         }
       }
