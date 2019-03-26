@@ -73,7 +73,7 @@ export class ProductLineTablesComponent implements ControlValueAccessor, OnInit 
       if (result) {
 
         if(existingLines.indexOf(this._value['productlinename']) != -1){
-          this.snackBar.open("Unable to modify. Name " + this._value['productlinename'] + " already exists.", "close", {
+          this.snackBar.open("Unable to modify. Name " + result + " already exists.", "close", {
             duration: 2000,
           });
         }
