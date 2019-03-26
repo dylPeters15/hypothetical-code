@@ -211,6 +211,7 @@ export class ManufacturingScheduleComponent implements OnInit {
     // create items
     this.data = new vis.DataSet();
     this.data.clear();
+    console.log('cleared data', this.data)
 
     var lines = await this.restv2.getLine(AndVsOr.OR, "", ".*", "", ".*", 100);
     console.log('lines', lines)
@@ -219,15 +220,17 @@ export class ManufacturingScheduleComponent implements OnInit {
         console.log('activites', activities)
         if (activities.length > 0) {
           activities.forEach(activity => {
+            var className = "";
             var duration = activity['calculatedhours'];
             if (activity['sethours']) {
               duration = activity['sethours'];
+              className = "updated"
             }
             console.log('startDate', activity['startdate'], 'duration', duration)
             var startTime = parseInt((activity['startdate'].split('T')[1]).split(':')[0], 10) - 7;
             var endDate = this.calculateEndDate(new Date(activity['startdate']), Math.round(duration), startTime);
             console.log('endDate', endDate)
-            var className = "";
+            
             this.checkOverdue(activity['_id'], endDate).then(isOverdue => {
               console.log('isOverdue', isOverdue)
               if (isOverdue) {
@@ -297,7 +300,7 @@ export class ManufacturingScheduleComponent implements OnInit {
       end: new Date(1000*60*60*24 + (new Date()).valueOf()),
       editable: {
         add: true,         // add new items by double tapping
-        // updateTime: true,  // drag items horizontally
+        updateTime: true,  // drag items horizontally
         updateGroup: true, // drag items from one group to another
         remove: true       // delete an item by tapping the delete button top right
       },
@@ -345,6 +348,7 @@ export class ManufacturingScheduleComponent implements OnInit {
       },
 
       onUpdate: async function (item, callback): Promise<void> {
+        console.log('update')
         var getSku = await thisObject.restv2.getSkus(AndVsOr.OR, item['content'], null, null, null, null, null, 1);
         var activity = await thisObject.restv2.getActivities(AndVsOr.AND, item['start'], null, getSku[0]['_id'], 1);
         var newDuration = prompt('Choose new activity duration (in hours):', activity[0]['calculatedhours']);
@@ -362,6 +366,16 @@ export class ManufacturingScheduleComponent implements OnInit {
         }
         else {
           callback(null); // cancel updating the item
+        }
+      },
+
+      onAdd: function (item, callback) {
+        console.log(item)
+        if (item.content == 'new item') {
+          callback(null);
+        }
+        else {
+          callback(item);
         }
       }
     };
