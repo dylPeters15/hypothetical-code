@@ -156,17 +156,6 @@ var skuSchema = new mongoose.Schema({
     required: true,
     unique: false
   },
-  productline: {
-    type: String,
-    required: false,
-    unique: false
-  },
-  manufacturinglines: [{
-    manufacturingline: {
-      type: ObjectId,
-      ref: 'manufacturingline'
-    }
-  }],
   manufacturingrate: {
     type: Number,
     required: true,

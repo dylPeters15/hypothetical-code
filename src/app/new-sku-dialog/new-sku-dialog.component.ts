@@ -313,16 +313,44 @@ export class NewSkuDialogComponent implements OnInit {
 
     else if (this.edit == false)
     {
-      this.rest.createSku(this.skuname, this.skunumber, this.caseupcnumber, this.unitupcnumber, this.unitsize, this.countpercase, this.formula, this.formulascalingfactor, this.manufacturingrate, this.comment, this.manufacturinglines, this.productlinename).subscribe(response => {
+      this.rest.createSku(this.skuname, this.skunumber, this.caseupcnumber, this.unitupcnumber, this.unitsize, this.countpercase, this.formula, this.formulascalingfactor, this.manufacturingrate, this.comment).subscribe(response => {
         this.snackBar.open("Successfully created sku " + this.skuname + ".", "close", {
           duration: 2000,
         });
+        // this.manufacturinglines, this.productlinename
+        var i;
+        for (i = 0; i < this.manufacturinglines.length; i++)
+        {
+            var thisLine = this.manufacturinglines[i];
+            thisLine['skus'].push({
+              sku: response['_id']
+            });
+            this.rest.modifyLine(thisLine['linename'], thisLine['linename'], thisLine['shortname'], thisLine['skus'], thisLine['comment']).subscribe(response => {
+              if (response['ok'] != 1 || response['nModified'] != 1)
+              {
+                // print error
+              }
+            });
+        }
+
+        this.rest.getProductLines(this.productlinename, "$a",1).subscribe(productLine => {
+          productLine['skus'].push({
+            sku: response['_id']
+          })
+          this.rest.modifyProductLine(response['productlinename'], response['productlinename'], productLine['skus']).subscribe(response => {
+            if (response['ok'] != 1 || response['nModified'] != 1)
+            {
+              // print error
+            }
+          });
+        });
+            
         this.closeDialog();
-           });
+      });
       }
 
     else{
-      this.rest.modifySku(this.oldskuname, this.skuname, this.skunumber, this.caseupcnumber, this.unitupcnumber, this.unitsize, this.countpercase, this.formula, this.formulascalingfactor, this.manufacturingrate, this.comment, this.manufacturinglines, this.productlinename).subscribe(response => {
+      this.rest.modifySku(this.oldskuname, this.skuname, this.skunumber, this.caseupcnumber, this.unitupcnumber, this.unitsize, this.countpercase, this.formula, this.formulascalingfactor, this.manufacturingrate, this.comment).subscribe(response => {
         this.snackBar.open("Successfully modifyed sku " + this.skuname + ".", "close", {
           duration: 2000,
         });

@@ -174,9 +174,7 @@ deleteFormula(formulanumber: number): Observable<any> {
 
 createSku(skuname: String, skunumber: number, 
   caseupcnumber: number, unitupcnumber: number, unitsize: string, 
-  countpercase: number, formulanum: Number, formulascalingfactor: Number, manufacturingrate: Number, comment: String, manufacturinglines?: any[], productline?: String): Observable<any> {
-  console.log("We are now trying to create our sku. product line: " + productline + ", manufacturing lines: " + manufacturinglines[0] + "; " + manufacturinglines[1] + " formula num: " + formulanum);
-  if(productline == undefined) productline = "No Product Line Assigned";
+  countpercase: number, formulanum: Number, formulascalingfactor: Number, manufacturingrate: Number, comment: String): Observable<any> {
     return this.http.put(endpoint + "skus", {
     skuname: skuname,
     skunumber: skunumber,
@@ -186,8 +184,6 @@ createSku(skuname: String, skunumber: number,
     countpercase: countpercase,
     formulanum: formulanum,
     formulascalingfactor: formulascalingfactor,
-    productline: productline,
-    manufacturinglines: manufacturinglines,
     manufacturingrate: manufacturingrate,
     comment: comment
   },
@@ -196,8 +192,7 @@ createSku(skuname: String, skunumber: number,
 
 modifySku(oldSkuName: String, skuname: String, skunumber: number, 
   caseupcnumber: number, unitupcnumber: number, unitsize: string, 
-  countpercase: number, formulanum: Number, formulascalingfactor: Number, manufacturingrate: Number, comment: String, manufacturinglines?: any[], productline?: String): Observable<any> {
-  if(productline == undefined) productline = "No Product Line Assigned";
+  countpercase: number, formulanum: Number, formulascalingfactor: Number, manufacturingrate: Number, comment: String): Observable<any> {
   return this.http.post(endpoint + "skus", {
     skuname: skuname,
     skunumber: skunumber,
@@ -207,8 +202,6 @@ modifySku(oldSkuName: String, skuname: String, skunumber: number,
     countpercase: countpercase,
     formulanum: formulanum,
     formulascalingfactor: formulascalingfactor,
-    productline: productline,
-    manufacturinglines: manufacturinglines,
     manufacturingrate: manufacturingrate,
     comment: comment
   },

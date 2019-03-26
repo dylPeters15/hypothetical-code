@@ -36,7 +36,7 @@ function getSkus(skuname, skunameregex, skunumber, caseupcnumber, unitupcnumber,
 }
 
 
-function createSku(name, number, case_upc, unit_upc, unit_size, count, formulanum, formulascalingfactor, productline, manufacturingrate, comment) {
+function createSku(name, number, case_upc, unit_upc, unit_size, count, formulanum, formulascalingfactor, manufacturingrate, comment) {
     console.log("lets make us a sku. formula number is: " + formulanum);
     return new Promise(function (resolve, reject) {
         createUniqueSkuNumber().then(response => {
@@ -80,6 +80,7 @@ function createSku(name, number, case_upc, unit_upc, unit_size, count, formulanu
                                 productline = "No product line assigned";
                             }
                             var formulaID = response[0]['_id'];
+                            console.log("okie final creation: " + manufacturinglines[0]['linename']);
                             let sku = new database.skuModel({
                                 skuname: name,
                                 skunumber: newSkuNumber,
@@ -89,7 +90,6 @@ function createSku(name, number, case_upc, unit_upc, unit_size, count, formulanu
                                 countpercase: count,
                                 formula: formulaID,
                                 formulascalingfactor: formulascalingfactor,
-                                productline: productline,
                                 manufacturingrate: manufacturingrate,
                                 manufacturingsetupcost: manufacturingrate,
                                 manufacturingruncost: manufacturingrate,
