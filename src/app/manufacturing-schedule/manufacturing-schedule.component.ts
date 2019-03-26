@@ -360,7 +360,16 @@ export class ManufacturingScheduleComponent implements OnInit {
             callback(null)
           }
           else {
-            callback(item)
+            thisObject.checkOverdue(item['id'], item['end']).then( isOverdue => {
+              if (isOverdue && item['className'] != 'orphan') {
+                item['className'] = 'overdue';
+              }
+              else if (!isOverdue && item['className'] == 'overdue') {
+                item['className'] = '';
+              }
+              callback(item);
+            })
+            
           }
         })
       },
