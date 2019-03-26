@@ -304,7 +304,7 @@ export class NewSkuDialogComponent implements OnInit {
 
 
   createSku() {
-    console.log("right now, formula is " + this.formula);
+    console.log("right now, formula is " + this.formula); // for some reason formula is the number here?
     if (this.formula == undefined || this.formula == null)
     {
       this.snackBar.open("A formula must be specified for this sku.", "close", {
@@ -314,7 +314,7 @@ export class NewSkuDialogComponent implements OnInit {
 
     else if (this.edit == false)
     {
-      this.rest.createSku(this.skuname, this.skunumber, this.caseupcnumber, this.unitupcnumber, this.unitsize, this.countpercase, this.formula['formulanumber'], this.formulascalingfactor, this.manufacturingrate, this.comment, this.manufacturinglines, this.productlinename).subscribe(response => {
+      this.rest.createSku(this.skuname, this.skunumber, this.caseupcnumber, this.unitupcnumber, this.unitsize, this.countpercase, this.formula, this.formulascalingfactor, this.manufacturingrate, this.comment, this.manufacturinglines, this.productlinename).subscribe(response => {
         this.snackBar.open("Successfully created sku " + this.skuname + ".", "close", {
           duration: 2000,
         });
@@ -323,7 +323,7 @@ export class NewSkuDialogComponent implements OnInit {
       }
 
     else{
-      this.rest.modifySku(this.oldskuname, this.skuname, this.skunumber, this.caseupcnumber, this.unitupcnumber, this.unitsize, this.countpercase, this.formula['formulanumber'], this.formulascalingfactor, this.manufacturingrate, this.comment, this.manufacturinglines, this.productlinename).subscribe(response => {
+      this.rest.modifySku(this.oldskuname, this.skuname, this.skunumber, this.caseupcnumber, this.unitupcnumber, this.unitsize, this.countpercase, this.formula, this.formulascalingfactor, this.manufacturingrate, this.comment, this.manufacturinglines, this.productlinename).subscribe(response => {
         this.snackBar.open("Successfully modifyed sku " + this.skuname + ".", "close", {
           duration: 2000,
         });
