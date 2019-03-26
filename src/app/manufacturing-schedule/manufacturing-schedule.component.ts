@@ -121,8 +121,6 @@ export class ManufacturingScheduleComponent implements OnInit {
 
   async handleDragEnd(event): Promise<void> {
     // Last item that just been dragged, its ID is the same of event.target
-    // console.log('end', event.target.id)
-    // console.log(this.timeline.itemsData)
     var newItem_dropped = this.timeline.itemsData.get(event.target.id);
     console.log(newItem_dropped)
     var newGroup = this.groups.get(newItem_dropped.group)
@@ -131,10 +129,11 @@ export class ManufacturingScheduleComponent implements OnInit {
       if (!isValid) {
         this.timeline.itemsData.remove(newItem_dropped);
       }
-      else {
-        var item = this.data.get(newItem_dropped);
+      // else {
+      //   var item = this.data.get(newItem_dropped);
+      //   console.log('drag item', item)
         
-      }
+      // }
     })
     
     
@@ -143,11 +142,8 @@ export class ManufacturingScheduleComponent implements OnInit {
   async checkLine(item, group): Promise<Boolean> {
     var name = item.content.split("::")[0];
     var response = await this.restv2.getSkus(AndVsOr.OR, name, null, null, null, null, null, 1);
-    // console.log(response[0])
     var line = await this.restv2.getLine(AndVsOr.OR, "","", group.content, "", 1)
-    // console.log(line)
     if (line[0]['skus']) {
-      // console.log(line[0]['skus'])
       var count = 0;
       var skuObject;
       line[0]['skus'].forEach(sku => {
@@ -157,8 +153,7 @@ export class ManufacturingScheduleComponent implements OnInit {
         }
       });
       if (count == 1) {
-        var activities = await this.restv2.getActivities(AndVsOr.OR, null, null, skuObject['_id'], 100)
-        
+        var activities = await this.restv2.getActivities(AndVsOr.OR, null, null, skuObject['_id'], 100)  
         var newActivity;
         var activityid = item.content.split("::")[1];
         activities.forEach(activity => {
@@ -166,24 +161,15 @@ export class ManufacturingScheduleComponent implements OnInit {
             newActivity = activity;
           }
         })
-        
-        // console.log('activityid', activityid)
-        // console.log(newActivity['_id'])
         var modify = await this.restv2.modifyActivity(AndVsOr.AND, activityid, newActivity['sku']['_id'], 
         newActivity['numcases'], newActivity['calculatedhours'], newActivity['sethours'], 
         item['start'], line[0]['_id']);
-        // console.log(modify)
-        var activity = await this.restv2.getActivities(AndVsOr.OR, null, null, skuObject['_id'], 1)
-        // console.log(activity);
+        // var activity = await this.restv2.getActivities(AndVsOr.OR, null, null, skuObject['_id'], 1)
         this.refreshData();
-        this.getTimelineData();
-        // this.timeline.redraw();  
         return true; 
       }
       else {
-        // console.log('wrong')
         return false;
-        // this.timeline.itemsData.remove(item);
       }
     }
     
@@ -208,17 +194,11 @@ export class ManufacturingScheduleComponent implements OnInit {
       // Create a DataSet (allows two way data-binding)
     // create items
     this.data = new vis.DataSet();
-    // if (this.timeline) {
-    //   console.log('clear data')
-    //   this.timeline.clear({items: true});
-    // }
-    // console.log('cleared data', this.data)
     this.data.on('*', function (event, properties, senderId) {
       console.log('event', event, properties);
     });
 
     var lines = await this.restv2.getLine(AndVsOr.OR, "", ".*", "", ".*", 100);
-    // console.log('lines', lines)
     lines.forEach(line => {
       this.rest.getActivities(null, 100, line['_id']).subscribe(activities => {
         console.log('activites', activities)
@@ -230,13 +210,10 @@ export class ManufacturingScheduleComponent implements OnInit {
               duration = activity['sethours'];
               className = "updated"
             }
-            // console.log('startDate', activity['startdate'], 'duration', duration)
             var startTime = parseInt((activity['startdate'].split('T')[1]).split(':')[0], 10) - 7;
             var endDate = this.calculateEndDate(new Date(activity['startdate']), Math.round(duration), startTime);
-            // console.log('endDate', endDate)
             
             this.checkOverdue(activity['_id'], endDate).then(isOverdue => {
-              // console.log('isOverdue', isOverdue)
               if (isOverdue) {
                 className = 'overdue';
               }
@@ -394,6 +371,7 @@ export class ManufacturingScheduleComponent implements OnInit {
         }
         else {
           console.log('added item', item)
+          console.log('timeline data', thisObject.data)
           callback(item);
         }
       }
