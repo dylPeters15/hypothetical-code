@@ -26,11 +26,8 @@
       
       <ng-container matColumnDef="activities">
         <mat-header-cell *matHeaderCellDef>Activities</mat-header-cell>
-        <mat-cell *matCellDef="let element"> <button mat-raised-button
-          matTooltip={{element.activities}}
-          aria-label="Button that displays all activities when focused or hovered over">
-    Activities: {{element.activityCount}}
-        </button>
+        <mat-cell *matCellDef="let element"> 
+          <button mat-raised-button (click)=showActivityDetails(element)> Activities: {{element.activityCount}}</button>
         </mat-cell>
       </ng-container>
     
