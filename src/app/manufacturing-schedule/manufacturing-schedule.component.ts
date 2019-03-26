@@ -122,22 +122,47 @@ export class ManufacturingScheduleComponent implements OnInit {
   async handleDragEnd(event): Promise<void> {
     // Last item that just been dragged, its ID is the same of event.target
     var newItem_dropped = this.timeline.itemsData.get(event.target.id);
-    console.log(newItem_dropped)
+    console.log('drag item', newItem_dropped)
+
     var newGroup = this.groups.get(newItem_dropped.group)
-    this.checkLine(newItem_dropped, newGroup).then(isValid => {
+    this.checkLine(newItem_dropped, newGroup).then(async isValid => {
       console.log('isValid', isValid)
       if (!isValid) {
         this.timeline.itemsData.remove(newItem_dropped);
       }
-      // else {
-      //   var item = this.data.get(newItem_dropped);
-      //   console.log('drag item', item)
-        
-      // }
-    })
-    
-    
+      else {
+        var activities = await this.restv2.getActivities(AndVsOr.OR, null, null, null, 500);
+        var activityid = newItem_dropped.content.split("::")[1];
+        activities.forEach(activity => {
+          if (activity['_id'] == activityid) {
+            var className = "";
+            var duration = activity['calculatedhours'];
+            if (activity['sethours']) {
+              duration = activity['sethours'];
+              className = "updated"
+            }
+            var startTime = parseInt((activity['startdate'].split('T')[1]).split(':')[0], 10) - 7;
+            var endDate = this.calculateEndDate(new Date(activity['startdate']), Math.round(duration), startTime);
+            this.checkOverdue(activity['_id'], endDate).then(isOverdue => {
+              if (isOverdue) {
+                className = 'overdue';
+              }
+              this.timeline.itemsData.update({
+                id: newItem_dropped['id'],
+                group: newGroup,
+                start: activity['startdate'],
+                end: endDate,
+                content: activity['sku']['skuname'],
+                className: className
+              })
+              console.log('timeline data',this.timeline.itemsData)
+            })
+          }
+        }) 
+      }
+    }) 
   }
+
 
   async checkLine(item, group): Promise<Boolean> {
     var name = item.content.split("::")[0];
@@ -204,36 +229,49 @@ export class ManufacturingScheduleComponent implements OnInit {
         console.log('activites', activities)
         if (activities.length > 0) {
           activities.forEach(activity => {
-            var className = "";
-            var duration = activity['calculatedhours'];
-            if (activity['sethours']) {
-              duration = activity['sethours'];
-              className = "updated"
-            }
-            var startTime = parseInt((activity['startdate'].split('T')[1]).split(':')[0], 10) - 7;
-            var endDate = this.calculateEndDate(new Date(activity['startdate']), Math.round(duration), startTime);
-            
-            this.checkOverdue(activity['_id'], endDate).then(isOverdue => {
-              if (isOverdue) {
-                className = 'overdue';
-              }
-              this.checkOrphaned(activity['_id']).then(isOrphaned => {
-                if(isOrphaned) {
-                  className = 'orphan'
-                }
-                this.data.add({
-                  id: activity['_id'],
-                  group: line['_id'],
-                  start: activity['startdate'],
-                  end: endDate,
-                  content: activity['sku']['skuname'],
-                  className: className
-                })
-              })
-            })
+            this.addItem(activity, line['_id']);
           })
         }
         console.log(this.data)
+      })
+    })
+  }
+
+  async addItem(activity, group): Promise<void> {
+    var className = "";
+    var duration = activity['calculatedhours'];
+    if (activity['sethours']) {
+      duration = activity['sethours'];
+      className = "updated"
+    }
+    var startTime = parseInt((activity['startdate'].split('T')[1]).split(':')[0], 10) - 7;
+    var endDate = this.calculateEndDate(new Date(activity['startdate']), Math.round(duration), startTime);
+    var ret;
+    this.checkOverdue(activity['_id'], endDate).then(isOverdue => {
+      if (isOverdue) {
+        className = 'overdue';
+      }
+      this.checkOrphaned(activity['_id']).then(isOrphaned => {
+        if(isOrphaned) {
+          className = 'orphan'
+        }
+        this.data.add({
+          id: activity['_id'],
+          group: group,
+          start: activity['startdate'],
+          end: endDate,
+          content: activity['sku']['skuname'],
+          className: className
+        })
+        console.log('timeline data',this.timeline.itemsData)
+        this.timeline.itemsData.update({
+          id: activity['_id'],
+          group: group,
+          start: activity['startdate'],
+          end: endDate,
+          content: activity['sku']['skuname'],
+          className: className
+        })
       })
     })
   }
@@ -364,16 +402,22 @@ export class ManufacturingScheduleComponent implements OnInit {
         }
       },
 
-      onAdd: function (item, callback) {
-        // console.log(item)
+      onAdd: async function (item, callback): Promise<void> {
+        console.log('on add item', item)
         if (item.content == 'new item') {
           callback(null);
         }
-        else {
-          console.log('added item', item)
-          console.log('timeline data', thisObject.data)
-          callback(item);
-        }
+        // else {
+          // thisObject.checkLine(item, item.group).then(async isValid => {
+          //   if (!isValid) {
+          //     console.log('not valid')
+          //     callback(null);
+          //   }
+            else {
+              callback(item);
+            }
+        //   })
+        // }
       }
     };
   }
@@ -389,24 +433,21 @@ export class ManufacturingScheduleComponent implements OnInit {
         this.checkOrphaned(activity['_id']).then(isOrphaned => {
           var className;
           var orphanItem = this.data.get(activity['_id']);
+          var update = false;
           if ((orphanItem['className'] == 'orphan') && !isOrphaned) {
             className = '';
+            update = true
             this.checkOverdue(orphanItem['id'], orphanItem['end']).then(isOverdue => {
               if (isOverdue) {
                 className = 'overdue';
               }
-              this.data.update({
-                id: orphanItem['id'],
-                group: orphanItem['group'],
-                start: orphanItem['start'],
-                end: orphanItem['end'],
-                content: orphanItem['content'],
-                className: className
-              })
             })
           }
           if (isOrphaned) {
             className = 'orphan';
+            update = true;
+          }
+          if (update) {
             this.data.update({
               id: orphanItem['id'],
               group: orphanItem['group'],
