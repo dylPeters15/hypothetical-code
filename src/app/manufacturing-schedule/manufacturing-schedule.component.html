@@ -1,4 +1,6 @@
 <!-- <div id="visualization"></div> -->
+
+<!-- <div id="timeline" #timeline></div> -->
 <div>
     <mat-card class="ManufacturingSchedule">
         <h1 style="text-align:center"> Manufacturing Schedule </h1>
@@ -6,7 +8,7 @@
         <div id="timeline" #timeline></div>
         <div class="goalsContainer">
             <div [ngClass]="['items']"  *ngFor="let goal of goalsDataSource['data']">
-                <h2>{{goal['goalname']}}</h2>
+                <h3>{{goal['goalname']}}</h3>
                 <p>Deadline: {{goal['date'].valueOf().split('T')[0]}}</p>
                 <div draggable="true" (dragstart)="handleDragStart($event, activity)" [ngClass]="['item']" *ngFor="let activity of goal['activities']">
                     {{activity['sku']['skuname']}}
@@ -17,3 +19,4 @@
             
     </mat-card>    
 </div>
+

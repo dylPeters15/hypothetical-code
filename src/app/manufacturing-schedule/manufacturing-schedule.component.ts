@@ -60,13 +60,14 @@ export class ManufacturingScheduleComponent implements OnInit {
 
   ngOnInit() {
     this.refreshData(); 
-  }
-
-  ngAfterViewInit() {     
-    this.tlContainer = this.timelineContainer.nativeElement;       
+    this.tlContainer = document.getElementById('timeline');      
     this.timeline = new vis.Timeline(this.tlContainer, null, this.options);      
     this.timeline.setGroups(this.groups);
     this.timeline.setItems(this.data); 
+  }
+
+  ngAfterViewInit() {     
+    
   }
 
   refreshData() {
@@ -226,35 +227,44 @@ export class ManufacturingScheduleComponent implements OnInit {
             var startTime = parseInt((activity['startdate'].split('T')[1]).split(':')[0], 10) - 7;
             var endDate = this.calculateEndDate(new Date(activity['startdate']), Math.round(duration), startTime);
             console.log('endDate', endDate)
-            // console.log('startDate', activity['startdate'])
-            // var endDate = new Date(1000 * 60 * 60 * (Math.round(duration) + (Math.floor(duration / 14)*14)) + (new Date(activity['startdate'])).valueOf()); 
-            // console.log('original end date', endDate)
-            
-            // console.log('startTime', startTime, 'duration', duration)
-            // if (startTime + (duration) > 18 || startTime + duration < 8) {
-            //   var end = startTime + (duration%14);
-            //   endDate = new Date(1000 * 60 * 60 * 14 + (new Date(endDate)).valueOf());
-            // }
-            // if (startTime < 8) {
-            //   endDate = new Date(1000 * 60 * 60 * (8-startTime) + (new Date(endDate)).valueOf());
-            // }
-            // if (startTime > 18) {
-            //   endDate = new Date(1000 * 60 * 60 * (startTime-18+8) + (new Date(endDate)).valueOf());
-            // }
-            // console.log('final end date', endDate)
-            // var endDate = new Date(1000 * 60 * 60 * duration + (new Date(activity['startdate'])).valueOf());
-            this.data.add({
-              id: activity['_id'],
-              group: line['_id'],
-              start: activity['startdate'],
-              end: endDate,
-              content: activity['sku']['skuname']
+            var overdue = "";
+            this.checkOverdue(activity['_id'], endDate).then(isOverdue => {
+              console.log('isOverdue', isOverdue)
+              if (isOverdue) {
+                overdue = 'overdue';
+              }
+              this.data.add({
+                id: activity['_id'],
+                group: line['_id'],
+                start: activity['startdate'],
+                end: endDate,
+                content: activity['sku']['skuname'],
+                className: overdue
+              })
             })
+            
           })
         }
         console.log(this.data)
       })
     })
+  }
+
+  async checkOverdue(activityId, endDate): Promise<Boolean> {
+    var goals = await this.restv2.getGoals(AndVsOr.AND, null, null, ".*", true, 500);
+    var isOverdue = false;
+    goals.forEach(goal => {
+      goal['activities'].forEach(activity => {
+        if (activity['activity']['_id'] == activityId) {
+          var deadline = new Date(goal['date'])
+          console.log(endDate.getTime(), deadline, endDate.getTime() > deadline.getTime())
+          if (endDate.getTime() > deadline.getTime()) {
+            isOverdue = true;
+          }
+        }
+      })
+    })
+    return isOverdue;
   }
 
   async getOptions(): Promise<void> {
