@@ -227,22 +227,26 @@ export class ManufacturingScheduleComponent implements OnInit {
             var startTime = parseInt((activity['startdate'].split('T')[1]).split(':')[0], 10) - 7;
             var endDate = this.calculateEndDate(new Date(activity['startdate']), Math.round(duration), startTime);
             console.log('endDate', endDate)
-            var overdue = "";
+            var className = "";
             this.checkOverdue(activity['_id'], endDate).then(isOverdue => {
               console.log('isOverdue', isOverdue)
               if (isOverdue) {
-                overdue = 'overdue';
+                className = 'overdue';
               }
-              this.data.add({
-                id: activity['_id'],
-                group: line['_id'],
-                start: activity['startdate'],
-                end: endDate,
-                content: activity['sku']['skuname'],
-                className: overdue
+              this.checkOrphaned(activity['_id']).then(isOrphaned => {
+                if(isOrphaned) {
+                  className = 'orphan'
+                }
+                this.data.add({
+                  id: activity['_id'],
+                  group: line['_id'],
+                  start: activity['startdate'],
+                  end: endDate,
+                  content: activity['sku']['skuname'],
+                  className: className
+                })
               })
             })
-            
           })
         }
         console.log(this.data)
@@ -265,6 +269,23 @@ export class ManufacturingScheduleComponent implements OnInit {
       })
     })
     return isOverdue;
+  }
+
+  async checkOrphaned(activityId): Promise<Boolean> {
+    var goals = await this.restv2.getGoals(AndVsOr.AND, null, null, ".*", false, 500);
+    var isOrphaned = false;
+    goals.forEach(goal => {
+      goal['activities'].forEach(activity => {
+        if (activity['activity']['_id'] == activityId) {
+          console.log('goal', goal)
+          if (!goal['enabled']) {
+            console.log('is orphaned')
+            isOrphaned = true;
+          }
+        }
+      })
+    })
+    return isOrphaned;
   }
 
   async getOptions(): Promise<void> {
