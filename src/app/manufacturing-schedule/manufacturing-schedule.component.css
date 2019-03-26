@@ -16,8 +16,9 @@ body {
   border-bottom:0;
   border-bottom:1px solid #f9f9f9;
 }
-.vis-item {
+.vis-item.overdue {
   z-index:2;
+  background-color: red;
 }
 
 .ManufacturingSchedule {

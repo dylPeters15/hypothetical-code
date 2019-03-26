@@ -5,6 +5,9 @@ import { EnableGoalsDialogComponent } from '../enable-goals-dialog/enable-goals-
 import { RestService } from '../rest.service';
 import { RestServiceV2, AndVsOr } from '../restv2.service';
 
+var moment = require('moment');     //please note that you should include moment library first
+require('moment-weekday-calc');
+
 export class DataForGoalsTable{
   goalname: string;
   activities: [];
@@ -57,13 +60,14 @@ export class ManufacturingScheduleComponent implements OnInit {
 
   ngOnInit() {
     this.refreshData(); 
-  }
-
-  ngAfterViewInit() {     
-    this.tlContainer = this.timelineContainer.nativeElement;       
+    this.tlContainer = document.getElementById('timeline');      
     this.timeline = new vis.Timeline(this.tlContainer, null, this.options);      
     this.timeline.setGroups(this.groups);
     this.timeline.setItems(this.data); 
+  }
+
+  ngAfterViewInit() {     
+    
   }
 
   refreshData() {
@@ -156,7 +160,7 @@ export class ManufacturingScheduleComponent implements OnInit {
       });
       if (count == 1) {
         var activities = await this.restv2.getActivities(AndVsOr.OR, null, null, skuObject['_id'], 100)
-        console.log(activity)
+        
         var newActivity;
         var activityid = item.content.split("::")[1];
         activities.forEach(activity => {
@@ -207,6 +211,7 @@ export class ManufacturingScheduleComponent implements OnInit {
     // create items
     this.data = new vis.DataSet();
     this.data.clear();
+    console.log('cleared data', this.data)
 
     var lines = await this.restv2.getLine(AndVsOr.OR, "", ".*", "", ".*", 100);
     console.log('lines', lines)
@@ -215,39 +220,75 @@ export class ManufacturingScheduleComponent implements OnInit {
         console.log('activites', activities)
         if (activities.length > 0) {
           activities.forEach(activity => {
+            var className = "";
             var duration = activity['calculatedhours'];
             if (activity['sethours']) {
               duration = activity['sethours'];
+              className = "updated"
             }
-            // console.log('startDate', activity['startdate'])
-            // var endDate = new Date(1000 * 60 * 60 * (Math.round(duration) + (Math.floor(duration / 14)*14)) + (new Date(activity['startdate'])).valueOf()); 
-            // console.log('original end date', endDate)
-            // var startTime = parseInt((activity['startdate'].split('T')[1]).split(':')[0], 10);
-            // console.log('startTime', startTime, 'duration', duration)
-            // if (startTime + (duration) > 18 || startTime + duration < 8) {
-            //   var end = startTime + (duration%14);
-            //   endDate = new Date(1000 * 60 * 60 * 14 + (new Date(endDate)).valueOf());
-            // }
-            // if (startTime < 8) {
-            //   endDate = new Date(1000 * 60 * 60 * (8-startTime) + (new Date(endDate)).valueOf());
-            // }
-            // if (startTime > 18) {
-            //   endDate = new Date(1000 * 60 * 60 * (startTime-18+8) + (new Date(endDate)).valueOf());
-            // }
-            // console.log('final end date', endDate)
-            var endDate = new Date(1000 * 60 * 60 * duration + (new Date(activity['startdate'])).valueOf());
-            this.data.add({
-              id: activity['_id'],
-              group: line['_id'],
-              start: activity['startdate'],
-              end: endDate,
-              content: activity['sku']['skuname']
+            console.log('startDate', activity['startdate'], 'duration', duration)
+            var startTime = parseInt((activity['startdate'].split('T')[1]).split(':')[0], 10) - 7;
+            var endDate = this.calculateEndDate(new Date(activity['startdate']), Math.round(duration), startTime);
+            console.log('endDate', endDate)
+            
+            this.checkOverdue(activity['_id'], endDate).then(isOverdue => {
+              console.log('isOverdue', isOverdue)
+              if (isOverdue) {
+                className = 'overdue';
+              }
+              this.checkOrphaned(activity['_id']).then(isOrphaned => {
+                if(isOrphaned) {
+                  className = 'orphan'
+                }
+                this.data.add({
+                  id: activity['_id'],
+                  group: line['_id'],
+                  start: activity['startdate'],
+                  end: endDate,
+                  content: activity['sku']['skuname'],
+                  className: className
+                })
+              })
             })
           })
         }
         console.log(this.data)
       })
     })
+  }
+
+  async checkOverdue(activityId, endDate): Promise<Boolean> {
+    var goals = await this.restv2.getGoals(AndVsOr.AND, null, null, ".*", true, 500);
+    var isOverdue = false;
+    goals.forEach(goal => {
+      goal['activities'].forEach(activity => {
+        if (activity['activity']['_id'] == activityId) {
+          var deadline = new Date(goal['date'])
+          console.log(endDate.getTime(), deadline, endDate.getTime() > deadline.getTime())
+          if (endDate.getTime() > deadline.getTime()) {
+            isOverdue = true;
+          }
+        }
+      })
+    })
+    return isOverdue;
+  }
+
+  async checkOrphaned(activityId): Promise<Boolean> {
+    var goals = await this.restv2.getGoals(AndVsOr.AND, null, null, ".*", false, 500);
+    var isOrphaned = false;
+    goals.forEach(goal => {
+      goal['activities'].forEach(activity => {
+        if (activity['activity']['_id'] == activityId) {
+          console.log('goal', goal)
+          if (!goal['enabled']) {
+            console.log('is orphaned')
+            isOrphaned = true;
+          }
+        }
+      })
+    })
+    return isOrphaned;
   }
 
   async getOptions(): Promise<void> {
@@ -259,7 +300,7 @@ export class ManufacturingScheduleComponent implements OnInit {
       end: new Date(1000*60*60*24 + (new Date()).valueOf()),
       editable: {
         add: true,         // add new items by double tapping
-        // updateTime: true,  // drag items horizontally
+        updateTime: true,  // drag items horizontally
         updateGroup: true, // drag items from one group to another
         remove: true       // delete an item by tapping the delete button top right
       },
@@ -268,9 +309,10 @@ export class ManufacturingScheduleComponent implements OnInit {
         axis: 5   // minimal margin between items and the axis
       },
       orientation: 'top',
-    //   hiddenDates: [
-    //     {start: '2013-03-29 18:00:00', end: '2013-03-30 08:00:00', repeat: 'daily'} // daily weekly monthly yearly
-    // ],
+      hiddenDates: [
+        {start: '2013-03-29 18:00:00', end: '2013-03-30 08:00:00', repeat: 'daily'},
+        {start: '2013-10-26 00:00:00', end: '2013-10-28 00:00:00', repeat: 'weekly'}
+    ],
       
       onRemove: async function(item, callback): Promise<void> {
         console.log(item, callback);
@@ -306,6 +348,7 @@ export class ManufacturingScheduleComponent implements OnInit {
       },
 
       onUpdate: async function (item, callback): Promise<void> {
+        console.log('update')
         var getSku = await thisObject.restv2.getSkus(AndVsOr.OR, item['content'], null, null, null, null, null, 1);
         var activity = await thisObject.restv2.getActivities(AndVsOr.AND, item['start'], null, getSku[0]['_id'], 1);
         var newDuration = prompt('Choose new activity duration (in hours):', activity[0]['calculatedhours']);
@@ -324,6 +367,16 @@ export class ManufacturingScheduleComponent implements OnInit {
         else {
           callback(null); // cancel updating the item
         }
+      },
+
+      onAdd: function (item, callback) {
+        console.log(item)
+        if (item.content == 'new item') {
+          callback(null);
+        }
+        else {
+          callback(item);
+        }
       }
     };
   }
@@ -334,5 +387,27 @@ export class ManufacturingScheduleComponent implements OnInit {
     this.enableGoalsDialogRef.afterClosed().subscribe(event => {
       this.refreshData();
     });
+  }
+
+  calculateEndDate(startDate: Date, hours: number, startTime: number): Date {
+    var endDate = new Date((new Date(startDate)).valueOf());
+    // var endDate = new Date(startDate);
+    const NUM_HOURS_PER_DAY = 10;
+    const remainder = hours % NUM_HOURS_PER_DAY;
+    console.log('startDate', endDate)
+    while (moment().isoWeekdayCalc([startDate.getUTCFullYear(), startDate.getUTCMonth(), startDate.getUTCDay()], [endDate.getUTCFullYear(), endDate.getUTCMonth(), endDate.getUTCDay()+1], [1, 2, 3, 4, 5]) < Math.floor(hours / NUM_HOURS_PER_DAY)) {
+      console.log('plus one day', moment().isoWeekdayCalc([startDate.getUTCFullYear(), startDate.getUTCMonth(), startDate.getUTCDay()], [endDate.getUTCFullYear(), endDate.getUTCMonth(), endDate.getUTCDay()+1], [1, 2, 3, 4, 5]) * NUM_HOURS_PER_DAY)
+      console.log(startDate.getUTCDay(), endDate.getUTCDay())
+      endDate.setDate(endDate.getDate() + 1);
+    }
+    console.log('endDate', endDate)
+    endDate = new Date(1000 * 60 * 60 * remainder + (new Date(endDate)).valueOf());
+    if (startTime < 0) {
+      startTime = 24 + startTime
+    }
+    if (hours + startTime > 18 || hours + startTime < 8) {
+      endDate = new Date(1000 * 60 * 60 * 14 + (new Date(endDate)).valueOf());
+    }
+    return endDate;
   }
 }

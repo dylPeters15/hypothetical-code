@@ -9,6 +9,7 @@ import {ExportToCsv} from 'export-to-csv';
 import { RestServiceV2, AndVsOr } from '../restv2.service';
 import { auth } from '../auth.service';
 import { from } from 'rxjs';
+import { ActivityDetailsComponent } from '../activity-details/activity-details.component';
 
 export class ManufacturingGoal {
   activities: String;
@@ -51,6 +52,7 @@ export class ManufacturingGoalsComponent implements OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   newDialogRef: MatDialogRef<NewGoalDialogComponent>;
   calculatorDialogRef: MatDialogRef<ManufacturingCalculatorComponent>;
+  activityDialogRef: MatDialogRef<ActivityDetailsComponent>;
 
   constructor(public restv2: RestServiceV2,public rest:RestService, private route: ActivatedRoute, private router: Router, private snackBar: MatSnackBar, private dialog: MatDialog) {  }
 
@@ -93,7 +95,6 @@ export class ManufacturingGoalsComponent implements OnInit {
   refreshData() {
     this.data = [];
     this.rest.getUserName().then(result => {
-      console.log("USERNAME: " + result.toString());
       this.restv2.getGoals(AndVsOr.OR, result.toString(), null,null, null, 150).then(data => {
         this.goals = data;
             var i;
@@ -102,13 +103,11 @@ export class ManufacturingGoalsComponent implements OnInit {
               let name = this.goals[i]['goalname'];
               let activities = this.goals[i]['activities'];
               if(activities != undefined){
-                console.log("ACTIVITES: " + JSON.stringify(activities))
                 var j;
                 let activityCount = activities.length;
                 let activityString = '';
                 for(j = 0; j<activities.length; j++){                  
                   let currentActivity =  activities[j]['activity']
-                  console.log("Activity: " + JSON.stringify(currentActivity))
                   if(currentActivity != null && currentActivity != undefined){
                     let hoursString = currentActivity['sethours'] != null ? currentActivity['sethours'] : currentActivity['calculatedhours'];
                     activityString += "SKU: " + currentActivity['sku']['skuname'] + ": Hours Required: " + hoursString + '\n'; 
@@ -200,7 +199,6 @@ export class ManufacturingGoalsComponent implements OnInit {
     const dialogConfig = new MatDialogConfig();
     var actualGoal = await this.restv2.getGoals(AndVsOr.OR, null, goal['name'], null,null,1);
     dialogConfig.data = {goal: actualGoal};
-    // dialogConfig.height = '500px';
     this.calculatorDialogRef = this.dialog.open(ManufacturingCalculatorComponent, dialogConfig);
     this.calculatorDialogRef.afterClosed().subscribe(event => {
       this.refreshData();
@@ -214,7 +212,7 @@ export class ManufacturingGoalsComponent implements OnInit {
       var i;
       for(i = 0; i<activitiesArray.length; i+=4){
         let currentActivity = new DisplayableActivity(activitiesArray[i+3].trim(), activitiesArray[i+1].trim())
-        if(currentActivity != null){
+        if(currentActivity != null && displayableArray.indexOf(currentActivity) == -1){
           displayableArray.push(currentActivity);
         }
         
@@ -237,6 +235,16 @@ export class ManufacturingGoalsComponent implements OnInit {
       }
     }
     return true;
+  }
+
+  async showActivityDetails(goal){
+    const dialogConfig = new MatDialogConfig();
+    var actualGoal = await this.restv2.getGoals(AndVsOr.OR, null, goal['name'], null,null,1);
+    dialogConfig.data = {goal: actualGoal};
+    this.activityDialogRef = this.dialog.open(ActivityDetailsComponent, dialogConfig);
+    this.activityDialogRef.afterClosed().subscribe(event => {
+      this.refreshData();
+    });
   }
 
 }

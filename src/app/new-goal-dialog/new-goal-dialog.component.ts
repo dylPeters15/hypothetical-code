@@ -1,4 +1,3 @@
-
 import { Component, OnInit, ElementRef, ViewChild, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA} from "@angular/material";
 import { RestService } from '../rest.service';
@@ -70,7 +69,7 @@ export class NewGoalDialogComponent implements OnInit {
             this.displayableActivities.forEach(element => {
               console.log("Act: " + activityInDatabase['sku']['skuname'])
               console.log("ELEMENT:" + element.skuname)
-              if(activityInDatabase['sku']['skuname'] == element.skuname && activityInDatabase['calculatedhours'] == Number(element.hours)){
+              if(activityInDatabase['sku']['skuname'] == element.skuname && activityInDatabase['calculatedhours'] == Number(element.hours) && this.activityIds.indexOf(activityInDatabase['_id']) == -1){
                 this.activityIds.push({activity: activityInDatabase['_id']})
               }
             })
@@ -113,10 +112,8 @@ export class NewGoalDialogComponent implements OnInit {
     
     this.displayableActivities.push(newActivity);
     
-    console.log("ACTIVITES: " + JSON.stringify(this.displayableActivities))
     this.rest.createActivity(this.currentSku['_id'], this.quantity, hours, null,new Date(),null).subscribe(response => {
       this.activityIds.push({activity: response['_id']});
-      console.log("IDS: " + JSON.stringify(this.activityIds))
       this.snackBar.open("Successfully created Activity: " + this.currentSku['skuname'] + ".", "close", {
               duration: 2000,
             });
@@ -128,13 +125,11 @@ export class NewGoalDialogComponent implements OnInit {
 
   createGoal() {
     if(this.edit == false){
-      console.log(this.activityIds)
       this.rest.createGoal(this.name, this.activityIds, this.date, false).then(response => {
         this.snackBar.open("Successfully created Goal: " + this.name + ".", "close", {
           duration: 2000,
         }
         );
-        console.log(response);
         this.closeDialog();
       }).catch(err => {
         this.snackBar.open("Error creating Goal: " + this.name + ". Please refresh and try again.", "close", {
