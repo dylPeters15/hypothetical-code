@@ -32,10 +32,7 @@
 }
 
 @media print {
-    app-footer, mat-sidenav, mat-toolbar {
-        display: none;
+    app-footer, mat-toolbar {
+        visibility: hidden;
       }
-        button {
-            display: none;
-          }
   }
