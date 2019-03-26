@@ -5,7 +5,9 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { NewLineDialogComponent } from '../new-line-dialog/new-line-dialog.component'
 import { MatDialogRef, MatDialog, MatDialogConfig, MatTableDataSource,MatPaginator, MatSnackBar } from "@angular/material";
 import {ExportToCsv} from 'export-to-csv';
+import { RestServiceV2, AndVsOr } from '../restv2.service';
 import { auth } from '../auth.service';
+import { SkuDetailsComponent } from '../sku-details/sku-details.component';
 
 export class ManufacturingLine {
   linename: String;
@@ -51,8 +53,9 @@ export class ManufacturingLinesComponent implements OnInit {
   dataSource = new MatTableDataSource<ManufacturingLine>(this.data);
   @ViewChild(MatPaginator) paginator: MatPaginator;
   newDialogRef: MatDialogRef<NewLineDialogComponent>;
+  skuDialogRef: MatDialogRef<SkuDetailsComponent>;
   skuString: string = '';
-  constructor(public rest:RestService, private route: ActivatedRoute, private router: Router, private snackBar: MatSnackBar, private dialog: MatDialog) {  }
+  constructor(public restv2: RestServiceV2,public rest:RestService, private route: ActivatedRoute, private router: Router, private snackBar: MatSnackBar, private dialog: MatDialog) {  }
   admin: boolean = false;
 
   getPageSizeOptions() {
@@ -185,6 +188,39 @@ export class ManufacturingLinesComponent implements OnInit {
       }
     }
     return true;
+  }
+
+  ngAfterViewChecked() {
+    const matOptions = document.querySelectorAll('mat-option');
+   
+   
+    // If the replacement element was found...
+    if (matOptions) {
+      const matOptionsLen = matOptions.length;
+      // We'll iterate the array backwards since the allReplacement should be at the end of the array
+      for (let i = matOptionsLen - 1; i >= 0; i--) {
+        const matOption = matOptions[i];
+   
+        // Store the span in a variable for re-use
+        const span = matOption.querySelector('span.mat-option-text');
+        // If the spans innerHTML string value is the same as the allReplacement variables string value...
+        if ('' + span.innerHTML === '' + this.allReplacement) {
+          // Change the span text to "All"
+          span.innerHTML = 'All';
+          break;
+        }
+      }
+    }
+  }
+
+  async showSkuDetails(element){
+    let realLine = await this.restv2.getLine(AndVsOr.OR, element['linename'], element['linename'], null,null,1);
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.data = {skus: realLine[0]['skus'], name: realLine[0]['shortname']};
+    this.skuDialogRef = this.dialog.open(SkuDetailsComponent, dialogConfig);
+    this.skuDialogRef.afterClosed().subscribe(event => {
+      this.refreshData();
+    });
   }
 
 }

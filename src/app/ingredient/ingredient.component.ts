@@ -305,7 +305,7 @@ export class IngredientComponent  implements OnInit {
     });
       const options = { 
         fieldSeparator: ',',
-        filename: 'ingredientdependencies',
+        filename: 'ingredients',
         quoteStrings: '',
         decimalSeparator: '.',
         showLabels: true, 

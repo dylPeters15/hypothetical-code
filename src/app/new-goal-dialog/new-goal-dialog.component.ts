@@ -1,4 +1,3 @@
-
 import { Component, OnInit, ElementRef, ViewChild, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA} from "@angular/material";
 import { RestService } from '../rest.service';
@@ -7,6 +6,7 @@ import {FormControl} from '@angular/forms';
 import {Observable} from 'rxjs';
 import {map, startWith} from 'rxjs/operators';
 import {COMMA, ENTER} from '@angular/cdk/keycodes';
+import { RestServiceV2, AndVsOr } from '../restv2.service';
 
 export class DisplayableActivity{
   skuname: string = '';
@@ -33,7 +33,11 @@ export class NewGoalDialogComponent implements OnInit {
   addOnBlur = true;
   separatorKeysCodes: number[] = [ENTER, COMMA];
   skuCtrl = new FormControl();
-  filteredSkus: Observable<String[]>;
+  filteredSkus: Observable<string[]> = new Observable(observer => {
+    this.skuCtrl.valueChanges.subscribe(async newVal => {
+      observer.next(await this.restv2.getSkus(AndVsOr.AND, null, "(?i).*"+newVal+".*", null,null,null,null,1000));
+    });
+  });
   name: string = '';
   quantity: number;
   shortname: string = '';
@@ -51,11 +55,7 @@ export class NewGoalDialogComponent implements OnInit {
   @ViewChild('skuInput') skuInput: ElementRef<HTMLInputElement>;
   @ViewChild('auto') matAutocomplete: MatAutocomplete;
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: any, private dialogRef: MatDialogRef<NewGoalDialogComponent>, public rest:RestService, private snackBar: MatSnackBar) { 
-    this.filteredSkus = this.skuCtrl.valueChanges.pipe(
-      startWith(null),
-      map((sku: string | null) => sku ? this._filter(sku) : this.skuNameList.slice()));
-  }
+  constructor(public restv2: RestServiceV2,@Inject(MAT_DIALOG_DATA) public data: any, private dialogRef: MatDialogRef<NewGoalDialogComponent>, public rest:RestService, private snackBar: MatSnackBar) { }
 
   ngOnInit() {
     console.log("IDS: " + this.activityIds)
@@ -70,7 +70,7 @@ export class NewGoalDialogComponent implements OnInit {
             this.displayableActivities.forEach(element => {
               console.log("Act: " + activityInDatabase['sku']['skuname'])
               console.log("ELEMENT:" + element.skuname)
-              if(activityInDatabase['sku']['skuname'] == element.skuname && activityInDatabase['calculatedhours'] == Number(element.hours)){
+              if(activityInDatabase['sku']['skuname'] == element.skuname && activityInDatabase['calculatedhours'] == Number(element.hours) && this.activityIds.indexOf(activityInDatabase['_id']) == -1){
                 this.activityIds.push({activity: activityInDatabase['_id']})
               }
             })
@@ -113,10 +113,8 @@ export class NewGoalDialogComponent implements OnInit {
     
     this.displayableActivities.push(newActivity);
     
-    console.log("ACTIVITES: " + JSON.stringify(this.displayableActivities))
     this.rest.createActivity(this.currentSku['_id'], this.quantity, hours, null,new Date(),null).subscribe(response => {
       this.activityIds.push({activity: response['_id']});
-      console.log("IDS: " + JSON.stringify(this.activityIds))
       this.snackBar.open("Successfully created Activity: " + this.currentSku['skuname'] + ".", "close", {
               duration: 2000,
             });
@@ -128,13 +126,11 @@ export class NewGoalDialogComponent implements OnInit {
 
   createGoal() {
     if(this.edit == false){
-      console.log(this.activityIds)
       this.rest.createGoal(this.name, this.activityIds, this.date, false).then(response => {
         this.snackBar.open("Successfully created Goal: " + this.name + ".", "close", {
           duration: 2000,
         }
         );
-        console.log(response);
         this.closeDialog();
       }).catch(err => {
         this.snackBar.open("Error creating Goal: " + this.name + ". Please refresh and try again.", "close", {

@@ -2,6 +2,8 @@ import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA} from "@angular/material";
 import { RestService } from '../rest.service';
 import {MatSnackBar} from '@angular/material';
+import { RestServiceV2, AndVsOr } from '../restv2.service';
+import {FormControl, FormGroupDirective} from '@angular/forms';
 
 @Component({
   selector: 'app-new-ingredient-dialog',
@@ -20,7 +22,7 @@ export class NewIngredientDialogComponent implements OnInit {
   units: string[];
   selected: string
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: any, private dialogRef: MatDialogRef<NewIngredientDialogComponent>) { }
+  constructor(public restv2: RestServiceV2, @Inject(MAT_DIALOG_DATA) public data: any, private dialogRef: MatDialogRef<NewIngredientDialogComponent>) { }
 
   ngOnInit() {
     this.ingredientname = this.data.ingredientname;
@@ -52,6 +54,36 @@ export class NewIngredientDialogComponent implements OnInit {
 
   shouldDisableCreateButton() {
     return this.data.ingredientname == '' || isNaN(this.data.amount) || this.data.unitofmeasure == '' || !this.data.unitofmeasure || isNaN(this.data.costperpackage);
+  }
+
+  amountError: boolean = false;
+  async amountChanged(): Promise<void> {
+    this.amountError = this.data.amount < 0;
+  }
+  amountErrorMatcher = {
+    isErrorState: (control: FormControl, form: FormGroupDirective): boolean => {
+      return this.amountError;
+    }
+  }
+
+  costError: boolean = false;
+  async costChanged(): Promise<void> {
+    this.costError = this.data.costperpackage < 0;
+  }
+  costErrorMatcher = {
+    isErrorState: (control: FormControl, form: FormGroupDirective): boolean => {
+      return this.costError;
+    }
+  }
+
+  numberError: boolean = false;
+  async numberChanged(): Promise<void> {
+    this.numberError = this.data.ingredientnumber < 0;
+  }
+  numberErrorMatcher = {
+    isErrorState: (control: FormControl, form: FormGroupDirective): boolean => {
+      return this.numberError;
+    }
   }
 
 }

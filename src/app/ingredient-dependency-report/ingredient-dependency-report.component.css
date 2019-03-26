@@ -18,3 +18,9 @@ th.mat-sort-header-sorted {
 th.mat-header-cell {
   text-align: center;
 }
+
+@media print {
+  button, input, mat-form-field, #checkColumn, mat-checkbox {
+      display: none;
+    }
+}

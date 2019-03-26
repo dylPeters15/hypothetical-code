@@ -21,7 +21,11 @@ export class NewLineDialogComponent implements OnInit {
   addOnBlur = true;
   separatorKeysCodes: number[] = [ENTER, COMMA];
   skuCtrl = new FormControl();
-  filteredSkus: Observable<String[]>;
+  filteredSkus: Observable<string[]> = new Observable(observer => {
+    this.skuCtrl.valueChanges.subscribe(async newVal => {
+      observer.next(await this.restv2.getSkus(AndVsOr.AND, null, "(?i).*"+newVal+".*", null,null,null,null,1000));
+    });
+  });
   linename: string = '';
   shortname: string = '';
   selectedSkuNames: string[] = [];
@@ -34,11 +38,7 @@ export class NewLineDialogComponent implements OnInit {
   @ViewChild('skuInput') skuInput: ElementRef<HTMLInputElement>;
   @ViewChild('auto') matAutocomplete: MatAutocomplete;
 
-  constructor(public restv2: RestServiceV2, @Inject(MAT_DIALOG_DATA) public data: any, private dialogRef: MatDialogRef<NewLineDialogComponent>, public rest:RestService, private snackBar: MatSnackBar) { 
-    this.filteredSkus = this.skuCtrl.valueChanges.pipe(
-      startWith(null),
-      map((sku: string | null) => sku ? this._filter(sku) : this.skuNameList.slice()));
-  }
+  constructor(public restv2: RestServiceV2, @Inject(MAT_DIALOG_DATA) public data: any, private dialogRef: MatDialogRef<NewLineDialogComponent>, public rest:RestService, private snackBar: MatSnackBar) { }
 
   ngOnInit() {
     this.edit = this.data.edit;

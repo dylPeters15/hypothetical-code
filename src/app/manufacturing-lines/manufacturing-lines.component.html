@@ -31,11 +31,7 @@
     
       <ng-container matColumnDef="skus">
         <mat-header-cell *matHeaderCellDef>Skus</mat-header-cell>
-        <mat-cell *matCellDef="let element"> <button mat-raised-button
-          matTooltip={{element.skus}}
-          aria-label="Button that displays all skus when focused or hovered over">
-    SKUs: {{element.skuCount}}
-  </button>
+        <mat-cell *matCellDef="let element"> <button mat-raised-button (click)=showSkuDetails(element)> SKUS: {{element.skuCount}}</button>
          </mat-cell>
       </ng-container>
     

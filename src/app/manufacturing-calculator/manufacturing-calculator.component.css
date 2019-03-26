@@ -11,3 +11,10 @@
     margin-bottom: 20px;
     margin-top: 20px;
   } */
+
+  @media print {
+    button, mat-paginator {
+        display: none;
+      }
+      
+  }
