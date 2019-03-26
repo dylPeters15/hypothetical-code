@@ -82,7 +82,7 @@ export class ManufacturingScheduleComponent implements OnInit {
             goal['activities'].forEach(activity => {
               console.log('activity', activity)
               this.rest.getActivities( null, 100).subscribe(sameActivity => {
-                console.log('sameActivity', sameActivity)
+                // console.log('sameActivity', sameActivity)
               });
               if(activity['activity']['line'] == null || activity['activity']['line'] == undefined){
                 activityList.push(activity['activity'])
@@ -99,8 +99,8 @@ export class ManufacturingScheduleComponent implements OnInit {
   }
 
   handleDragStart(event, activity) {
-    console.log('start drag', event)
-    console.log(activity)
+    // console.log('start drag', event)
+    // console.log(activity)
     var dragSrcEl = event.target;
     
     
@@ -123,8 +123,8 @@ export class ManufacturingScheduleComponent implements OnInit {
 
   async handleDragEnd(event): Promise<void> {
     // Last item that just been dragged, its ID is the same of event.target
-    console.log('end', event.target.id)
-    console.log(this.timeline.itemsData)
+    // console.log('end', event.target.id)
+    // console.log(this.timeline.itemsData)
     var newItem_dropped = this.timeline.itemsData.get(event.target.id);
     console.log(newItem_dropped)
     var newGroup = this.groups.get(newItem_dropped.group)
@@ -145,11 +145,11 @@ export class ManufacturingScheduleComponent implements OnInit {
   async checkLine(item, group): Promise<Boolean> {
     var name = item.content.split("::")[0];
     var response = await this.restv2.getSkus(AndVsOr.OR, name, null, null, null, null, null, 1);
-    console.log(response[0])
+    // console.log(response[0])
     var line = await this.restv2.getLine(AndVsOr.OR, "","", group.content, "", 1)
-    console.log(line)
+    // console.log(line)
     if (line[0]['skus']) {
-      console.log(line[0]['skus'])
+      // console.log(line[0]['skus'])
       var count = 0;
       var skuObject;
       line[0]['skus'].forEach(sku => {
@@ -169,21 +169,21 @@ export class ManufacturingScheduleComponent implements OnInit {
           }
         })
         
-        console.log('activityid', activityid)
-        console.log(newActivity['_id'])
+        // console.log('activityid', activityid)
+        // console.log(newActivity['_id'])
         var modify = await this.restv2.modifyActivity(AndVsOr.AND, activityid, newActivity['sku']['_id'], 
         newActivity['numcases'], newActivity['calculatedhours'], newActivity['sethours'], 
         item['start'], line[0]['_id']);
-        console.log(modify)
+        // console.log(modify)
         var activity = await this.restv2.getActivities(AndVsOr.OR, null, null, skuObject['_id'], 1)
-        console.log(activity);
+        // console.log(activity);
         this.refreshData();
         this.getTimelineData();
-        this.timeline.redraw();  
+        // this.timeline.redraw();  
         return true; 
       }
       else {
-        console.log('wrong')
+        // console.log('wrong')
         return false;
         // this.timeline.itemsData.remove(item);
       }
@@ -210,11 +210,17 @@ export class ManufacturingScheduleComponent implements OnInit {
       // Create a DataSet (allows two way data-binding)
     // create items
     this.data = new vis.DataSet();
-    this.data.clear();
-    console.log('cleared data', this.data)
+    // if (this.timeline) {
+    //   console.log('clear data')
+    //   this.timeline.clear({items: true});
+    // }
+    // console.log('cleared data', this.data)
+    this.data.on('*', function (event, properties, senderId) {
+      console.log('event', event, properties);
+    });
 
     var lines = await this.restv2.getLine(AndVsOr.OR, "", ".*", "", ".*", 100);
-    console.log('lines', lines)
+    // console.log('lines', lines)
     lines.forEach(line => {
       this.rest.getActivities(null, 100, line['_id']).subscribe(activities => {
         console.log('activites', activities)
@@ -226,13 +232,13 @@ export class ManufacturingScheduleComponent implements OnInit {
               duration = activity['sethours'];
               className = "updated"
             }
-            console.log('startDate', activity['startdate'], 'duration', duration)
+            // console.log('startDate', activity['startdate'], 'duration', duration)
             var startTime = parseInt((activity['startdate'].split('T')[1]).split(':')[0], 10) - 7;
             var endDate = this.calculateEndDate(new Date(activity['startdate']), Math.round(duration), startTime);
-            console.log('endDate', endDate)
+            // console.log('endDate', endDate)
             
             this.checkOverdue(activity['_id'], endDate).then(isOverdue => {
-              console.log('isOverdue', isOverdue)
+              // console.log('isOverdue', isOverdue)
               if (isOverdue) {
                 className = 'overdue';
               }
@@ -264,7 +270,7 @@ export class ManufacturingScheduleComponent implements OnInit {
       goal['activities'].forEach(activity => {
         if (activity['activity']['_id'] == activityId) {
           var deadline = new Date(goal['date'])
-          console.log(endDate.getTime(), deadline, endDate.getTime() > deadline.getTime())
+          // console.log(endDate.getTime(), deadline, endDate.getTime() > deadline.getTime())
           if (endDate.getTime() > deadline.getTime()) {
             isOverdue = true;
           }
@@ -280,9 +286,9 @@ export class ManufacturingScheduleComponent implements OnInit {
     goals.forEach(goal => {
       goal['activities'].forEach(activity => {
         if (activity['activity']['_id'] == activityId) {
-          console.log('goal', goal)
+          // console.log('goal', goal)
           if (!goal['enabled']) {
-            console.log('is orphaned')
+            // console.log('is orphaned')
             isOrphaned = true;
           }
         }
@@ -297,7 +303,8 @@ export class ManufacturingScheduleComponent implements OnInit {
     this.options = {
       stack: false,
       start: new Date(),
-      end: new Date(1000*60*60*24 + (new Date()).valueOf()),
+      autoResize: true,
+      end: new Date(1000*60*60*168 + (new Date()).valueOf()),
       editable: {
         add: true,         // add new items by double tapping
         updateTime: true,  // drag items horizontally
@@ -315,25 +322,25 @@ export class ManufacturingScheduleComponent implements OnInit {
     ],
       
       onRemove: async function(item, callback): Promise<void> {
-        console.log(item, callback);
+        // console.log(item, callback);
         var getSku = await thisObject.restv2.getSkus(AndVsOr.OR, item['content'], null, null, null, null, null, 1);
         var activity = await thisObject.restv2.getActivities(AndVsOr.AND, item['start'], null, getSku[0]['_id'], 1);
         console.log('activity to delete', activity, activity[0]['startdate'])
-        console.log(item['id'], activity[0]['_id'])
+        // console.log(item['id'], activity[0]['_id'])
         
-        thisObject.rest.modifyActivity(activity[0]['_id'], activity[0]['sku']['_id'], 
+        var response = thisObject.restv2.modifyActivity(AndVsOr.AND, activity[0]['_id'], activity[0]['sku']['_id'], 
         activity[0]['numcases'], activity[0]['calculatedhours'], activity[0]['sethours'], 
-        activity[0]['startdate'], null).subscribe(response => {
+        activity[0]['startdate'], null);
           console.log(response) 
           thisObject.refreshData();
           thisObject.data.remove(item['id']);
           thisObject.getTimelineData();
           callback(item)
-        });  
+         
       },
       
       onMove: async function(item, callback): Promise<void> {
-        console.log(item, callback);
+        // console.log(item, callback);
         var newGroup = thisObject.groups.get(item['group']);
         console.log(newGroup)
         thisObject.checkLine(item, newGroup).then(isValid => {
@@ -348,21 +355,41 @@ export class ManufacturingScheduleComponent implements OnInit {
       },
 
       onUpdate: async function (item, callback): Promise<void> {
-        console.log('update')
+        // console.log('update')
         var getSku = await thisObject.restv2.getSkus(AndVsOr.OR, item['content'], null, null, null, null, null, 1);
         var activity = await thisObject.restv2.getActivities(AndVsOr.AND, item['start'], null, getSku[0]['_id'], 1);
-        var newDuration = prompt('Choose new activity duration (in hours):', activity[0]['calculatedhours']);
-        console.log(newDuration)
+        var newDuration = prompt('Choose a new duration for this activity (in hours). The calculated duration is shown.', activity[0]['calculatedhours']);
+        // console.log(newDuration)
         
         if (item.content != null) {
-          thisObject.rest.modifyActivity(activity[0]['_id'], activity[0]['sku']['_id'], 
+          /* Changed from rest to restv2, recheck this */
+          var response = await thisObject.restv2.modifyActivity(AndVsOr.AND, activity[0]['_id'], activity[0]['sku']['_id'], 
           activity[0]['numcases'], activity[0]['calculatedhours'], parseInt(newDuration, 10), 
-          activity[0]['startdate'], activity[0]['line']).subscribe(response => {
-            console.log(response) 
-            thisObject.refreshData();
-            thisObject.getTimelineData();
-            callback(item)
-        }); 
+          activity[0]['startdate'], activity[0]['line']);
+          console.log(response) 
+          // thisObject.getTimelineData();
+          var className = item.className;
+          if (className == '') {
+            className = 'updated'
+          }
+          var startTime = parseInt((activity[0]['startdate'].split('T')[1]).split(':')[0], 10) - 7;
+          var endDate = thisObject.calculateEndDate(new Date(item['start']), Math.round(parseInt(newDuration, 10)), startTime);
+          console.log('item to update', item)
+          
+          thisObject.refreshData();
+          // thisObject.data.update({
+          //   id: item['id'], 
+          //   className: className,
+          //   content: item['content'],
+          //   start: item['start'],
+          //   end: endDate,
+          //   group: item['group']
+          // });
+          // console.log('updated item', thisObject.data.get(item['id']));
+          item.className = className;
+          item.end = endDate
+          callback(item);
+        
         }
         else {
           callback(null); // cancel updating the item
@@ -370,7 +397,7 @@ export class ManufacturingScheduleComponent implements OnInit {
       },
 
       onAdd: function (item, callback) {
-        console.log(item)
+        // console.log(item)
         if (item.content == 'new item') {
           callback(null);
         }
@@ -394,13 +421,13 @@ export class ManufacturingScheduleComponent implements OnInit {
     // var endDate = new Date(startDate);
     const NUM_HOURS_PER_DAY = 10;
     const remainder = hours % NUM_HOURS_PER_DAY;
-    console.log('startDate', endDate)
+    // console.log('startDate', endDate)
     while (moment().isoWeekdayCalc([startDate.getUTCFullYear(), startDate.getUTCMonth(), startDate.getUTCDay()], [endDate.getUTCFullYear(), endDate.getUTCMonth(), endDate.getUTCDay()+1], [1, 2, 3, 4, 5]) < Math.floor(hours / NUM_HOURS_PER_DAY)) {
-      console.log('plus one day', moment().isoWeekdayCalc([startDate.getUTCFullYear(), startDate.getUTCMonth(), startDate.getUTCDay()], [endDate.getUTCFullYear(), endDate.getUTCMonth(), endDate.getUTCDay()+1], [1, 2, 3, 4, 5]) * NUM_HOURS_PER_DAY)
-      console.log(startDate.getUTCDay(), endDate.getUTCDay())
+      // console.log('plus one day', moment().isoWeekdayCalc([startDate.getUTCFullYear(), startDate.getUTCMonth(), startDate.getUTCDay()], [endDate.getUTCFullYear(), endDate.getUTCMonth(), endDate.getUTCDay()+1], [1, 2, 3, 4, 5]) * NUM_HOURS_PER_DAY)
+      // console.log(startDate.getUTCDay(), endDate.getUTCDay())
       endDate.setDate(endDate.getDate() + 1);
     }
-    console.log('endDate', endDate)
+    // console.log('endDate', endDate)
     endDate = new Date(1000 * 60 * 60 * remainder + (new Date(endDate)).valueOf());
     if (startTime < 0) {
       startTime = 24 + startTime
