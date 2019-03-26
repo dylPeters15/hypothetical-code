@@ -4,7 +4,7 @@ import { MatDialogRef, MatDialog, MatDialogConfig, MatTableDataSource,MatPaginat
 import { EnableGoalsDialogComponent } from '../enable-goals-dialog/enable-goals-dialog.component'
 import { RestService } from '../rest.service';
 import { RestServiceV2, AndVsOr } from '../restv2.service';
-
+import { LegendDetailsComponent } from './legend-details.component';
 var moment = require('moment');     //please note that you should include moment library first
 require('moment-weekday-calc');
 
@@ -51,6 +51,7 @@ export class ManufacturingScheduleComponent implements OnInit {
   goalsDataSource = new MatTableDataSource<DataForGoalsTable>(this.goalsData);
   linesData: DataForLinesTable[] =[];
   linesDataSource = new MatTableDataSource<DataForLinesTable>(this.linesData);
+  legendDialogRef: MatDialogRef<LegendDetailsComponent>;
 
   constructor(public rest:RestService, private restv2: RestServiceV2, private dialog: MatDialog, myElement: ElementRef) { 
       this.getTimelineData();
@@ -473,4 +474,13 @@ export class ManufacturingScheduleComponent implements OnInit {
     }
     return endDate;
   }
+
+  showLegend(){
+    const dialogConfig = new MatDialogConfig()
+    this.legendDialogRef = this.dialog.open(LegendDetailsComponent, dialogConfig);
+    this.legendDialogRef.afterClosed().subscribe(event => {
+      this.refreshData();
+    });
+  }
 }
+
