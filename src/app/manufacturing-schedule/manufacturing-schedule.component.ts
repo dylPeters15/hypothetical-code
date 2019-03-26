@@ -136,7 +136,7 @@ export class ManufacturingScheduleComponent implements OnInit {
         var activityid = newItem_dropped.content.split("::")[1];
         activities.forEach(activity => {
           if (activity['_id'] == activityid) {
-            var className = "";
+            var className = 'normal';
             var duration = activity['calculatedhours'];
             if (activity['sethours']) {
               duration = activity['sethours'];
@@ -247,11 +247,11 @@ export class ManufacturingScheduleComponent implements OnInit {
   }
 
   async addItem(activity, group): Promise<void> {
-    var className = "";
+    var className = 'normal';
     var duration = activity['calculatedhours'];
     if (activity['sethours']) {
       duration = activity['sethours'];
-      className = "updated"
+      className = 'updated'
     }
     var startTime = parseInt((activity['startdate'].split('T')[1]).split(':')[0], 10) - 7;
     var endDate = this.calculateEndDate(new Date(activity['startdate']), Math.round(duration), startTime);
@@ -360,7 +360,16 @@ export class ManufacturingScheduleComponent implements OnInit {
             callback(null)
           }
           else {
-            callback(item)
+            thisObject.checkOverdue(item['id'], item['end']).then( isOverdue => {
+              if (isOverdue && item['className'] != 'orphan') {
+                item['className'] = 'overdue';
+              }
+              else if (!isOverdue && item['className'] == 'overdue') {
+                item['className'] = 'normal';
+              }
+              callback(item);
+            })
+            
           }
         })
       },
@@ -383,11 +392,11 @@ export class ManufacturingScheduleComponent implements OnInit {
           activity[0]['startdate'], activity[0]['line']);
           console.log(response) 
           var className = item.className;
-          if (className == '') {
+          if (className == 'normal') {
             className = 'updated'
           }
           if ((activity[0]['calculatedhours'] == parseInt(newDuration, 10)) && className == 'updated') {
-            className = '';
+            className = 'normal';
           }
           var startTime = parseInt((activity[0]['startdate'].split('T')[1]).split(':')[0], 10) - 7;
           var endDate = thisObject.calculateEndDate(new Date(item['start']), Math.round(parseInt(newDuration, 10)), startTime);
@@ -434,7 +443,7 @@ export class ManufacturingScheduleComponent implements OnInit {
           var orphanItem = this.data.get(activity['_id']);
           var update = false;
           if ((orphanItem['className'] == 'orphan') && !isOrphaned) {
-            className = '';
+            className = 'normal';
             update = true
             this.checkOverdue(orphanItem['id'], orphanItem['end']).then(isOverdue => {
               if (isOverdue) {
