@@ -6,5 +6,5 @@
 </div>
 <div mat-dialog-actions>
   <button mat-raised-button (click)="onNoClick()">Cancel</button>
-  <button mat-raised-button [mat-dialog-close]="data['productlinename']" color="primary" [disabled]="data['productlinename']==''||!data['productlinename']">Save</button>
+  <button mat-raised-button (click)="createProductLine()" color="primary" [disabled]="data['productlinename']==''||!data['productlinename'] || nameExists">Save</button>
 </div>

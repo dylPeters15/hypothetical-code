@@ -2,10 +2,11 @@ import { Component, Input, forwardRef, Inject, OnInit } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import {CdkDragDrop, moveItemInArray, transferArrayItem} from '@angular/cdk/drag-drop';
 import { RestService } from '../rest.service';
-import { MatDialog, MatDialogRef, MatTableDataSource, MatPaginator } from "@angular/material";
+import { MatDialog,MatSnackBar, MatDialogRef, MatTableDataSource, MatPaginator } from "@angular/material";
 import {NewProductLineDialogComponent } from '../new-product-line-dialog/new-product-line-dialog.component';
 import {MatIconModule} from '@angular/material/icon'
 import { auth } from '../auth.service';
+import { RestServiceV2, AndVsOr } from '../restv2.service';
 
 const customValueProvider = {
   provide: NG_VALUE_ACCESSOR,
@@ -22,8 +23,9 @@ const customValueProvider = {
 export class ProductLineTablesComponent implements ControlValueAccessor, OnInit {
 
   admin: boolean = false;
+  nameExists: boolean = false;
 
-  constructor(public rest: RestService, public dialog: MatDialog) { }
+  constructor( private snackBar: MatSnackBar,public restv2: RestServiceV2, public rest: RestService, public dialog: MatDialog) { }
 
   ngOnInit() {
     this.admin = auth.isAuthenticatedForAdminOperation();
@@ -53,28 +55,39 @@ export class ProductLineTablesComponent implements ControlValueAccessor, OnInit 
     this.propagateChange(event.target.value);
   }
 
-  modifyName(event: Event) {
+   async modifyName(event: Event) {
     let oldname = this._value['productlinename'];
     const dialogRef = this.dialog.open(NewProductLineDialogComponent, {
       width: '250px',
       data: {productlinename: this._value['productlinename']},
       disableClose: true 
+    }); 
+    var existingLines = [];
+    var allProductLines = await this.restv2.getProductLines(AndVsOr.OR, null, ".*",1000);
+    allProductLines.forEach(productLine => {
+      existingLines.push(productLine['productlinename'])
     });
-  
+    console.log("EXISTING: " + JSON.stringify(allProductLines))
+    
     dialogRef.afterClosed().subscribe(result => {
-      console.log('The dialog was closed');
-      console.log(result)
       if (result) {
-        this._value['productlinename'] = result;  
-        return new Promise((resolve, reject) => {
-          this.rest.getProductLines(oldname,"",1).subscribe(results => {
-            if (results != null) {
-              console.log(results)
-              this.updateProductLine(oldname, result, results[0].skus);
-            }
-            resolve();
+
+        if(existingLines.indexOf(this._value['productlinename']) != -1){
+          this.snackBar.open("Unable to modify. Name " + this._value['productlinename'] + " already exists.", "close", {
+            duration: 2000,
+          });
+        }
+        else{
+          this._value['productlinename'] = result;
+          return new Promise((resolve, reject) => {
+            this.rest.getProductLines(oldname,"",1).subscribe(results => {
+              if (results != null) {
+                this.updateProductLine(oldname, result, results[0].skus);
+              }
+              resolve();
+            })
           })
-        })
+        }
       }      
     });
   }
