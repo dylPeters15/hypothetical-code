@@ -107,10 +107,8 @@ export class ManufacturingScheduleComponent implements OnInit {
     event.dataTransfer.effectAllowed = 'move';
     var itemType = 'range';
     var item = {
-        // id: activity['_id'],
         type: itemType,
         id: new Date(),
-        // content: event.target.innerHTML.trim()
         content: event.target.innerHTML.trim() + "::" + activity['_id']
     };
     // set event.target ID with item ID
@@ -403,11 +401,46 @@ export class ManufacturingScheduleComponent implements OnInit {
     };
   }
 
-  openEnableGoalsDialog() {
+  async openEnableGoalsDialog(): Promise<void> {
     const dialogConfig = new MatDialogConfig();
     this.enableGoalsDialogRef = this.dialog.open(EnableGoalsDialogComponent, dialogConfig);
-    this.enableGoalsDialogRef.afterClosed().subscribe(event => {
+    this.enableGoalsDialogRef.afterClosed().subscribe(async event => {
       this.refreshData();
+      var activities = await this.restv2.getActivities(AndVsOr.OR, null, null, null, 500);
+      console.log(activities)
+      activities.forEach(activity => {
+        this.checkOrphaned(activity['_id']).then(isOrphaned => {
+          var className;
+          var orphanItem = this.data.get(activity['_id']);
+          if ((orphanItem['className'] == 'orphan') && !isOrphaned) {
+            className = '';
+            this.checkOverdue(orphanItem['id'], orphanItem['end']).then(isOverdue => {
+              if (isOverdue) {
+                className = 'overdue';
+              }
+              this.data.update({
+                id: orphanItem['id'],
+                group: orphanItem['group'],
+                start: orphanItem['start'],
+                end: orphanItem['end'],
+                content: orphanItem['content'],
+                className: className
+              })
+            })
+          }
+          if (isOrphaned) {
+            className = 'orphan';
+            this.data.update({
+              id: orphanItem['id'],
+              group: orphanItem['group'],
+              start: orphanItem['start'],
+              end: orphanItem['end'],
+              content: orphanItem['content'],
+              className: className
+            })
+          }
+        })
+      })
     });
   }
 
