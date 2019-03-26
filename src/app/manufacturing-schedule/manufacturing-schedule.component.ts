@@ -107,10 +107,8 @@ export class ManufacturingScheduleComponent implements OnInit {
     event.dataTransfer.effectAllowed = 'move';
     var itemType = 'range';
     var item = {
-        // id: activity['_id'],
         type: itemType,
         id: new Date(),
-        // content: event.target.innerHTML.trim()
         content: event.target.innerHTML.trim() + "::" + activity['_id']
     };
     // set event.target ID with item ID
@@ -358,8 +356,12 @@ export class ManufacturingScheduleComponent implements OnInit {
         // console.log('update')
         var getSku = await thisObject.restv2.getSkus(AndVsOr.OR, item['content'], null, null, null, null, null, 1);
         var activity = await thisObject.restv2.getActivities(AndVsOr.AND, item['start'], null, getSku[0]['_id'], 1);
-        var newDuration = prompt('Choose a new duration for this activity (in hours). The calculated duration is shown.', activity[0]['calculatedhours']);
-        // console.log(newDuration)
+        var displayDuration = activity[0]['calculatedhours'];
+        if (activity[0]['sethours']) {
+          displayDuration = activity[0]['sethours']
+        }
+        var newDuration = prompt('Choose a new duration for this activity. The calculated duration is ' 
+        + activity[0]['calculatedhours'] + ' hours.', displayDuration);
         
         if (item.content != null) {
           /* Changed from rest to restv2, recheck this */
@@ -367,25 +369,16 @@ export class ManufacturingScheduleComponent implements OnInit {
           activity[0]['numcases'], activity[0]['calculatedhours'], parseInt(newDuration, 10), 
           activity[0]['startdate'], activity[0]['line']);
           console.log(response) 
-          // thisObject.getTimelineData();
           var className = item.className;
           if (className == '') {
             className = 'updated'
           }
+          if ((activity[0]['calculatedhours'] == parseInt(newDuration, 10)) && className == 'updated') {
+            className = '';
+          }
           var startTime = parseInt((activity[0]['startdate'].split('T')[1]).split(':')[0], 10) - 7;
           var endDate = thisObject.calculateEndDate(new Date(item['start']), Math.round(parseInt(newDuration, 10)), startTime);
-          console.log('item to update', item)
           
-          thisObject.refreshData();
-          // thisObject.data.update({
-          //   id: item['id'], 
-          //   className: className,
-          //   content: item['content'],
-          //   start: item['start'],
-          //   end: endDate,
-          //   group: item['group']
-          // });
-          // console.log('updated item', thisObject.data.get(item['id']));
           item.className = className;
           item.end = endDate
           callback(item);
@@ -408,11 +401,46 @@ export class ManufacturingScheduleComponent implements OnInit {
     };
   }
 
-  openEnableGoalsDialog() {
+  async openEnableGoalsDialog(): Promise<void> {
     const dialogConfig = new MatDialogConfig();
     this.enableGoalsDialogRef = this.dialog.open(EnableGoalsDialogComponent, dialogConfig);
-    this.enableGoalsDialogRef.afterClosed().subscribe(event => {
+    this.enableGoalsDialogRef.afterClosed().subscribe(async event => {
       this.refreshData();
+      var activities = await this.restv2.getActivities(AndVsOr.OR, null, null, null, 500);
+      console.log(activities)
+      activities.forEach(activity => {
+        this.checkOrphaned(activity['_id']).then(isOrphaned => {
+          var className;
+          var orphanItem = this.data.get(activity['_id']);
+          if ((orphanItem['className'] == 'orphan') && !isOrphaned) {
+            className = '';
+            this.checkOverdue(orphanItem['id'], orphanItem['end']).then(isOverdue => {
+              if (isOverdue) {
+                className = 'overdue';
+              }
+              this.data.update({
+                id: orphanItem['id'],
+                group: orphanItem['group'],
+                start: orphanItem['start'],
+                end: orphanItem['end'],
+                content: orphanItem['content'],
+                className: className
+              })
+            })
+          }
+          if (isOrphaned) {
+            className = 'orphan';
+            this.data.update({
+              id: orphanItem['id'],
+              group: orphanItem['group'],
+              start: orphanItem['start'],
+              end: orphanItem['end'],
+              content: orphanItem['content'],
+              className: className
+            })
+          }
+        })
+      })
     });
   }
 
