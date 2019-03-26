@@ -11,10 +11,12 @@
         <button mat-raised-button *ngIf="admin" (click)="newIngredient()" color="primary"> New Ingredient </button>      
         <button mat-raised-button (click)="exportSelected()" [disabled]="noneSelected()"> Export Selected To CSV </button>
         <mat-form-field>
-          <input matInput placeholder="Filter" [(ngModel)]="filterQuery" (ngModelChange)="refreshData($event)">
+          <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter">
+          <!-- <input matInput placeholder="Filter" [(ngModel)]="filterQuery" (ngModelChange)="refreshData($event)"> -->
         </mat-form-field>
 
         <mat-table [dataSource]="dataSource" matSort (matSortChange)="sortData($event)" class="mat-elevation-z8">
+            
           <ng-container matColumnDef="checked">
             <mat-header-cell *matHeaderCellDef mat-sort-header>Selected</mat-header-cell>
             <mat-cell *matCellDef="let ingredient">
