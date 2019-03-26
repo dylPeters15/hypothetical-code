@@ -69,7 +69,7 @@ export class SkuDrilldownCalcService {
   }
 
   async exportSKUDrilldown(sku, selectedCustomerId) {
-    var allSales = await this.restv2.getSales(AndVsOr.AND, sku['_id'], selectedCustomerId=="all"?null:selectedCustomerId, new Date(new Date().getFullYear()-10), null, 54321);
+    var allSales = await this.restv2.getSales(AndVsOr.AND, sku['_id'], selectedCustomerId=="all"?null:selectedCustomerId, new Date(new Date().getFullYear()-9, 0), null, 54321);
     var sales = this.formatSalesForTable(allSales);
       const options = { 
         fieldSeparator: ',',

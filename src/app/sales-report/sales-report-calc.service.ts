@@ -42,7 +42,7 @@ export class SalesReportCalcService {
       summarized.push(this.summarizeYear(year, salesByYear[year], sku));
     }
     summarized = summarized.filter((value,index,array) => {
-      return Number(value['year']) >= Number(currentYear) - 10;
+      return Number(value['year']) >= Number(currentYear) - 9;
     });
     return summarized;
   }
@@ -63,7 +63,7 @@ export class SalesReportCalcService {
   }
 
   async exportSKU(sku, selectedCustomerId) {
-    var allSales = await this.restv2.getSales(AndVsOr.AND, sku['_id'], selectedCustomerId=="all"?null:selectedCustomerId, new Date(new Date().getFullYear()-10, 0), null, 54321);
+    var allSales = await this.restv2.getSales(AndVsOr.AND, sku['_id'], selectedCustomerId=="all"?null:selectedCustomerId, new Date(new Date().getFullYear()-9, 0), null, 54321);
     var sales = this.summarizeSales(allSales, sku);
 
     var exportData = [];

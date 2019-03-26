@@ -41,7 +41,7 @@ export class SalesSummaryRowCalcService {
   }
 
   private async avgManufacturingRunSize(sku: any): Promise<Number> {
-    var startDate: Date = new Date(new Date().getFullYear() - 10, 0, 0, 0, 0, 0, 0);
+    var startDate: Date = new Date(new Date().getFullYear() - 9, 0, 0, 0, 0, 0, 0);
     var activities = await this.restv2.getActivities(AndVsOr.AND, { $gte: startDate }, { $ne: null }, sku['_id'], 10000);
     if (activities.length == 0) {
       return sku['manufacturingrate'] * 10; //assume 1 day of manufacturing
@@ -54,7 +54,7 @@ export class SalesSummaryRowCalcService {
   }
 
   async exportSKUSummary(sku, selectedCustomerId) {
-    var allSales = await this.restv2.getSales(AndVsOr.AND, sku['_id'], selectedCustomerId == "all" ? null : selectedCustomerId, new Date(new Date().getFullYear() - 10), null, 54321);
+    var allSales = await this.restv2.getSales(AndVsOr.AND, sku['_id'], selectedCustomerId == "all" ? null : selectedCustomerId, new Date(new Date().getFullYear() - 9, 0), null, 54321);
     var sales = await this.summarizeTotal(allSales, sku);
 
     const options = {

@@ -364,7 +364,7 @@ export class RestServiceV2 {
     }, this.generateHeaderWithFilterSchema()).toPromise();
   }
 
-  modifyActivity(andVsOr: AndVsOr, sku: string, newsku: string, numcases: number, calculatedhours: number, sethours: number, startdate: Date, line: string): Promise<any> {
+  modifyActivity(andVsOr: AndVsOr, activityId: string, newsku: string, numcases: number, calculatedhours: number, sethours: number, startdate: Date, line: string): Promise<any> {
     return this.http.post(endpoint + 'manufacturing-activities', this.generateBodyWithOptions({
       sku: newsku,
       numcases: numcases,
@@ -373,10 +373,7 @@ export class RestServiceV2 {
       startdate: startdate,
       line: line
     }), this.generateHeaderWithFilterSchema(andVsOr, [
-      {sku: sku},
-      {numcases: numcases},
-      {calculatedhours: calculatedhours},
-      {startdate: startdate}
+      {_id: activityId},
     ])).toPromise();
   }
 

@@ -6,6 +6,23 @@
     <mat-card-content style="display: flex;">
 
       <div>
+          <mat-form-field>
+              <mat-chip-list #chipList>
+                <mat-chip *ngIf="selectedCustomer" [selectable]="false" [removable]="true" (removed)="remove()">
+                  {{selectedCustomer.customername}}
+                  <mat-icon matChipRemove>cancel</mat-icon>
+                </mat-chip>
+                <input placeholder="Enter a Customer to Filter By" #customerInput [formControl]="customerCtrl" [matAutocomplete]="auto"
+                  [matChipInputFor]="chipList" [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                  [matChipInputAddOnBlur]="true" (matChipInputTokenEnd)="add($event)" [hidden]="selectedCustomer">
+              </mat-chip-list>
+              <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
+                <mat-option *ngFor="let customerOption of autoCompleteCustomers | async" [value]="customerOption">
+                  {{customerOption.customername}}
+                </mat-option>
+              </mat-autocomplete>
+            </mat-form-field>
+
         <mat-checkbox (change)="selectDeselectAllProductLines()" [(ngModel)]="allProductLinesSelected">Select/Deselect
           All</mat-checkbox>
         <div *ngFor="let productLine of productLines">
@@ -17,7 +34,7 @@
         <br>
         <br>
 
-        <mat-radio-group [(ngModel)]="selectedCustomerId" (ngModelChange)="refreshData();">
+        <!-- <mat-radio-group [(ngModel)]="selectedCustomerId" (ngModelChange)="refreshData();">
           <mat-radio-button value="all">
             Select All
           </mat-radio-button>
@@ -26,7 +43,7 @@
               {{customer['customername']}}
             </mat-radio-button>
           </div>
-        </mat-radio-group>
+        </mat-radio-group> -->
       </div>
 
       <mat-tab-group mat-stretch-tabs [(selectedIndex)]="selectedIndex"  style="width:100%;">
