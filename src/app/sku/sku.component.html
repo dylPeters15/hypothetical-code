@@ -79,6 +79,20 @@
                 </mat-cell>
             </ng-container>
 
+            <ng-container matColumnDef="productline">
+              <mat-header-cell *matHeaderCellDef mat-sort-header>Product Line</mat-header-cell>
+              <mat-cell *matCellDef="let sku">
+                  {{sku['productline']}}
+              </mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="manufacturinglines">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Manufacturing Lines</mat-header-cell>
+            <mat-cell *matCellDef="let sku">
+                {{sku['manufacturinglines']}}
+            </mat-cell>
+        </ng-container>
+
             <ng-container matColumnDef="manufacturingrate">
               <mat-header-cell *matHeaderCellDef mat-sort-header>Manufacturing Rate</mat-header-cell>
               <mat-cell *matCellDef="let sku">

@@ -22,6 +22,7 @@ export interface UserForTable {
   countpercase: Number;
   formula: any;
   formulascalingfactor: Number;
+  productline: any;
   manufacturingrate: Number;
   comment: String;
   checked: boolean;
@@ -36,6 +37,7 @@ export class ExportableSKU {
   countpercase: Number;
   formula: any;
   formulascalingfactor: Number;
+  productline: String;
   manufacturingrate: Number;
   comment: String;
   constructor(userForTable){
@@ -47,6 +49,7 @@ export class ExportableSKU {
     this.countpercase = userForTable.countpercase;
     this.formula = userForTable.formula;
     this.formulascalingfactor = userForTable.formulascalingfactor;
+    this.productline = userForTable.productline;
     this.manufacturingrate = userForTable.manufacturingrate;
     this.comment = userForTable.comment;
   }
@@ -64,7 +67,7 @@ export class SkuComponent  implements OnInit {
 
   constructor(public rest:RestService, private snackBar: MatSnackBar, private dialog: MatDialog) { }
   allReplacement = 54321;
-  displayedColumns: string[] = ['checked', 'skuname', 'skunumber','caseupcnumber', 'unitupcnumber', 'unitsize', 'countpercase', 'formula', 'formulascalingfactor', "manufacturingrate", "comment", 'actions'];
+  displayedColumns: string[] = ['checked', 'skuname', 'skunumber','caseupcnumber', 'unitupcnumber', 'unitsize', 'countpercase', 'formula', 'formulascalingfactor', 'productline', 'manufacturinglines', 'manufacturingrate', 'comment', 'actions'];
   data: UserForTable[] = [];
   dialogRef: MatDialogRef<MoreInfoDialogComponent>;
   newDialogRef: MatDialogRef<NewSkuDialogComponent>;
@@ -108,9 +111,9 @@ export class SkuComponent  implements OnInit {
   }
 
   // edit
-  newSku(edit, skuname, skunumber, caseupcnumber, unitupcnumber, unitsize, countpercase, formula, formulascalingfactor, manufacturingrate, comment) {
+  newSku(edit, skuname, skunumber, caseupcnumber, unitupcnumber, unitsize, countpercase, formula, formulascalingfactor, productline, manufacturingrate, comment) {
     const dialogConfig = new MatDialogConfig();
-    dialogConfig.data = {edit: edit, present_name: skuname, present_skuNumber: skunumber, present_caseUpcNumber: caseupcnumber, present_unitUpcNumber: unitupcnumber, present_unitSize:unitsize, present_countPerCase:countpercase, present_formula:formula,present_formulascalingfactor:formulascalingfactor, present_manufacturingrate:manufacturingrate, present_comment:comment};
+    dialogConfig.data = {edit: edit, present_name: skuname, present_skuNumber: skunumber, present_caseUpcNumber: caseupcnumber, present_unitUpcNumber: unitupcnumber, present_unitSize:unitsize, present_countPerCase:countpercase, present_formula:formula,present_formulascalingfactor:formulascalingfactor, present_productline:productline, present_manufacturingrate:manufacturingrate, present_comment:comment};
     this.newDialogRef = this.dialog.open(NewSkuDialogComponent, dialogConfig);
     this.newDialogRef.afterClosed().subscribe(event => {
       this.refreshData();
@@ -119,7 +122,7 @@ export class SkuComponent  implements OnInit {
 
   newSkuButton()
   {
-    this.newSku(false, "", null, null, null, "", null, null, null, null, "");
+    this.newSku(false, "", null, null, null, "", null, null, null, null, null, "");
   }
 
   sortData() {
@@ -140,8 +143,8 @@ export class SkuComponent  implements OnInit {
     });
   }
 
-  modifySkuConfirmed(present_name, present_skuNumber, present_caseUpcNumber, present_unitUpcNumber,present_unitSize,present_countPerCase,present_productLine,present_ingredientTuples, present_comment, present_id) {
-    this.newSku(true, present_name, present_skuNumber, present_caseUpcNumber, present_unitUpcNumber, present_unitSize, present_countPerCase, present_productLine, present_ingredientTuples, present_comment, present_id);
+  modifySkuConfirmed(present_name, present_skuNumber, present_caseUpcNumber, present_unitUpcNumber,present_unitSize,present_countPerCase,present_formula, present_formulascalingfactor, present_productLine, present_comment, present_id) {
+    this.newSku(true, present_name, present_skuNumber, present_caseUpcNumber, present_unitUpcNumber, present_unitSize, present_countPerCase, present_formula, present_formulascalingfactor, present_productLine, present_comment, present_id);
   }
 
   deleteSelected() {
@@ -299,7 +302,7 @@ export class SkuComponent  implements OnInit {
   }
 
    modifySelected(oldSku) {
-      this.modifySkuConfirmed(oldSku.skuname, oldSku.skunumber, oldSku.caseupcnumber, oldSku.unitupcnumber, oldSku.unitsize, oldSku.countpercase, oldSku.formula, oldSku.formulascalingfactor, oldSku.manufacturingrate, oldSku.comment); 
+      this.modifySkuConfirmed(oldSku.skuname, oldSku.skunumber, oldSku.caseupcnumber, oldSku.unitupcnumber, oldSku.unitsize, oldSku.countpercase, oldSku.formula, oldSku.formulascalingfactor, oldSku.productline, oldSku.manufacturingrate, oldSku.comment); 
   }
 
   removeIngredient(ingredient, sku) {

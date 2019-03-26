@@ -1,0 +1,37 @@
+<h2 mat-dialog-title align="center">{{ dialog_title }}</h2>
+<mat-dialog-content align="center">
+  <mat-card>
+    <mat-card-content style="display: grid; width: 100%; justify-items: center;">
+
+      <mat-form-field class="example-chip-list">
+        <mat-chip-list #chipList>
+          <mat-chip
+            *ngFor="let line of selectedLineNames"
+            [selectable]="selectable"
+            [removable]="removable"
+            (removed)="remove(line)">
+            {{line}}
+            <mat-icon matChipRemove *ngIf="removable">cancel</mat-icon>
+          </mat-chip>
+          <input
+            placeholder="New line..."
+            #lineInput
+            [formControl]="lineCtrl"
+            [matAutocomplete]="auto"
+            [matChipInputFor]="chipList"
+            [matChipInputSeparatorKeyCodes]="separatorKeysCodes">
+        </mat-chip-list>
+        <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
+          <mat-option *ngFor="let line of filteredLines | async" [value]="line">
+            {{line}}
+          </mat-option>
+        </mat-autocomplete>
+      </mat-form-field>
+
+    </mat-card-content>
+  </mat-card>
+</mat-dialog-content>
+<mat-dialog-actions align="center">
+  <button mat-raised-button (click)="closeDialog()">Cancel</button>
+  <button mat-raised-button (click)="assignLines()" [disabled]="linename==''||shortname==''||shortnameError||linenameError" color="primary">Create</button>
+</mat-dialog-actions>

@@ -5,8 +5,9 @@ import { RestService } from '../rest.service';
 import {MatSnackBar} from '@angular/material';
 import {MAT_DIALOG_DATA} from '@angular/material';
 import { NewSkuFormulaComponent } from '../new-sku-formula/new-sku-formula.component';
+import { AssignSkuManufacturingLines } from '../assign-sku-manufacturinglines/assign-sku-manufacturinglines.component';
 import { NewFormulaDialogComponent } from '../new-formula-dialog/new-formula-dialog.component';
-
+import { AssignSkuProductlineComponent } from '../assign-sku-productline/assign-sku-productline.component';
 
 @Component({
   selector: 'app-new-sku-dialog',
@@ -27,22 +28,40 @@ export class NewSkuDialogComponent implements OnInit {
   countpercase: number = 0;
   formula: any = null;
   formulascalingfactor: number = 0;
+  manufacturinglines: any[];
+  manufacturinglinesNames: string[];
+
   manufacturingrate: number = 0;
+  productline: string = '';
   comment: String = '';
 
   formulaname: String = ''; // for displaying purposes.
+  productlinename: String = ''; // for displaying purposes.
+
 
   // I know this is weird with the double boolean.
   // They are used to show/hide html content. Idk a better way to do it
+  //////////////////////////////////////////////////////////////////////
+
   formulaDoesNotExist: Boolean = true; // for displaying purposes.
   formulaExists: Boolean = false; // for displaying purposes.
 
-  chosen_formula: String
+  productLineDoesNotExist: Boolean = true; // for displaying purposes.
+  productLineExists: Boolean = false; // for displaying purposes.
+
+  manufacturingLineDoesNotExist: Boolean = true; // for displaying purposes.
+  manufacturingLineExists: Boolean = false; // for displaying purposes.
+
+  ///////////////////////////////////////////////////////////////////////
+
+  chosen_productline: String;
+  chosen_formula: String;
   chosen_scaling_factor: Number;
   
   newFormulaDialogRef: MatDialogRef<NewSkuFormulaComponent>;
   newDialogRef: MatDialogRef<NewFormulaDialogComponent>;
-
+  assignProductLineDialogRef: MatDialogRef<AssignSkuProductlineComponent>;
+  assignManufacturingLineRef: MatDialogRef<AssignSkuManufacturingLines>;
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: any, private dialogRef: MatDialogRef<NewSkuDialogComponent>, public rest:RestService, private snackBar: MatSnackBar, private dialog: MatDialog) { }
 
@@ -58,6 +77,8 @@ export class NewSkuDialogComponent implements OnInit {
     this.countpercase = this.data.present_countPerCase;
     this.formula = this.data.present_formula;
     this.formulascalingfactor = this.data.present_formulascalingfactor;
+    this.productline = this.data.present_productline;
+    this.manufacturinglines = this.data.present_manufacturinglines;
     this.manufacturingrate = this.data.present_manufacturingrate;
     this.comment = this.data.present_comment;
 
@@ -79,14 +100,8 @@ export class NewSkuDialogComponent implements OnInit {
     }
   }
 
-
   refreshData() {
      // Get formula name from id
-
-     console.log("woah mateyy " + this.formula);
-
-     console.log("right here first it's " + this.formulaname);
-
     if(this.formula == null)
     {
       this.formulaname = "";
@@ -95,16 +110,31 @@ export class NewSkuDialogComponent implements OnInit {
     {
       this.formulaname = this.formula['formulaname'];
     }
-    console.log("right here it's " + this.formulaname);
 
      // update formula and scaling factor to display
     this.formulaDoesNotExist = this.formulaname == "";
     this.formulaExists = !this.formulaDoesNotExist;
-    console.log("should add form button be hidden? " + this.formulaExists);
     this.chosen_formula = this.formulaname;
     this.chosen_scaling_factor = this.formulascalingfactor;
-    console.log("okayy finn: name is " + this.formulaname);
-    console.log("okay ya: scale factor is " + this.formulascalingfactor);
+
+
+
+    if(this.productline == null)
+    {
+      this.productline = "";
+    } 
+    
+    this.productlinename = this.productline;
+    
+    //console.log("right here it's " + this.formulaname);
+
+     // update formula and scaling factor to display
+    this.productLineDoesNotExist = this.productlinename == "";
+    this.productLineExists = !this.productLineDoesNotExist;
+    this.chosen_productline = this.productlinename;
+
+    this.manufacturingLineDoesNotExist = this.manufacturinglines == null || this.manufacturinglines == undefined || this.manufacturinglines.length  == 0;
+    this.manufacturingLineExists = !this.manufacturingLineDoesNotExist;
   }
 
   closeDialog() {
@@ -120,6 +150,7 @@ export class NewSkuDialogComponent implements OnInit {
     this.formula = this.data.present_formula;
     this.formulascalingfactor = this.data.present_formulascalingfactor;
     this.manufacturingrate = this.data.present_manufacturingrate;
+    this.productline = this.data.present_productline;
     this.comment = this.data.present_comment;
   }
 
@@ -178,11 +209,112 @@ export class NewSkuDialogComponent implements OnInit {
       this.refreshData();
     });
   }
-  
+
+  // Product line adds
+  addProductLineToSku(edit, productlinename) {
+    console.log("edit product line, ed it: " + edit);
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.data = {edit: edit, present_name: productlinename};
+    this.assignProductLineDialogRef = this.dialog.open(AssignSkuProductlineComponent, dialogConfig);
+
+    //this.newIngredientDialogRef.componentInstance.amount = this.return_amount;
+    //this.newIngredientDialogRef.componentInstance.ingredientNameList = this.ingredientNameList;
+    this.assignProductLineDialogRef.afterClosed().subscribe(event => {
+      // grab the new product line values
+      var new_productline = this.assignProductLineDialogRef.componentInstance.productlineName;
+      console.log("yipee ki yay: " + new_productline);
+      this.productline = new_productline;
+
+     // getProductLines(productlinename: String, productlinenameregex: String, limit: number): Observable<any> {
+
+      // get object id from formula name
+      this.rest.getProductLines(new_productline ,new_productline, 1).subscribe(response => {
+        this.snackBar.open("Successfully added formula " + new_productline, "close", {
+          duration: 2000,
+             });
+          this.productlinename = response[0]['productlinename'];
+
+          // Find sku by sku name
+          this.rest.getSkus(this.skuname,this.skuname,0,0,0,'',1).subscribe(responseSku => {
+            this.snackBar.open("Successfully added formula " + new_productline, "close", {
+              duration: 2000,
+                 });
+              var thisSku = responseSku[0]['skuname'];
+              var productline_skus = response[0]['skus'].push(thisSku);
+
+              // save updated product line name list
+              this.rest.modifyProductLine(new_productline,new_productline,productline_skus).subscribe(responseProductline => {
+                });
+            });
+        this.refreshData();
+        });
+        });
+      }
+
+      addProductLineButton() {
+        if(this.productline == "")
+        {
+          this.addProductLineToSku(false, ""); // new
+        }
+        else 
+        {
+          this.addProductLineToSku(true, this.productlinename); // modifying
+        }        
+    }
+
+
+     // Manufacturing line adds
+  addManufacturingLineToSku(edit, manufacturinglines) {
+    console.log("edit product line, ed it: " + edit);
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.data = {edit: edit, present_sku: this.skuname, present_lines: manufacturinglines};
+    this.assignManufacturingLineRef = this.dialog.open(AssignSkuManufacturingLines, dialogConfig);
+
+    //this.newIngredientDialogRef.componentInstance.amount = this.return_amount;
+    //this.newIngredientDialogRef.componentInstance.ingredientNameList = this.ingredientNameList;
+    this.assignManufacturingLineRef.afterClosed().subscribe(event => {
+      // grab the new product line values
+      var linesList = this.assignManufacturingLineRef.componentInstance.selectedLines;
+      console.log("yipee ki yay: " + linesList);
+      console.log("length: " + linesList.length);
+
+      this.manufacturinglines = linesList;
+      var index;
+      this.manufacturinglinesNames = [];
+      for (index = 0; index < this.manufacturinglines.length; index++)
+      {
+        this.manufacturinglinesNames[index] = this.manufacturinglines[index]['shortname'];
+      } 
+
+        this.refreshData();
+        });
+      }
+
+      addManufacturingLineButton() {
+        if(this.manufacturinglines == null || this.manufacturinglines.length == 0)
+        {
+          this.addManufacturingLineToSku(false, null); // new
+        }
+        else 
+        {
+          this.addManufacturingLineToSku(true, this.manufacturinglines); // modifying
+        }        
+    }
+
+
+
   createSku() {
-    if (this.edit == false)
+    console.log("right now, formula is " + this.formula);
+    if (this.formula == undefined || this.formula == null)
     {
-      this.rest.createSku(this.skuname, this.skunumber, this.caseupcnumber, this.unitupcnumber, this.unitsize, this.countpercase, this.formula, this.formulascalingfactor, this.manufacturingrate, this.comment).subscribe(response => {
+      this.snackBar.open("A formula must be specified for this sku.", "close", {
+        duration: 4000,
+      });
+    }
+
+    else if (this.edit == false)
+    {
+      this.rest.createSku(this.skuname, this.skunumber, this.caseupcnumber, this.unitupcnumber, this.unitsize, this.countpercase, this.formula['formulanumber'], this.formulascalingfactor, this.manufacturingrate, this.comment, this.manufacturinglines, this.productlinename).subscribe(response => {
         this.snackBar.open("Successfully created sku " + this.skuname + ".", "close", {
           duration: 2000,
         });
@@ -191,7 +323,7 @@ export class NewSkuDialogComponent implements OnInit {
       }
 
     else{
-      this.rest.modifySku(this.oldskuname, this.skuname, this.skunumber, this.caseupcnumber, this.unitupcnumber, this.unitsize, this.countpercase, this.formula, this.formulascalingfactor, this.manufacturingrate, this.comment).subscribe(response => {
+      this.rest.modifySku(this.oldskuname, this.skuname, this.skunumber, this.caseupcnumber, this.unitupcnumber, this.unitsize, this.countpercase, this.formula['formulanumber'], this.formulascalingfactor, this.manufacturingrate, this.comment, this.manufacturinglines, this.productlinename).subscribe(response => {
         this.snackBar.open("Successfully modifyed sku " + this.skuname + ".", "close", {
           duration: 2000,
         });
