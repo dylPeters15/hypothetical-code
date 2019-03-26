@@ -41,7 +41,6 @@ export class ManufacturingCalculatorComponent implements OnInit {
 
   ngOnInit() {
     this.goal = this.data.goal[0];
-    console.log(JSON.stringify(this.goal))
     this.calculateIngredientsAndQuantities(this.goal['activities'])
   }
 

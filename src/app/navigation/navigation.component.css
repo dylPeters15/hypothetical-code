@@ -1,16 +1,16 @@
 .header {
-    padding: 20px;
+    padding: 10px;
     text-align: center;
     background: #1abc9c;
     color: white;
-    font-size: 20px;
+    font-size: 18px;
 }
 
 .sidenav-container, .sidenav-container * {
     text-align: center;
     background: #099778;
     color: white;
-    font-size: 16px;
+    font-size: 14px;
 }
 
 
@@ -19,7 +19,7 @@
     background: #eaeeed;
     /* background-color: lightpink; */
     color: black;
-    font-size: 16px;
+    font-size: 14px;
 }
 
 .mat-sidenav-container {
@@ -28,5 +28,11 @@
 }
 
 .mat-nav-list a.active {
-    background: #044d3d;;
+    background: #044d3d;
 }
+
+@media print {
+    app-footer, mat-toolbar {
+        display: none;
+      }
+  }

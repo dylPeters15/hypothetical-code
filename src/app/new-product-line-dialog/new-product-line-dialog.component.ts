@@ -1,16 +1,17 @@
 import {Component, OnInit, Inject} from '@angular/core';
-import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material';
+import { RestServiceV2, AndVsOr } from '../restv2.service';
+import {MatDialog,MatSnackBar, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material';
 
 @Component({
     selector: 'app-new-product-line-dialog',
     templateUrl: 'new-product-line-dialog.component.html',
   })
   export class NewProductLineDialogComponent implements OnInit {
-
+    nameExists: boolean = false;
     productlinename: String;
-    constructor(@Inject(MAT_DIALOG_DATA) public data: any, private dialogRef: MatDialogRef<NewProductLineDialogComponent>) {}
+    constructor(public restv2: RestServiceV2, @Inject(MAT_DIALOG_DATA) public data: any, private dialogRef: MatDialogRef<NewProductLineDialogComponent>) {}
   
-    ngOnInit() {
+    async ngOnInit() {
       this.productlinename = this.data.productlinename;
     }
 
@@ -23,7 +24,7 @@ import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material';
       this.dialogRef.close();
     }
 
-    createProductLine() {
+    async createProductLine() {
       if (this.data.productlinename) {
         this.dialogRef.close(this.data.productlinename);
       }

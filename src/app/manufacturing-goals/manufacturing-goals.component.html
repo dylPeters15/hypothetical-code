@@ -26,11 +26,8 @@
       
       <ng-container matColumnDef="activities">
         <mat-header-cell *matHeaderCellDef>Activities</mat-header-cell>
-        <mat-cell *matCellDef="let element"> <button mat-raised-button
-          matTooltip={{element.activities}}
-          aria-label="Button that displays all activities when focused or hovered over">
-    Activities: {{element.activityCount}}
-        </button>
+        <mat-cell *matCellDef="let element"> 
+          <button mat-raised-button (click)=showActivityDetails(element)> Activities: {{element.activityCount}}</button>
         </mat-cell>
       </ng-container>
     
@@ -46,23 +43,23 @@
         </mat-cell>
       </ng-container>
 
-      <ng-container matColumnDef="actions">
-        <mat-header-cell *matHeaderCellDef>Actions</mat-header-cell>
-        <mat-cell *matCellDef="let element">
-          <button mat-button (click)="modifySelected(element)" [disabled]="dataSource.data.length==0" color="primary">
-            <mat-icon>edit</mat-icon> 
-          </button>
-        </mat-cell>
-      </ng-container>
-
         <ng-container matColumnDef="calculator">
-          <mat-header-cell *matHeaderCellDef>Info</mat-header-cell>
+          <mat-header-cell *matHeaderCellDef>Calculator</mat-header-cell>
           <mat-cell *matCellDef="let element">
             <button mat-button (click)="showCalculator(element)" [disabled]="dataSource.data.length==0" color="primary">
               <mat-icon>info</mat-icon> 
             </button>
           </mat-cell>
         </ng-container>
+
+        <ng-container matColumnDef="actions">
+            <mat-header-cell *matHeaderCellDef>Actions</mat-header-cell>
+            <mat-cell *matCellDef="let element">
+              <button mat-button (click)="modifySelected(element)" [disabled]="dataSource.data.length==0" color="primary">
+                <mat-icon>edit</mat-icon> 
+              </button>
+            </mat-cell>
+          </ng-container>
 
       
       <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>

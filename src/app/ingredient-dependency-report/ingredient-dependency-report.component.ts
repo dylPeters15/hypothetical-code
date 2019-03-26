@@ -28,7 +28,7 @@ export class ExportableIngredientDependency {
   ingredientname: string;
   ingredientnumber: number;
   numberskus: number;
-  skus: string[];
+  skus: string;
   constructor(ingredientname, ingredientnumber, numberskus, skus) {
     this.ingredientname = ingredientname;
     this.ingredientnumber = ingredientnumber;
@@ -193,14 +193,19 @@ export class IngredientDependencyComponent implements OnInit {
     let exportData: ExportableIngredientDependency[] = [];
     this.data.forEach(ingredient => {
       if(ingredient.checked) {
+        let skuStrings = "";
+        ingredient.skus.forEach(sku => {
+          skuStrings += sku.trim() + "; "
+        })
+        console.log("ING: " + JSON.stringify(ingredient))
         let ingredientToExport = new ExportableIngredientDependency(ingredient.ingredientname, 
-          ingredient.ingredientnumber, ingredient.numberskus, ingredient.skus);
+          ingredient.ingredientnumber, ingredient.skus.length, skuStrings);
         exportData.push(ingredientToExport);
       }
     });
       const options = { 
         fieldSeparator: ',',
-        filename: 'ingredients',
+        filename: 'ingredientdependencies',
         quoteStrings: '',
         decimalSeparator: '.',
         showLabels: true, 

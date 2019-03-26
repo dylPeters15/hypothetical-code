@@ -18,3 +18,10 @@ color: black;
 th.mat-header-cell {
 text-align: center;
 }
+
+@media print {
+    * {
+        display: none;
+      }
+      
+  }
