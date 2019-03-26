@@ -181,10 +181,18 @@ export class ManufacturingScheduleComponent implements OnInit {
       if (count == 1) {
         var activities = await this.restv2.getActivities(AndVsOr.OR, null, null, skuObject['_id'], 100)  
         var newActivity;
-        var activityid = item.content.split("::")[1];
+        var activityid;
+        console.log(item.content)
+        if (item.content.split("::")[1]) {
+          var activityid = item.content.split("::")[1];
+        }
+        else {
+          activityid = item.id;
+        }
         activities.forEach(activity => {
           if (activity['_id'] == activityid) {
             newActivity = activity;
+            console.log('newActivity', newActivity)
           }
         })
         var modify = await this.restv2.modifyActivity(AndVsOr.AND, activityid, newActivity['sku']['_id'], 
