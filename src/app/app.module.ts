@@ -80,6 +80,7 @@ import { SalesSummaryRowComponent } from './sales-report/sales-summary-row/sales
 import { SkuGraphComponent } from './sales-report/sku-drilldown/sku-graph/sku-graph.component';
 import { NgDygraphsModule } from 'ng-dygraphs';
 import { ActivityDetailsComponent } from './activity-details/activity-details.component';
+import { SkuDetailsComponent } from './sku-details/sku-details.component';
 
 const appRoutes: Routes = [
   { path: 'login', component: LoginComponent, data: { title: 'Log In' }, canActivate: [AlreadyLoggedInRouteGuardService] },
@@ -161,7 +162,8 @@ const appRoutes: Routes = [
     SkuDrilldownComponent,
     SalesSummaryRowComponent,
     SkuGraphComponent,
-    ActivityDetailsComponent
+    ActivityDetailsComponent,
+    SkuDetailsComponent
   ],
   imports: [
     BrowserModule,
@@ -196,7 +198,7 @@ const appRoutes: Routes = [
   providers: [],
   bootstrap: [AppComponent],
 
-  entryComponents: [ConfirmDeletionDialogComponent, DeleteProductLineDialogComponent, UserNotificationDialogComponent, NewUserDialogComponent, PasswordConfirmationDialogComponent, PrivacyPolicyDialogComponent, TermsAndConditionsDialogComponent, MoreInfoDialogComponent, NewSkuDialogComponent, NewFormulaDialogComponent, NewFormulaIngredientDialogComponent, NewIngredientDialogComponent, NewGoalDialogComponent, NewProductLineDialogComponent, NewSkuFormulaComponent, ConfirmActionDialogComponent, ImportPreviewDialogComponent, NewLineDialogComponent, EnableGoalsDialogComponent, ModifyActivityDialogComponent, SkuDrilldownComponent, ActivityDetailsComponent]
+  entryComponents: [ConfirmDeletionDialogComponent, DeleteProductLineDialogComponent, UserNotificationDialogComponent, NewUserDialogComponent, PasswordConfirmationDialogComponent, PrivacyPolicyDialogComponent, TermsAndConditionsDialogComponent, MoreInfoDialogComponent, NewSkuDialogComponent, NewFormulaDialogComponent, NewFormulaIngredientDialogComponent, NewIngredientDialogComponent, NewGoalDialogComponent, NewProductLineDialogComponent, NewSkuFormulaComponent, ConfirmActionDialogComponent, ImportPreviewDialogComponent, NewLineDialogComponent, EnableGoalsDialogComponent, ModifyActivityDialogComponent, SkuDrilldownComponent, ActivityDetailsComponent, SkuDetailsComponent]
 
 })
 export class AppModule { 

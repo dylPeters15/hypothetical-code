@@ -5,7 +5,9 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { NewLineDialogComponent } from '../new-line-dialog/new-line-dialog.component'
 import { MatDialogRef, MatDialog, MatDialogConfig, MatTableDataSource,MatPaginator, MatSnackBar } from "@angular/material";
 import {ExportToCsv} from 'export-to-csv';
+import { RestServiceV2, AndVsOr } from '../restv2.service';
 import { auth } from '../auth.service';
+import { SkuDetailsComponent } from '../sku-details/sku-details.component';
 
 export class ManufacturingLine {
   linename: String;
@@ -51,8 +53,9 @@ export class ManufacturingLinesComponent implements OnInit {
   dataSource = new MatTableDataSource<ManufacturingLine>(this.data);
   @ViewChild(MatPaginator) paginator: MatPaginator;
   newDialogRef: MatDialogRef<NewLineDialogComponent>;
+  skuDialogRef: MatDialogRef<SkuDetailsComponent>;
   skuString: string = '';
-  constructor(public rest:RestService, private route: ActivatedRoute, private router: Router, private snackBar: MatSnackBar, private dialog: MatDialog) {  }
+  constructor(public restv2: RestServiceV2,public rest:RestService, private route: ActivatedRoute, private router: Router, private snackBar: MatSnackBar, private dialog: MatDialog) {  }
   admin: boolean = false;
 
   getPageSizeOptions() {
@@ -185,6 +188,16 @@ export class ManufacturingLinesComponent implements OnInit {
       }
     }
     return true;
+  }
+
+  async showSkuDetails(element){
+    let realLine = await this.restv2.getLine(AndVsOr.OR, element['linename'], element['linename'], null,null,1);
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.data = {skus: realLine[0]['skus'], name: realLine[0]['shortname']};
+    this.skuDialogRef = this.dialog.open(SkuDetailsComponent, dialogConfig);
+    this.skuDialogRef.afterClosed().subscribe(event => {
+      this.refreshData();
+    });
   }
 
 }
