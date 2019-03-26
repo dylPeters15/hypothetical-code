@@ -283,7 +283,8 @@ export class NewSkuDialogComponent implements OnInit {
       this.manufacturinglinesNames = [];
       for (index = 0; index < this.manufacturinglines.length; index++)
       {
-        this.manufacturinglinesNames[index] = this.manufacturinglines[index]['shortname'];
+        this.manufacturinglinesNames[index] = this.manufacturinglines[index]['linename'];
+        console.log("current name IS: " + this.manufacturinglines[index]['shortname']);
       } 
 
         this.refreshData();
@@ -300,8 +301,6 @@ export class NewSkuDialogComponent implements OnInit {
           this.addManufacturingLineToSku(true, this.manufacturinglines); // modifying
         }        
     }
-
-
 
   createSku() {
     console.log("right now, formula is " + this.formula); // for some reason formula is the number here?

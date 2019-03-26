@@ -58,6 +58,7 @@ export class AssignSkuManufacturingLines implements OnInit {
           this.rest.getLine(line,line,'', '', 100).subscribe(response=>{
             if(response[0] != undefined){
               let currentLine = response[0];
+              console.log("WAHAHAHAHAHAA: " + currentLine['shortname']);
               console.log("Line: " + JSON.stringify(currentLine))
               this.selectedLines.push({line: currentLine['_id']});
             }
@@ -71,6 +72,7 @@ export class AssignSkuManufacturingLines implements OnInit {
     else {
       this.dialog_title = "Assign Manufacturing Lines";
     }
+    
     this.rest.getLine('', '.*','','',100).subscribe(response => {
         this.lineList = response;
         this.lineList.forEach(element => {
@@ -87,7 +89,7 @@ export class AssignSkuManufacturingLines implements OnInit {
 
   closeDialog() {
     this.dialogRef.componentInstance.selectedLines = this.selectedLines;
-    console.log("on this end, listed lines is " + this.selectedLines);
+    var i;
     this.dialogRef.close();
     //this.selectedLineNames = [];
     //this.lineList = [];
@@ -137,7 +139,9 @@ export class AssignSkuManufacturingLines implements OnInit {
     this.rest.getLine(event.option.viewValue, '', '','',5).subscribe(response => {
       var i;
       for(i = 0; i<response.length; i++){
-        this.selectedLines.push({line: response[i]['_id']})
+        console.log("SELECTED ONE");
+        console.log("added one is " + response[i]);
+        this.selectedLines.push(response[i])
       }
 
       
