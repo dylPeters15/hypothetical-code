@@ -211,7 +211,7 @@ export class RestServiceV2 {
   getIngredients(andVsOr: AndVsOr, ingredientname: String, ingredientnameregex: String, ingredientnumber: number, limit: number): Promise<any> {
     return this.http.get(endpoint + "ingredients", this.generateHeaderWithFilterSchema(andVsOr, [
       {ingredientname: ingredientname},
-      {ingredientname: ingredientnameregex?{ingredientname:{$regex: ingredientnameregex}}:null},
+      {ingredientname: ingredientnameregex?{$regex: ingredientnameregex}:null},
       {ingredientnumber: ingredientnumber}
     ], limit)).toPromise();
   }

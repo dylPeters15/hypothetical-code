@@ -6,6 +6,7 @@ import {FormControl} from '@angular/forms';
 import {Observable} from 'rxjs';
 import {map, startWith} from 'rxjs/operators';
 import {COMMA, ENTER} from '@angular/cdk/keycodes';
+import { RestServiceV2, AndVsOr } from '../restv2.service';
 
 @Component({
   selector: 'app-assign-sku-productline',
@@ -23,7 +24,11 @@ export class AssignSkuProductlineComponent implements OnInit {
   addOnBlue = true;
   seperatorKeysCodes: number[] = [ENTER, COMMA]
   productlineCtrl = new FormControl();
-  filteredProductlines: Observable<String[]>;
+  filteredProductlines: Observable<string[]> = new Observable(observer => {
+    this.productlineCtrl.valueChanges.subscribe(async newVal => {
+      observer.next(await this.restv2.getProductLines(AndVsOr.OR, null, "(?i).*"+newVal+".*",1000));
+    });
+  });
   selectedProductlineNames: string[] = [];
   productlineNameList: string[] = [];
   productlineList: any = [];
@@ -33,11 +38,7 @@ export class AssignSkuProductlineComponent implements OnInit {
   @ViewChild('productlineInput') productlineInput: ElementRef<HTMLInputElement>;
   @ViewChild('auto') matAutocomplete: MatAutocomplete;
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: any, private dialogRef: MatDialogRef<AssignSkuProductlineComponent>, public rest:RestService, private snackBar: MatSnackBar) {
-    this.filteredProductlines = this.productlineCtrl.valueChanges.pipe(
-      startWith(null),
-      map((productline: string | null) => productline ? this._filter(productline) : this.productlineNameList.slice()));
-   }
+  constructor(public restv2: RestServiceV2, @Inject(MAT_DIALOG_DATA) public data: any, private dialogRef: MatDialogRef<AssignSkuProductlineComponent>, public rest:RestService, private snackBar: MatSnackBar) {}
 
   ngOnInit() {
     this.edit = this.data.edit;

@@ -23,7 +23,7 @@
         </mat-chip-list>
         <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
           <mat-option *ngFor="let line of filteredLines | async" [value]="line">
-            {{line}}
+            {{line['linename']}} ({{line['shortname']}})
           </mat-option>
         </mat-autocomplete>
       </mat-form-field>

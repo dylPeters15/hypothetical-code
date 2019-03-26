@@ -21,7 +21,11 @@ export class AssignSkuManufacturingLines implements OnInit {
   addOnBlur = true;
   separatorKeysCodes: number[] = [ENTER, COMMA];
   lineCtrl = new FormControl();
-  filteredLines: Observable<String[]>;
+  filteredLines: Observable<string[]> = new Observable(observer => {
+    this.lineCtrl.valueChanges.subscribe(async newVal => {
+      observer.next(await this.restv2.getLine(AndVsOr.OR, null, "(?i).*"+newVal+".*",null,null,1000));
+    });
+  });
   currentSku: any;
   //linename: string = '';
   //shortname: string = '';
@@ -35,11 +39,7 @@ export class AssignSkuManufacturingLines implements OnInit {
   @ViewChild('lineInput') lineInput: ElementRef<HTMLInputElement>;
   @ViewChild('auto') matAutocomplete: MatAutocomplete;
 
-  constructor(public restv2: RestServiceV2, @Inject(MAT_DIALOG_DATA) public data: any, private dialogRef: MatDialogRef<AssignSkuManufacturingLines>, public rest:RestService, private snackBar: MatSnackBar) { 
-    this.filteredLines = this.lineCtrl.valueChanges.pipe(
-      startWith(null),
-      map((line: string | null) => line ? this._filter(line) : this.lineNameList.slice()));
-  }
+  constructor(public restv2: RestServiceV2, @Inject(MAT_DIALOG_DATA) public data: any, private dialogRef: MatDialogRef<AssignSkuManufacturingLines>, public rest:RestService, private snackBar: MatSnackBar) { }
 
   ngOnInit() {
     this.edit = this.data.edit;
