@@ -30,3 +30,9 @@
 .mat-nav-list a.active {
     background: #044d3d;;
 }
+
+@media print {
+    app-footer, mat-toolbar {
+        visibility: hidden;
+      }
+  }
