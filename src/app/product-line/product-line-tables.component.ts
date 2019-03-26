@@ -67,12 +67,11 @@ export class ProductLineTablesComponent implements ControlValueAccessor, OnInit 
     allProductLines.forEach(productLine => {
       existingLines.push(productLine['productlinename'])
     });
-    console.log("EXISTING: " + JSON.stringify(allProductLines))
     
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
 
-        if(existingLines.indexOf(this._value['productlinename']) != -1){
+        if(existingLines.indexOf(result) != -1){
           this.snackBar.open("Unable to modify. Name " + result + " already exists.", "close", {
             duration: 2000,
           });
