@@ -62,8 +62,8 @@ export class ManufacturingCalculatorComponent implements OnInit {
   addToDataSource(ingredient, numCases, formulaScaleFactor, ingredientQuantity){
     console.log("ING: " + JSON.stringify(ingredient))
       let name = ingredient['ingredientname'];
-      let packagesMeasured = Math.round(100*numCases * formulaScaleFactor * ingredient['amount'])/100; ;
-      let packages = Math.round(100*(packagesMeasured/ingredientQuantity))/100;
+      let packages = Math.round(100*numCases * formulaScaleFactor * ingredientQuantity)/100; ;
+      let packagesMeasured = Math.round(100*(packages * ingredient['amount']))/100;
       let packagesMeasuredString = packagesMeasured + " " + ingredient['unitofmeasure']
       if(this.ingredients.indexOf(name) == -1){
         this.ingredients.push(name);
