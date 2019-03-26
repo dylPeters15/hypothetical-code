@@ -1,0 +1,24 @@
+<mat-dialog-content align="center">
+    <mat-card>
+      <mat-card-header >
+        <mat-card-title>Legend of Warning Conditions</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+       <mat-list>
+         <mat-list-item >
+           <font color='red'>Scheduled to complete after deadline </font>
+         </mat-list-item>
+         <mat-list-item >
+            <font color='pink'>Orphaned from a disabled manufacturing goal</font> 
+          </mat-list-item>
+          <mat-list-item >
+            <font color='lightgreen'>Has a duration that has been overridden</font> 
+          </mat-list-item>
+       
+        </mat-list>
+      </mat-card-content>
+    </mat-card>
+</mat-dialog-content>
+<mat-dialog-actions align="center">
+        <button mat-raised-button (click)="closeDialog()">Done</button>
+</mat-dialog-actions>

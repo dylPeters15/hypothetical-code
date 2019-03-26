@@ -1,0 +1,13 @@
+@media print {
+    #options {
+        display: none;
+      }
+      #outerTabs {
+          /* visibility: hidden; */
+          width: 200%;
+      }
+      mat-card-content {
+          text-align: center;
+          justify-content: center;
+      }
+  }

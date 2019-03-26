@@ -9,9 +9,6 @@
     <button mat-raised-button (click)="deleteSelected()" color="warn" [disabled]="noneSelected()"> Delete Selected </button>
     <!-- <button mat-raised-button (click)="modifySelected()" style="color: white; background-color: blue;" [disabled]="dataSource.data.length==0"> Modify Selected </button> -->
     <button mat-raised-button (click)="newGoal()" color="primary"> New Goal </button>
-    <mat-form-field>
-      <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter">
-    </mat-form-field>
     <mat-table [dataSource]="dataSource" class="mat-elevation-z8">
       <ng-container matColumnDef="checked">
         <mat-header-cell *matHeaderCellDef>Selected</mat-header-cell>
@@ -44,7 +41,7 @@
       </ng-container>
 
         <ng-container matColumnDef="calculator">
-          <mat-header-cell *matHeaderCellDef>Info</mat-header-cell>
+          <mat-header-cell *matHeaderCellDef>Calculator</mat-header-cell>
           <mat-cell *matCellDef="let element">
             <button mat-button (click)="showCalculator(element)" [disabled]="dataSource.data.length==0" color="primary">
               <mat-icon>info</mat-icon> 

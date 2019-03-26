@@ -78,10 +78,12 @@ export class SkuComponent implements OnInit {
   dataSource =  new MatTableDataSource<UserForTable>(this.data);
   admin: boolean = false;
   filterQuery: string = "";
+  filteredData =  new MatTableDataSource<UserForTable>();
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
   ngOnInit() {
+    this.admin = auth.isAuthenticatedForAdminOperation();
     this.paginator.pageSize = 20;
     this.admin = auth.isAuthenticatedForAdminOperation();
     this.refreshData();
@@ -330,14 +332,14 @@ export class SkuComponent implements OnInit {
   }
   
   deselectAll() {
-    this.data.forEach(user => {
-      user.checked = false;
+    this.data.forEach(sku => {
+      sku.checked = false;
     });
   }
 
   selectAll() {
-    this.data.forEach(user => {
-      user.checked = true;
+    this.dataSource.filteredData.forEach(sku => {
+      sku.checked = true;
     });
   }
 

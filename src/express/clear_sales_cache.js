@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const database = require('./database.js');
 const scraper = require('./v2/sales_scraper.js')
 clearCache().then(() => {    
-        mongoose.connection.close();
+    console.log("Done")
 });
 
 async function clearCache(){

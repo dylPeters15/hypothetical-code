@@ -3,19 +3,26 @@
 <!-- <div id="timeline" #timeline></div> -->
 <div>
     <mat-card class="ManufacturingSchedule">
-        <h1 style="text-align:center"> Manufacturing Schedule </h1>
-        <button mat-raised-button (click)="openEnableGoalsDialog()"> Enable/Disable Goals </button>
-        <div id="timeline" #timeline></div>
-        <div class="goalsContainer">
-            <div [ngClass]="['items']"  *ngFor="let goal of goalsDataSource['data']">
-                <h3>{{goal['goalname']}}</h3>
-                <p>Deadline: {{goal['date'].valueOf().split('T')[0]}}</p>
-                <div draggable="true" (dragstart)="handleDragStart($event, activity)" [ngClass]="['item']" *ngFor="let activity of goal['activities']">
-                    {{activity['sku']['skuname']}}
+        <mat-card-header style="align-content: center; align-items: center; justify-content: center; display: grid;">
+            <mat-card-title>Manufacturing Schedule</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+            <button mat-raised-button (click)="openEnableGoalsDialog()"> Enable/Disable Goals </button>
+            <button mat-raised-button (click)=showLegend()> Legend </button>
+            <div id="timeline" #timeline></div>
+            <div class="goalsContainer">
+                <div [ngClass]="['items']"  *ngFor="let goal of goalsDataSource['data']">
+                    <h4>{{goal['goalname']}}</h4>
+                    <p>Deadline: {{goal['date'].valueOf().split('T')[0]}}</p>
+                    <div draggable="true" (dragstart)="handleDragStart($event, activity)" [ngClass]="['item']" *ngFor="let activity of goal['activities']">
+                        {{activity['sku']['skuname']}}
+                    </div>
+                
                 </div>
-            
             </div>
-        </div>
+        </mat-card-content>
+
+        
             
     </mat-card>    
 </div>

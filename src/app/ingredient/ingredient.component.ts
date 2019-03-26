@@ -254,22 +254,13 @@ export class IngredientComponent  implements OnInit {
   }
 
   selectAll() {
-    this.data.forEach(ingredient => {
+    this.dataSource.filteredData.forEach(ingredient => {
       ingredient.checked = true;
     });
   }
 
   applyFilter(filterValue: string) {
     this.dataSource.filter = filterValue.trim().toLowerCase();
-    var lowerIndex = this.paginator.pageSize * this.paginator.pageIndex;
-    var upperIndex = this.paginator.pageSize * (this.paginator.pageIndex+1);
-    if (this.data.length < upperIndex) {
-      upperIndex = this.data.length;
-    }
-    this.deselectAll();
-    for (var i = lowerIndex; i < upperIndex; i=i+1) {
-      this.data[i].checked = true;
-    }
   }
   
   ngAfterViewChecked() {
@@ -305,7 +296,7 @@ export class IngredientComponent  implements OnInit {
     });
       const options = { 
         fieldSeparator: ',',
-        filename: 'ingredientdependencies',
+        filename: 'ingredients',
         quoteStrings: '',
         decimalSeparator: '.',
         showLabels: true, 

@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, HostListener } from '@angular/core';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatSidenav } from '@angular/material';
 import { auth } from '../auth.service';
@@ -19,6 +19,13 @@ export class SidenavService {
   styleUrls: ['./navigation.component.css']
 })
 export class NavigationComponent implements OnInit {
+
+  @HostListener('window:beforeprint',['$event'])
+    onBeforePrint(event){
+    console.log('Before print');
+    this.sidenavService.sideNav.close();
+  }
+
 
   @ViewChild('drawer') public sideNav:MatSidenav;
   loggedin: boolean = false;

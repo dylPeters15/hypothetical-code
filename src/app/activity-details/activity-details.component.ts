@@ -35,13 +35,12 @@ constructor(@Inject(MAT_DIALOG_DATA) public data: any,private dialogRef: MatDial
 
   printSKU(skuObject){
     let sku = '';
-    sku += skuObject['skuname'] + ': ' + skuObject['unitsize'] + ' * ' + skuObject['countpercase'];
+    sku += skuObject['skuname'] + ': ' + skuObject['unitsize'] + ' * ' + skuObject['countpercase'] + ' ' + '(' + skuObject['skunumber'] + ')';
     return sku;
 }
 
 closeDialog() {
   this.dialogRef.close();
-  this.goal = null;
   this.activityStrings = null;
 }
 

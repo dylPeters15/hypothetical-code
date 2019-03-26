@@ -6,6 +6,7 @@ import {FormControl} from '@angular/forms';
 import {Observable} from 'rxjs';
 import {map, startWith} from 'rxjs/operators';
 import {COMMA, ENTER} from '@angular/cdk/keycodes';
+import { RestServiceV2, AndVsOr } from '../restv2.service';
 
 export class DisplayableActivity{
   skuname: string = '';
@@ -32,7 +33,11 @@ export class NewGoalDialogComponent implements OnInit {
   addOnBlur = true;
   separatorKeysCodes: number[] = [ENTER, COMMA];
   skuCtrl = new FormControl();
-  filteredSkus: Observable<String[]>;
+  filteredSkus: Observable<string[]> = new Observable(observer => {
+    this.skuCtrl.valueChanges.subscribe(async newVal => {
+      observer.next(await this.restv2.getSkus(AndVsOr.AND, null, "(?i).*"+newVal+".*", null,null,null,null,1000));
+    });
+  });
   name: string = '';
   quantity: number;
   shortname: string = '';
@@ -50,11 +55,7 @@ export class NewGoalDialogComponent implements OnInit {
   @ViewChild('skuInput') skuInput: ElementRef<HTMLInputElement>;
   @ViewChild('auto') matAutocomplete: MatAutocomplete;
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: any, private dialogRef: MatDialogRef<NewGoalDialogComponent>, public rest:RestService, private snackBar: MatSnackBar) { 
-    this.filteredSkus = this.skuCtrl.valueChanges.pipe(
-      startWith(null),
-      map((sku: string | null) => sku ? this._filter(sku) : this.skuNameList.slice()));
-  }
+  constructor(public restv2: RestServiceV2,@Inject(MAT_DIALOG_DATA) public data: any, private dialogRef: MatDialogRef<NewGoalDialogComponent>, public rest:RestService, private snackBar: MatSnackBar) { }
 
   ngOnInit() {
     console.log("IDS: " + this.activityIds)

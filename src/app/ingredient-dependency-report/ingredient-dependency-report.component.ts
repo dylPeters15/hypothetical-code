@@ -28,7 +28,7 @@ export class ExportableIngredientDependency {
   ingredientname: string;
   ingredientnumber: number;
   numberskus: number;
-  skus: string[];
+  skus: string;
   constructor(ingredientname, ingredientnumber, numberskus, skus) {
     this.ingredientname = ingredientname;
     this.ingredientnumber = ingredientnumber;
@@ -178,29 +178,42 @@ export class IngredientDependencyComponent implements OnInit {
   }
 
   selectAll() {
-    var lowerIndex = this.paginator.pageSize * this.paginator.pageIndex;
-    var upperIndex = this.paginator.pageSize * (this.paginator.pageIndex+1);
-    if (this.data.length < upperIndex) {
-      upperIndex = this.data.length;
-    }
-    this.deselectAll();
-    for (var i = lowerIndex; i < upperIndex; i=i+1) {
-      this.data[i].checked = true;
-    }
+    // var lowerIndex = this.paginator.pageSize * this.paginator.pageIndex;
+    // var upperIndex = this.paginator.pageSize * (this.paginator.pageIndex+1);
+    // if (this.data.length < upperIndex) {
+    //   upperIndex = this.data.length;
+    // }
+    // this.deselectAll();
+    // for (var i = lowerIndex; i < upperIndex; i=i+1) {
+    //   this.data[i].checked = true;
+    // }
+
+    this.dataSource.filteredData.forEach(formula => {
+      formula.checked = true;
+    });
+  }
+
+  applyFilter(filterValue: string) {
+    this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 
   exportSelected(){
     let exportData: ExportableIngredientDependency[] = [];
     this.data.forEach(ingredient => {
       if(ingredient.checked) {
+        let skuStrings = "";
+        ingredient.skus.forEach(sku => {
+          skuStrings += sku.trim() + "; "
+        })
+        console.log("ING: " + JSON.stringify(ingredient))
         let ingredientToExport = new ExportableIngredientDependency(ingredient.ingredientname, 
-          ingredient.ingredientnumber, ingredient.numberskus, ingredient.skus);
+          ingredient.ingredientnumber, ingredient.skus.length, skuStrings);
         exportData.push(ingredientToExport);
       }
     });
       const options = { 
         fieldSeparator: ',',
-        filename: 'ingredients',
+        filename: 'ingredientdependencies',
         quoteStrings: '',
         decimalSeparator: '.',
         showLabels: true, 
