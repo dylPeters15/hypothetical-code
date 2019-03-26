@@ -21,6 +21,6 @@ th.mat-header-cell {
 
 @media print {
   button, input, mat-form-field, #checkColumn, mat-checkbox {
-      visibility: hidden;
+      display: none;
     }
 }

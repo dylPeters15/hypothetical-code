@@ -33,6 +33,6 @@
 
 @media print {
     app-footer, mat-toolbar {
-        visibility: hidden;
+        display: none;
       }
   }
