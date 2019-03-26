@@ -8,7 +8,8 @@
         <button mat-raised-button (click)="deselectAll()"> Deselect All </button>
         <button mat-raised-button (click)="exportSelected()" [disabled]="noneSelected()"> Export Selected To CSV </button>
         <mat-form-field>
-          <input matInput placeholder="Filter" [(ngModel)]="filterQuery" (ngModelChange)="refreshData($event)">
+            <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter">
+          <!-- <input matInput placeholder="Filter" [(ngModel)]="filterQuery" (ngModelChange)="refreshData($event)"> -->
         </mat-form-field>
 
         <table mat-table [dataSource]="dataSource" matSort (matSortChange)="sortData($event)" class="mat-elevation-z8">

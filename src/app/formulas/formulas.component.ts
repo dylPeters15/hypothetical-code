@@ -211,14 +211,14 @@ export class FormulaComponent implements OnInit {
   }
   
   deselectAll() {
-    this.data.forEach(user => {
-      user.checked = false;
+    this.data.forEach(formula => {
+      formula.checked = false;
     });
   }
 
   selectAll() {
-    this.data.forEach(user => {
-      user.checked = true;
+    this.dataSource.filteredData.forEach(formula => {
+      formula.checked = true;
     });
   }
 

@@ -178,15 +178,23 @@ export class IngredientDependencyComponent implements OnInit {
   }
 
   selectAll() {
-    var lowerIndex = this.paginator.pageSize * this.paginator.pageIndex;
-    var upperIndex = this.paginator.pageSize * (this.paginator.pageIndex+1);
-    if (this.data.length < upperIndex) {
-      upperIndex = this.data.length;
-    }
-    this.deselectAll();
-    for (var i = lowerIndex; i < upperIndex; i=i+1) {
-      this.data[i].checked = true;
-    }
+    // var lowerIndex = this.paginator.pageSize * this.paginator.pageIndex;
+    // var upperIndex = this.paginator.pageSize * (this.paginator.pageIndex+1);
+    // if (this.data.length < upperIndex) {
+    //   upperIndex = this.data.length;
+    // }
+    // this.deselectAll();
+    // for (var i = lowerIndex; i < upperIndex; i=i+1) {
+    //   this.data[i].checked = true;
+    // }
+
+    this.dataSource.filteredData.forEach(formula => {
+      formula.checked = true;
+    });
+  }
+
+  applyFilter(filterValue: string) {
+    this.dataSource.filter = filterValue.trim().toLowerCase();
   }
 
   exportSelected(){
