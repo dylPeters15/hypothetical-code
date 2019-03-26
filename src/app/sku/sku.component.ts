@@ -78,6 +78,7 @@ export class SkuComponent  implements OnInit {
   @ViewChild(MatSort) sort: MatSort;
 
   ngOnInit() {
+    this.admin = auth.isAuthenticatedForAdminOperation();
     this.paginator.pageSize = 20;
     this.admin = auth.isAuthenticatedForAdminOperation();
     this.refreshData();
