@@ -34,7 +34,7 @@ export class SkuDetailsComponent implements OnInit {
 
   printSKU(skuObject){
     let sku = '';
-    sku += skuObject['skuname'] + ': ' + skuObject['unitsize'] + ' * ' + skuObject['countpercase'];
+    sku += skuObject['skuname'] + ': ' + skuObject['unitsize'] + ' * ' + skuObject['countpercase'] + ' ' + '(' + skuObject['skunumber'] + ')';
     return sku;
 }
 
