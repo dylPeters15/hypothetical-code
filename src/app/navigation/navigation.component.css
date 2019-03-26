@@ -30,3 +30,12 @@
 .mat-nav-list a.active {
     background: #044d3d;;
 }
+
+@media print {
+    app-footer, mat-sidenav, mat-toolbar {
+        display: none;
+      }
+        button {
+            display: none;
+          }
+  }
