@@ -246,7 +246,6 @@ export class ManufacturingScheduleComponent implements OnInit {
     }
     var startTime = parseInt((activity['startdate'].split('T')[1]).split(':')[0], 10) - 7;
     var endDate = this.calculateEndDate(new Date(activity['startdate']), Math.round(duration), startTime);
-    var ret;
     this.checkOverdue(activity['_id'], endDate).then(isOverdue => {
       if (isOverdue) {
         className = 'overdue';
@@ -256,15 +255,6 @@ export class ManufacturingScheduleComponent implements OnInit {
           className = 'orphan'
         }
         this.data.add({
-          id: activity['_id'],
-          group: group,
-          start: activity['startdate'],
-          end: endDate,
-          content: activity['sku']['skuname'],
-          className: className
-        })
-        console.log('timeline data',this.timeline.itemsData)
-        this.timeline.itemsData.update({
           id: activity['_id'],
           group: group,
           start: activity['startdate'],
