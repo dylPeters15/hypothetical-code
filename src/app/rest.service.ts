@@ -6,8 +6,8 @@ import { start } from 'repl';
 
 
 // const endpoint = 'https://vcm-8238.vm.duke.edu:8443/'; // Ben
- //const endpoint = 'https://vcm-8405.vm.duke.edu:8443/'; // Noah
- const endpoint = 'https://vcm-8205.vm.duke.edu:8443/'; // Prod
+const endpoint = 'https://vcm-8405.vm.duke.edu:8443/'; // Noah
+ //const endpoint = 'https://vcm-8205.vm.duke.edu:8443/'; // Prod
 //const endpoint = 'https://localhost:8443/'; // localhost
 
 @Injectable({
@@ -175,7 +175,7 @@ deleteFormula(formulanumber: number): Observable<any> {
 createSku(skuname: String, skunumber: number, 
   caseupcnumber: number, unitupcnumber: number, unitsize: string, 
   countpercase: number, formulanum: Number, formulascalingfactor: Number, manufacturingrate: Number, comment: String, manufacturinglines?: any[], productline?: String): Observable<any> {
-  console.log("We are now trying to create our sku. product line: " + productline);
+  console.log("We are now trying to create our sku. product line: " + productline + ", manufacturing lines: " + manufacturinglines + " formula num: " + formulanum);
   if(productline == undefined) productline = "No Product Line Assigned";
     return this.http.put(endpoint + "skus", {
     skuname: skuname,

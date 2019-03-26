@@ -63,7 +63,7 @@ export class ExportableSKU {
     templateUrl: './sku.component.html',
     styleUrls: ['./sku.component.css']
   })
-export class SkuComponent  implements OnInit {
+export class SkuComponent implements OnInit {
 
   constructor(public rest:RestService, private snackBar: MatSnackBar, private dialog: MatDialog) { }
   allReplacement = 54321;
@@ -88,6 +88,7 @@ export class SkuComponent  implements OnInit {
   }
 
   refreshData(filterQueryData?) {
+    console.log("refreshing data duuuude");
     filterQueryData = filterQueryData ? "(?i).*"+filterQueryData+".*" : "(?i).*"+this.filterQuery+".*"; //this returns things that have the pattern anywhere in the string
     this.rest.getSkus("", filterQueryData, null, null, null, "", this.paginator.pageSize*10).subscribe(response => {
       this.data = response;

@@ -35,8 +35,9 @@ function getSkus(skuname, skunameregex, skunumber, caseupcnumber, unitupcnumber,
     });
 }
 
+
 function createSku(name, number, case_upc, unit_upc, unit_size, count, formulanum, formulascalingfactor, productline, manufacturingrate, comment) {
-    console.log("lets make us a sku");
+    console.log("lets make us a sku. formula number is: " + formulanum);
     return new Promise(function (resolve, reject) {
         createUniqueSkuNumber().then(response => {
             var newSkuNumber;
