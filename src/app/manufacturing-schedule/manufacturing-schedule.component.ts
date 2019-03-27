@@ -408,7 +408,7 @@ export class ManufacturingScheduleComponent implements OnInit {
       orientation: 'top',
       hiddenDates: [
         {start: '2013-03-29 18:00:00', end: '2013-03-30 08:00:00', repeat: 'daily'},
-        // {start: '2013-10-26 00:00:00', end: '2013-10-28 00:00:00', repeat: 'weekly'}
+        {start: '2013-10-26 00:00:00', end: '2013-10-28 00:00:00', repeat: 'weekly'}
     ],
       
       onRemove: async function(item, callback): Promise<void> {
