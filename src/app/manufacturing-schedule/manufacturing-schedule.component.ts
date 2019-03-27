@@ -503,7 +503,7 @@ export class ManufacturingScheduleComponent implements OnInit {
               }
             })
           }
-          if (isOrphaned) {
+          if (isOrphaned && orphanItem) {
             className = 'orphan';
             update = true;
           }
