@@ -21,7 +21,11 @@ export class AssignSkuManufacturingLines implements OnInit {
   addOnBlur = true;
   separatorKeysCodes: number[] = [ENTER, COMMA];
   lineCtrl = new FormControl();
-  filteredLines: Observable<String[]>;
+  filteredLines: Observable<string[]> = new Observable(observer => {
+    this.lineCtrl.valueChanges.subscribe(async newVal => {
+      observer.next(await this.restv2.getLine(AndVsOr.OR, null, "(?i).*"+newVal+".*",null,null,1000));
+    });
+  });
   currentSku: any;
   //linename: string = '';
   //shortname: string = '';
@@ -35,11 +39,7 @@ export class AssignSkuManufacturingLines implements OnInit {
   @ViewChild('lineInput') lineInput: ElementRef<HTMLInputElement>;
   @ViewChild('auto') matAutocomplete: MatAutocomplete;
 
-  constructor(public restv2: RestServiceV2, @Inject(MAT_DIALOG_DATA) public data: any, private dialogRef: MatDialogRef<AssignSkuManufacturingLines>, public rest:RestService, private snackBar: MatSnackBar) { 
-    this.filteredLines = this.lineCtrl.valueChanges.pipe(
-      startWith(null),
-      map((line: string | null) => line ? this._filter(line) : this.lineNameList.slice()));
-  }
+  constructor(public restv2: RestServiceV2, @Inject(MAT_DIALOG_DATA) public data: any, private dialogRef: MatDialogRef<AssignSkuManufacturingLines>, public rest:RestService, private snackBar: MatSnackBar) { }
 
   ngOnInit() {
     this.edit = this.data.edit;
@@ -58,6 +58,7 @@ export class AssignSkuManufacturingLines implements OnInit {
           this.rest.getLine(line,line,'', '', 100).subscribe(response=>{
             if(response[0] != undefined){
               let currentLine = response[0];
+              console.log("WAHAHAHAHAHAA: " + currentLine['shortname']);
               console.log("Line: " + JSON.stringify(currentLine))
               this.selectedLines.push({line: currentLine['_id']});
             }
@@ -71,6 +72,7 @@ export class AssignSkuManufacturingLines implements OnInit {
     else {
       this.dialog_title = "Assign Manufacturing Lines";
     }
+    
     this.rest.getLine('', '.*','','',100).subscribe(response => {
         this.lineList = response;
         this.lineList.forEach(element => {
@@ -87,7 +89,7 @@ export class AssignSkuManufacturingLines implements OnInit {
 
   closeDialog() {
     this.dialogRef.componentInstance.selectedLines = this.selectedLines;
-    console.log("on this end, listed lines is " + this.selectedLines);
+    var i;
     this.dialogRef.close();
     //this.selectedLineNames = [];
     //this.lineList = [];
@@ -137,7 +139,9 @@ export class AssignSkuManufacturingLines implements OnInit {
     this.rest.getLine(event.option.viewValue, '', '','',5).subscribe(response => {
       var i;
       for(i = 0; i<response.length; i++){
-        this.selectedLines.push({line: response[i]['_id']})
+        console.log("SELECTED ONE");
+        console.log("added one is " + response[i]);
+        this.selectedLines.push(response[i])
       }
 
       

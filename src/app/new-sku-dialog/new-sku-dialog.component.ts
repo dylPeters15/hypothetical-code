@@ -8,6 +8,7 @@ import { NewSkuFormulaComponent } from '../new-sku-formula/new-sku-formula.compo
 import { AssignSkuManufacturingLines } from '../assign-sku-manufacturinglines/assign-sku-manufacturinglines.component';
 import { NewFormulaDialogComponent } from '../new-formula-dialog/new-formula-dialog.component';
 import { AssignSkuProductlineComponent } from '../assign-sku-productline/assign-sku-productline.component';
+import { RestServiceV2, AndVsOr } from '../restv2.service';
 
 @Component({
   selector: 'app-new-sku-dialog',
@@ -32,6 +33,8 @@ export class NewSkuDialogComponent implements OnInit {
   manufacturinglinesNames: string[];
 
   manufacturingrate: number = 0;
+  manufacturingsetupcost: number = 0;
+  manufacturingruncost: number = 0;
   productline: string = '';
   comment: String = '';
 
@@ -63,7 +66,7 @@ export class NewSkuDialogComponent implements OnInit {
   assignProductLineDialogRef: MatDialogRef<AssignSkuProductlineComponent>;
   assignManufacturingLineRef: MatDialogRef<AssignSkuManufacturingLines>;
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: any, private dialogRef: MatDialogRef<NewSkuDialogComponent>, public rest:RestService, private snackBar: MatSnackBar, private dialog: MatDialog) { }
+  constructor(public restv2: RestServiceV2, @Inject(MAT_DIALOG_DATA) public data: any, private dialogRef: MatDialogRef<NewSkuDialogComponent>, public rest:RestService, private snackBar: MatSnackBar, private dialog: MatDialog) { }
 
   ngOnInit() {
 
@@ -81,20 +84,19 @@ export class NewSkuDialogComponent implements OnInit {
     this.manufacturinglines = this.data.present_manufacturinglines;
     this.manufacturingrate = this.data.present_manufacturingrate;
     this.comment = this.data.present_comment;
-
+    this.manufacturingsetupcost = this.data.present_manufacturingsetupcost;
+    this.manufacturingruncost = this.data.present_manufacturingruncost;
     // update formula and scaling factor to display
     this.refreshData();
 
     // edit == true if sku is being modified, false if a new sku is being created
     if (this.edit == true)
     {
-      console.log("setting sku to modify");
       this.dialog_title = "Modify Sku";
       this.submit_title = "Save Changes";
     }
     else 
     {
-      console.log("setting sku to new");
       this.dialog_title = "Create New Sku";
       this.submit_title = "Create";
     }
@@ -212,7 +214,6 @@ export class NewSkuDialogComponent implements OnInit {
 
   // Product line adds
   addProductLineToSku(edit, productlinename) {
-    console.log("edit product line, ed it: " + edit);
     const dialogConfig = new MatDialogConfig();
     dialogConfig.data = {edit: edit, present_name: productlinename};
     this.assignProductLineDialogRef = this.dialog.open(AssignSkuProductlineComponent, dialogConfig);
@@ -222,7 +223,6 @@ export class NewSkuDialogComponent implements OnInit {
     this.assignProductLineDialogRef.afterClosed().subscribe(event => {
       // grab the new product line values
       var new_productline = this.assignProductLineDialogRef.componentInstance.productlineName;
-      console.log("yipee ki yay: " + new_productline);
       this.productline = new_productline;
 
      // getProductLines(productlinename: String, productlinenameregex: String, limit: number): Observable<any> {
@@ -265,7 +265,7 @@ export class NewSkuDialogComponent implements OnInit {
 
      // Manufacturing line adds
   addManufacturingLineToSku(edit, manufacturinglines) {
-    console.log("edit product line, ed it: " + edit);
+    // console.log("edit product line, ed it: " + edit);
     const dialogConfig = new MatDialogConfig();
     dialogConfig.data = {edit: edit, present_sku: this.skuname, present_lines: manufacturinglines};
     this.assignManufacturingLineRef = this.dialog.open(AssignSkuManufacturingLines, dialogConfig);
@@ -275,15 +275,16 @@ export class NewSkuDialogComponent implements OnInit {
     this.assignManufacturingLineRef.afterClosed().subscribe(event => {
       // grab the new product line values
       var linesList = this.assignManufacturingLineRef.componentInstance.selectedLines;
-      console.log("yipee ki yay: " + linesList);
-      console.log("length: " + linesList.length);
+      // console.log("yipee ki yay: " + linesList);
+      // console.log("length: " + linesList.length);
 
       this.manufacturinglines = linesList;
       var index;
       this.manufacturinglinesNames = [];
       for (index = 0; index < this.manufacturinglines.length; index++)
       {
-        this.manufacturinglinesNames[index] = this.manufacturinglines[index]['shortname'];
+        this.manufacturinglinesNames[index] = this.manufacturinglines[index]['linename'];
+        console.log("current name IS: " + this.manufacturinglines[index]['shortname']);
       } 
 
         this.refreshData();
@@ -301,10 +302,8 @@ export class NewSkuDialogComponent implements OnInit {
         }        
     }
 
-
-
-  createSku() {
-    console.log("right now, formula is " + this.formula);
+  async createSku() {
+    console.log("right now, formula is " + this.formula); // for some reason formula is the number here?
     if (this.formula == undefined || this.formula == null)
     {
       this.snackBar.open("A formula must be specified for this sku.", "close", {
@@ -314,21 +313,50 @@ export class NewSkuDialogComponent implements OnInit {
 
     else if (this.edit == false)
     {
-      this.rest.createSku(this.skuname, this.skunumber, this.caseupcnumber, this.unitupcnumber, this.unitsize, this.countpercase, this.formula['formulanumber'], this.formulascalingfactor, this.manufacturingrate, this.comment, this.manufacturinglines, this.productlinename).subscribe(response => {
-        this.snackBar.open("Successfully created sku " + this.skuname + ".", "close", {
-          duration: 2000,
-        });
-        this.closeDialog();
-           });
-      }
+      var formulaobject = await this.restv2.getFormulas(AndVsOr.OR, null,null,this.formula, null,null,1);
+      let formulaId = formulaobject[0]['_id'];
+      var created = await this.restv2.createSku(this.skuname, this.skunumber, this.caseupcnumber, this.unitupcnumber, this.unitsize, this.countpercase, formulaId, this.formulascalingfactor, this.manufacturingrate, this.manufacturingsetupcost, this.manufacturingruncost, this.comment);
+      this.snackBar.open("Successfully created sku " + this.skuname + ".", "close", {
+        duration: 2000,
+      });
+       
+        
+        // this.manufacturinglines, this.productlinename
+        var i;
+        for (i = 0; i < this.manufacturinglines.length; i++)
+        {
+            var thisLine = this.manufacturinglines[i];
+            thisLine['skus'].push({
+              sku: created['_id']
+            });
+            this.rest.modifyLine(thisLine['linename'], thisLine['linename'], thisLine['shortname'], thisLine['skus'], thisLine['comment']).subscribe(response => {
+              if (created['ok'] != 1 || created['nModified'] != 1)
+              {
+                // print error
+              }
+            });
+        }
 
+        var productline = await this.restv2.getProductLines(AndVsOr.OR, this.productlinename, this.productlinename, 1);
+        // this.rest.getProductLines(this.productlinename, "$a",1).subscribe(productLine => {
+          productline[0]['skus'].push({
+            sku: created['_id']
+          })
+          this.rest.modifyProductLine(created['productlinename'], created['productlinename'], productline['skus']).subscribe(response => {
+            if (response['ok'] != 1 || response['nModified'] != 1)
+            {
+              // print error
+            }
+          });
+        this.closeDialog();
+      
+      }
     else{
-      this.rest.modifySku(this.oldskuname, this.skuname, this.skunumber, this.caseupcnumber, this.unitupcnumber, this.unitsize, this.countpercase, this.formula['formulanumber'], this.formulascalingfactor, this.manufacturingrate, this.comment, this.manufacturinglines, this.productlinename).subscribe(response => {
+      var modified = await this.restv2.modifySku(AndVsOr.OR,this.oldskuname, this.skuname, this.skunumber, this.caseupcnumber, this.unitupcnumber, this.unitsize, this.countpercase, this.formula, this.formulascalingfactor, this.manufacturingrate, this.manufacturingsetupcost, this.manufacturingruncost, this.comment);
         this.snackBar.open("Successfully modifyed sku " + this.skuname + ".", "close", {
           duration: 2000,
         });
         this.closeDialog();
-      });
     }
     this.refreshData();
   }

@@ -157,7 +157,7 @@ function startServerV1(app) {
     }).put((req, res) => {
         sku_utils.createSku(req.body['skuname'], req.body['skunumber'],
             req.body['caseupcnumber'], req.body['unitupcnumber'],
-            req.body['unitsize'], req.body['countpercase'], req.body['formulanum'], req.body['formulascalingfactor'], req.body['productline'], req.body['manufacturingrate'], req.body['comment']).then(response => {
+            req.body['unitsize'], req.body['countpercase'], req.body['formulanum'], req.body['formulascalingfactor'], req.body['manufacturingrate'], req.body['comment']).then(response => {
                 res.send(response);
             }).catch(err => {
                 resolveError(err, res);
@@ -165,7 +165,7 @@ function startServerV1(app) {
     }).post((req, res) => {
         sku_utils.modifySku(req.headers['skuname'], req.body['skuname'], req.body['skunumber'],
             req.body['caseupcnumber'], req.body['unitupcnumber'],
-            req.body['unitsize'], req.body['countpercase'], req.body['formulanum'], req.body['formulascalingfactor'], req.body['productline'], req.body['manufacturingrate'], req.body['comment']).then(response => {
+            req.body['unitsize'], req.body['countpercase'], req.body['formulanum'], req.body['formulascalingfactor'], req.body['manufacturingrate'], req.body['comment']).then(response => {
                 res.send(response);
             }).catch(err => {
                 resolveError(err, res);

@@ -6,6 +6,7 @@ import {FormControl} from '@angular/forms';
 import {Observable} from 'rxjs';
 import {map, startWith} from 'rxjs/operators';
 import {COMMA, ENTER} from '@angular/cdk/keycodes';
+import { RestServiceV2, AndVsOr } from '../restv2.service';
 
 @Component({
   selector: 'app-new-formula-ingredient-dialog',
@@ -23,7 +24,11 @@ export class NewFormulaIngredientDialogComponent implements OnInit {
   addOnBlue = true;
   seperatorKeysCodes: number[] = [ENTER, COMMA]
   ingredientCtrl = new FormControl();
-  filteredIngredients: Observable<String[]>;
+  filteredIngredients: Observable<string[]> = new Observable(observer => {
+    this.ingredientCtrl.valueChanges.subscribe(async newVal => {
+      observer.next(await this.restv2.getIngredients(AndVsOr.OR, null, "(?i).*"+newVal+".*",null,1000));
+    });
+  });
   selectedIngredientNames: string[] = [];
   selectedIngredients: any = [];
   ingredientList: any = [];
@@ -35,11 +40,7 @@ export class NewFormulaIngredientDialogComponent implements OnInit {
   @ViewChild('ingredientInput') ingredientInput: ElementRef<HTMLInputElement>;
   @ViewChild('auto') matAutocomplete: MatAutocomplete;
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: any, private dialogRef: MatDialogRef<NewFormulaIngredientDialogComponent>, public rest:RestService, private snackBar: MatSnackBar) {
-    this.filteredIngredients = this.ingredientCtrl.valueChanges.pipe(
-      startWith(null),
-      map((ingredient: string | null) => ingredient ? this._filter(ingredient) : this.ingredientNameList.slice()));
-   }
+  constructor(public restv2: RestServiceV2, @Inject(MAT_DIALOG_DATA) public data: any, private dialogRef: MatDialogRef<NewFormulaIngredientDialogComponent>, public rest:RestService, private snackBar: MatSnackBar) { }
 
   ngOnInit() {
 

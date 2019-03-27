@@ -25,7 +25,7 @@
         </mat-chip-list>
         <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
           <mat-option *ngFor="let productline of filteredProductlines | async" [value]="productline">
-            {{productline}}
+            {{productline['productlinename']}}
           </mat-option>
         </mat-autocomplete>
       </mat-form-field>

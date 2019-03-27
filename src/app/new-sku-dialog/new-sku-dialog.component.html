@@ -78,9 +78,16 @@
         <br /> 
 
       <mat-form-field>
-        <input matInput [(ngModel)]="manufacturingrate" placeholder="Manufacturing Rate" (keydown.enter)="createSku()" required>
+        <input matInput [(ngModel)]="manufacturingsetupcost" placeholder="Manufacturing Setup Cost" (keydown.enter)="createSku()" required>
       </mat-form-field>
 
+      <mat-form-field>
+        <input matInput [(ngModel)]="manufacturingruncost" placeholder="Manufacturing Run Cost (per case)" (keydown.enter)="createSku()" required>
+      </mat-form-field>
+
+      <mat-form-field>
+        <input matInput [(ngModel)]="manufacturingrate" placeholder="Manufacturing Rate" (keydown.enter)="createSku()" required>
+      </mat-form-field>
       <textarea rows="5" cols="50" style="border:inset 4px grey;" matInput [(ngModel)]="comment" placeholder="Additional Comments"> </textarea>
 
     </mat-card-content>
