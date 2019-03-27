@@ -186,7 +186,7 @@ export class ManufacturingScheduleComponent implements OnInit {
               this.timeline.itemsData.update({
                 id: newItem_dropped['id'],
                 group: newGroup,
-                start: activity['startdate'],
+                start: new Date(activity['startdate']),
                 end: endDate,
                 content: activity['sku']['skuname'],
                 className: className
@@ -330,7 +330,7 @@ export class ManufacturingScheduleComponent implements OnInit {
         this.data.add({
           id: activity['_id'],
           group: group,
-          start: activity['startdate'],
+          start: new Date(activity['startdate']),
           end: endDate,
           content: activity['sku']['skuname'],
           className: className
@@ -424,7 +424,8 @@ export class ManufacturingScheduleComponent implements OnInit {
             callback(null)
           }
           else {
-            var startTime = parseInt((item['start'].split('T')[1]).split(':')[0], 10) - 7;
+            console.log(item['start'])
+            var startTime = parseInt((item['start'].toString().split(' ')[4]).split(':')[0], 10);
             if (startTime < 8 || startTime > 18) {
               item['start'] = new Date((new Date(item['start'])).valueOf() - 1000 * 60 * 60 * 14);
             }
