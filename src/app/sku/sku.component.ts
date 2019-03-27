@@ -119,9 +119,9 @@ export class SkuComponent implements OnInit {
   }
 
   // edit
-  newSku(edit, skuname, skunumber, caseupcnumber, unitupcnumber, unitsize, countpercase, formula, formulascalingfactor, manufacturingrate,manufacturingsetupcost, manufacturingruncost, comment) {
+  newSku(edit, skuname, skunumber, caseupcnumber, unitupcnumber, unitsize, countpercase, formula, formulascalingfactor, manufacturingrate,manufacturingsetupcost, manufacturingruncost, comment, manufacturinglines, productline) {
     const dialogConfig = new MatDialogConfig();
-    dialogConfig.data = {edit: edit, present_name: skuname, present_skuNumber: skunumber, present_caseUpcNumber: caseupcnumber, present_unitUpcNumber: unitupcnumber, present_unitSize:unitsize, present_countPerCase:countpercase, present_formula:formula,present_formulascalingfactor:formulascalingfactor, present_manufacturingrate:manufacturingrate, present_manufacturingsetupcost: manufacturingsetupcost, present_manufacturingruncost: manufacturingruncost, present_comment:comment};
+    dialogConfig.data = {edit: edit, present_name: skuname, present_skuNumber: skunumber, present_caseUpcNumber: caseupcnumber, present_unitUpcNumber: unitupcnumber, present_unitSize:unitsize, present_countPerCase:countpercase, present_formula:formula,present_formulascalingfactor:formulascalingfactor, present_manufacturingrate:manufacturingrate, present_manufacturingsetupcost: manufacturingsetupcost, present_manufacturingruncost: manufacturingruncost, present_comment:comment, present_manufacturinglines: manufacturinglines, present_productline: productline};
     this.newDialogRef = this.dialog.open(NewSkuDialogComponent, dialogConfig);
     this.newDialogRef.afterClosed().subscribe(event => {
       this.refreshData();
@@ -130,7 +130,7 @@ export class SkuComponent implements OnInit {
 
   newSkuButton()
   {
-    this.newSku(false, "", null, null, null, "", null, null, null, null, null,null,"");
+    this.newSku(false, "", null, null, null, "", null, null, null, null, null,null,"",null,null);
   }
 
   sortData() {
@@ -310,11 +310,32 @@ export class SkuComponent implements OnInit {
    async modifySelected(oldSku) {
      var skuObject = await this.restv2.getSkus(AndVsOr.OR, oldSku.skuname, oldSku.skuname, null,null,null,null,1);
      let sku = skuObject[0];
-      this.modifySkuConfirmed(oldSku.skuname, oldSku.skunumber, oldSku.caseupcnumber, oldSku.unitupcnumber, oldSku.unitsize, oldSku.countpercase, oldSku.formula, oldSku.formulascalingfactor, oldSku.manufacturingrate, sku['manufacturingsetupcost'], sku['manufacturingruncost'], oldSku.comment, sku['_id']); 
+     let manufacturingLinesWithSku = [];
+     var manufacturinglines = await this.restv2.getLine(AndVsOr.OR, null,".*", null,null,50);
+     manufacturinglines.forEach(manufacturingline => {
+       manufacturingline['skus'].forEach(manufacturingLineSku => {
+         if(manufacturingLineSku['sku']['_id'] == sku['_id']){
+          manufacturingLinesWithSku.push(manufacturingline)
+         }
+         
+       });
+     });
+     let productLinesWithSku = [];
+     var productlines = await this.restv2.getProductLines(AndVsOr.OR, null, ".*", 1000);
+     productlines.forEach(productline => {
+      productline['skus'].forEach(productLineSku => {
+        if(productLineSku['sku']['_id'] == sku['_id']){
+          productLinesWithSku.push(productline['productlinename'])
+        }
+      });
+    });
+     console.log("MAN: " + manufacturingLinesWithSku);
+     console.log("PROD: " + productLinesWithSku);
+      this.modifySkuConfirmed(oldSku.skuname, oldSku.skunumber, oldSku.caseupcnumber, oldSku.unitupcnumber, oldSku.unitsize, oldSku.countpercase, oldSku.formula, oldSku.formulascalingfactor, oldSku.manufacturingrate, sku['manufacturingsetupcost'], sku['manufacturingruncost'], oldSku.comment, sku['_id'], manufacturingLinesWithSku, productLinesWithSku); 
   }
 
-  modifySkuConfirmed(present_name, present_skuNumber, present_caseUpcNumber, present_unitUpcNumber,present_unitSize,present_countPerCase,present_formula, present_formulascalingfactor, present_manufacturingrate, present_manufacturingsetupcost, present_manufacturinruncost, present_comment, present_id) {
-    this.newSku(true, present_name, present_skuNumber, present_caseUpcNumber, present_unitUpcNumber, present_unitSize, present_countPerCase, present_formula, present_formulascalingfactor,present_manufacturingrate, present_manufacturingsetupcost, present_manufacturinruncost, present_comment);
+  modifySkuConfirmed(present_name, present_skuNumber, present_caseUpcNumber, present_unitUpcNumber,present_unitSize,present_countPerCase,present_formula, present_formulascalingfactor, present_manufacturingrate, present_manufacturingsetupcost, present_manufacturinruncost, present_comment, present_id, manufacturinglines, productline) {
+    this.newSku(true, present_name, present_skuNumber, present_caseUpcNumber, present_unitUpcNumber, present_unitSize, present_countPerCase, present_formula, present_formulascalingfactor,present_manufacturingrate, present_manufacturingsetupcost, present_manufacturinruncost, present_comment, manufacturinglines, productline);
   }
 
   removeIngredient(ingredient, sku) {
