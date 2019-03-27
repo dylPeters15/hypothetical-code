@@ -460,28 +460,43 @@ export class ManufacturingScheduleComponent implements OnInit {
       onUpdate: async function (item, callback): Promise<void> {
         // console.log('update')
         var getSku = await thisObject.restv2.getSkus(AndVsOr.OR, item['content'], null, null, null, null, null, 1);
-        var activity = await thisObject.restv2.getActivities(AndVsOr.AND, item['start'], null, getSku[0]['_id'], 1);
-        var displayDuration = activity[0]['calculatedhours'];
-        if (activity[0]['sethours']) {
-          displayDuration = activity[0]['sethours']
+        var activities = await thisObject.restv2.getActivities(AndVsOr.OR, null, null, getSku[0]['_id'], 100);
+        var activity;
+        console.log(activities)
+        activities.forEach(temp => {
+          
+          console.log(item['start'].getTime(), new Date(temp['startdate']).getTime())
+          if (item['start'].getTime() == new Date(temp['startdate']).getTime()) {
+            activity = temp;
+          }
+        })
+        var displayDuration = activity['calculatedhours'];
+        if (activity['sethours']) {
+          displayDuration = activity['sethours']
         }
         var newDuration = prompt('Choose a new duration for this activity. The calculated duration is ' 
-        + activity[0]['calculatedhours'] + ' hours.', displayDuration);
+        + activity['calculatedhours'] + ' hours.', displayDuration);
         
         if (item.content != null) {
           /* Changed from rest to restv2, recheck this */
-          var response = await thisObject.restv2.modifyActivity(AndVsOr.AND, activity[0]['_id'], activity[0]['sku']['_id'], 
-          activity[0]['numcases'], activity[0]['calculatedhours'], parseInt(newDuration, 10), 
-          activity[0]['startdate'], activity[0]['line']);
+          var response = await thisObject.restv2.modifyActivity(AndVsOr.AND, activity['_id'], activity['sku']['_id'], 
+          activity['numcases'], activity['calculatedhours'], parseInt(newDuration, 10), 
+          activity['startdate'], activity['line']);
           console.log(response) 
           var className = item.className;
           if (className == 'normal') {
             className = 'updated'
           }
-          if ((activity[0]['calculatedhours'] == parseInt(newDuration, 10)) && className == 'updated') {
+          if ((activity['calculatedhours'] == parseInt(newDuration, 10)) && className == 'updated') {
             className = 'normal';
           }
-          var startTime = parseInt((activity[0]['startdate'].split('T')[1]).split(':')[0], 10) - 7;
+          var startTime = 0;
+          if (activity['startdate'].split('T')) {
+            startTime = parseInt((activity['startdate'].split('T')[1]).split(':')[0], 10) - 7;
+          }
+          else {
+            startTime = parseInt((activity['startdate'].toString().split(' ')[4]).split(':')[0], 10);
+          }
           var endDate = thisObject.calculateEndDate(new Date(item['start']), Math.round(parseInt(newDuration, 10)), startTime);
           
           item.className = className;
