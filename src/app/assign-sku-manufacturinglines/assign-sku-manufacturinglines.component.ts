@@ -135,8 +135,9 @@ export class AssignSkuManufacturingLines implements OnInit {
   }
 
   selected(event: MatAutocompleteSelectedEvent): void {
-    this.selectedLineNames.push(event.option.viewValue);
-    this.rest.getLine(event.option.viewValue, '', '','',5).subscribe(response => {
+    let linename = event.option.viewValue.split(" ")[0];
+    this.selectedLineNames.push(linename);
+    this.rest.getLine(linename, '', '','',5).subscribe(response => {
       var i;
       for(i = 0; i<response.length; i++){
         console.log("SELECTED ONE");

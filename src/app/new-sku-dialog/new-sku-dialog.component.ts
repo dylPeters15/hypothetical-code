@@ -227,27 +227,7 @@ export class NewSkuDialogComponent implements OnInit {
 
      // getProductLines(productlinename: String, productlinenameregex: String, limit: number): Observable<any> {
 
-      // get object id from formula name
-      this.rest.getProductLines(new_productline ,new_productline, 1).subscribe(response => {
-        this.snackBar.open("Successfully added formula " + new_productline, "close", {
-          duration: 2000,
-             });
-          this.productlinename = response[0]['productlinename'];
-
-          // Find sku by sku name
-          this.rest.getSkus(this.skuname,this.skuname,0,0,0,'',1).subscribe(responseSku => {
-            this.snackBar.open("Successfully added formula " + new_productline, "close", {
-              duration: 2000,
-                 });
-              var thisSku = responseSku[0]['skuname'];
-              var productline_skus = response[0]['skus'].push(thisSku);
-
-              // save updated product line name list
-              this.rest.modifyProductLine(new_productline,new_productline,productline_skus).subscribe(responseProductline => {
-                });
-            });
-        this.refreshData();
-        });
+      this.refreshData();
         });
       }
 
@@ -275,8 +255,8 @@ export class NewSkuDialogComponent implements OnInit {
     this.assignManufacturingLineRef.afterClosed().subscribe(event => {
       // grab the new product line values
       var linesList = this.assignManufacturingLineRef.componentInstance.selectedLines;
-      // console.log("yipee ki yay: " + linesList);
-      // console.log("length: " + linesList.length);
+      console.log("yipee ki yay: " + linesList);
+      console.log("length: " + linesList.length);
 
       this.manufacturinglines = linesList;
       var index;
@@ -319,6 +299,7 @@ export class NewSkuDialogComponent implements OnInit {
       this.snackBar.open("Successfully created sku " + this.skuname + ".", "close", {
         duration: 2000,
       });
+      console.log("CREATED: " + JSON.stringify(created))
        
         
         // this.manufacturinglines, this.productlinename
