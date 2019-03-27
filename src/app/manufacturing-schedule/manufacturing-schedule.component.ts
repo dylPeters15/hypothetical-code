@@ -90,7 +90,7 @@ export class ManufacturingScheduleComponent implements OnInit {
       var newData = thisObject.timeline.getVisibleItems();
       console.log(newData)
       newData.forEach(item => {
-        var itemObject = thisObject.data.get(item);
+        var itemObject = thisObject.timeline.itemsData.get(item);
         console.log('resize item', itemObject)
         let visibleTable = new DataForVisibleTable(itemObject['id'], itemObject['group'], 
         itemObject['start'], itemObject['end'], itemObject['content'], itemObject['className']);
@@ -191,7 +191,20 @@ export class ManufacturingScheduleComponent implements OnInit {
                 className: className
               })
               console.log('timeline data',this.timeline.itemsData)
-              
+              this.visibleData = [];
+              var newData = this.timeline.getVisibleItems();
+              console.log(newData)
+              newData.forEach(item => {
+                var itemObject = this.timeline.itemsData.get(item);
+                console.log('data update item', itemObject)
+                let visibleTable = new DataForVisibleTable(itemObject['id'], itemObject['group'],
+                itemObject['start'], itemObject['end'], itemObject['content'], itemObject['className']);
+                this.visibleData.push(visibleTable)
+                console.log(this.visibleData)
+                
+              })
+              this.visibleDataSource = new MatTableDataSource<DataForVisibleTable>(this.visibleData);
+    
             })
           }
         }) 
@@ -270,7 +283,7 @@ export class ManufacturingScheduleComponent implements OnInit {
       var newData = thisObject.timeline.getVisibleItems();
       console.log(newData)
       newData.forEach(item => {
-        var itemObject = thisObject.data.get(item);
+        var itemObject = thisObject.timeline.itemsData.get(item);
         console.log('data update item', itemObject)
         let visibleTable = new DataForVisibleTable(itemObject['id'], itemObject['group'],
         itemObject['start'], itemObject['end'], itemObject['content'], itemObject['className']);
