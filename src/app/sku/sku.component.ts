@@ -163,9 +163,7 @@ export class SkuComponent implements OnInit {
         var thisobject = this;
         let promise1 = new Promise((resolve, reject) => {
           thisobject.rest.getLine('', '.*','','',50).subscribe(lines => {
-            console.log(lines)
             lines.forEach((line) => {
-              console.log(line)
               line['skus'].forEach((skuinline) => {
                 console.log('skuinline', skuinline['sku'], sku)
                 if (skuinline['sku']['_id'] == sku['_id']) {
@@ -314,7 +312,7 @@ export class SkuComponent implements OnInit {
      var manufacturinglines = await this.restv2.getLine(AndVsOr.OR, null,".*", null,null,50);
      manufacturinglines.forEach(manufacturingline => {
        manufacturingline['skus'].forEach(manufacturingLineSku => {
-         if(manufacturingLineSku['sku']['_id'] == sku['_id']){
+         if(manufacturingLineSku['sku']['_id'] == sku['_id'] && manufacturingLinesWithSku.indexOf(manufacturingline['linename']) == -1){
           manufacturingLinesWithSku.push(manufacturingline)
          }
          
@@ -324,7 +322,7 @@ export class SkuComponent implements OnInit {
      var productlines = await this.restv2.getProductLines(AndVsOr.OR, null, ".*", 1000);
      productlines.forEach(productline => {
       productline['skus'].forEach(productLineSku => {
-        if(productLineSku['sku']['_id'] == sku['_id']){
+        if(productLineSku['sku']['_id'] == sku['_id'] && productLinesWithSku.indexOf(productline['productlinename'] == -1)){
           productLinesWithSku.push(productline['productlinename'])
         }
       });
