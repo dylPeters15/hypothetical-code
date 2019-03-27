@@ -179,7 +179,8 @@ export class NewSkuDialogComponent implements OnInit {
     //this.newIngredientDialogRef.componentInstance.amount = this.return_amount;
     //this.newIngredientDialogRef.componentInstance.ingredientNameList = this.ingredientNameList;
     this.newFormulaDialogRef.afterClosed().subscribe(event => {
-      // grab the new formula values
+      if (this.newFormulaDialogRef.componentInstance.formulaName) {
+        // grab the new formula values
       var new_formula = this.newFormulaDialogRef.componentInstance.formulaName;
       this.formulascalingfactor = this.newFormulaDialogRef.componentInstance.scalingFactor;
 
@@ -193,6 +194,8 @@ export class NewSkuDialogComponent implements OnInit {
         
         this.refreshData();
         });
+      }
+      
         });
       }
 
