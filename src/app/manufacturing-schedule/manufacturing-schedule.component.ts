@@ -162,6 +162,7 @@ export class ManufacturingScheduleComponent implements OnInit {
     var newGroup = this.groups.get(newItem_dropped.group)
     this.checkLine(newItem_dropped, newGroup).then(async isValid => {
       console.log('isValid', isValid)
+      this.refreshData();
       if (!isValid) {
         this.timeline.itemsData.remove(newItem_dropped);
       }
@@ -247,7 +248,7 @@ export class ManufacturingScheduleComponent implements OnInit {
         newActivity['numcases'], newActivity['calculatedhours'], newActivity['sethours'], 
         item['start'], line[0]['_id']);
         // var activity = await this.restv2.getActivities(AndVsOr.OR, null, null, skuObject['_id'], 1)
-        this.refreshData();
+        
         return true; 
       }
       else {
@@ -393,7 +394,7 @@ export class ManufacturingScheduleComponent implements OnInit {
       orientation: 'top',
       hiddenDates: [
         {start: '2013-03-29 18:00:00', end: '2013-03-30 08:00:00', repeat: 'daily'},
-        {start: '2013-10-26 00:00:00', end: '2013-10-28 00:00:00', repeat: 'weekly'}
+        // {start: '2013-10-26 00:00:00', end: '2013-10-28 00:00:00', repeat: 'weekly'}
     ],
       
       onRemove: async function(item, callback): Promise<void> {
@@ -413,7 +414,7 @@ export class ManufacturingScheduleComponent implements OnInit {
         }) 
       },
       
-      onMove: async function(item, callback): Promise<void> {
+      onMoving: async function(item, callback): Promise<void> {
         // console.log(item, callback);
         var newGroup = thisObject.groups.get(item['group']);
         console.log(newGroup)
@@ -423,6 +424,10 @@ export class ManufacturingScheduleComponent implements OnInit {
             callback(null)
           }
           else {
+            var startTime = parseInt((item['start'].split('T')[1]).split(':')[0], 10) - 7;
+            if (startTime < 8 || startTime > 18) {
+              item['start'] = new Date((new Date(item['start'])).valueOf() - 1000 * 60 * 60 * 14);
+            }
             thisObject.checkOverdue(item['id'], item['end']).then( isOverdue => {
               if (isOverdue && item['className'] != 'orphan') {
                 item['className'] = 'overdue';
@@ -541,7 +546,7 @@ export class ManufacturingScheduleComponent implements OnInit {
     const NUM_HOURS_PER_DAY = 10;
     const remainder = hours % NUM_HOURS_PER_DAY;
     // console.log('startDate', endDate)
-    while (moment().isoWeekdayCalc([startDate.getUTCFullYear(), startDate.getUTCMonth(), startDate.getUTCDay()], [endDate.getUTCFullYear(), endDate.getUTCMonth(), endDate.getUTCDay()+1], [1, 2, 3, 4, 5]) < Math.floor(hours / NUM_HOURS_PER_DAY)) {
+    while (moment().isoWeekdayCalc([startDate.getUTCFullYear(), startDate.getUTCMonth(), startDate.getUTCDay()], [endDate.getUTCFullYear(), endDate.getUTCMonth(), endDate.getUTCDay()+1], [1, 2, 3, 4, 5,6,7]) < Math.floor(hours / NUM_HOURS_PER_DAY)) {
       // console.log('plus one day', moment().isoWeekdayCalc([startDate.getUTCFullYear(), startDate.getUTCMonth(), startDate.getUTCDay()], [endDate.getUTCFullYear(), endDate.getUTCMonth(), endDate.getUTCDay()+1], [1, 2, 3, 4, 5]) * NUM_HOURS_PER_DAY)
       // console.log(startDate.getUTCDay(), endDate.getUTCDay())
       endDate.setDate(endDate.getDate() + 1);
@@ -550,6 +555,9 @@ export class ManufacturingScheduleComponent implements OnInit {
     endDate = new Date(1000 * 60 * 60 * remainder + (new Date(endDate)).valueOf());
     if (startTime < 0) {
       startTime = 24 + startTime
+    }
+    if (startTime < 8 || startTime > 18) {
+      endDate = new Date(1000 * 60 * 60 * 14 + (new Date(endDate)).valueOf());
     }
     if (hours + startTime > 18 || hours + startTime < 8) {
       endDate = new Date(1000 * 60 * 60 * 14 + (new Date(endDate)).valueOf());
