@@ -31,6 +31,23 @@ export class DataForLinesTable{
   schedule: ManufacturingScheduleComponent;
 }
 
+export class DataForVisibleTable{
+  id: string;
+  group: string;
+  start: Date;
+  end: Date;
+  content: string;
+  className: string;
+  constructor(id, group, start, end, content, className){
+    this.id = id;
+    this.group = group;
+    this.start = start;
+    this.end = end;
+    this.content = content;
+    this.className = className;
+  }
+}
+
 @Component({
   selector: 'app-manufacturing-schedule',
   templateUrl: './manufacturing-schedule.component.html',
@@ -49,9 +66,11 @@ export class ManufacturingScheduleComponent implements OnInit {
   enableGoalsDialogRef: MatDialogRef<EnableGoalsDialogComponent>;
   goalsData: DataForGoalsTable[] = [];
   goalsDataSource = new MatTableDataSource<DataForGoalsTable>(this.goalsData);
-  linesData: DataForLinesTable[] =[];
+  linesData: DataForLinesTable[] = [];
   linesDataSource = new MatTableDataSource<DataForLinesTable>(this.linesData);
   legendDialogRef: MatDialogRef<LegendDetailsComponent>;
+  visibleData: DataForVisibleTable[] = [];
+  visibleDataSource = new MatTableDataSource<DataForVisibleTable>(this.visibleData);
 
   constructor(public rest:RestService, private restv2: RestServiceV2, private dialog: MatDialog, myElement: ElementRef) { 
       this.getTimelineData();
@@ -64,7 +83,20 @@ export class ManufacturingScheduleComponent implements OnInit {
     this.tlContainer = document.getElementById('timeline');      
     this.timeline = new vis.Timeline(this.tlContainer, null, this.options);      
     this.timeline.setGroups(this.groups);
-    this.timeline.setItems(this.data); 
+    this.timeline.setItems(this.data);
+    this.timeline.on('rangeChanged',  function (event, properties, senderId) {
+      this.visibleData = [];
+      var newData = this.timeline.getVisibleItems();
+      console.log(newData)
+      newData.forEach(item => {
+        var itemObject = this.data.get(item);
+        console.log('resize item', itemObject)
+        let visibleTable = new DataForVisibleTable(itemObject['id'], itemObject['group'], 
+        itemObject['start'], itemObject['end'], itemObject['content'], itemObject['className']);
+        this.visibleData.push(visibleTable)
+      })
+    }) 
+    
   }
 
   ngAfterViewInit() {     
@@ -157,6 +189,7 @@ export class ManufacturingScheduleComponent implements OnInit {
                 className: className
               })
               console.log('timeline data',this.timeline.itemsData)
+              
             })
           }
         }) 
@@ -228,8 +261,22 @@ export class ManufacturingScheduleComponent implements OnInit {
       // Create a DataSet (allows two way data-binding)
     // create items
     this.data = new vis.DataSet();
+    var thisObject = this;
     this.data.on('*', function (event, properties, senderId) {
+      thisObject.visibleData = [];
       console.log('event', event, properties);
+      var newData = thisObject.timeline.getVisibleItems();
+      console.log(newData)
+      newData.forEach(item => {
+        var itemObject = thisObject.data.get(item);
+        console.log('data update item', itemObject)
+        let visibleTable = new DataForVisibleTable(itemObject['id'], itemObject['group'],
+        itemObject['start'], itemObject['end'], itemObject['content'], itemObject['className']);
+        thisObject.visibleData.push(visibleTable)
+        console.log(thisObject.visibleData)
+        
+      })
+      thisObject.visibleDataSource = new MatTableDataSource<DataForVisibleTable>(thisObject.visibleData);
     });
 
     var lines = await this.restv2.getLine(AndVsOr.OR, "", ".*", "", ".*", 100);
@@ -244,6 +291,7 @@ export class ManufacturingScheduleComponent implements OnInit {
         console.log(this.data)
       })
     })
+    
   }
 
   async addItem(activity, group): Promise<void> {

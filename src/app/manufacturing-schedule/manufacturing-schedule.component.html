@@ -20,6 +20,14 @@
                 
                 </div>
             </div>
+            <div class="warningContainer">
+                <h4>Warnings</h4>
+                <div *ngFor="let item of visibleDataSource['data']"> 
+                    <div [ngClass]="warning" *ngIf="item['className'] != 'normal'">
+                        {{item['content']}} - {{item['start'].valueOf().split('T')[0]}}: {{item['className']}}
+                    </div>
+                </div>
+            </div>
         </mat-card-content>
 
         
