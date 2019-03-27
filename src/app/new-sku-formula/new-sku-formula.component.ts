@@ -6,6 +6,7 @@ import {FormControl} from '@angular/forms';
 import {Observable} from 'rxjs';
 import {map, startWith} from 'rxjs/operators';
 import {COMMA, ENTER} from '@angular/cdk/keycodes';
+import { RestServiceV2, AndVsOr } from '../restv2.service';
 
 @Component({
   selector: 'app-new-sku-formula',
@@ -23,7 +24,11 @@ export class NewSkuFormulaComponent implements OnInit {
   addOnBlue = true;
   seperatorKeysCodes: number[] = [ENTER, COMMA]
   formulaCtrl = new FormControl();
-  filteredFormulas: Observable<String[]>;
+  filteredFormulas: Observable<string[]> = new Observable(observer => {
+    this.formulaCtrl.valueChanges.subscribe(async newVal => {
+      observer.next(await this.restv2.getFormulas(AndVsOr.AND, null, "(?i).*"+newVal+".*", null,null,null,1000));
+    });
+  });
   selectedFormulaNames: string[] = [];
   formulaNameList: string[] = [];
   formulaList: any = [];
@@ -34,11 +39,7 @@ export class NewSkuFormulaComponent implements OnInit {
   @ViewChild('formulaInput') formulaInput: ElementRef<HTMLInputElement>;
   @ViewChild('auto') matAutocomplete: MatAutocomplete;
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: any, private dialogRef: MatDialogRef<NewSkuFormulaComponent>, public rest:RestService, private snackBar: MatSnackBar) {
-    this.filteredFormulas = this.formulaCtrl.valueChanges.pipe(
-      startWith(null),
-      map((formula: string | null) => formula ? this._filter(formula) : this.formulaNameList.slice()));
-   }
+  constructor(public restv2: RestServiceV2, @Inject(MAT_DIALOG_DATA) public data: any, private dialogRef: MatDialogRef<NewSkuFormulaComponent>, public rest:RestService, private snackBar: MatSnackBar) {}
 
   ngOnInit() {
     console.log("in init fam");

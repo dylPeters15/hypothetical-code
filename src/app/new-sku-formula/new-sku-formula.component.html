@@ -25,7 +25,7 @@
         </mat-chip-list>
         <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
           <mat-option *ngFor="let formula of filteredFormulas | async" [value]="formula">
-            {{formula}}
+            {{formula['formulaname']}}
           </mat-option>
         </mat-autocomplete>
       </mat-form-field>
