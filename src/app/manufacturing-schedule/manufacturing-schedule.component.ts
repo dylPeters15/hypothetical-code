@@ -577,7 +577,7 @@ export class ManufacturingScheduleComponent implements OnInit {
     const NUM_HOURS_PER_DAY = 10;
     const remainder = hours % NUM_HOURS_PER_DAY;
     // console.log('startDate', endDate)
-    while (moment().isoWeekdayCalc([startDate.getUTCFullYear(), startDate.getUTCMonth(), startDate.getUTCDay()], [endDate.getUTCFullYear(), endDate.getUTCMonth(), endDate.getUTCDay()+1], [1, 2, 3, 4, 5]) < Math.floor(hours / NUM_HOURS_PER_DAY)) {
+    while (moment().isoWeekdayCalc([startDate.getUTCFullYear(), startDate.getUTCMonth(), startDate.getUTCDay()], [endDate.getUTCFullYear(), endDate.getUTCMonth(), endDate.getUTCDay()+1], [1, 2, 3, 4, 5, 6, 7]) < Math.floor(hours / NUM_HOURS_PER_DAY)) {
       // console.log('plus one day', moment().isoWeekdayCalc([startDate.getUTCFullYear(), startDate.getUTCMonth(), startDate.getUTCDay()], [endDate.getUTCFullYear(), endDate.getUTCMonth(), endDate.getUTCDay()+1], [1, 2, 3, 4, 5]) * NUM_HOURS_PER_DAY)
       // console.log(startDate.getUTCDay(), endDate.getUTCDay())
       endDate.setDate(endDate.getDate() + 1);
