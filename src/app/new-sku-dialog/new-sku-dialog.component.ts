@@ -293,6 +293,16 @@ export class NewSkuDialogComponent implements OnInit {
 
   async createSku() {
     console.log("right now, formula is " + this.formula); // for some reason formula is the number here?
+    var caseAsString = this.caseupcnumber.toString();
+    var upcAsString = this.unitupcnumber.toString();
+
+    var caseCheckFlip = caseAsString.substring(0,1) == "0" || caseAsString.substring(0,1) == "1" || caseAsString.substring(0,1) == "6" || caseAsString.substring(0,1) == "7" || caseAsString.substring(0,1) == "8" || caseAsString.substring(0,1) == "9";
+    var caseCheck = !caseCheckFlip;
+    var upcCheckFlip = upcAsString.substring(0,1) == "0" || upcAsString.substring(0,1) == "1" || upcAsString.substring(0,1) == "6" || upcAsString.substring(0,1) == "7" || upcAsString.substring(0,1) == "8" || upcAsString.substring(0,1) == "9";
+    var upcCheck = !upcCheckFlip;
+    var caseCheckLength = caseAsString.length != 12;
+    var upcCheckLength = upcAsString.length != 12;
+
     if (this.formula == undefined || this.formula == null)
     {
       this.snackBar.open("A formula must be specified for this sku.", "close", {
@@ -300,7 +310,36 @@ export class NewSkuDialogComponent implements OnInit {
       });
     }
 
-    else if (this.edit == false)
+    else if(caseCheck)
+      {
+        this.snackBar.open("Case UPC# must start with 0-1 or 6-9.", "close", {
+          duration: 2000,
+        });
+      }
+
+    else if(upcCheck)
+      {
+        this.snackBar.open("Unit UPC# must start with 0-1 or 6-9.", "close", {
+          duration: 2000,
+        });
+      }
+
+      else if(caseCheckLength)
+      {
+        this.snackBar.open("Case UPC# must be a 12 digit number", "close", {
+          duration: 2000,
+        });
+      }
+
+      else if(upcCheckLength)
+      {
+        this.snackBar.open("Unit UPC# must be a 12 digit number", "close", {
+          duration: 2000,
+        });
+      }
+      else
+      {
+    if (this.edit == false)
     {
       var formulaobject = await this.restv2.getFormulas(AndVsOr.OR, null,null,this.formula, null,null,1);
       let formulaId = formulaobject[0]['_id'];
@@ -350,4 +389,5 @@ export class NewSkuDialogComponent implements OnInit {
     }
     this.refreshData();
   }
+}
 }
