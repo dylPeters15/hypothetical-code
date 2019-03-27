@@ -430,31 +430,32 @@ export class ManufacturingScheduleComponent implements OnInit {
       
       onMoving: async function(item, callback): Promise<void> {
         // console.log(item, callback);
-        var newGroup = thisObject.groups.get(item['group']);
-        console.log(newGroup)
-        thisObject.checkLine(item, newGroup).then(isValid => {
-          console.log('isValid', isValid)
-          if (!isValid) {
-            callback(null)
-          }
-          else {
-            console.log(item['start'])
-            var startTime = parseInt((item['start'].toString().split(' ')[4]).split(':')[0], 10);
-            // if (startTime < 8 || startTime > 18) {
-            //   item['start'] = new Date((new Date(item['start'])).valueOf() - 1000 * 60 * 60 * 14);
-            // }
-            thisObject.checkOverdue(item['id'], item['end']).then( isOverdue => {
-              if (isOverdue && item['className'] != 'orphan') {
-                item['className'] = 'overdue';
-              }
-              else if (!isOverdue && item['className'] == 'overdue') {
-                item['className'] = 'normal';
-              }
-              callback(item);
-            })
+        // var newGroup = thisObject.groups.get(item['group']);
+        // console.log(newGroup)
+        // thisObject.checkLine(item, newGroup).then(isValid => {
+        //   console.log('isValid', isValid)
+        //   if (!isValid) {
+        //     callback(null)
+        //   }
+        //   else {
+        //     console.log(item['start'])
+        //     var startTime = parseInt((item['start'].toString().split(' ')[4]).split(':')[0], 10);
+        //     // if (startTime < 8 || startTime > 18) {
+        //     //   item['start'] = new Date((new Date(item['start'])).valueOf() - 1000 * 60 * 60 * 14);
+        //     // }
+        //     thisObject.checkOverdue(item['id'], item['end']).then( isOverdue => {
+        //       if (isOverdue && item['className'] != 'orphan') {
+        //         item['className'] = 'overdue';
+        //       }
+        //       else if (!isOverdue && item['className'] == 'overdue') {
+        //         item['className'] = 'normal';
+        //       }
+        //       callback(item);
+        //     })
             
-          }
-        })
+        //   }
+        // })
+        callback(null)
       },
 
       onUpdate: async function (item, callback): Promise<void> {
@@ -576,7 +577,7 @@ export class ManufacturingScheduleComponent implements OnInit {
     const NUM_HOURS_PER_DAY = 10;
     const remainder = hours % NUM_HOURS_PER_DAY;
     // console.log('startDate', endDate)
-    while (moment().isoWeekdayCalc([startDate.getUTCFullYear(), startDate.getUTCMonth(), startDate.getUTCDay()], [endDate.getUTCFullYear(), endDate.getUTCMonth(), endDate.getUTCDay()+1], [1, 2, 3, 4, 5,6,7]) < Math.floor(hours / NUM_HOURS_PER_DAY)) {
+    while (moment().isoWeekdayCalc([startDate.getUTCFullYear(), startDate.getUTCMonth(), startDate.getUTCDay()], [endDate.getUTCFullYear(), endDate.getUTCMonth(), endDate.getUTCDay()+1], [1, 2, 3, 4, 5]) < Math.floor(hours / NUM_HOURS_PER_DAY)) {
       // console.log('plus one day', moment().isoWeekdayCalc([startDate.getUTCFullYear(), startDate.getUTCMonth(), startDate.getUTCDay()], [endDate.getUTCFullYear(), endDate.getUTCMonth(), endDate.getUTCDay()+1], [1, 2, 3, 4, 5]) * NUM_HOURS_PER_DAY)
       // console.log(startDate.getUTCDay(), endDate.getUTCDay())
       endDate.setDate(endDate.getDate() + 1);
