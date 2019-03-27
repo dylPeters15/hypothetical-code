@@ -491,8 +491,10 @@ export class ManufacturingScheduleComponent implements OnInit {
         this.checkOrphaned(activity['_id']).then(isOrphaned => {
           var className;
           var orphanItem = this.data.get(activity['_id']);
+          console.log('orphan item', orphanItem);
+          console.log(activity['_id'], this.data)
           var update = false;
-          if ((orphanItem['className'] == 'orphan') && !isOrphaned) {
+          if (orphanItem && (orphanItem['className'] == 'orphan') && !isOrphaned) {
             className = 'normal';
             update = true
             this.checkOverdue(orphanItem['id'], orphanItem['end']).then(isOverdue => {
