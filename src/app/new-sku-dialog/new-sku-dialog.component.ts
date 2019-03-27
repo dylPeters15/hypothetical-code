@@ -86,6 +86,15 @@ export class NewSkuDialogComponent implements OnInit {
     this.comment = this.data.present_comment;
     this.manufacturingsetupcost = this.data.present_manufacturingsetupcost;
     this.manufacturingruncost = this.data.present_manufacturingruncost;
+    console.log("MAN2: " + JSON.stringify(this.manufacturinglines))
+    console.log("PROD2: " + this.productline)
+    this.manufacturinglinesNames = [];
+    var index;
+    for (index = 0; index < this.manufacturinglines.length; index++)
+    {
+      this.manufacturinglinesNames[index] = this.manufacturinglines[index]['linename'];
+      console.log("current name IS: " + this.manufacturinglines[index]['shortname']);
+    } 
     // update formula and scaling factor to display
     this.refreshData();
 
@@ -227,27 +236,7 @@ export class NewSkuDialogComponent implements OnInit {
 
      // getProductLines(productlinename: String, productlinenameregex: String, limit: number): Observable<any> {
 
-      // get object id from formula name
-      this.rest.getProductLines(new_productline ,new_productline, 1).subscribe(response => {
-        this.snackBar.open("Successfully added formula " + new_productline, "close", {
-          duration: 2000,
-             });
-          this.productlinename = response[0]['productlinename'];
-
-          // Find sku by sku name
-          this.rest.getSkus(this.skuname,this.skuname,0,0,0,'',1).subscribe(responseSku => {
-            this.snackBar.open("Successfully added formula " + new_productline, "close", {
-              duration: 2000,
-                 });
-              var thisSku = responseSku[0]['skuname'];
-              var productline_skus = response[0]['skus'].push(thisSku);
-
-              // save updated product line name list
-              this.rest.modifyProductLine(new_productline,new_productline,productline_skus).subscribe(responseProductline => {
-                });
-            });
-        this.refreshData();
-        });
+      this.refreshData();
         });
       }
 
@@ -275,8 +264,8 @@ export class NewSkuDialogComponent implements OnInit {
     this.assignManufacturingLineRef.afterClosed().subscribe(event => {
       // grab the new product line values
       var linesList = this.assignManufacturingLineRef.componentInstance.selectedLines;
-      // console.log("yipee ki yay: " + linesList);
-      // console.log("length: " + linesList.length);
+      console.log("yipee ki yay: " + linesList);
+      console.log("length: " + linesList.length);
 
       this.manufacturinglines = linesList;
       var index;
@@ -319,6 +308,7 @@ export class NewSkuDialogComponent implements OnInit {
       this.snackBar.open("Successfully created sku " + this.skuname + ".", "close", {
         duration: 2000,
       });
+      console.log("CREATED: " + JSON.stringify(created))
        
         
         // this.manufacturinglines, this.productlinename
