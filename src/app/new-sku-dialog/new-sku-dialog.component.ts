@@ -90,11 +90,14 @@ export class NewSkuDialogComponent implements OnInit {
     console.log("PROD2: " + this.productline)
     this.manufacturinglinesNames = [];
     var index;
-    for (index = 0; index < this.manufacturinglines.length; index++)
-    {
-      this.manufacturinglinesNames[index] = this.manufacturinglines[index]['linename'];
-      console.log("current name IS: " + this.manufacturinglines[index]['shortname']);
-    } 
+    if(this.manufacturinglines != null){
+      for (index = 0; index < this.manufacturinglines.length; index++)
+      {
+        this.manufacturinglinesNames[index] = this.manufacturinglines[index]['linename'];
+        console.log("current name IS: " + this.manufacturinglines[index]['shortname']);
+      } 
+    }
+
     // update formula and scaling factor to display
     this.refreshData();
 
