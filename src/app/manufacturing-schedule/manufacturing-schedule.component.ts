@@ -84,17 +84,19 @@ export class ManufacturingScheduleComponent implements OnInit {
     this.timeline = new vis.Timeline(this.tlContainer, null, this.options);      
     this.timeline.setGroups(this.groups);
     this.timeline.setItems(this.data);
-    this.timeline.on('rangeChanged',  function (event, properties, senderId) {
-      this.visibleData = [];
-      var newData = this.timeline.getVisibleItems();
+    var thisObject = this;
+    this.timeline.on('rangechanged',  function (properties) {
+      thisObject.visibleData = [];
+      var newData = thisObject.timeline.getVisibleItems();
       console.log(newData)
       newData.forEach(item => {
-        var itemObject = this.data.get(item);
+        var itemObject = thisObject.data.get(item);
         console.log('resize item', itemObject)
         let visibleTable = new DataForVisibleTable(itemObject['id'], itemObject['group'], 
         itemObject['start'], itemObject['end'], itemObject['content'], itemObject['className']);
-        this.visibleData.push(visibleTable)
+        thisObject.visibleData.push(visibleTable)
       })
+      thisObject.visibleDataSource = new MatTableDataSource<DataForVisibleTable>(thisObject.visibleData);
     }) 
     
   }
