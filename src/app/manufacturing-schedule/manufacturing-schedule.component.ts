@@ -110,7 +110,7 @@ export class ManufacturingScheduleComponent implements OnInit {
     console.log("Refresh data");
     this.goalsData = [];
     this.rest.getUserName().then(result => {
-        this.rest.getGoals(result.toString(), "", "", true, 5).subscribe(goals => {
+        this.rest.getGoals(result.toString(), "", "", true, 100).subscribe(goals => {
           goals.forEach(goal => {
             var activityList = [];
             if(goal['enabled']){
