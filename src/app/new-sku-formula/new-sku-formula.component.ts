@@ -67,13 +67,7 @@ export class NewSkuFormulaComponent implements OnInit {
   }
 
   closeDialog() {
-    this.formulaList = [];
-    this.selectedFormulaNames = [];
-
-    //this.amount = 5;
-    console.log("Let's send the data back! new ingredient: " + this.formulaName + ". Amount: " + this.scalingFactor);
-    this.dialogRef.componentInstance.formulaName = this.formulaName;
-    this.dialogRef.componentInstance.scalingFactor = this.scalingFactor;
+    this.formulaName = null;
     this.dialogRef.close();
 
     //this.dialogRef.close();
@@ -83,7 +77,15 @@ export class NewSkuFormulaComponent implements OnInit {
   }
 
   addFormula() {
-    this.closeDialog()
+    
+    this.formulaList = [];
+    this.selectedFormulaNames = [];
+
+    //this.amount = 5;
+    console.log("Let's send the data back! new ingredient: " + this.formulaName + ". Amount: " + this.scalingFactor);
+    this.dialogRef.componentInstance.formulaName = this.formulaName;
+    this.dialogRef.componentInstance.scalingFactor = this.scalingFactor;
+    this.dialogRef.close();
   }
 
   add(event: MatChipInputEvent): void {
