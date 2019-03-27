@@ -23,7 +23,7 @@ export class AssignSkuManufacturingLines implements OnInit {
   lineCtrl = new FormControl();
   filteredLines: Observable<string[]> = new Observable(observer => {
     this.lineCtrl.valueChanges.subscribe(async newVal => {
-      observer.next(await this.restv2.getLine(AndVsOr.OR, null, "(?i).*"+newVal+".*",null,null,1000));
+      observer.next(await this.restv2.getLine(AndVsOr.OR, null, "(?i).*"+newVal+".*",null,"(?i).*"+newVal+".*",1000));
     });
   });
   currentSku: any;
@@ -81,15 +81,17 @@ export class AssignSkuManufacturingLines implements OnInit {
       });
   }
 
-
+  cancel() {
+    this.selectedLines = [];
+    this.closeDialog();
+  }
 
   assignLines() {
-      this.closeDialog();
+    this.dialogRef.componentInstance.selectedLines = this.selectedLines;
+    this.closeDialog();
   }
 
   closeDialog() {
-    this.dialogRef.componentInstance.selectedLines = this.selectedLines;
-    var i;
     this.dialogRef.close();
     //this.selectedLineNames = [];
     //this.lineList = [];

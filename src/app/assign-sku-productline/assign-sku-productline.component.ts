@@ -64,8 +64,8 @@ export class AssignSkuProductlineComponent implements OnInit {
     this.selectedProductlineNames = [];
 
     //this.amount = 5;
-    console.log("Let's send the data back! new product line: " + this.productlineName);
-    this.dialogRef.componentInstance.productlineName = this.productlineName;
+    // console.log("Let's send the data back! new product line: " + this.productlineName);
+    // this.dialogRef.componentInstance.productlineName = this.productlineName;
     this.dialogRef.close();
 
     //this.dialogRef.close();
@@ -75,7 +75,14 @@ export class AssignSkuProductlineComponent implements OnInit {
   }
 
   addProductLine() {
+    console.log("Let's send the data back! new product line: " + this.productlineName);
+    this.dialogRef.componentInstance.productlineName = this.productlineName;
     this.closeDialog()
+  }
+
+  cancel() {
+    this.dialogRef.componentInstance.productlineName = null
+    this.closeDialog();
   }
 
   add(event: MatChipInputEvent): void {
