@@ -90,11 +90,14 @@ export class NewSkuDialogComponent implements OnInit {
     console.log("PROD2: " + this.productline)
     this.manufacturinglinesNames = [];
     var index;
-    for (index = 0; index < this.manufacturinglines.length; index++)
-    {
-      this.manufacturinglinesNames[index] = this.manufacturinglines[index]['linename'];
-      console.log("current name IS: " + this.manufacturinglines[index]['shortname']);
-    } 
+    if(this.manufacturinglines != null){
+      for (index = 0; index < this.manufacturinglines.length; index++)
+      {
+        this.manufacturinglinesNames[index] = this.manufacturinglines[index]['linename'];
+        console.log("current name IS: " + this.manufacturinglines[index]['shortname']);
+      } 
+    }
+
     // update formula and scaling factor to display
     this.refreshData();
 
@@ -176,7 +179,8 @@ export class NewSkuDialogComponent implements OnInit {
     //this.newIngredientDialogRef.componentInstance.amount = this.return_amount;
     //this.newIngredientDialogRef.componentInstance.ingredientNameList = this.ingredientNameList;
     this.newFormulaDialogRef.afterClosed().subscribe(event => {
-      // grab the new formula values
+      if (this.newFormulaDialogRef.componentInstance.formulaName) {
+        // grab the new formula values
       var new_formula = this.newFormulaDialogRef.componentInstance.formulaName;
       this.formulascalingfactor = this.newFormulaDialogRef.componentInstance.scalingFactor;
 
@@ -190,6 +194,8 @@ export class NewSkuDialogComponent implements OnInit {
         
         this.refreshData();
         });
+      }
+      
         });
       }
 
@@ -293,6 +299,16 @@ export class NewSkuDialogComponent implements OnInit {
 
   async createSku() {
     console.log("right now, formula is " + this.formula); // for some reason formula is the number here?
+    var caseAsString = this.caseupcnumber.toString();
+    var upcAsString = this.unitupcnumber.toString();
+
+    var caseCheckFlip = caseAsString.substring(0,1) == "0" || caseAsString.substring(0,1) == "1" || caseAsString.substring(0,1) == "6" || caseAsString.substring(0,1) == "7" || caseAsString.substring(0,1) == "8" || caseAsString.substring(0,1) == "9";
+    var caseCheck = !caseCheckFlip;
+    var upcCheckFlip = upcAsString.substring(0,1) == "0" || upcAsString.substring(0,1) == "1" || upcAsString.substring(0,1) == "6" || upcAsString.substring(0,1) == "7" || upcAsString.substring(0,1) == "8" || upcAsString.substring(0,1) == "9";
+    var upcCheck = !upcCheckFlip;
+    var caseCheckLength = caseAsString.length != 12;
+    var upcCheckLength = upcAsString.length != 12;
+
     if (this.formula == undefined || this.formula == null)
     {
       this.snackBar.open("A formula must be specified for this sku.", "close", {
@@ -300,7 +316,36 @@ export class NewSkuDialogComponent implements OnInit {
       });
     }
 
-    else if (this.edit == false)
+    else if(caseCheck)
+      {
+        this.snackBar.open("Case UPC# must start with 0-1 or 6-9.", "close", {
+          duration: 2000,
+        });
+      }
+
+    else if(upcCheck)
+      {
+        this.snackBar.open("Unit UPC# must start with 0-1 or 6-9.", "close", {
+          duration: 2000,
+        });
+      }
+
+      else if(caseCheckLength)
+      {
+        this.snackBar.open("Case UPC# must be a 12 digit number", "close", {
+          duration: 2000,
+        });
+      }
+
+      else if(upcCheckLength)
+      {
+        this.snackBar.open("Unit UPC# must be a 12 digit number", "close", {
+          duration: 2000,
+        });
+      }
+      else
+      {
+    if (this.edit == false)
     {
       var formulaobject = await this.restv2.getFormulas(AndVsOr.OR, null,null,this.formula, null,null,1);
       let formulaId = formulaobject[0]['_id'];
@@ -332,7 +377,8 @@ export class NewSkuDialogComponent implements OnInit {
           productline[0]['skus'].push({
             sku: created['_id']
           })
-          this.rest.modifyProductLine(created['productlinename'], created['productlinename'], productline['skus']).subscribe(response => {
+          console.log("CREATED: " + JSON.stringify(created))
+          this.rest.modifyProductLine(productline[0]['productlinename'], productline[0]['productlinename'], productline[0]['skus']).subscribe(response => {
             if (response['ok'] != 1 || response['nModified'] != 1)
             {
               // print error
@@ -346,8 +392,37 @@ export class NewSkuDialogComponent implements OnInit {
         this.snackBar.open("Successfully modifyed sku " + this.skuname + ".", "close", {
           duration: 2000,
         });
+        var modifiedSku = await this.restv2.getSkus(AndVsOr.OR, this.skuname, this.skuname, null,null,null,null,1);
+        console.log("CREATED: " + JSON.stringify(modifiedSku))
+        var i;
+        for (i = 0; i < this.manufacturinglines.length; i++)
+        {
+            var thisLine = this.manufacturinglines[i];
+            thisLine['skus'].push({
+              sku: modifiedSku[0]['_id']
+            });
+            this.rest.modifyLine(thisLine['linename'], thisLine['linename'], thisLine['shortname'], thisLine['skus'], thisLine['comment']).subscribe(response => {
+              if (response['ok'] != 1 || response['nModified'] != 1)
+              {
+                // print error
+              }
+            });
+        }
+
+        var productline = await this.restv2.getProductLines(AndVsOr.OR, this.productlinename, this.productlinename, 1);
+        // this.rest.getProductLines(this.productlinename, "$a",1).subscribe(productLine => {
+          productline[0]['skus'].push({
+            sku: modifiedSku[0]['_id']
+          })
+          this.rest.modifyProductLine(productline[0]['productlinename'], productline[0]['productlinename'], productline[0]['skus']).subscribe(response => {
+            if (response['ok'] != 1 || response['nModified'] != 1)
+            {
+              // print error
+            }
+          });
         this.closeDialog();
     }
     this.refreshData();
   }
+}
 }

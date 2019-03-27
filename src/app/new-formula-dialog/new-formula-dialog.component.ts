@@ -68,6 +68,11 @@ export class NewFormulaDialogComponent implements OnInit {
     }
   }
 
+  modifyIngredient(item, quantity){
+    console.log("ITEM: " + JSON.stringify(item))
+    console.log("QUANT: " + quantity)
+  }
+
   closeDialog() {
     this.dialogRef.close();
     this.edit = this.data.edit;

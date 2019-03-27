@@ -48,7 +48,7 @@
         <br /> 
 
         <div  class="dropdown-content" [hidden]="productLineDoesNotExist">
-          <p> {{chosen_productline}} <button type="submit" (click)="addProductLineButton()">Edit</button></p>
+          <p> {{chosen_productline}} </p>
         </div>
   
         <div  class="add-form-button" [hidden]="productLineExists">
@@ -65,7 +65,7 @@
         <br /> 
 
         <div  class="dropdown-content" [hidden]="manufacturingLineDoesNotExist">
-          <p> {{manufacturinglinesNames}} <button type="submit" (click)="addManufacturingLineButton()">Edit</button></p>
+          <p> {{manufacturinglinesNames}} </p>
         </div>
   
         <div  class="add-form-button" [hidden]="manufacturingLineExists">
@@ -95,5 +95,5 @@
 </mat-dialog-content>
 <mat-dialog-actions align="center">
   <button mat-raised-button (click)="closeDialog()">Cancel</button>
-  <button mat-raised-button (click)="createSku()" [disabled]="manufacturingrate==''||!manufacturingrate" color="primary">{{ submit_title }}</button>
+  <button mat-raised-button (click)="createSku()" [disabled]="manufacturingrate==''||!manufacturingrate" color="primary">{{submit_title}}</button>
 </mat-dialog-actions>
