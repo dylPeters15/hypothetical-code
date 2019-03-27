@@ -7,8 +7,18 @@
             <mat-card-title>Manufacturing Schedule</mat-card-title>
         </mat-card-header>
         <mat-card-content>
-            <button mat-raised-button (click)="openEnableGoalsDialog()"> Enable/Disable Goals </button>
-            <button mat-raised-button (click)=showLegend()> Legend </button>
+            <div class="dataContainer">
+                <button mat-raised-button (click)="openEnableGoalsDialog()"> Enable/Disable Goals </button>
+                <button mat-raised-button (click)=showLegend()> Legend </button>
+                <div class="warningContainer">
+                    <h4>Warnings</h4>
+                    <div *ngFor="let item of visibleDataSource['data']"> 
+                        <div [ngClass]="warning" *ngIf="item['className'] != 'normal'">
+                            {{item['content']}} - {{item['start'].valueOf().split('T')[0]}}: {{item['className']}}
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div id="timeline" #timeline></div>
             <div class="goalsContainer">
                 <div [ngClass]="['items']"  *ngFor="let goal of goalsDataSource['data']">
@@ -20,6 +30,8 @@
                 
                 </div>
             </div>
+            
+            
         </mat-card-content>
 
         
