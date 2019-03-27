@@ -374,7 +374,8 @@ export class NewSkuDialogComponent implements OnInit {
           productline[0]['skus'].push({
             sku: created['_id']
           })
-          this.rest.modifyProductLine(created['productlinename'], created['productlinename'], productline['skus']).subscribe(response => {
+          console.log("CREATED: " + JSON.stringify(created))
+          this.rest.modifyProductLine(productline[0]['productlinename'], productline[0]['productlinename'], productline[0]['skus']).subscribe(response => {
             if (response['ok'] != 1 || response['nModified'] != 1)
             {
               // print error
@@ -388,6 +389,34 @@ export class NewSkuDialogComponent implements OnInit {
         this.snackBar.open("Successfully modifyed sku " + this.skuname + ".", "close", {
           duration: 2000,
         });
+        var modifiedSku = await this.restv2.getSkus(AndVsOr.OR, this.skuname, this.skuname, null,null,null,null,1);
+        console.log("CREATED: " + JSON.stringify(modifiedSku))
+        var i;
+        for (i = 0; i < this.manufacturinglines.length; i++)
+        {
+            var thisLine = this.manufacturinglines[i];
+            thisLine['skus'].push({
+              sku: modifiedSku[0]['_id']
+            });
+            this.rest.modifyLine(thisLine['linename'], thisLine['linename'], thisLine['shortname'], thisLine['skus'], thisLine['comment']).subscribe(response => {
+              if (response['ok'] != 1 || response['nModified'] != 1)
+              {
+                // print error
+              }
+            });
+        }
+
+        var productline = await this.restv2.getProductLines(AndVsOr.OR, this.productlinename, this.productlinename, 1);
+        // this.rest.getProductLines(this.productlinename, "$a",1).subscribe(productLine => {
+          productline[0]['skus'].push({
+            sku: modifiedSku[0]['_id']
+          })
+          this.rest.modifyProductLine(productline[0]['productlinename'], productline[0]['productlinename'], productline[0]['skus']).subscribe(response => {
+            if (response['ok'] != 1 || response['nModified'] != 1)
+            {
+              // print error
+            }
+          });
         this.closeDialog();
     }
     this.refreshData();
