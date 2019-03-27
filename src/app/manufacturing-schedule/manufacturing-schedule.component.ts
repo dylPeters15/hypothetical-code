@@ -177,7 +177,14 @@ export class ManufacturingScheduleComponent implements OnInit {
               duration = activity['sethours'];
               className = "updated"
             }
-            var startTime = parseInt((activity['startdate'].split('T')[1]).split(':')[0], 10) - 7;
+            var startTime = 0;
+            if (activity['startdate'].split('T')) {
+              startTime = parseInt((activity['startdate'].split('T')[1]).split(':')[0], 10) - 7;
+            }
+            else {
+              startTime = parseInt((activity['startdate'].toString().split(' ')[4]).split(':')[0], 10);
+            }
+            
             var endDate = this.calculateEndDate(new Date(activity['startdate']), Math.round(duration), startTime);
             this.checkOverdue(activity['_id'], endDate).then(isOverdue => {
               if (isOverdue) {
@@ -244,6 +251,7 @@ export class ManufacturingScheduleComponent implements OnInit {
             console.log('newActivity', newActivity)
           }
         })
+        console.log('modify start', item['start'])
         var modify = await this.restv2.modifyActivity(AndVsOr.AND, activityid, newActivity['sku']['_id'], 
         newActivity['numcases'], newActivity['calculatedhours'], newActivity['sethours'], 
         item['start'], line[0]['_id']);
@@ -317,7 +325,13 @@ export class ManufacturingScheduleComponent implements OnInit {
       duration = activity['sethours'];
       className = 'updated'
     }
-    var startTime = parseInt((activity['startdate'].split('T')[1]).split(':')[0], 10) - 7;
+    var startTime = 0;
+    if (activity['startdate'].split('T')) {
+      startTime = parseInt((activity['startdate'].split('T')[1]).split(':')[0], 10) - 7;
+    }
+    else {
+      startTime = parseInt((activity['startdate'].toString().split(' ')[4]).split(':')[0], 10);
+    }
     var endDate = this.calculateEndDate(new Date(activity['startdate']), Math.round(duration), startTime);
     this.checkOverdue(activity['_id'], endDate).then(isOverdue => {
       if (isOverdue) {
@@ -426,9 +440,9 @@ export class ManufacturingScheduleComponent implements OnInit {
           else {
             console.log(item['start'])
             var startTime = parseInt((item['start'].toString().split(' ')[4]).split(':')[0], 10);
-            if (startTime < 8 || startTime > 18) {
-              item['start'] = new Date((new Date(item['start'])).valueOf() - 1000 * 60 * 60 * 14);
-            }
+            // if (startTime < 8 || startTime > 18) {
+            //   item['start'] = new Date((new Date(item['start'])).valueOf() - 1000 * 60 * 60 * 14);
+            // }
             thisObject.checkOverdue(item['id'], item['end']).then( isOverdue => {
               if (isOverdue && item['className'] != 'orphan') {
                 item['className'] = 'overdue';
@@ -573,5 +587,7 @@ export class ManufacturingScheduleComponent implements OnInit {
       this.refreshData();
     });
   }
+  
 }
+
 
