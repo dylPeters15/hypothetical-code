@@ -59,18 +59,17 @@ export class NewUserDialogComponent implements OnInit {
     this.dialogRef.close();
   }
 
-  createUser() {
+  async createUser(): Promise<void> {
     if (this.form.get('username').value && this.form.get('username').value != "" && !this.usernameExists) {
-      this.rest.createUser(this.form.get('username').value, this.form.get('password').value, this.form.get('admin').value).subscribe(response => {
-        if (response['token']) {
-          this.snackBar.open("Successfully created user " + this.form.get('username').value + ".", "close", {
-            duration: 2000,
-          });
-          this.closeDialog();
-        } else {
-          this.snackBar.open("Error creating user " + this.form.get('username').value + ". Please refresh and try again.", "close", {});
-        }
-      });
+      var response = await this.restv2.createUser(this.form.get('username').value, this.form.get('password').value, this.form.get('analyst').value, this.form.get('productmanager').value, this.form.get('businessmanager').value, this.selectedMfgLines, this.form.get('admin').value);
+      if (response['token']) {
+        this.snackBar.open("Successfully created user " + this.form.get('username').value + ".", "close", {
+          duration: 2000,
+        });
+        this.closeDialog();
+      } else {
+        this.snackBar.open("Error creating user " + this.form.get('username').value + ". Please refresh and try again.", "close", {});
+      }
     }
   }
 
