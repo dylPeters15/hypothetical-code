@@ -1,8 +1,11 @@
-import { Component, OnInit } from '@angular/core';
-import { MatDialogRef} from "@angular/material";
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { MatDialogRef, MatAutocomplete} from "@angular/material";
 import { RestService } from '../rest.service';
 import {MatSnackBar} from '@angular/material';
 import { FormGroup, FormControl, Validators, FormGroupDirective } from '@angular/forms';
+import { ENTER } from '@angular/cdk/keycodes';
+import { Observable } from 'rxjs';
+import { RestServiceV2, AndVsOr } from '../restv2.service';
 
 @Component({
   selector: 'app-new-user-dialog',
@@ -11,11 +14,43 @@ import { FormGroup, FormControl, Validators, FormGroupDirective } from '@angular
 })
 export class NewUserDialogComponent implements OnInit {
 
+  selectedMfgLines: any[] = [];
+  separatorKeysCodes: number[] = [ENTER];
+  mfgLineCtrl = new FormControl();
+  autoCompleteMfgLines: Observable<string[]> = new Observable(observer => {
+    this.mfgLineCtrl.valueChanges.subscribe(async newVal => {
+      var regex = "(?i).*"+newVal+".*";
+      var linesFromDB: any[] = await this.restv2.getLine(AndVsOr.AND, null, regex, null, regex, 1000);
+      var filteredLines = linesFromDB.filter((value,index,array) => {
+        for (let selectedLine of this.selectedMfgLines) {
+          if (selectedLine.linename == value.linename) {
+            return false;
+          }
+        }
+        return true;
+      })
+      observer.next(filteredLines);
+    });
+  });
+  @ViewChild('mfgLineInput') mfgLineInput: ElementRef<HTMLInputElement>;
+  @ViewChild('auto') matAutocomplete: MatAutocomplete;
+  remove(mfgLine) {
+    this.selectedMfgLines.splice(this.selectedMfgLines.indexOf(mfgLine),1);
+  }
+  selected(event){
+    this.selectedMfgLines.push(event.option.value);
+  }
+  add(event) {
+    this.mfgLineInput.nativeElement.value = "";
+  }
+
+
+
   hidePassword1: boolean = true;
   hidePassword2: boolean = true;
   usernameExists: boolean = false;
 
-  constructor(private dialogRef: MatDialogRef<NewUserDialogComponent>, public rest:RestService, private snackBar: MatSnackBar) { }
+  constructor(public restv2:RestServiceV2, private dialogRef: MatDialogRef<NewUserDialogComponent>, public rest:RestService, private snackBar: MatSnackBar) { }
 
   ngOnInit() {
   }
@@ -44,6 +79,9 @@ export class NewUserDialogComponent implements OnInit {
       username: new FormControl(''),
       password: new FormControl('password', [Validators.minLength(4)]),
       confirm: new FormControl('password', Validators.minLength(4)),
+      analyst: new FormControl(false),
+      productmanager: new FormControl(false),
+      businessmanager: new FormControl(false),
       admin: new FormControl(false)
     },
     passwordMatchValidator
