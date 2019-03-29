@@ -126,6 +126,10 @@ export class UserManagementComponent implements OnInit {
     this.openDialog();
   }
 
+  modifySelected(element) {
+    
+  }
+
   deleteSelected() {
     if (auth.getLocal()) {
       const dialogConfig = new MatDialogConfig();
