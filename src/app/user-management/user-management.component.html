@@ -44,8 +44,30 @@
           </mat-cell>
         </ng-container>
 
-        <ng-container matColumnDef="admin">
-          <mat-header-cell *matHeaderCellDef>Administrator</mat-header-cell>
+        <ng-container matColumnDef="permissions">
+          <mat-header-cell *matHeaderCellDef>Permissions</mat-header-cell>
+          <mat-cell *matCellDef="let element">
+              <div *ngIf="element['analyst']">
+                Analyst
+                <br>
+              </div>
+              <div *ngIf="element['productmanager']">
+                Product Manager
+                <br>
+              </div>
+              <div *ngIf="element['businessmanager']">
+                Business Manager
+                <br>
+              </div>
+            <div *ngIf="element['admin']">
+                Admin
+                <br>
+              </div>
+          </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="mfgLines">
+          <mat-header-cell *matHeaderCellDef>Manufacturing Lines</mat-header-cell>
           <mat-cell *matCellDef="let element">
             <mat-checkbox [(ngModel)]="element['admin']"
               (ngModelChange)="changeAdminPriviledge(element['username'], element['localuser'], $event)"></mat-checkbox>
@@ -62,9 +84,9 @@
         <ng-container matColumnDef="actions">
           <mat-header-cell *matHeaderCellDef>Actions</mat-header-cell>
           <mat-cell *matCellDef="let element">
-              <button mat-button (click)="modifySelected(element)" [disabled]="dataSource.data.length==0" color="primary">
-                  <mat-icon>edit</mat-icon> 
-              </button>
+            <button mat-button (click)="modifySelected(element)" [disabled]="dataSource.data.length==0" color="primary">
+              <mat-icon>edit</mat-icon>
+            </button>
           </mat-cell>
         </ng-container>
 

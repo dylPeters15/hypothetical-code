@@ -9,6 +9,7 @@ import { auth } from '../auth.service';
 import { ConfirmActionDialogComponent } from '../confirm-action-dialog/confirm-action-dialog.component';
 import { UserNotificationDialogComponent } from '../user-notification-dialog/user-notification-dialog.component';
 import { Router } from '@angular/router';
+import { RestServiceV2, AndVsOr } from '../restv2.service';
 
 export interface UserForTable {
   username: string;
@@ -27,9 +28,9 @@ export interface UserForTable {
 })
 export class UserManagementComponent implements OnInit {
 
-  constructor(public rest: RestService, private snackBar: MatSnackBar, private dialog: MatDialog, public router: Router) { }
+  constructor(public restv2: RestServiceV2, public rest: RestService, private snackBar: MatSnackBar, private dialog: MatDialog, public router: Router) { }
   allReplacement = 54321;
-  displayedColumns: string[] = ['checked', 'username', 'admin', 'loginType', 'actions'];
+  displayedColumns: string[] = ['checked', 'username', 'permissions', 'mfgLines', 'loginType', 'actions'];
   data: UserForTable[] = [];
   dataSource = new MatTableDataSource<UserForTable>(this.data);
   dialogRef: MatDialogRef<NewUserDialogComponent>;
@@ -56,10 +57,11 @@ export class UserManagementComponent implements OnInit {
   refreshData(filterQueryData?) {
     // filterQueryData = filterQueryData ? "^"+filterQueryData+".*" : "^"+this.filterQuery+".*"; //this returns things that start with the pattern
     filterQueryData = filterQueryData ? "(?i).*"+filterQueryData+".*" : "(?i).*"+this.filterQuery+".*"; //this returns things that have the pattern anywhere in the string
-    this.rest.getUsers("", filterQueryData, this.displayAdmins=="all"?null:this.displayAdmins=="adminsonly", this.displayLocal=="all"?null:this.displayLocal=="localonly", this.paginator.pageSize*10).subscribe(response => {
+    this.restv2.getUsers(AndVsOr.OR, null, filterQueryData, null, null, null, null, this.displayAdmins=="all"?null:this.displayAdmins=="adminsonly", this.displayLocal=="all"?null:this.displayLocal=="localonly", this.paginator.pageSize*10).then(response => {
       this.data = response;
       this.deselectAll();
       this.sortData();
+      console.log(this.data);
       this.dataSource = new MatTableDataSource<UserForTable>(this.data);
       this.dataSource.paginator = this.paginator;
     });
@@ -127,7 +129,7 @@ export class UserManagementComponent implements OnInit {
   }
 
   modifySelected(element) {
-    
+
   }
 
   deleteSelected() {
