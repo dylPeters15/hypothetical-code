@@ -61,7 +61,14 @@ export class NewUserDialogComponent implements OnInit {
 
   async createUser(): Promise<void> {
     if (this.form.get('username').value && this.form.get('username').value != "" && !this.usernameExists) {
-      var response = await this.restv2.createUser(this.form.get('username').value, this.form.get('password').value, this.form.get('analyst').value, this.form.get('productmanager').value, this.form.get('businessmanager').value, this.selectedMfgLines, this.form.get('admin').value);
+      var mfgLinesToUpload = [];
+      for (let mfgLine of this.selectedMfgLines) {
+        mfgLinesToUpload.push({
+          manufacturingline: mfgLine._id
+        });
+      }
+      console.log("mfgLinesToUpload: ", mfgLinesToUpload);
+      var response = await this.restv2.createUser(this.form.get('username').value, this.form.get('password').value, this.form.get('analyst').value, this.form.get('productmanager').value, this.form.get('businessmanager').value, mfgLinesToUpload, this.form.get('admin').value);
       if (response['token']) {
         this.snackBar.open("Successfully created user " + this.form.get('username').value + ".", "close", {
           duration: 2000,

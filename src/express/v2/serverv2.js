@@ -54,6 +54,10 @@ function startServerV2(app) {
                 usersToSend.push({
                     _id: users[i]._id,
                     username: users[i].username,
+                    analyst: users[i].analyst,
+                    productmanager: users[i].productmanager,
+                    businessmanager: users[i].businessmanager,
+                    manufacturinglinestomanage: users[i].manufacturinglinestomanage,
                     admin: users[i].admin,
                     localuser: users[i].localuser
                 });

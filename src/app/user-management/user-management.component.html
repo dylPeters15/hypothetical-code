@@ -12,7 +12,7 @@
       <mat-form-field>
         <input matInput placeholder="Filter" [(ngModel)]="filterQuery" (ngModelChange)="refreshData($event)">
       </mat-form-field>
-      <mat-radio-group [(ngModel)]="displayAdmins" (ngModelChange)="refreshData()">
+      <!-- <mat-radio-group [(ngModel)]="displayAdmins" (ngModelChange)="refreshData()">
         <div>
           <mat-radio-button value="all">All Users</mat-radio-button>
           <mat-radio-button value="adminsonly">Admins Only</mat-radio-button>
@@ -25,7 +25,7 @@
           <mat-radio-button value="localonly">Local Only</mat-radio-button>
           <mat-radio-button value="federatedonly">Federated Only</mat-radio-button>
         </div>
-      </mat-radio-group>
+      </mat-radio-group> -->
 
 
 
@@ -47,30 +47,35 @@
         <ng-container matColumnDef="permissions">
           <mat-header-cell *matHeaderCellDef>Permissions</mat-header-cell>
           <mat-cell *matCellDef="let element">
-              <div *ngIf="element['analyst']">
-                Analyst
-                <br>
-              </div>
-              <div *ngIf="element['productmanager']">
-                Product Manager
-                <br>
-              </div>
-              <div *ngIf="element['businessmanager']">
-                Business Manager
-                <br>
-              </div>
+            <div>
+            <div *ngIf="element['analyst']">
+              Analyst
+            </div>
+            <!-- <br *ngIf="element['analyst']"> -->
+            <div *ngIf="element['productmanager']">
+              Product Manager
+            </div>
+            <!-- <br *ngIf="element['productmanager']"> -->
+            <div *ngIf="element['businessmanager']">
+              Business Manager
+            </div>
+            <!-- <br *ngIf="element['businessmanager']"> -->
             <div *ngIf="element['admin']">
-                Admin
-                <br>
-              </div>
+              Admin
+            </div>
+            <!-- <br *ngIf="element['admin']"> -->
+          </div>
           </mat-cell>
         </ng-container>
 
         <ng-container matColumnDef="mfgLines">
           <mat-header-cell *matHeaderCellDef>Manufacturing Lines</mat-header-cell>
           <mat-cell *matCellDef="let element">
-            <mat-checkbox [(ngModel)]="element['admin']"
-              (ngModelChange)="changeAdminPriviledge(element['username'], element['localuser'], $event)"></mat-checkbox>
+            <div>
+              <div *ngFor="let mfgLine of element['manufacturinglinestomanage']">
+                {{mfgLine.manufacturingline.linename}} ({{mfgLine.manufacturingline.shortname}})
+              </div>
+            </div>
           </mat-cell>
         </ng-container>
 
