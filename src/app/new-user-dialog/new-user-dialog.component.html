@@ -4,33 +4,49 @@
     <mat-card-content style="display: grid; width: 100%; justify-items: center;">
       <form [formGroup]="form">
 
-        <mat-form-field>
-          <input matInput placeholder="Username" required formControlName="username" [errorStateMatcher]="userErrorMatcher"
-            (input)="usernameChanged()" (keydown.enter)="createUser()">
-          <mat-error>Username already exists.</mat-error>
-        </mat-form-field>
-        <br>
-        <mat-form-field>
-          <input matInput placeholder="Password" [type]="hidePassword1 ? 'password' : 'text'" formControlName="password"
-            [errorStateMatcher]="passwordErrorMatcher" (keydown.enter)="createUser()">
-          <mat-icon matSuffix (click)="hidePassword1 = !hidePassword1">{{hidePassword1 ? 'visibility_off' :
-            'visibility'}}</mat-icon>
-          <mat-hint>Optional. Default password is "password"</mat-hint>
-          <mat-error>Passwords must match.</mat-error>
-        </mat-form-field>
-        <br>
-        <br>
-        <mat-form-field>
-          <input matInput placeholder="Confirm Password" [type]="hidePassword2 ? 'password' : 'text'" formControlName="confirm"
-            [errorStateMatcher]="passwordErrorMatcher" (keydown.enter)="createUser()">
-          <mat-icon matSuffix (click)="hidePassword2 = !hidePassword2">{{hidePassword2 ? 'visibility_off' :
-            'visibility'}}</mat-icon>
-          <mat-hint>Optional. Default password is "password"</mat-hint>
-          <mat-error>Passwords must match.</mat-error>
-        </mat-form-field>
-        <br>
-        <br>
-        <mat-checkbox formControlName="admin">Make user administrator.</mat-checkbox>
+        <div>
+            <mat-form-field style="float: left;">
+                <input matInput placeholder="Username" required formControlName="username" [errorStateMatcher]="userErrorMatcher"
+                  (input)="usernameChanged()" (keydown.enter)="createUser()">
+                <mat-error>Username already exists.</mat-error>
+              </mat-form-field>
+              <div style="float: left;">
+                  <mat-form-field>
+                      <input matInput placeholder="Password" [type]="hidePassword1 ? 'password' : 'text'" formControlName="password"
+                        [errorStateMatcher]="passwordErrorMatcher" (keydown.enter)="createUser()">
+                      <mat-icon matSuffix (click)="hidePassword1 = !hidePassword1">{{hidePassword1 ? 'visibility_off' :
+                        'visibility'}}</mat-icon>
+                      <mat-hint>Optional. Default password is "password"</mat-hint>
+                      <mat-error>Passwords must match.</mat-error>
+                    </mat-form-field>
+                    <br>
+                    <br>
+                    <mat-form-field>
+                      <input matInput placeholder="Confirm Password" [type]="hidePassword2 ? 'password' : 'text'" formControlName="confirm"
+                        [errorStateMatcher]="passwordErrorMatcher" (keydown.enter)="createUser()">
+                      <mat-icon matSuffix (click)="hidePassword2 = !hidePassword2">{{hidePassword2 ? 'visibility_off' :
+                        'visibility'}}</mat-icon>
+                      <mat-hint>Optional. Default password is "password"</mat-hint>
+                      <mat-error>Passwords must match.</mat-error>
+                    </mat-form-field>
+              </div>
+        </div>
+
+        <br><br><br><br><br><br><br><br>
+
+        <div>
+            <h4 style="float: left;">User Permissions:</h4>
+            <div style="float: left; text-align: left; padding: 10px;">
+                <mat-checkbox formControlName="analyst">Analyst</mat-checkbox>
+                <br>
+                <mat-checkbox formControlName="productmanager">Product Manager</mat-checkbox>
+                <br>
+                <mat-checkbox formControlName="businessmanager">Business Manager</mat-checkbox>
+                <br>
+                <mat-checkbox formControlName="admin">Administrator</mat-checkbox>
+            </div>
+        </div>
+        
       </form>
     </mat-card-content>
   </mat-card>
