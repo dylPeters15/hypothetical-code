@@ -1,77 +1,82 @@
-<h2 mat-dialog-title align="center">Create New User</h2>
+<h2 mat-dialog-title align="center">{{title}}</h2>
 <mat-dialog-content align="center">
   <mat-card>
     <mat-card-content style="display: grid; width: 100%; justify-items: center;">
       <form [formGroup]="form">
 
-        <div>
-            <mat-form-field style="float: left;">
-                <input matInput placeholder="Username" required formControlName="username" [errorStateMatcher]="userErrorMatcher"
-                  (input)="usernameChanged()" (keydown.enter)="createUser()">
-                <mat-error>Username already exists.</mat-error>
-              </mat-form-field>
-              <div style="float: left;">
-                  <mat-form-field>
-                      <input matInput placeholder="Password" [type]="hidePassword1 ? 'password' : 'text'" formControlName="password"
-                        [errorStateMatcher]="passwordErrorMatcher" (keydown.enter)="createUser()">
-                      <mat-icon matSuffix (click)="hidePassword1 = !hidePassword1">{{hidePassword1 ? 'visibility_off' :
+        <div *ngIf="!initData">
+          <mat-form-field style="float: left;">
+            <input matInput placeholder="Username" required formControlName="username"
+              [errorStateMatcher]="userErrorMatcher" (input)="usernameChanged()" (keydown.enter)="createUser()">
+            <mat-error>Username already exists.</mat-error>
+          </mat-form-field>
+          <div style="float: left;">
+            <mat-form-field>
+              <input matInput placeholder="Password" [type]="hidePassword1 ? 'password' : 'text'"
+                formControlName="password" [errorStateMatcher]="passwordErrorMatcher" (keydown.enter)="createUser()">
+              <mat-icon matSuffix (click)="hidePassword1 = !hidePassword1">{{hidePassword1 ? 'visibility_off' :
                         'visibility'}}</mat-icon>
-                      <mat-hint>Optional. Default password is "password"</mat-hint>
-                      <mat-error>Passwords must match.</mat-error>
-                    </mat-form-field>
-                    <br>
-                    <br>
-                    <mat-form-field>
-                      <input matInput placeholder="Confirm Password" [type]="hidePassword2 ? 'password' : 'text'" formControlName="confirm"
-                        [errorStateMatcher]="passwordErrorMatcher" (keydown.enter)="createUser()">
-                      <mat-icon matSuffix (click)="hidePassword2 = !hidePassword2">{{hidePassword2 ? 'visibility_off' :
+              <mat-hint>Optional. Default password is "password"</mat-hint>
+              <mat-error>Passwords must match.</mat-error>
+            </mat-form-field>
+            <br>
+            <br>
+            <mat-form-field>
+              <input matInput placeholder="Confirm Password" [type]="hidePassword2 ? 'password' : 'text'"
+                formControlName="confirm" [errorStateMatcher]="passwordErrorMatcher" (keydown.enter)="createUser()">
+              <mat-icon matSuffix (click)="hidePassword2 = !hidePassword2">{{hidePassword2 ? 'visibility_off' :
                         'visibility'}}</mat-icon>
-                      <mat-hint>Optional. Default password is "password"</mat-hint>
-                      <mat-error>Passwords must match.</mat-error>
-                    </mat-form-field>
-              </div>
+              <mat-hint>Optional. Default password is "password"</mat-hint>
+              <mat-error>Passwords must match.</mat-error>
+            </mat-form-field>
+          </div>
         </div>
 
-        <br><br><br><br><br><br><br><br>
+        <div *ngIf="!initData">
+          <br><br><br><br><br><br><br><br>
+        </div>
 
         <div>
-            <h4 style="float: left;">User Permissions:</h4>
-            <div style="float: left; text-align: left; padding: 10px;">
-                <mat-checkbox formControlName="analyst">Analyst</mat-checkbox>
-                <br>
-                <mat-checkbox formControlName="productmanager">Product Manager</mat-checkbox>
-                <br>
-                <mat-checkbox formControlName="businessmanager">Business Manager</mat-checkbox>
-                <br>
-                <mat-checkbox formControlName="admin">Administrator</mat-checkbox>
-                <br>
+          <h4 style="float: left;">User Permissions:</h4>
+          <div style="float: left; text-align: left; padding: 10px;">
+            <mat-checkbox formControlName="analyst">Analyst</mat-checkbox>
+            <br>
+            <mat-checkbox formControlName="productmanager">Product Manager</mat-checkbox>
+            <br>
+            <mat-checkbox formControlName="businessmanager">Business Manager</mat-checkbox>
+            <br>
+            <mat-checkbox formControlName="admin">Administrator</mat-checkbox>
+            <br>
 
-                <mat-form-field>
-                    <mat-chip-list #chipList>
-                      <mat-chip *ngFor="let mfgLine of selectedMfgLines" [selectable]="false" [removable]="true" (removed)="remove(mfgLine)">
-                        {{mfgLine.shortname}}
-                        <mat-icon matChipRemove>cancel</mat-icon>
-                      </mat-chip>
-                      <input placeholder="Enter a Manufacturing Line for the User to Manage" #mfgLineInput [formControl]="mfgLineCtrl" [matAutocomplete]="auto"
-                        [matChipInputFor]="chipList" [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-                        [matChipInputAddOnBlur]="true" (matChipInputTokenEnd)="add($event)" [hidden]="false">
-                    </mat-chip-list>
-                    <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
-                      <mat-option *ngFor="let mfgLineOption of autoCompleteMfgLines | async" [value]="mfgLineOption">
-                        {{mfgLineOption.shortname}}
-                      </mat-option>
-                    </mat-autocomplete>
-                  </mat-form-field>
+            <mat-form-field>
+              <mat-chip-list #chipList>
+                <mat-chip *ngFor="let mfgLine of selectedMfgLines" [selectable]="false" [removable]="true"
+                  (removed)="remove(mfgLine)">
+                  {{mfgLine.shortname}}
+                  <mat-icon matChipRemove>cancel</mat-icon>
+                </mat-chip>
+                <input placeholder="Enter a Manufacturing Line for the User to Manage" #mfgLineInput
+                  [formControl]="mfgLineCtrl" [matAutocomplete]="auto" [matChipInputFor]="chipList"
+                  [matChipInputSeparatorKeyCodes]="separatorKeysCodes" [matChipInputAddOnBlur]="true"
+                  (matChipInputTokenEnd)="add($event)" [hidden]="false">
+              </mat-chip-list>
+              <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
+                <mat-option *ngFor="let mfgLineOption of autoCompleteMfgLines | async" [value]="mfgLineOption">
+                  {{mfgLineOption.shortname}}
+                </mat-option>
+              </mat-autocomplete>
+            </mat-form-field>
 
-            </div>
+          </div>
         </div>
-        
+
       </form>
     </mat-card-content>
   </mat-card>
 </mat-dialog-content>
 <mat-dialog-actions align="center">
   <button mat-raised-button (click)="closeDialog()">Cancel</button>
-  <button mat-raised-button (click)="createUser()" [disabled]="form.get('username').value==''||form.get('password').value==''||form.get('password').value!=form.get('confirm').value||usernameExists"
-    color="primary">Create</button>
+  <button mat-raised-button (click)="createUser()"
+    [disabled]="!initData&&(form.get('username').value==''||form.get('password').value==''||form.get('password').value!=form.get('confirm').value||usernameExists)"
+    color="primary">{{submitButtonLabel}}</button>
 </mat-dialog-actions>

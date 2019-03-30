@@ -134,7 +134,7 @@ function getUsers(filterSchema, limit) {
                 reject(Error(err));
                 return;
             }
-            console.log(JSON.stringify(users, null, 2));
+            // console.log(JSON.stringify(users, null, 2));
             resolve(users);
         });
     });

@@ -129,7 +129,13 @@ export class UserManagementComponent implements OnInit {
   }
 
   modifySelected(element) {
-
+    console.log(element);
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.data = element;
+    this.dialogRef = this.dialog.open(NewUserDialogComponent, dialogConfig);
+    this.dialogRef.afterClosed().subscribe(event => {
+      this.refreshData();
+    });
   }
 
   deleteSelected() {
