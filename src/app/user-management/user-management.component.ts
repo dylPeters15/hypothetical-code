@@ -28,6 +28,7 @@ export interface UserForTable {
 })
 export class UserManagementComponent implements OnInit {
 
+  auth = auth;
   constructor(public restv2: RestServiceV2, public rest: RestService, private snackBar: MatSnackBar, private dialog: MatDialog, public router: Router) { }
   allReplacement = 54321;
   displayedColumns: string[] = ['checked', 'username', 'permissions', 'mfgLines', 'loginType', 'actions'];
@@ -180,7 +181,9 @@ export class UserManagementComponent implements OnInit {
     }
     this.deselectAll();
     for (var i = lowerIndex; i < upperIndex; i=i+1) {
-      this.data[i].checked = true;
+      if (this.data[i].username != "admin" && this.data[i].username != auth.getUsername()) {
+        this.data[i].checked = true;
+      }
     }
   }
 
