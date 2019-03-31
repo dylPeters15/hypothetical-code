@@ -48,15 +48,15 @@
           <mat-header-cell *matHeaderCellDef>Permissions</mat-header-cell>
           <mat-cell *matCellDef="let element">
             <div>
-            <div *ngIf="element['analyst']">
+            <div *ngIf="element['analyst'] && !element['productmanager'] && !element['businessmanager'] && !element['admin']">
               Analyst
             </div>
             <!-- <br *ngIf="element['analyst']"> -->
-            <div *ngIf="element['productmanager']">
+            <div *ngIf="element['productmanager'] && !element['admin']">
               Product Manager
             </div>
             <!-- <br *ngIf="element['productmanager']"> -->
-            <div *ngIf="element['businessmanager']">
+            <div *ngIf="element['businessmanager'] && !element['admin']">
               Business Manager
             </div>
             <!-- <br *ngIf="element['businessmanager']"> -->
@@ -71,6 +71,7 @@
         <ng-container matColumnDef="mfgLines">
           <mat-header-cell *matHeaderCellDef>Manufacturing Lines</mat-header-cell>
           <mat-cell *matCellDef="let element">
+            <!-- <div *ngIf="!element['admin']"> -->
             <div>
               <div *ngFor="let mfgLine of element['manufacturinglinestomanage']">
                 {{mfgLine.manufacturingline.linename}} ({{mfgLine.manufacturingline.shortname}})
