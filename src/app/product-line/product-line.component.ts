@@ -23,7 +23,7 @@ export interface DataForTable {
 })
 export class ProductLineComponent implements OnInit {
 
-  admin: boolean = false;
+  productmanager: boolean = false;
   allReplacement = 54321;
   constructor(public rest: RestService, private snackBar: MatSnackBar, private dialog: MatDialog, public router: Router) { }
   @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -36,7 +36,7 @@ export class ProductLineComponent implements OnInit {
     // this.paginator.page.subscribe(event => {
     //   // this.deselectAll();
     // });
-    this.admin = auth.isAuthenticatedForAdminOperation();
+    this.productmanager = auth.isAuthenticatedForProductManagerOperation();
     this.refreshData();
   }
 

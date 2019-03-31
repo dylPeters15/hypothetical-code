@@ -39,17 +39,17 @@
       <a mat-list-item routerLink='/product-line' routerLinkActive="active">Product Lines</a>
 
       <!--Manufacturing Pages-->
-      <a mat-list-item routerLink='/manufacturing-lines' routerLinkActive="active">Manufacturing Lines</a>
-      <a mat-list-item routerLink='/manufacturing-goal' routerLinkActive="active">Manufacturing Goal</a>
-      <a mat-list-item *ngIf="admin" routerLink='/manufacturing-schedule' routerLinkActive="active">Manufacturing Schedule</a>
+      <a mat-list-item *ngIf="productmanager" routerLink='/manufacturing-lines' routerLinkActive="active">Manufacturing Lines</a>
+      <a mat-list-item *ngIf="analyst" routerLink='/manufacturing-goal' routerLinkActive="active">Manufacturing Goal</a>
+      <a mat-list-item *ngIf="businessmanager || manufacturinglinestomanage.length > 0" routerLink='/manufacturing-schedule' routerLinkActive="active">Manufacturing Schedule</a>
 
       <!--Reports Pages-->
-      <a mat-list-item routerLink='/manufacturing-schedule-report' routerLinkActive="active">Manufacturing Schedule Report</a>
-      <a mat-list-item routerLink='/sales-report' routerLinkActive="active">Sales Report</a>
-      <a mat-list-item routerLink='/ingredient-dependency-report' routerLinkActive="active">Ingredient Dependency Report</a>
+      <a mat-list-item *ngIf="analyst" routerLink='/manufacturing-schedule-report' routerLinkActive="active">Manufacturing Schedule Report</a>
+      <a mat-list-item *ngIf="analyst" routerLink='/sales-report' routerLinkActive="active">Sales Report</a>
+      <a mat-list-item *ngIf="analyst" routerLink='/ingredient-dependency-report' routerLinkActive="active">Ingredient Dependency Report</a>
 
       <!--Misc Admin Pages-->
-      <a mat-list-item *ngIf="admin" routerLink='/import' routerLinkActive="active">Import</a>
+      <a mat-list-item *ngIf="productmanager" routerLink='/import' routerLinkActive="active">Import</a>
       <a mat-list-item *ngIf="admin" routerLink='/user-management' routerLinkActive="active">User Management</a>
 
     </mat-nav-list>

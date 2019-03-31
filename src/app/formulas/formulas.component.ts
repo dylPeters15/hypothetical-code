@@ -48,14 +48,14 @@ export class FormulaComponent implements OnInit {
   dialogRef: MatDialogRef<MoreInfoDialogComponent>;
   newDialogRef: MatDialogRef<NewFormulaDialogComponent>;
   dataSource =  new MatTableDataSource<FormulaForTable>(this.data);
-  admin: boolean = false;
+  productmanager: boolean = false;
   filterQuery: string = "";
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
   ngOnInit() {
     this.paginator.pageSize = 5;
-    this.admin = auth.isAuthenticatedForAdminOperation();
+    this.productmanager = auth.isAuthenticatedForProductManagerOperation();
     this.refreshData();
   }
 

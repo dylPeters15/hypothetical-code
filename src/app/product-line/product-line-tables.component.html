@@ -1,12 +1,12 @@
 <div class="example-container">
-  <button mat-button (click)="modifyName($event)" *ngIf="admin">
+  <button mat-button (click)="modifyName($event)" *ngIf="productmanager">
      {{_value['productlinename']}} <mat-icon>edit</mat-icon> 
     </button> 
 
-  <h2 *ngIf="!admin">
+  <h2 *ngIf="!productmanager">
     {{_value['productlinename']}}
   </h2> 
-  <div *ngIf="admin"
+  <div *ngIf="productmanager"
     cdkDropList
     [id]="_value['productlinename']"
     #productLineList="cdkDropList"
@@ -17,7 +17,7 @@
       {{item['sku']['skuname']}}:{{item['sku']['unitsize']}} * {{item['sku']['countpercase']}}
     </div>
   </div>
-  <div *ngIf="!admin"
+  <div *ngIf="!productmanager"
   class="example-list">
     <div class="example-box" *ngFor="let item of _value['skus']">
         {{item['sku']['skuname']}}:{{item['sku']['unitsize']}} * {{item['sku']['countpercase']}}

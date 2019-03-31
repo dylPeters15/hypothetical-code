@@ -76,16 +76,15 @@ export class SkuComponent implements OnInit {
   dialogRef: MatDialogRef<MoreInfoDialogComponent>;
   newDialogRef: MatDialogRef<NewSkuDialogComponent>;
   dataSource =  new MatTableDataSource<UserForTable>(this.data);
-  admin: boolean = false;
+  productmanager: boolean = false;
   filterQuery: string = "";
   filteredData =  new MatTableDataSource<UserForTable>();
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
   ngOnInit() {
-    this.admin = auth.isAuthenticatedForAdminOperation();
+    this.productmanager = auth.isAuthenticatedForProductManagerOperation();
     this.paginator.pageSize = 20;
-    this.admin = auth.isAuthenticatedForAdminOperation();
     this.refreshData();
   }
 

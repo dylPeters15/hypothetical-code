@@ -44,6 +44,7 @@ export class ExportableGoal {
 })
 
 export class ManufacturingGoalsComponent implements OnInit {
+  businessmanager: boolean = false;
   allReplacement = 54321;
   goals:any = [];
   displayedColumns: string[] = ['checked', 'name', 'activities', 'date', 'export', 'actions', 'calculator'];
@@ -88,6 +89,7 @@ export class ManufacturingGoalsComponent implements OnInit {
 }
 
   ngOnInit() {
+    this.businessmanager = auth.isAuthenticatedForBusinessManagerOperation();
     this.refreshData();
 
   }
