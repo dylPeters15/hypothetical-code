@@ -84,6 +84,7 @@ import { NgDygraphsModule } from 'ng-dygraphs';
 import { LegendDetailsComponent} from './manufacturing-schedule/legend-details.component';
 import { ActivityDetailsComponent } from './activity-details/activity-details.component';
 import { SkuDetailsComponent } from './sku-details/sku-details.component';
+import {MatSlideToggleModule} from '@angular/material/slide-toggle'; 
 
 const appRoutes: Routes = [
   { path: 'login', component: LoginComponent, data: { title: 'Log In' }, canActivate: [AlreadyLoggedInRouteGuardService] },
@@ -199,7 +200,8 @@ const appRoutes: Routes = [
     MatDatepickerModule,
     MatDialogModule,
     MatTabsModule,
-    NgDygraphsModule
+    NgDygraphsModule,
+    MatSlideToggleModule
   ],
   providers: [],
   bootstrap: [AppComponent],

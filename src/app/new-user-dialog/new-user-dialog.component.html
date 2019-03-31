@@ -39,33 +39,35 @@
         <div>
           <h4 style="float: left;">User Permissions:</h4>
           <div style="float: left; text-align: left; padding: 10px;">
-            <mat-checkbox formControlName="analyst">Analyst</mat-checkbox>
+            <mat-slide-toggle formControlName="admin">Administrator</mat-slide-toggle>
             <br>
-            <mat-checkbox formControlName="productmanager">Product Manager</mat-checkbox>
-            <br>
-            <mat-checkbox formControlName="businessmanager">Business Manager</mat-checkbox>
-            <br>
-            <mat-checkbox formControlName="admin">Administrator</mat-checkbox>
-            <br>
-
-            <mat-form-field>
-              <mat-chip-list #chipList>
-                <mat-chip *ngFor="let mfgLine of selectedMfgLines" [selectable]="false" [removable]="true"
-                  (removed)="remove(mfgLine)">
-                  {{mfgLine.shortname}}
-                  <mat-icon matChipRemove>cancel</mat-icon>
-                </mat-chip>
-                <input placeholder="Enter a Manufacturing Line for the User to Manage" #mfgLineInput
-                  [formControl]="mfgLineCtrl" [matAutocomplete]="auto" [matChipInputFor]="chipList"
-                  [matChipInputSeparatorKeyCodes]="separatorKeysCodes" [matChipInputAddOnBlur]="true"
-                  (matChipInputTokenEnd)="add($event)" [hidden]="false">
-              </mat-chip-list>
-              <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
-                <mat-option *ngFor="let mfgLineOption of autoCompleteMfgLines | async" [value]="mfgLineOption">
-                  {{mfgLineOption.shortname}}
-                </mat-option>
-              </mat-autocomplete>
-            </mat-form-field>
+            <div *ngIf="!form.get('admin').value">
+                <mat-checkbox formControlName="analyst">Analyst</mat-checkbox>
+                <br>
+                <mat-checkbox formControlName="productmanager">Product Manager</mat-checkbox>
+                <br>
+                <mat-checkbox formControlName="businessmanager">Business Manager</mat-checkbox>
+                <br>
+    
+                <mat-form-field>
+                  <mat-chip-list #chipList>
+                    <mat-chip *ngFor="let mfgLine of selectedMfgLines" [selectable]="false" [removable]="true"
+                      (removed)="remove(mfgLine)">
+                      {{mfgLine.shortname}}
+                      <mat-icon matChipRemove>cancel</mat-icon>
+                    </mat-chip>
+                    <input placeholder="Enter a Manufacturing Line for the User to Manage" #mfgLineInput
+                      [formControl]="mfgLineCtrl" [matAutocomplete]="auto" [matChipInputFor]="chipList"
+                      [matChipInputSeparatorKeyCodes]="separatorKeysCodes" [matChipInputAddOnBlur]="true"
+                      (matChipInputTokenEnd)="add($event)" [hidden]="false">
+                  </mat-chip-list>
+                  <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
+                    <mat-option *ngFor="let mfgLineOption of autoCompleteMfgLines | async" [value]="mfgLineOption">
+                      {{mfgLineOption.shortname}}
+                    </mat-option>
+                  </mat-autocomplete>
+                </mat-form-field>
+            </div>
 
           </div>
         </div>
