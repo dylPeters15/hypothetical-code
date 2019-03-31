@@ -49,17 +49,20 @@ var userSchema = new mongoose.Schema({
   analyst: {
     type: Boolean,
     required: true,
-    unique: false
+    unique: false,
+    default: false
   },
   productmanager: {
     type: Boolean,
     required: true,
-    unique: false
+    unique: false,
+    default: false
   },
   businessmanager: {
     type: Boolean,
     required: true,
-    unique: false
+    unique: false,
+    default: false
   },
   manufacturinglinestomanage: [{
     manufacturingline: {
