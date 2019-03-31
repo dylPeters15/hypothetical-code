@@ -68,6 +68,28 @@ export class NewUserDialogComponent implements OnInit {
     }
   }
 
+  analystClicked() {
+    var newVal = !this.form.get('analyst').value;
+    if (!newVal) {
+      this.form.get('productmanager').setValue(false);
+      this.form.get('businessmanager').setValue(false);
+    }
+  }
+
+  productManagerClicked() {
+    var newVal = !this.form.get('productmanager').value;
+    if (newVal) {
+      this.form.get('analyst').setValue(true);
+    }
+  }
+
+  businessManagerClicked() {
+    var newVal = !this.form.get('businessmanager').value;
+    if (newVal) {
+      this.form.get('analyst').setValue(true);
+    }
+  }
+
   closeDialog() {
     this.dialogRef.close();
   }
