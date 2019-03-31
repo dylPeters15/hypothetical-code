@@ -1,5 +1,6 @@
 import { Component, Input, forwardRef, OnInit } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { ProductLineSalesCalcService } from './product-line-sales-calc.service';
 
 const customValueProvider = {
   provide: NG_VALUE_ACCESSOR,
@@ -18,8 +19,9 @@ export class ProductLineSalesComponent implements OnInit, ControlValueAccessor {
   productLine: any;
   skus: any[] = [];
   selectedCustomerId: any = "all";
+  totalRevenue = "loading...";
 
-  constructor() { }
+  constructor(public calc: ProductLineSalesCalcService) { }
 
   ngOnInit() {
 
@@ -33,8 +35,12 @@ export class ProductLineSalesComponent implements OnInit, ControlValueAccessor {
     }
   }
 
-  async refreshData() {
+  refreshData() {
     this.productLine = this._value['productLine'];
+    var thisobject = this;
+    this.calc.totalRevenue(this.productLine).then(revenue => {
+      thisobject.totalRevenue = "$" + revenue.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+    });
     this.skus = this.productLine['skus'];
     this.selectedCustomerId = this._value['selectedCustomerId'];
   }
