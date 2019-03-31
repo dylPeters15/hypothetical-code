@@ -1,6 +1,6 @@
 import { AccountSettingsComponent } from './account-settings/account-settings.component';
-import { AdminRouteGuardService } from './admin-route-guard.service';
-import { AlreadyLoggedInRouteGuardService } from './already-logged-in-route-guard.service';
+import { AdminRouteGuardService } from './route-guard.service';
+import { AlreadyLoggedInRouteGuardService } from './route-guard.service';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -69,7 +69,7 @@ import { SkuComponent } from './sku/sku.component';
 import { TermsAndConditionsDialogComponent } from './footer/terms-and-conditions-dialog/terms-and-conditions-dialog.component'; 
 import { UserManagementComponent } from './user-management/user-management.component';
 import { UserNotificationDialogComponent } from './user-notification-dialog/user-notification-dialog.component';
-import { UserRouteGuardService } from './user-route-guard.service';
+import { UserRouteGuardService } from './route-guard.service';
 import { NewSkuFormulaComponent } from './new-sku-formula/new-sku-formula.component';
 import { AssignSkuProductlineComponent } from './assign-sku-productline/assign-sku-productline.component';
 import {MatDialogModule} from '@angular/material/dialog';
