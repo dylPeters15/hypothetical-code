@@ -35,9 +35,8 @@ function createLine(lineObject) {
     return new Promise((resolve, reject) => {
         let newLine = new database.manufacturingLineModel(lineObject);
         newLine.save().then(response => {
-            database.userModel.updateOne({
-                username: 'admin',
-                localuser: true
+            database.userModel.updateMany({
+                admin: true
             }, 
             {
                 $push:{
