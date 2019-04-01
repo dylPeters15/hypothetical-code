@@ -33,7 +33,7 @@ export class LoginComponent implements OnInit {
           var admin = response['admin'];
           if (username && token && admin!==null) {
             this.failedLogin = false;
-            auth.storeLogin(username, token, admin, false);
+            auth.storeLogin(username, token, response['analyst'], response['productmanager'], response['businessmanager'], admin, false);
             this.router.navigateByUrl('/home');
           } else {
             //incorrect login
@@ -51,7 +51,7 @@ export class LoginComponent implements OnInit {
         if (data['token']) {
           //logged in successfully
           this.failedLogin = false;
-          auth.storeLogin(this.myusername, data['token'], data['admin'], true);
+          auth.storeLogin(this.myusername, data['token'], data['analyst'], data['productmanager'], data['businessmanager'], data['admin'], true);
           this.router.navigateByUrl('/home');
         } else {
           //incorrect login

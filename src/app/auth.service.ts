@@ -18,22 +18,45 @@ export class AuthService {
     return ((username != null) && (username != '')) && ((token != null) && (token != ''));
   }
 
+  public isAuthenticatedForAnalystOperation(): boolean {
+    const analyst = localStorage.getItem('analyst');
+    return this.isAuthenticatedForUserOperation() && analyst=='true';
+  }
+
+  public isAuthenticatedForProductManagerOperation(): boolean {
+    const productmanager = localStorage.getItem('productmanager');
+    return this.isAuthenticatedForUserOperation() && productmanager=='true';
+  }
+
+  public isAuthenticatedForBusinessManagerOperation(): boolean {
+    const businessmanager = localStorage.getItem('businessmanager');
+    return this.isAuthenticatedForUserOperation() && businessmanager=='true';
+  }
+
   public isAuthenticatedForAdminOperation(): boolean {
     const admin = localStorage.getItem('admin');
     return this.isAuthenticatedForUserOperation() && admin=='true';
   }
 
-  public storeLogin(username: string, token: string, admin: boolean, localuser: boolean): void {
+  public storeLogin(username: string, token: string, analyst: boolean, productmanager: boolean, businessmanager: boolean, admin: boolean, localuser: boolean): void {
     localStorage.setItem('username', username);
     localStorage.setItem('token', token);
     localStorage.setItem('admin', ""+admin);
     localStorage.setItem('localuser', ""+localuser);
+    localStorage.setItem('analyst', ""+analyst);
+    localStorage.setItem('productmanager', ""+productmanager);
+    localStorage.setItem('businessmanager', ""+businessmanager);
     this.loggedInBehaviorSubject.next(true);
   }
 
   public clearLogin(): void {
     localStorage.removeItem('username');
     localStorage.removeItem('token');
+    localStorage.removeItem('admin');
+    localStorage.removeItem('localuser');
+    localStorage.removeItem('analyst');
+    localStorage.removeItem('productmanager');
+    localStorage.removeItem('businessmanager');
     this.loggedInBehaviorSubject.next(false);
   }
 

@@ -1,6 +1,8 @@
+const mongoose = require('mongoose');
 const database = require('../database.js');
 const crypto = require('crypto');
 const axios = require('axios');
+var deepPopulate = require('mongoose-deep-populate')(mongoose);
 
 function usernamePasswordCorrect(username, password) {
     return new Promise((resolve, reject) => {
@@ -127,11 +129,12 @@ function getLoginInfoForFederatedUser(netidtoken, clientid) {
 
 function getUsers(filterSchema, limit) {
     return new Promise((resolve, reject) => {
-        database.userModel.find(filterSchema).limit(limit).exec((err, users) => {
+        database.userModel.find(filterSchema).limit(limit).deepPopulate('manufacturinglinestomanage.manufacturingline').exec((err, users) => {
             if (err) {
                 reject(Error(err));
                 return;
             }
+            // console.log(JSON.stringify(users, null, 2));
             resolve(users);
         });
     });

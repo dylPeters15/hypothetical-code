@@ -46,6 +46,30 @@ var userSchema = new mongoose.Schema({
     required: true,
     unique: true
   },
+  analyst: {
+    type: Boolean,
+    required: true,
+    unique: false,
+    default: false
+  },
+  productmanager: {
+    type: Boolean,
+    required: true,
+    unique: false,
+    default: false
+  },
+  businessmanager: {
+    type: Boolean,
+    required: true,
+    unique: false,
+    default: false
+  },
+  manufacturinglinestomanage: [{
+    manufacturingline: {
+      type: ObjectId,
+      ref: 'line'
+    }
+  }],
   admin: {
     type: Boolean,
     required: true,
@@ -59,6 +83,7 @@ var userSchema = new mongoose.Schema({
 });
 userSchema.index({ username: 1, localuser: 1 }, { unique: true }); //the combination of username and localuser should be unique
 userSchema.plugin(uniqueValidator);
+userSchema.plugin(deepPopulate);
 
 var userModel = mongoose.model('user', userSchema);
 
