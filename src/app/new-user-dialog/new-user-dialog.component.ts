@@ -58,6 +58,7 @@ export class NewUserDialogComponent implements OnInit {
 
   ngOnInit() {
     if (this.initData) {
+      console.log(this.initData);
       for (let mfgLine of this.initData.manufacturinglinestomanage) {
         this.selectedMfgLines.push(mfgLine.manufacturingline);
       }
@@ -95,15 +96,24 @@ export class NewUserDialogComponent implements OnInit {
   }
 
   async createUser(): Promise<void> {
+    var analyst = this.form.get('analyst').value || this.form.get('productmanager').value || this.form.get('businessmanager').value || this.form.get('admin').value || this.selectedMfgLines.length > 0;
+    var productmanager = this.form.get('productmanager').value || this.form.get('admin').value;
+    var businessmanager = this.form.get('businessmanager').value || this.form.get('admin').value;
+    var productmanager = this.form.get('productmanager').value || this.form.get('admin').value;
+    var admin = this.form.get('admin').value;
+    var mfgLinesToUpload = [];
+    if (admin) {
+      this.selectedMfgLines = await this.restv2.getLine(AndVsOr.OR, null, null, null, null, 10000);
+    }
+    for (let mfgLine of this.selectedMfgLines) {
+      mfgLinesToUpload.push({
+        manufacturingline: mfgLine._id
+      });
+    }
+    console.log("mfgLinesToUpload: ", mfgLinesToUpload);
+
     if (this.initData) {
-      var mfgLinesToUpload = [];
-      for (let mfgLine of this.selectedMfgLines) {
-        mfgLinesToUpload.push({
-          manufacturingline: mfgLine._id
-        });
-      }
-      console.log("mfgLinesToUpload: ", mfgLinesToUpload);
-      var response = await this.restv2.modifyUser(AndVsOr.AND, this.initData.username, this.initData.localuser, null, this.form.get('analyst').value, this.form.get('productmanager').value, this.form.get('businessmanager').value, mfgLinesToUpload, this.form.get('admin').value);
+      var response = await this.restv2.modifyUser(AndVsOr.AND, this.initData.username, this.initData.localuser, null, analyst, productmanager, businessmanager, mfgLinesToUpload, admin);
       if (response['ok'] == 1) {
         this.snackBar.open("Successfully modified user permissions.", "close", {
           duration: 2000,
@@ -115,14 +125,7 @@ export class NewUserDialogComponent implements OnInit {
 
     } else {
       if (this.form.get('username').value && this.form.get('username').value != "" && !this.usernameExists) {
-        var mfgLinesToUpload = [];
-        for (let mfgLine of this.selectedMfgLines) {
-          mfgLinesToUpload.push({
-            manufacturingline: mfgLine._id
-          });
-        }
-        console.log("mfgLinesToUpload: ", mfgLinesToUpload);
-        var response = await this.restv2.createUser(this.form.get('username').value, this.form.get('password').value, this.form.get('analyst').value, this.form.get('productmanager').value, this.form.get('businessmanager').value, mfgLinesToUpload, this.form.get('admin').value);
+        var response = await this.restv2.createUser(this.form.get('username').value, this.form.get('password').value, analyst, productmanager, businessmanager, mfgLinesToUpload, admin);
         if (response['token']) {
           this.snackBar.open("Successfully created user " + this.form.get('username').value + ".", "close", {
             duration: 2000,

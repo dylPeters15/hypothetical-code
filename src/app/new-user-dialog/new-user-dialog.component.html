@@ -42,7 +42,7 @@
             <mat-slide-toggle formControlName="admin">Administrator &nbsp;</mat-slide-toggle>
             <mat-icon color="primary" [inline]="true" matTooltip="Administrators can edit any data in the system, including confering or revoking multiple additional roles onto users.">help</mat-icon>
             <br><br>
-            <div *ngIf="!form.get('admin').value">
+            <div [hidden]="form.get('admin').value">
                 <mat-checkbox formControlName="analyst" (click)="analystClicked()">Analyst &nbsp;</mat-checkbox>
                 <mat-icon color="primary" [inline]="true" matTooltip="Analysts can view (but not modify) sales data, manufacturing goals,and the manufacturing schedule.">help</mat-icon>
                 <br>
