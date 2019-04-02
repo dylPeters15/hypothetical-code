@@ -92,7 +92,7 @@ export class NewLineDialogComponent implements OnInit {
     this.comment = '';
   }
 
-  createLine() {
+  async createLine() {
     if (this.linename!='' && this.shortname!='' && !this.shortnameError && !this.linenameError) {
       if(this.edit == false){
         this.rest.createLine(this.linename, this.shortname, this.selectedSkus, this.comment).subscribe(response => {
@@ -108,12 +108,17 @@ export class NewLineDialogComponent implements OnInit {
         });
       }
       else{
-        this.rest.modifyLine(this.data.present_linename, this.linename, this.shortname, this.selectedSkus, this.comment).subscribe(response => {
-          this.snackBar.open("Successfully modified Line: " + this.linename + ".", "close", {
-            duration: 2000,
-          });
-          this.closeDialog();
-        });
+        var lines = await this.restv2.getLine(AndVsOr.OR, null, null, null, null, 10000);
+        for (let line of lines) {
+          if (line.linename == this.data.present_linename) {
+            this.restv2.modifyLine(line._id, this.linename, this.shortname, this.selectedSkus, this.comment).then(response => {
+              this.snackBar.open("Successfully modified Line: " + this.linename + ".", "close", {
+                duration: 2000,
+              });
+              this.closeDialog();
+            });
+          } 
+        }
       }
     }
   }
