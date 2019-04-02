@@ -210,7 +210,7 @@ export class SkuComponent implements OnInit {
                 if (closeData && closeData['confirmed']) {
                   this.deleteSkuConfirmed(sku);
                   affectedManufacturingLines.forEach((line) => {
-                    let newSkus; 
+                    let newSkus = []; 
                     line['skus'].forEach((oldsku) => {
                       console.log(oldsku)
                       if((oldsku['sku']['_id'] != sku['_id'])) {
@@ -222,8 +222,6 @@ export class SkuComponent implements OnInit {
                         } 
                       }
                     });
-                    console.log('oldsku', line['skus'])
-                    console.log('modified', newSkus)
                     this.rest.modifyLine(line['linename'], line['linename'], line['shortname'],
                     newSkus, line['comment']).subscribe(response => {
                       if (response['nModified']) {
@@ -240,9 +238,8 @@ export class SkuComponent implements OnInit {
                     })
                   }) 
                   affectedProductLines.forEach((line) => {
-                    let newSkus;
+                    let newSkus = [];
                     line['skus'].forEach((oldsku) => {
-                      console.log(oldsku)
                       if((oldsku['sku']['_id'] != sku['_id'])) {
                         if (newSkus) {
                           newSkus.push(oldsku);
