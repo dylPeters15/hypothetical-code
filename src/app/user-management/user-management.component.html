@@ -71,12 +71,7 @@
         <ng-container matColumnDef="mfgLines">
           <mat-header-cell *matHeaderCellDef>Manufacturing Lines</mat-header-cell>
           <mat-cell *matCellDef="let element">
-            <!-- <div *ngIf="!element['admin']"> -->
-            <div>
-              <div *ngFor="let mfgLine of element['manufacturinglinestomanage']">
-                {{mfgLine.manufacturingline.linename}} ({{mfgLine.manufacturingline.shortname}})
-              </div>
-            </div>
+            <button mat-raised-button (click)="viewMFGLinesForUser(element)" [disabled]="element['manufacturinglinestomanage'].length == 0">{{element['manufacturinglinestomanage'].length}} <mat-icon>list</mat-icon></button>
           </mat-cell>
         </ng-container>
 
