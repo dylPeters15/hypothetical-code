@@ -4,6 +4,7 @@ import {CdkDragDrop, moveItemInArray, transferArrayItem} from '@angular/cdk/drag
 import { RestService } from '../rest.service';
 import { MatDialog, MatDialogRef, MatTableDataSource, MatPaginator } from "@angular/material";
 import {MatIconModule} from '@angular/material/icon'
+import { RestServiceV2 } from '../restv2.service';
 
 const customValueProvider = {
   provide: NG_VALUE_ACCESSOR,
@@ -19,7 +20,7 @@ const customValueProvider = {
 })
 export class ManufacturingGoalsTablesComponent implements ControlValueAccessor {
 
-  constructor(public rest: RestService, public dialog: MatDialog) { }
+  constructor(public rest: RestService, public restv2: RestServiceV2, public dialog: MatDialog) { }
   _value = '';
   stringified = '';
 
@@ -73,7 +74,7 @@ export class ManufacturingGoalsTablesComponent implements ControlValueAccessor {
     
     return new Promise((resolve, reject) => {
       goal.forEach(element => {
-        this.rest.modifyGoal(element['goalname'],element['goalname'],element['activities'],element['date'],enabledStatus).subscribe(modifyPLResponse => {
+        this.restv2.modifyGoal(element['_id'],element['goalname'],element['activities'],element['date'],enabledStatus).then(modifyPLResponse => {
           if (modifyPLResponse['ok'] == 1) {
               console.log('success')
               resolve();
