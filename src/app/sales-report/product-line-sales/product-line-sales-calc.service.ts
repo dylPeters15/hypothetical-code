@@ -20,7 +20,7 @@ export class ProductLineSalesCalcService {
         totalRevenue += sale.numcases * sale.pricepercase;
       }
     }
-    toReturn['total'] = totalRevenue;
+    toReturn['total'] = "$" + totalRevenue.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
 
     var currentYear = new Date().getFullYear();
 
