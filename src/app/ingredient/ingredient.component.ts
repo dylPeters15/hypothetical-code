@@ -8,6 +8,7 @@ import { auth } from '../auth.service';
 import {ExportToCsv} from 'export-to-csv';
 import {MatIconModule} from '@angular/material/icon'
 import { ConfirmDeletionDialogComponent } from '../confirm-deletion-dialog/confirm-deletion-dialog.component';
+import { RestServiceV2, AndVsOr } from '../restv2.service';
 
 export interface IngredientForTable {
   ingredientname: string;
@@ -51,7 +52,7 @@ export class ExportableIngredient {
   })
 export class IngredientComponent  implements OnInit {
 
-  constructor(public rest:RestService, private snackBar: MatSnackBar, private dialog: MatDialog) { }
+  constructor(public restv2: RestServiceV2, public rest:RestService, private snackBar: MatSnackBar, private dialog: MatDialog) { }
   allReplacement = 54321;
   displayedColumns: string[] = ['checked', 'ingredientname', 'ingredientnumber',
     'vendorinformation', 'packagesize', 'costperpackage', 'comment', 'actions'];
@@ -172,16 +173,15 @@ export class IngredientComponent  implements OnInit {
     
   }
 
-  deleteIngredient(ingredientname) {
-    this.rest.deleteIngredient(ingredientname).subscribe(response => {
-      this.snackBar.open("Ingredient " + ingredientname + " deleted successfully.", "close", {
-        duration: 2000,
-      });
-      this.data = this.data.filter((value, index, arr) => {
-        return value.ingredientname != ingredientname;
-      });
-      this.refreshData();
+  async deleteIngredient(ingredient) {
+    var response = await this.restv2.deleteIngredient(AndVsOr.AND, ingredient.ingredientnumber);
+    this.snackBar.open("Ingredient " + ingredient.ingredientname + " deleted successfully.", "close", {
+      duration: 2000,
     });
+    this.data = this.data.filter((value, index, arr) => {
+      return value.ingredientnumber != ingredient.ingredientnumber;
+    });
+    this.refreshData();
   }
 
   deleteSelected() {
@@ -204,7 +204,7 @@ export class IngredientComponent  implements OnInit {
         });
         promise1.then(() => {
           if (affectedFormulas.length == 0) {
-            this.deleteIngredient(ingredient.ingredientname);
+            this.deleteIngredient(ingredient);
           }
           else {
             const dialogRef = this.dialog.open(ConfirmDeletionDialogComponent, {
@@ -215,7 +215,7 @@ export class IngredientComponent  implements OnInit {
               
             dialogRef.afterClosed().subscribe(closeData => {
               if (closeData && closeData['confirmed']) {
-                this.deleteIngredient(ingredient['ingredientname']);
+                this.deleteIngredient(ingredient);
                 affectedFormulas.forEach((formula) => {
                   var newIngredients = []
                   formula['ingredientsandquantities'].forEach((ingredienttuple) => {

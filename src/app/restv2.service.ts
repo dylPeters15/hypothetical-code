@@ -260,9 +260,9 @@ export class RestServiceV2 {
       ])).toPromise();
   }
 
-  deleteIngredient(andVsOr: AndVsOr, ingredientname: String): Promise<any> {
+  deleteIngredient(andVsOr: AndVsOr, ingredientnumber: number): Promise<any> {
     return this.http.delete(endpoint + "ingredients", this.generateHeaderWithFilterSchema(andVsOr, [
-      {ingredientname: ingredientname}
+      {ingredientnumber: ingredientnumber}
     ])).toPromise();
   }
 
