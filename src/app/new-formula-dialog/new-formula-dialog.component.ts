@@ -6,6 +6,7 @@ import { MAT_DIALOG_DATA } from '@angular/material';
 import { MatDialogConfig, MatDialog } from "@angular/material";
 import { NewFormulaIngredientDialogComponent } from '../new-formula-ingredient/new-formula-ingredient-dialog.component';
 import { ingredienttuple } from "./ingredienttuple";
+import { RestServiceV2, AndVsOr } from '../restv2.service';
 
 
 
@@ -32,7 +33,7 @@ export class NewFormulaDialogComponent implements OnInit {
   newIngredientDialogRef: MatDialogRef<NewFormulaIngredientDialogComponent>;
 
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: any, private dialogRef: MatDialogRef<NewFormulaDialogComponent>, public rest: RestService, private snackBar: MatSnackBar, private dialog: MatDialog) { }
+  constructor(@Inject(MAT_DIALOG_DATA) public data: any, private dialogRef: MatDialogRef<NewFormulaDialogComponent>, public rest: RestService, private snackBar: MatSnackBar, private dialog: MatDialog, public restv2: RestServiceV2) { }
 
   ngOnInit() {
 
@@ -124,7 +125,8 @@ export class NewFormulaDialogComponent implements OnInit {
     this.addIngredientToFormula(false, "", 0);
   }
 
-  createFormula() {
+  async createFormula() {
+    console.log("Edit: ", this.edit);
     // generate ID
     if (this.edit == false) {
       this.rest.createFormula(this.formulaname, this.formulanumber, this.ingredientsandquantities, this.comment).subscribe(response => {
@@ -137,8 +139,12 @@ export class NewFormulaDialogComponent implements OnInit {
 
     else {
       console.log("We're modifying a formula");
-      this.rest.modifyFormula(this.oldformulaname, this.formulaname, this.formulanumber, this.ingredientsandquantities, this.comment).subscribe(response => {
-        if (response['success']) {
+      var formulas = await this.restv2.getFormulas(AndVsOr.OR, null, null, this.data.present_formulanumber, null, null, 10000);
+      var formula_id = formulas[0]._id;
+      console.log("Formulas: ",formulas);
+      this.restv2.modifyFormula(formula_id, this.formulaname, this.formulanumber, this.ingredientsandquantities, this.comment).then(response => {
+        console.log(response);
+        if (response['ok'] == 1) {
           this.snackBar.open("Successfully modifyed formula " + this.formulaname + ".", "close", {
             duration: 2000,
           });

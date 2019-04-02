@@ -26,6 +26,8 @@ function createFormula(newObject) {
 
 function modifyFormula(filterSchema, newObject) {
     return new Promise((resolve, reject) => {
+        console.log(filterSchema);
+        console.log(newObject);
         database.formulaModel.updateOne(filterSchema, newObject, (err, response) => {
             if (err) {
                 reject(Error(err));

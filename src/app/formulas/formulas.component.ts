@@ -9,6 +9,7 @@ import { auth } from '../auth.service';
 import {ExportToCsv} from 'export-to-csv';
 import { ingredienttuple } from "../new-formula-dialog/ingredienttuple";
 import { ConfirmDeletionDialogComponent } from '../confirm-deletion-dialog/confirm-deletion-dialog.component';
+import { RestServiceV2 } from '../restv2.service';
 
 export interface FormulaForTable {
   formulaname: String;
@@ -41,7 +42,7 @@ export class ExportableFormula {
   })
 export class FormulaComponent implements OnInit {
 
-  constructor(public rest:RestService, private snackBar: MatSnackBar, private dialog: MatDialog) { }
+  constructor(public rest:RestService, private snackBar: MatSnackBar, private dialog: MatDialog, public restv2: RestServiceV2) { }
   allReplacement = 54321;
   displayedColumns: string[] = ['checked', 'formulaname', 'formulanumber','ingredientsandquantities', 'comment', 'actions'];
   data: FormulaForTable[] = [];
@@ -111,7 +112,7 @@ export class FormulaComponent implements OnInit {
   }
 
   deleteFormulaConfirmed(formula) {
-    this.rest.deleteFormula(formula['formulanumber']).subscribe(response => {
+    this.restv2.deleteFormula(formula['_id']).then(response => {
       this.snackBar.open("Formula " + formula['formulaname'] + " deleted successfully.", "close", {
         duration: 2000,
       });
@@ -160,10 +161,10 @@ export class FormulaComponent implements OnInit {
               if (closeData && closeData['confirmed']) {
                 
                 affectedSkus.forEach((sku) => {
-                  this.rest.modifySku(sku['skuname'], sku['skuname'], sku['skunumber'],
+                  this.restv2.modifySku(sku['_id'], sku['skuname'], sku['skunumber'],
                   sku['caseupcnumber'], sku['unitupcnumber'], sku['unitsize'], 
-                  sku['countpercase'], -1, sku['formulascalingfactor'], 
-                  sku['manufacturingrate'],sku['comment']).subscribe(response => {
+                  sku['countpercase'], "111111111111111111111111", sku['formulascalingfactor'], 
+                  sku['manufacturingrate'], sku['manufacturingsetupcost'], sku['manufacturingruncost'], sku['comment']).then(response => {
                     if (response['nModified']) {
                       this.snackBar.open("Successfully modified formula " + formula['formulaname'] + ".", "close", {
                         duration: 2000,
