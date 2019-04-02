@@ -95,7 +95,7 @@ export class RestServiceV2 {
       this.generateHeaderWithFilterSchema()).toPromise();
   }
 
-  modifyUser(andVsOr: AndVsOr, username: string, localuser: boolean, newpassword: string, newanalyst: boolean, newproductmanager: boolean, newbusinessmanager: boolean, newmanufacturinglinestomanage: any[], newadmin: boolean): Promise<any> {
+  modifyUser(userid: string, newpassword: string, newanalyst: boolean, newproductmanager: boolean, newbusinessmanager: boolean, newmanufacturinglinestomanage: any[], newadmin: boolean): Promise<any> {
     return this.http.post(endpoint + 'users', this.generateBodyWithOptions({
       password: newpassword,
       analyst: newanalyst,
@@ -104,16 +104,14 @@ export class RestServiceV2 {
       manufacturinglinestomanage: newmanufacturinglinestomanage,
       admin: newadmin
     }),
-      this.generateHeaderWithFilterSchema(andVsOr, [
-        {username: username},
-        {localuser: localuser}
+      this.generateHeaderWithFilterSchema(AndVsOr.AND, [
+        {_id: userid}
       ])).toPromise();
   }
 
-  deleteUser(andVsOr: AndVsOr, username: string, localuser: boolean): Promise<any> {
-    return this.http.delete(endpoint + 'users', this.generateHeaderWithFilterSchema(andVsOr, [
-      {username: username},
-      {localuser: localuser}
+  deleteUser(userid: string): Promise<any> {
+    return this.http.delete(endpoint + 'users', this.generateHeaderWithFilterSchema(AndVsOr.AND, [
+      {_id: userid}
     ])).toPromise();
   }
 
@@ -138,7 +136,7 @@ export class RestServiceV2 {
       this.generateHeaderWithFilterSchema()).toPromise();
   }
 
-  modifyFormula(andVsOr: AndVsOr, oldname: string, formulaname: string, formulanumber: number, ingredientsandquantities: any[], comment: string): Promise<any> {
+  modifyFormula(formulaid: string, formulaname: string, formulanumber: number, ingredientsandquantities: any[], comment: string): Promise<any> {
     return this.http.post(endpoint + "formulas", this.generateBodyWithOptions
     ({
       formulaname: formulaname,
@@ -146,14 +144,14 @@ export class RestServiceV2 {
       ingredientsandquantities: ingredientsandquantities,
       comment: comment
     }),
-      this.generateHeaderWithFilterSchema(andVsOr, [
-        {formulaname: oldname}
+      this.generateHeaderWithFilterSchema(AndVsOr.AND, [
+        {_id: formulaid}
       ])).toPromise();
   }
 
-  deleteFormula(andVsOr: AndVsOr, formulanumber: number): Promise<any> {
-    return this.http.delete(endpoint + "formulas", this.generateHeaderWithFilterSchema(andVsOr, [
-      {formulanumber: formulanumber}
+  deleteFormula(formulaid: string): Promise<any> {
+    return this.http.delete(endpoint + "formulas", this.generateHeaderWithFilterSchema(AndVsOr.AND, [
+      {_id: formulaid}
     ])).toPromise();
   }
 
@@ -190,7 +188,7 @@ export class RestServiceV2 {
       this.generateHeaderWithFilterSchema()).toPromise();
   }
 
-  modifySku(andVsOr: AndVsOr, oldSkuName: String, skuname: String, skunumber: number,
+  modifySku(skuid: String, skuname: String, skunumber: number,
     caseupcnumber: number, unitupcnumber: number, unitsize: string,
     countpercase: number, formulaid: string, formulascalingfactor: Number, manufacturingrate: Number, manufacturingsetupcost: Number, manufacturingruncost: Number, comment: String): Promise<any> {
     return this.http.post(endpoint + "skus", this.generateBodyWithOptions({
@@ -207,14 +205,14 @@ export class RestServiceV2 {
       manufacturingruncost: manufacturingruncost,
       comment: comment
     }),
-      this.generateHeaderWithFilterSchema(andVsOr, [
-        {skuname: oldSkuName}
+      this.generateHeaderWithFilterSchema(AndVsOr.AND, [
+        {_id: skuid}
       ])).toPromise();
   }
 
-  deleteSku(andVsOr: AndVsOr, skuName: String): Promise<any> {
-    return this.http.delete(endpoint + "skus", this.generateHeaderWithFilterSchema(andVsOr, [
-      {skuName: skuName}
+  deleteSku(skuid: String): Promise<any> {
+    return this.http.delete(endpoint + "skus", this.generateHeaderWithFilterSchema(AndVsOr.AND, [
+      {_id: skuid}
     ])).toPromise();
   }
 
@@ -243,7 +241,7 @@ export class RestServiceV2 {
       this.generateHeaderWithFilterSchema()).toPromise();
   }
 
-  modifyIngredient(andVsOr: AndVsOr, ingredientname: String, newingredientname: String,
+  modifyIngredient(ingredientid: String, newingredientname: String,
     ingredientnumber: number, vendorinformation: String, unitofmeasure: String,
     amount: number, costperpackage: number, comment: String): Promise<any> {
     return this.http.post(endpoint + "ingredients", this.generateBodyWithOptions({
@@ -255,14 +253,14 @@ export class RestServiceV2 {
       costperpackage: costperpackage,
       comment: comment
     }),
-      this.generateHeaderWithFilterSchema(andVsOr, [
-        {ingredientname: ingredientname}
+      this.generateHeaderWithFilterSchema(AndVsOr.AND, [
+        {_id: ingredientid}
       ])).toPromise();
   }
 
-  deleteIngredient(andVsOr: AndVsOr, ingredientnumber: number): Promise<any> {
-    return this.http.delete(endpoint + "ingredients", this.generateHeaderWithFilterSchema(andVsOr, [
-      {ingredientnumber: ingredientnumber}
+  deleteIngredient(ingredientid: String): Promise<any> {
+    return this.http.delete(endpoint + "ingredients", this.generateHeaderWithFilterSchema(AndVsOr.AND, [
+      {_id: ingredientid}
     ])).toPromise();
   }
 
@@ -283,19 +281,19 @@ export class RestServiceV2 {
       this.generateHeaderWithFilterSchema()).toPromise();
   }
 
-  modifyProductLine(andVsOr: AndVsOr, productlinename: String, newproductlinename: String, skus: any[]): Promise<any> {
+  modifyProductLine(productlineid: String, newproductlinename: String, skus: any[]): Promise<any> {
     return this.http.post(endpoint + 'product_lines', this.generateBodyWithOptions({
       productlinename: newproductlinename,
       skus: skus
     }),
-      this.generateHeaderWithFilterSchema(andVsOr, [
-        {productlinename: productlinename}
+      this.generateHeaderWithFilterSchema(AndVsOr.AND, [
+        {_id: productlineid}
       ])).toPromise();
   }
 
-  deleteProductLine(andVsOr: AndVsOr, productlinename: String): Promise<any> {
-    return this.http.delete(endpoint + "product_lines", this.generateHeaderWithFilterSchema(andVsOr, [
-      {productlinename: productlinename}
+  deleteProductLine(productlineid: String): Promise<any> {
+    return this.http.delete(endpoint + "product_lines", this.generateHeaderWithFilterSchema(AndVsOr.AND, [
+      {_id: productlineid}
     ])).toPromise();
   }
 
@@ -335,23 +333,22 @@ export class RestServiceV2 {
     });
   }
 
-  modifyGoal(andVsOr: AndVsOr, goalname: String, newgoalname: String, activities: [], date: Date, enabled: boolean): Promise<any> {
+  modifyGoal(goalid: String, newgoalname: String, activities: [], date: Date, enabled: boolean): Promise<any> {
     return this.http.post(endpoint + "manufacturing-goals", this.generateBodyWithOptions({
       goalname: newgoalname,
       activities: activities,
       date: date,
       enabled: enabled
     }),
-      this.generateHeaderWithFilterSchema(andVsOr, [
-        {goalname: goalname}
+      this.generateHeaderWithFilterSchema(AndVsOr.AND, [
+        {_id: goalid}
       ])).toPromise();
   }
 
 
-//Need to specify owner too since goals can have the same name but different owners
-  deleteGoal(andVsOr: AndVsOr, goalname: String): Promise<any> {
-    return this.http.delete(endpoint + "manufacturing-goals", this.generateHeaderWithFilterSchema(andVsOr, [
-      {goalname: goalname}
+  deleteGoal(goalid: String): Promise<any> {
+    return this.http.delete(endpoint + "manufacturing-goals", this.generateHeaderWithFilterSchema(AndVsOr.AND, [
+      {_id: goalid}
     ])).toPromise();
   }
 
@@ -376,7 +373,7 @@ export class RestServiceV2 {
     }, this.generateHeaderWithFilterSchema()).toPromise();
   }
 
-  modifyActivity(andVsOr: AndVsOr, activityId: string, newsku: string, numcases: number, calculatedhours: number, sethours: number, startdate: Date, line: string): Promise<any> {
+  modifyActivity(activityid: string, newsku: string, numcases: number, calculatedhours: number, sethours: number, startdate: Date, line: string): Promise<any> {
     return this.http.post(endpoint + 'manufacturing-activities', this.generateBodyWithOptions({
       sku: newsku,
       numcases: numcases,
@@ -384,14 +381,14 @@ export class RestServiceV2 {
       sethours: sethours,
       startdate: startdate,
       line: line
-    }), this.generateHeaderWithFilterSchema(andVsOr, [
-      {_id: activityId},
+    }), this.generateHeaderWithFilterSchema(AndVsOr.AND, [
+      {_id: activityid},
     ])).toPromise();
   }
 
-  deleteActivity(andVsOr: AndVsOr, activityId: string): Promise<any> {
-    return this.http.delete(endpoint + "manufacturing-activities", this.generateHeaderWithFilterSchema(andVsOr, [
-      {_id: activityId}
+  deleteActivity(activityid: string): Promise<any> {
+    return this.http.delete(endpoint + "manufacturing-activities", this.generateHeaderWithFilterSchema(AndVsOr.AND, [
+      {_id: activityid}
     ])).toPromise();
   }
 
@@ -414,20 +411,20 @@ export class RestServiceV2 {
     }).toPromise();
   }
 
-  modifyLine(andVsOr: AndVsOr, linename: String, newlinename: String, shortname: String, skus: [], comment: String): Promise<any> {
+  modifyLine(lineid: String, newlinename: String, shortname: String, skus: [], comment: String): Promise<any> {
     return this.http.post(endpoint + 'manufacturing-lines', this.generateBodyWithOptions({
       linename: newlinename,
       shortname: shortname,
       skus: skus,
       comment: comment
-    }), this.generateHeaderWithFilterSchema(andVsOr, [
-      {linename: linename}
+    }), this.generateHeaderWithFilterSchema(AndVsOr.AND, [
+      {_id: lineid}
     ])).toPromise();
   }
 
-  deleteLine(andVsOr: AndVsOr, linename: String): Promise<any> {
-    return this.http.delete(endpoint + 'manufacturing-lines', this.generateHeaderWithFilterSchema(andVsOr, [
-      {linename: linename}
+  deleteLine(lineid: String): Promise<any> {
+    return this.http.delete(endpoint + 'manufacturing-lines', this.generateHeaderWithFilterSchema(AndVsOr.AND, [
+      {_id: lineid}
     ])).toPromise();
   }
 
@@ -449,21 +446,19 @@ export class RestServiceV2 {
       this.generateHeaderWithFilterSchema()).toPromise();
   }
 
-  // modifyCustomer(andVsOr: AndVsOr, customername: String, customernumber: Number, newcustomername: String, newcustomernumber: Number): Promise<any> {
+  // modifyCustomer(customerid: String, newcustomername: String, newcustomernumber: Number): Promise<any> {
   //   return this.http.post(endpoint + 'customers', this.generateBodyWithOptions({
   //     customername: newcustomername,
   //     customernumber: newcustomernumber
   //   }),
-  //     this.generateHeaderWithFilterSchema(andVsOr, [
-  //       {customername: customername},
-  //       {customernumber: customernumber}
+  //     this.generateHeaderWithFilterSchema(AndVsOr.AND, [
+  //       {_id: customerid}
   //     ])).toPromise();
   // }
 
-  // deleteCustomer(andVsOr: AndVsOr, customername: String, customernumber: Number): Promise<any> {
-  //   return this.http.delete(endpoint + "customers", this.generateHeaderWithFilterSchema(andVsOr, [
-  //     {customername: customername},
-  //     {customernumber: customernumber}
+  // deleteCustomer(customerid: String): Promise<any> {
+  //   return this.http.delete(endpoint + "customers", this.generateHeaderWithFilterSchema(AndVsOr.AND, [
+  //     {_id: customerid}
   //   ])).toPromise();
   // }
 
@@ -489,7 +484,7 @@ export class RestServiceV2 {
       this.generateHeaderWithFilterSchema()).toPromise();
   }
 
-  // modifySale(andVsOr: AndVsOr, skuid: string, customerid: string, startdate: Date, enddate: Date, newskuid: string, newcustomerid: string, newdate: Date, newnumcases: Number, newpricepercase: Number): Promise<any> {
+  // modifySale(saleid: String, newskuid: string, newcustomerid: string, newdate: Date, newnumcases: Number, newpricepercase: Number): Promise<any> {
   //   return this.http.post(endpoint + 'sales', this.generateBodyWithOptions({
   //     sku: newskuid,
   //     customer: newcustomerid,
@@ -497,20 +492,14 @@ export class RestServiceV2 {
   //     numcases: newnumcases,
   //     pricepercase: newpricepercase
   //   }),
-  //     this.generateHeaderWithFilterSchema(andVsOr, [
-  //       {sku: skuid},
-  //       {customer: customerid},
-  //       {date: startdate?{$gte: startdate}:null},
-  //       {date: enddate?{$lte: enddate}:null}
+  //     this.generateHeaderWithFilterSchema(AndVsOr.AND, [
+  //       {_id: saleid}
   //     ])).toPromise();
   // }
 
-  // deleteSale(andVsOr: AndVsOr, skuid: string, customerid: string, startdate: Date, enddate: Date): Promise<any> {
-  //   return this.http.delete(endpoint + "sales", this.generateHeaderWithFilterSchema(andVsOr, [
-  //     {sku: skuid},
-  //     {customer: customerid},
-  //     {date: startdate?{$gte: startdate}:null},
-  //     {date: enddate?{$lte: enddate}:null}
+  // deleteSale(saleid: String): Promise<any> {
+  //   return this.http.delete(endpoint + "sales", this.generateHeaderWithFilterSchema(AndVsOr.AND, [
+  //     {_id: saleid}
   //   ])).toPromise();
   // }
 

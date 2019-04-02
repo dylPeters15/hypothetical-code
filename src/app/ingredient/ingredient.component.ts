@@ -174,7 +174,7 @@ export class IngredientComponent  implements OnInit {
   }
 
   async deleteIngredient(ingredient) {
-    var response = await this.restv2.deleteIngredient(AndVsOr.AND, ingredient.ingredientnumber);
+    var response = await this.restv2.deleteIngredient(ingredient._id);
     this.snackBar.open("Ingredient " + ingredient.ingredientname + " deleted successfully.", "close", {
       duration: 2000,
     });
