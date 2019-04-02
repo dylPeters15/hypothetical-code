@@ -139,7 +139,7 @@ export class SkuComponent implements OnInit {
   }
 
   deleteSkuConfirmed(sku) {
-    this.rest.deleteSku(sku['skuname']).subscribe(response => {
+    this.restv2.deleteSku(sku['_id']).then(response => {
       this.snackBar.open("Stock Keeping Unit " + sku['skuname'] + " deleted successfully.", "close", {
         duration: 2000,
       });
@@ -224,8 +224,8 @@ export class SkuComponent implements OnInit {
                     });
                     console.log('oldsku', line['skus'])
                     console.log('modified', newSkus)
-                    this.rest.modifyLine(line['linename'], line['linename'], line['shortname'],
-                    newSkus, line['comment']).subscribe(response => {
+                    this.restv2.modifyLine(line['_id'], line['linename'], line['shortname'],
+                    newSkus, line['comment']).then(response => {
                       if (response['nModified']) {
                         this.snackBar.open("Successfully modified line " + line['linename'] + ".", "close", {
                           duration: 2000,
@@ -254,8 +254,8 @@ export class SkuComponent implements OnInit {
                     });
                     console.log('oldsku', line['skus'])
                     console.log('modified', newSkus)
-                    this.rest.modifyProductLine(line['productlinename'], line['productlinename'],
-                    newSkus).subscribe(response => {
+                    this.restv2.modifyProductLine(line['_id'], line['productlinename'],
+                    newSkus).then(response => {
                       if (response['nModified']) {
                         this.snackBar.open("Successfully modified line " + line['productlinename'] + ".", "close", {
                           duration: 2000,
