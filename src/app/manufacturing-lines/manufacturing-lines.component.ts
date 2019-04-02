@@ -10,13 +10,15 @@ import { auth } from '../auth.service';
 import { SkuDetailsComponent } from '../sku-details/sku-details.component';
 
 export class ManufacturingLine {
+  _id: String;
   linename: String;
   shortname: String;
   skus: String;
   skuCount: number;
   comment: String;
   checked: boolean;
-  constructor(linename, shortname, skus, comment, checked, skuCount){
+  constructor(_id, linename, shortname, skus, comment, checked, skuCount){
+    this._id = _id;
     this.skuCount = skuCount;
     this.linename = linename;
     this.shortname = shortname;
@@ -93,7 +95,7 @@ export class ManufacturingLinesComponent implements OnInit {
         }
         this.skuString = this.skuString.substring(0,this.skuString.length-1);
         let comment = this.lines[i]['comment'];
-        let currentLine = new ManufacturingLine(linename, shortname, this.skuString, comment, false, count);
+        let currentLine = new ManufacturingLine(this.lines[i]._id, linename, shortname, this.skuString, comment, false, count);
         this.data.push(currentLine)
       }
       this.data.forEach(element => {
@@ -108,18 +110,18 @@ export class ManufacturingLinesComponent implements OnInit {
     const dialogConfig = new MatDialogConfig();
         this.data.forEach(line => {
           if (line.checked) {
-            this.deleteGoalConfirmed(line.linename);
+            this.deleteGoalConfirmed(line);
           }
         });
   }
 
-  deleteGoalConfirmed(name) {
-    this.rest.deleteLine(name).subscribe(response => {
-      this.snackBar.open("Line: " + name + " deleted successfully.", "close", {
+  deleteGoalConfirmed(line) {
+    this.restv2.deleteLine(line._id).then(response => {
+      this.snackBar.open("Line: " + line.linename + " deleted successfully.", "close", {
         duration: 2000,
       });
       this.data = this.data.filter((value, index, arr) => {
-        return value.linename != name;
+        return value.linename != line.linename;
       });
       this.skuString = "";
       this.refreshData();
