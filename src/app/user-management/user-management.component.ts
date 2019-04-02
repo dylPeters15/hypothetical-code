@@ -10,6 +10,7 @@ import { ConfirmActionDialogComponent } from '../confirm-action-dialog/confirm-a
 import { UserNotificationDialogComponent } from '../user-notification-dialog/user-notification-dialog.component';
 import { Router } from '@angular/router';
 import { RestServiceV2, AndVsOr } from '../restv2.service';
+import { ViewUserMfgLinesDialogComponent } from '../view-user-mfg-lines-dialog/view-user-mfg-lines-dialog.component';
 
 export interface UserForTable {
   username: string;
@@ -49,6 +50,14 @@ export class UserManagementComponent implements OnInit {
       this.deselectAll();
     });
     this.refreshData();
+  }
+
+  viewMFGLinesForUser(user) {
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.data = user;
+    this.dialog.open(ViewUserMfgLinesDialogComponent, dialogConfig).afterClosed().subscribe(event => {
+      this.refreshData();
+    });
   }
 
   getPageSizeOptions() {
