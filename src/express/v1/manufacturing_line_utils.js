@@ -1,4 +1,5 @@
 const database = require('../database.js');
+const user_utils = require('./user_utils.js');
 
    
 function getLine(linename, linenameregex, shortname, shortnameregex, limit) {
@@ -34,7 +35,22 @@ function createLine(lineObject) {
     return new Promise((resolve, reject) => {
         let newLine = new database.manufacturingLineModel(lineObject);
         newLine.save().then(response => {
-            resolve(response);
+            database.userModel.updateMany({
+                admin: true
+            }, 
+            {
+                $push:{
+                    manufacturinglinestomanage: {
+                        manufacturingline: response._id
+                    }
+                }
+            }, (err, modifyUserResponse) => {
+                if (err) {
+                    reject(Error(err));
+                    return
+                }
+                resolve(response);
+            });
         }).catch(err => {
             reject(Error(err));
         });

@@ -6,9 +6,9 @@
   <mat-card-content>
     <button mat-raised-button (click)="selectAll()"> Select All </button>
     <button mat-raised-button (click)="deselectAll()"> Deselect All </button>
-    <button mat-raised-button (click)="deleteSelected()" color="warn" [disabled]="noneSelected()"> Delete Selected </button>
+    <button mat-raised-button *ngIf="businessmanager" (click)="deleteSelected()" color="warn" [disabled]="noneSelected()"> Delete Selected </button>
     <!-- <button mat-raised-button (click)="modifySelected()" style="color: white; background-color: blue;" [disabled]="dataSource.data.length==0"> Modify Selected </button> -->
-    <button mat-raised-button (click)="newGoal()" color="primary"> New Goal </button>
+    <button mat-raised-button *ngIf="businessmanager" (click)="newGoal()" color="primary"> New Goal </button>
     <mat-table [dataSource]="dataSource" class="mat-elevation-z8">
       <ng-container matColumnDef="checked">
         <mat-header-cell *matHeaderCellDef>Selected</mat-header-cell>
@@ -52,7 +52,7 @@
         <ng-container matColumnDef="actions">
             <mat-header-cell *matHeaderCellDef>Actions</mat-header-cell>
             <mat-cell *matCellDef="let element">
-              <button mat-button (click)="modifySelected(element)" [disabled]="dataSource.data.length==0" color="primary">
+              <button mat-button *ngIf="businessmanager" (click)="modifySelected(element)" [disabled]="dataSource.data.length==0" color="primary">
                 <mat-icon>edit</mat-icon> 
               </button>
             </mat-cell>

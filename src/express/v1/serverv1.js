@@ -22,7 +22,11 @@ function startServerV1(app) {
                     username: user.username,
                     token: user.token,
                     admin: user.admin,
-                    localuser: false
+                    localuser: false,
+                    analyst: user.analyst,
+                    productmanager: user.productmanager,
+                    businessmanager: user.businessmanager,
+                    manufacturinglinestomanage: user.manufacturinglinestomanage
                 });
             }).catch(err => {
                 resolveError(err, res);
@@ -32,9 +36,14 @@ function startServerV1(app) {
                 if (correct) {
                     user_utils.getUsers(req.headers['username'], "", null, true, 1).then(response => {
                         res.send({
+                            username: response[0].username,
                             token: response[0].token,
                             admin: response[0].admin,
-                            localuser: true
+                            localuser: true,
+                            analyst: response[0].analyst,
+                            productmanager: response[0].productmanager,
+                            businessmanager: response[0].businessmanager,
+                            manufacturinglinestomanage: response[0].manufacturinglinestomanage
                         });
                     }).catch(err => {
                         resolveError(err, res);

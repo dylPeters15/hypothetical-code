@@ -66,10 +66,14 @@ export class RestServiceV2 {
   }
 
   ///////////////////// users /////////////////////
-  getUsers(andVsOr: AndVsOr, username: string, usernameregex: string, admin: boolean, localuser: boolean, limit: number): Promise<any> {
+  getUsers(andVsOr: AndVsOr, username: string, usernameregex: string, analyst: boolean, productmanager: boolean, businessmanager: boolean, manufacturinglineidtomanage: string, admin: boolean, localuser: boolean, limit: number): Promise<any> {
     var header = this.generateHeaderWithFilterSchema(andVsOr, [
       { username: username },
       { username: usernameregex?{ $regex: usernameregex }:null },
+      { analyst: analyst },
+      { productmanager: productmanager },
+      { businessmanager: businessmanager },
+      { manufacturinglineidtomanage: manufacturinglineidtomanage },
       { admin: admin },
       { localuser: localuser }
     ], limit);
@@ -77,19 +81,27 @@ export class RestServiceV2 {
     return this.http.get(endpoint + 'users', header).toPromise();
   }
 
-  createUser(username: string, password: string, admin: boolean): Promise<any> {
+  createUser(username: string, password: string, analyst: boolean, productmanager: boolean, businessmanager: boolean, manufacturinglinestomanage: any[], admin: boolean): Promise<any> {
     return this.http.put(endpoint + 'users', {
       username: username,
       password: password,
+      analyst: analyst,
+      productmanager: productmanager,
+      businessmanager: businessmanager,
+      manufacturinglinestomanage: manufacturinglinestomanage,
       admin: admin,
       localuser: true
     },
       this.generateHeaderWithFilterSchema()).toPromise();
   }
 
-  modifyUser(andVsOr: AndVsOr, username: string, localuser: boolean, newpassword: string, newadmin: boolean): Promise<any> {
+  modifyUser(andVsOr: AndVsOr, username: string, localuser: boolean, newpassword: string, newanalyst: boolean, newproductmanager: boolean, newbusinessmanager: boolean, newmanufacturinglinestomanage: any[], newadmin: boolean): Promise<any> {
     return this.http.post(endpoint + 'users', this.generateBodyWithOptions({
       password: newpassword,
+      analyst: newanalyst,
+      productmanager: newproductmanager,
+      businessmanager: newbusinessmanager,
+      manufacturinglinestomanage: newmanufacturinglinestomanage,
       admin: newadmin
     }),
       this.generateHeaderWithFilterSchema(andVsOr, [
@@ -299,7 +311,7 @@ export class RestServiceV2 {
 
   getUserName(): Promise<any> {
     return new Promise((resolve, reject) => {
-      this.getUsers(AndVsOr.AND, auth.getUsername(), null, null, auth.getLocal(), null).then(response => {
+      this.getUsers(AndVsOr.AND, auth.getUsername(), null, null, null, null, null, null, auth.getLocal(), 1).then(response => {
         setTimeout(function () {
           resolve(response[0]['_id']);;
         }, 300);
