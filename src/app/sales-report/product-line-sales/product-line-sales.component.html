@@ -1,7 +1,99 @@
-<h3>Total Product Line Revenue: {{totalRevenue}}</h3>
+<h3>Product Line Revenue Totals:</h3>
+
+<mat-table [dataSource]="tableData" class="mat-elevation-z8">
+
+    <ng-container matColumnDef="nine">
+      <mat-header-cell *matHeaderCellDef>{{currentYear-9}}</mat-header-cell>
+      <mat-cell *matCellDef="let revenue">
+        {{revenue['year'+(currentYear-9)]}}
+      </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="eight">
+      <mat-header-cell *matHeaderCellDef>{{currentYear-8}}</mat-header-cell>
+      <mat-cell *matCellDef="let revenue">
+        {{revenue['year'+(currentYear-8)]}}
+      </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="seven">
+      <mat-header-cell *matHeaderCellDef>{{currentYear-7}}</mat-header-cell>
+      <mat-cell *matCellDef="let revenue">
+        {{revenue['year'+(currentYear-7)]}}
+      </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="six">
+      <mat-header-cell *matHeaderCellDef>{{currentYear-6}}</mat-header-cell>
+      <mat-cell *matCellDef="let revenue">
+        {{revenue['year'+(currentYear-6)]}}
+      </mat-cell>
+    </ng-container>
+    <ng-container matColumnDef="five">
+      <mat-header-cell *matHeaderCellDef>{{currentYear-5}}</mat-header-cell>
+      <mat-cell *matCellDef="let revenue">
+        {{revenue['year'+(currentYear-5)]}}
+      </mat-cell>
+    </ng-container>
+  
+    <mat-header-row *matHeaderRowDef="['nine', 'eight', 'seven', 'six', 'five']"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: ['nine', 'eight', 'seven', 'six', 'five'];"></mat-row>
+  </mat-table>
+
+  <mat-table [dataSource]="tableData" class="mat-elevation-z8">
+    
+      <ng-container matColumnDef="four">
+        <mat-header-cell *matHeaderCellDef>{{currentYear-4}}</mat-header-cell>
+        <mat-cell *matCellDef="let revenue">
+          {{revenue['year'+(currentYear-4)]}}
+        </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="three">
+        <mat-header-cell *matHeaderCellDef>{{currentYear-3}}</mat-header-cell>
+        <mat-cell *matCellDef="let revenue">
+          {{revenue['year'+(currentYear-3)]}}
+        </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="two">
+        <mat-header-cell *matHeaderCellDef>{{currentYear-2}}</mat-header-cell>
+        <mat-cell *matCellDef="let revenue">
+          {{revenue['year'+(currentYear-2)]}}
+        </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="one">
+        <mat-header-cell *matHeaderCellDef>{{currentYear-1}}</mat-header-cell>
+        <mat-cell *matCellDef="let revenue">
+          {{revenue['year'+(currentYear-1)]}}
+        </mat-cell>
+      </ng-container>
+      <ng-container matColumnDef="zero">
+        <mat-header-cell *matHeaderCellDef>{{currentYear}}</mat-header-cell>
+        <mat-cell *matCellDef="let revenue">
+          {{revenue['year'+(currentYear-0)]}}
+        </mat-cell>
+      </ng-container>
+    
+      <mat-header-row *matHeaderRowDef="['four', 'three', 'two', 'one', 'zero']"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: ['four', 'three', 'two', 'one', 'zero'];"></mat-row>
+    </mat-table>
+
+    <mat-table [dataSource]="tableData" class="mat-elevation-z8">
+    
+        <ng-container matColumnDef="total">
+          <mat-header-cell *matHeaderCellDef>Total</mat-header-cell>
+          <mat-cell *matCellDef="let revenue">
+            {{revenue['total']}}
+          </mat-cell>
+        </ng-container>
+      
+        <mat-header-row *matHeaderRowDef="['total']"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: ['total'];"></mat-row>
+      </mat-table>
+
+    <br>
+
 <div *ngFor="let sku of skus;">
   <br>
-  <app-sku-sales [ngModel]="{sku:sku['sku'],selectedCustomerId:selectedCustomerId,selectedIndex:selectedIndex,selectedSKU:selectedSKU}" (ngModelChange)="modelChanged($event)">
+  <app-sku-sales
+    [ngModel]="{sku:sku['sku'],selectedCustomerId:selectedCustomerId,selectedIndex:selectedIndex,selectedSKU:selectedSKU}"
+    (ngModelChange)="modelChanged($event)">
   </app-sku-sales>
   <br>
   <br>
