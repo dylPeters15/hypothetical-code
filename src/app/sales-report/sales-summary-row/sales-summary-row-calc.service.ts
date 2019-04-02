@@ -24,7 +24,7 @@ export class SalesSummaryRowCalcService {
     summary['averagemanufacturingrunsize'] = await this.avgManufacturingRunSize(sku);
     summary['ingredientcostpercase'] = this.ingredientCostPerCase(sku);
     summary['averagemanufacturingsetupcostpercase'] = summary['averagemanufacturingrunsize'] == 0 ? 0 : (sku['manufacturingsetupcost'] / summary['averagemanufacturingrunsize']);
-    summary['manufacturingruncostpercase'] = summary['averagemanufacturingrunsize'] == 0 ? 0 : (sku['manufacturingruncost'] / summary['averagemanufacturingrunsize']);
+    summary['manufacturingruncostpercase'] = sku['manufacturingruncost'];
     summary['totalcogspercase'] = summary['ingredientcostpercase'] + summary['averagemanufacturingsetupcostpercase'] + summary['manufacturingruncostpercase'];
     summary['averageprofitpercase'] = summary['averagerevenuepercase'] - summary['totalcogspercase'];
     summary['profitmargin'] = summary['totalcogspercase'] == 0 ? 0 : (((summary['averagerevenuepercase'] / summary['totalcogspercase']) - 1) * 100);
