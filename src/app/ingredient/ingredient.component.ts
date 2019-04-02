@@ -151,9 +151,9 @@ export class IngredientComponent  implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       console.log(result)
       if (result) {
-        this.rest.modifyIngredient(oldingredient.ingredientname, result.ingredientname, result.ingredientnumber, 
+        this.restv2.modifyIngredient(oldingredient._id, result.ingredientname, result.ingredientnumber, 
           result.vendorinformation, result.unitofmeasure, result.amount, 
-          result.costperpackage, result.comment).subscribe(response => {
+          result.costperpackage, result.comment).then(response => {
           if (response['nModified']) {
             this.snackBar.open("Successfully modified ingredient " + oldingredient.ingredientname + ".", "close", {
               duration: 2000,
@@ -224,8 +224,8 @@ export class IngredientComponent  implements OnInit {
                       newIngredients.push(ingredienttuple);
                     }
                   });
-                  this.rest.modifyFormula(formula['formulaname'], formula['formulaname'], 
-                  formula['formulanumber'], newIngredients, formula['comment']).subscribe(response => {
+                  this.restv2.modifyFormula(formula['_id'], formula['formulaname'], 
+                  formula['formulanumber'], newIngredients, formula['comment']).then(response => {
                     if (response['nModified']) {
                       this.snackBar.open("Successfully modified formula " + formula['formulaname'] + ".", "close", {
                         duration: 2000,
