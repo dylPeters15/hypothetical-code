@@ -14,7 +14,7 @@
     class="example-list"
     (cdkDropListDropped)="drop($event)">
     <div class="example-box" *ngFor="let item of _value['skus']" cdkDrag>
-      <div *ngIf="item['sku']">
+      <div *ngIf="item['sku']" >
           {{item['sku']['skuname']}}:{{item['sku']['unitsize']}} * {{item['sku']['countpercase']}}
       </div>
       
