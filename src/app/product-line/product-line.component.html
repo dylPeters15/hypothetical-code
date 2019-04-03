@@ -5,8 +5,8 @@
     </mat-card-header>
     <mat-card-content>
 
-      <button mat-raised-button (click)="deleteProductLine()" color="warn" *ngIf="admin">Delete</button>
-      <button mat-raised-button (click)="openDialog()" color="primary" *ngIf="admin"> New Product Line</button>
+      <button mat-raised-button (click)="deleteProductLine()" color="warn" *ngIf="productmanager">Delete</button>
+      <button mat-raised-button (click)="openDialog()" color="primary" *ngIf="productmanager"> New Product Line</button>
       <mat-form-field>
         <input matInput placeholder="Filter" [(ngModel)]="filterQuery" (ngModelChange)="refreshData($event)">
       </mat-form-field>
