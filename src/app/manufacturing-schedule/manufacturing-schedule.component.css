@@ -50,17 +50,6 @@ div.item:before {
   cursor: move;
 }
 
-div.nondraggableitem {
-  list-style: none;
-  width: 150px;
-  color: #1A1A1A;
-  background-color: #D5DDF6;
-  border: 1px solid #97B0F8;
-  border-radius: 2px;
-  margin-bottom: 5px;
-  padding: 5px 12px;
-}
-
 .goalsContainer {
   display: flex;
   flex-direction: row;

@@ -416,19 +416,24 @@ export class ManufacturingScheduleComponent implements OnInit {
       
       onRemove: async function(item, callback): Promise<void> {
         // console.log(item, callback);
-        var getSku = await thisObject.restv2.getSkus(AndVsOr.OR, item['content'], null, null, null, null, null, 1);
-        var activity = await thisObject.restv2.getActivities(AndVsOr.AND, item['start'], null, getSku[0]['_id'], 1);
-        console.log('activity to delete', activity, activity[0]['startdate'])
-
-        thisObject.rest.modifyActivity(activity[0]['_id'], activity[0]['sku']['_id'], 
-        activity[0]['numcases'], activity[0]['calculatedhours'], activity[0]['sethours'], 
-        activity[0]['startdate'], null).subscribe(response => {
-          console.log(response) 
-          thisObject.refreshData();
-          thisObject.data.remove(item['id']);
-          thisObject.getTimelineData();
-          callback(item)
-        }) 
+        if (!(thisObject.manufacturingLinesToManage.length > 0)) {
+          callback(null);
+        }
+        else {
+          var getSku = await thisObject.restv2.getSkus(AndVsOr.OR, item['content'], null, null, null, null, null, 1);
+          var activity = await thisObject.restv2.getActivities(AndVsOr.AND, item['start'], null, getSku[0]['_id'], 1);
+          console.log('activity to delete', activity, activity[0]['startdate'])
+  
+          thisObject.rest.modifyActivity(activity[0]['_id'], activity[0]['sku']['_id'], 
+          activity[0]['numcases'], activity[0]['calculatedhours'], activity[0]['sethours'], 
+          activity[0]['startdate'], null).subscribe(response => {
+            console.log(response) 
+            thisObject.refreshData();
+            thisObject.data.remove(item['id']);
+            thisObject.getTimelineData();
+            callback(item)
+          }) 
+        }  
       },
       
       onMoving: async function(item, callback): Promise<void> {
