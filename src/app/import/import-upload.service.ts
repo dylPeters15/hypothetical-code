@@ -40,7 +40,7 @@ export class ImportUploadService {
     for (let conflict of ingredients['conflicts']) {
       if (conflict['select'] == 'new') {
         var ingredient = conflict['new'];
-        var result = await this.restv2.modifyIngredient(AndVsOr.AND, conflict['old'][0]['ingredientname'], ingredient['ingredientname'], ingredient['ingredientnumber'], ingredient['vendorinformation'], ingredient['unitofmeasure'], ingredient['amount'], ingredient['costperpackage'], ingredient['comment']);
+        var result = await this.restv2.modifyIngredient(conflict['old'][0]['_id'], ingredient['ingredientname'], ingredient['ingredientnumber'], ingredient['vendorinformation'], ingredient['unitofmeasure'], ingredient['amount'], ingredient['costperpackage'], ingredient['comment']);
         if (result['ok'] != 1) {
           throw Error("Could not modify ingredient " + ingredient['ingredientname']);
         }
@@ -78,7 +78,7 @@ export class ImportUploadService {
     }
   }
 
-  private async updateFormula(oldname, formula): Promise<void> {
+  private async updateFormula(oldid, formula): Promise<void> {
     var ingredientsAndQuantities = [];
 
     for (let ingredientAndQuantity of formula['ingredientsandquantities']) {
@@ -94,7 +94,7 @@ export class ImportUploadService {
       });
     }
 
-    var modifyResponse = await this.restv2.modifyFormula(AndVsOr.AND, oldname, formula['formulaname'], formula['formulanumber'], ingredientsAndQuantities, formula['comment'] || "");
+    var modifyResponse = await this.restv2.modifyFormula(oldid, formula['formulaname'], formula['formulanumber'], ingredientsAndQuantities, formula['comment'] || "");
     console.log(ingredientsAndQuantities);
     console.log(modifyResponse);
     if (modifyResponse['ok'] == 1) {
@@ -108,7 +108,7 @@ export class ImportUploadService {
     }
     for (let conflict of formulas['conflicts']) {
       if (conflict['select'] == 'new') {
-        await this.updateFormula(conflict['old'][0]['formulaname'], conflict['new']);
+        await this.updateFormula(conflict['old'][0]['_id'], conflict['new']);
       }
     }
   }
@@ -132,11 +132,16 @@ export class ImportUploadService {
       sku: createSkuResponse['_id']
     });
     console.log("SKU: ",sku);
-    var modifyPLResponse = await this.restv2.modifyProductLine(AndVsOr.AND, sku['productline'], sku['productline'], skus);
-    if (modifyPLResponse['ok'] != 1) {
-      throw Error("Could not modify Product Line " + sku['productline'] + " for SKU " + sku['skuname']);
+    var pls = await this.restv2.getProductLines(AndVsOr.OR, null, null, 10000);
+    for (let pl of pls) {
+      if (pl.productlinename == sku['productline']) {
+        var modifyPLResponse = await this.restv2.modifyProductLine(pl._id, sku['productline'], skus);
+        if (modifyPLResponse['ok'] != 1) {
+          throw Error("Could not modify Product Line " + sku['productline'] + " for SKU " + sku['skuname']);
+        }
+      }
     }
-
+    
     for (let ml of sku['manufacturinglines']) {
       var mlResponse = await this.restv2.getLine(AndVsOr.OR, null, null, ml, null, 1);
       if (mlResponse.length == 0) {
@@ -152,7 +157,7 @@ export class ImportUploadService {
         mlResponse[0]['skus'].push({
           sku: createSkuResponse['_id']
         });
-        var mlCreateResponse = await this.restv2.modifyLine(AndVsOr.AND, mlResponse[0]['linename'], mlResponse[0]['linename'], mlResponse[0]['shortname'], mlResponse[0]['skus'], mlResponse[0]['comment']);
+        var mlCreateResponse = await this.restv2.modifyLine(mlResponse[0]['_id'], mlResponse[0]['linename'], mlResponse[0]['shortname'], mlResponse[0]['skus'], mlResponse[0]['comment']);
         console.log("ML Response: ",mlResponse);
         console.log("ML Create Response: ",mlCreateResponse);
         if (mlCreateResponse['ok'] != 1 || mlCreateResponse['nModified'] != 1) {
@@ -167,7 +172,7 @@ export class ImportUploadService {
     if (formulas.length == 0) {
       throw Error("Could not get formula " + newsku['formula'] + " for SKU " + newsku['skuname']);
     }
-    var response = await this.restv2.modifySku(AndVsOr.AND, oldsku['skuname'], newsku['skuname'], newsku['skunumber'], newsku['caseupcnumber'], newsku['unitupcnumber'], "" + newsku['unitsize'], newsku['countpercase'], formulas[0]['_id'], newsku['formulascalingfactor'], newsku['manufacturingrate'], newsku['manufacturingsetupcost'], newsku['manufacturingruncost'], newsku['comment']);
+    var response = await this.restv2.modifySku(oldsku['_id'], newsku['skuname'], newsku['skunumber'], newsku['caseupcnumber'], newsku['unitupcnumber'], "" + newsku['unitsize'], newsku['countpercase'], formulas[0]['_id'], newsku['formulascalingfactor'], newsku['manufacturingrate'], newsku['manufacturingsetupcost'], newsku['manufacturingruncost'], newsku['comment']);
     console.log("Reponse: ", response);
     if (response['ok'] != 1) {
       throw Error("Could not update sku " + oldsku['skuname']);
