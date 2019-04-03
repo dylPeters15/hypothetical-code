@@ -73,6 +73,7 @@ export class ManufacturingScheduleComponent implements OnInit {
   visibleData: DataForVisibleTable[] = [];
   visibleDataSource = new MatTableDataSource<DataForVisibleTable>(this.visibleData);
   manufacturingLinesToManage: any[] = [];
+  isSelectable: boolean = false;
 
   constructor(public rest:RestService, private restv2: RestServiceV2, private dialog: MatDialog, myElement: ElementRef) { 
       this.getTimelineData();
@@ -101,7 +102,7 @@ export class ManufacturingScheduleComponent implements OnInit {
       })
       thisObject.visibleDataSource = new MatTableDataSource<DataForVisibleTable>(thisObject.visibleData);
     }) 
-    
+    // document.getElementById("delete").style.visibility = "hidden";
   }
 
   ngAfterViewInit() {     
@@ -404,6 +405,7 @@ export class ManufacturingScheduleComponent implements OnInit {
         updateGroup: true, // drag items from one group to another
         remove: true       // delete an item by tapping the delete button top right
       },
+      selectable: thisObject.isSelectable,
       margin: {
         item: 10, // minimal margin between items
         axis: 5   // minimal margin between items and the axis
@@ -624,6 +626,9 @@ export class ManufacturingScheduleComponent implements OnInit {
         thisobject.manufacturingLinesToManage = users[0].manufacturinglinestomanage;
       }
     }).catch(err => {});
+    if (this.manufacturingLinesToManage.length > 0) {
+      this.isSelectable = true;
+    }
   }
   
 }
