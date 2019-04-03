@@ -126,8 +126,8 @@ export class NewGoalDialogComponent implements OnInit {
 
   createGoal() {
     if(this.edit == false){
-      this.rest.createGoal(this.name, this.activityIds, this.date, false).then(response => {
-        this.snackBar.open("Successfully created Goal: " + this.name + ".", "close", {
+      this.restv2.createGoal(this.name, this.activityIds, this.date, false).then(response => {
+        this.snackBar.open("Successfully created Goal: " + this.name + ". Last edit" + response['lastedit'], "close", {
           duration: 2000,
         }
         );
@@ -140,7 +140,7 @@ export class NewGoalDialogComponent implements OnInit {
       });
     }
     else{
-      this.rest.modifyGoal(this.data.present_name, this.name, this.activityIds, this.date, false).subscribe(response => {
+      this.restv2.modifyGoal(AndVsOr.OR, this.data.present_name, this.name, this.activityIds, this.date, false).then(response => {
         this.snackBar.open("Successfully modified Line: " + this.name + ".", "close", {
           duration: 2000,
         });

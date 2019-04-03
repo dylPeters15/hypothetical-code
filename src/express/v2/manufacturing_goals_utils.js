@@ -15,6 +15,7 @@ function getGoals(filterSchema, limit) {
 
 function createGoal(newObject) {
     return new Promise((resolve, reject) => {
+        newObject['lastedit'] = new Date() + "";
         let goal = new database.goalsModel(newObject);
         goal.save().then(response => {
             resolve(response);
@@ -26,6 +27,7 @@ function createGoal(newObject) {
 
 function modifyGoal(filterSchema, newObject) {
     return new Promise((resolve, reject) => {
+        newObject['$set']['lastedit'] = new Date() + "";
         database.goalsModel.updateOne(filterSchema, newObject, (err, response) => {
             if (err) {
                 reject(Error(err));
