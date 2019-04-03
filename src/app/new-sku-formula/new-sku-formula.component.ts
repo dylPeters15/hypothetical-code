@@ -77,7 +77,7 @@ export class NewSkuFormulaComponent implements OnInit {
   }
 
   addFormula() {
-    
+    console.log("triggered here");
     this.formulaList = [];
     this.selectedFormulaNames = [];
 
