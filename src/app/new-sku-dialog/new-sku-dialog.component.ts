@@ -309,7 +309,14 @@ export class NewSkuDialogComponent implements OnInit {
     var caseCheckLength = caseAsString.length != 12;
     var upcCheckLength = upcAsString.length != 12;
 
-    if (this.formula == undefined || this.formula == null)
+    if(this.skunumber < 0 || this.caseupcnumber < 0 || this.unitupcnumber < 0 || this.countpercase < 0 || this.formulascalingfactor < 0)
+    {
+      this.snackBar.open("Numbers cannot be negative.", "close", {
+        duration: 4000,
+      });
+    }
+
+    else if (this.formula == undefined || this.formula == null)
     {
       this.snackBar.open("A formula must be specified for this sku.", "close", {
         duration: 4000,

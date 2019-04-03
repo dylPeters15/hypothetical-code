@@ -125,8 +125,14 @@ export class NewFormulaDialogComponent implements OnInit {
   }
 
   createFormula() {
-    // generate ID
-    if (this.edit == false) {
+    if(this.formulanumber < 0)
+    {
+      this.snackBar.open("Formula number cannot be negative.", "close", {
+        duration: 4000,
+      });
+    }
+
+    else if (this.edit == false) {
       this.rest.createFormula(this.formulaname, this.formulanumber, this.ingredientsandquantities, this.comment).subscribe(response => {
           this.snackBar.open("Successfully created formula " + this.formulaname + ".", "close", {
             duration: 2000,
