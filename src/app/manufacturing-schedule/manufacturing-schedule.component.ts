@@ -82,27 +82,30 @@ export class ManufacturingScheduleComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.refreshMLs();
-    this.refreshData(); 
-    this.tlContainer = document.getElementById('timeline');      
-    this.timeline = new vis.Timeline(this.tlContainer, null, this.options);      
-    this.timeline.setGroups(this.groups);
-    this.timeline.setItems(this.data);
-    var thisObject = this;
-    this.timeline.on('rangechanged',  function (properties) {
-      thisObject.visibleData = [];
-      var newData = thisObject.timeline.getVisibleItems();
-      console.log(newData)
-      newData.forEach(item => {
-        var itemObject = thisObject.timeline.itemsData.get(item);
-        console.log('resize item', itemObject)
-        let visibleTable = new DataForVisibleTable(itemObject['id'], itemObject['group'], 
-        itemObject['start'], itemObject['end'], itemObject['content'], itemObject['className']);
-        thisObject.visibleData.push(visibleTable)
+    this.refreshMLs().then(() => {
+      this.getOptions();
+      console.log('after method', this.isSelectable)
+      this.refreshData(); 
+      this.tlContainer = document.getElementById('timeline');      
+      this.timeline = new vis.Timeline(this.tlContainer, null, this.options);      
+      this.timeline.setGroups(this.groups);
+      this.timeline.setItems(this.data);
+      var thisObject = this;
+      this.timeline.on('rangechanged',  function (properties) {
+        thisObject.visibleData = [];
+        var newData = thisObject.timeline.getVisibleItems();
+        console.log(newData)
+        newData.forEach(item => {
+          var itemObject = thisObject.timeline.itemsData.get(item);
+          console.log('resize item', itemObject)
+          let visibleTable = new DataForVisibleTable(itemObject['id'], itemObject['group'], 
+          itemObject['start'], itemObject['end'], itemObject['content'], itemObject['className']);
+          thisObject.visibleData.push(visibleTable)
+        })
+        thisObject.visibleDataSource = new MatTableDataSource<DataForVisibleTable>(thisObject.visibleData);
       })
-      thisObject.visibleDataSource = new MatTableDataSource<DataForVisibleTable>(thisObject.visibleData);
-    }) 
-    // document.getElementById("delete").style.visibility = "hidden";
+      console.log('options', this.options)
+    });
   }
 
   ngAfterViewInit() {     
@@ -164,64 +167,78 @@ export class ManufacturingScheduleComponent implements OnInit {
     console.log('drag item', newItem_dropped)
 
     var newGroup = this.groups.get(newItem_dropped.group)
-    this.checkLine(newItem_dropped, newGroup).then(async isValid => {
-      console.log('isValid', isValid)
-      this.refreshData();
-      if (!isValid) {
-        this.timeline.itemsData.remove(newItem_dropped);
-      }
-      else {
-        var activities = await this.restv2.getActivities(AndVsOr.OR, null, null, null, 500);
-        var activityid = newItem_dropped.content.split("::")[1];
-        activities.forEach(activity => {
-          if (activity['_id'] == activityid) {
-            var className = 'normal';
-            var duration = activity['calculatedhours'];
-            if (activity['sethours']) {
-              duration = activity['sethours'];
-              className = "updated"
-            }
-            var startTime = 0;
-            if (activity['startdate'].split('T')) {
-              startTime = parseInt((activity['startdate'].split('T')[1]).split(':')[0], 10) - 7;
-            }
-            else {
-              startTime = parseInt((activity['startdate'].toString().split(' ')[4]).split(':')[0], 10);
-            }
-            
-            var endDate = this.calculateEndDate(new Date(activity['startdate']), Math.round(duration), startTime);
-            this.checkOverdue(activity['_id'], endDate).then(isOverdue => {
-              if (isOverdue) {
-                className = 'overdue';
+    var count = 0;
+    this.manufacturingLinesToManage.forEach(line => {
+      console.log(line['manufacturingline']['_id'])
+      if (newItem_dropped['group'] == line['manufacturingline']['_id']) {
+        count ++;
+        console.log('plus one')
+      } 
+    })
+    console.log('count', count)
+    if (count == 1) {
+      this.checkLine(newItem_dropped, newGroup).then(async isValid => {
+        console.log('isValid', isValid)
+        this.refreshData();
+        if (!isValid) {
+          this.timeline.itemsData.remove(newItem_dropped);
+        }
+        else {
+          var activities = await this.restv2.getActivities(AndVsOr.OR, null, null, null, 500);
+          var activityid = newItem_dropped.content.split("::")[1];
+          activities.forEach(activity => {
+            if (activity['_id'] == activityid) {
+              var className = 'normal';
+              var duration = activity['calculatedhours'];
+              if (activity['sethours']) {
+                duration = activity['sethours'];
+                className = "updated"
               }
-              this.timeline.itemsData.update({
-                id: newItem_dropped['id'],
-                group: newGroup,
-                start: new Date(activity['startdate']),
-                end: endDate,
-                content: activity['sku']['skuname'],
-                className: className
+              var startTime = 0;
+              if (activity['startdate'].split('T')) {
+                startTime = parseInt((activity['startdate'].split('T')[1]).split(':')[0], 10) - 7;
+              }
+              else {
+                startTime = parseInt((activity['startdate'].toString().split(' ')[4]).split(':')[0], 10);
+              }
+              
+              var endDate = this.calculateEndDate(new Date(activity['startdate']), Math.round(duration), startTime);
+              this.checkOverdue(activity['_id'], endDate).then(isOverdue => {
+                if (isOverdue) {
+                  className = 'overdue';
+                }
+                this.timeline.itemsData.update({
+                  id: newItem_dropped['id'],
+                  group: newGroup,
+                  start: new Date(activity['startdate']),
+                  end: endDate,
+                  content: activity['sku']['skuname'],
+                  className: className
+                })
+                console.log('timeline data',this.timeline.itemsData)
+                this.visibleData = [];
+                var newData = this.timeline.getVisibleItems();
+                console.log(newData)
+                newData.forEach(item => {
+                  var itemObject = this.timeline.itemsData.get(item);
+                  console.log('data update item', itemObject)
+                  let visibleTable = new DataForVisibleTable(itemObject['id'], itemObject['group'],
+                  itemObject['start'], itemObject['end'], itemObject['content'], itemObject['className']);
+                  this.visibleData.push(visibleTable)
+                  console.log(this.visibleData)
+                  
+                })
+                this.visibleDataSource = new MatTableDataSource<DataForVisibleTable>(this.visibleData);
+      
               })
-              console.log('timeline data',this.timeline.itemsData)
-              this.visibleData = [];
-              var newData = this.timeline.getVisibleItems();
-              console.log(newData)
-              newData.forEach(item => {
-                var itemObject = this.timeline.itemsData.get(item);
-                console.log('data update item', itemObject)
-                let visibleTable = new DataForVisibleTable(itemObject['id'], itemObject['group'],
-                itemObject['start'], itemObject['end'], itemObject['content'], itemObject['className']);
-                this.visibleData.push(visibleTable)
-                console.log(this.visibleData)
-                
-              })
-              this.visibleDataSource = new MatTableDataSource<DataForVisibleTable>(this.visibleData);
-    
-            })
-          }
-        }) 
-      }
-    }) 
+            }
+          }) 
+        }
+      })
+    }
+    else {
+      this.timeline.itemsData.remove(newItem_dropped);
+    }
   }
 
 
@@ -438,7 +455,7 @@ export class ManufacturingScheduleComponent implements OnInit {
         }  
       },
       
-      onMoving: async function(item, callback): Promise<void> {
+      onMove: async function(item, callback): Promise<void> {
         // console.log(item, callback);
         // var newGroup = thisObject.groups.get(item['group']);
         // console.log(newGroup)
@@ -526,6 +543,7 @@ export class ManufacturingScheduleComponent implements OnInit {
 
       onAdd: async function (item, callback): Promise<void> {
         console.log('on add item', item)
+
         if (item.content == 'new item') {
           callback(null);
         }
@@ -535,9 +553,9 @@ export class ManufacturingScheduleComponent implements OnInit {
           //     console.log('not valid')
           //     callback(null);
           //   }
-            else {
-              callback(item);
-            }
+        else {
+          callback(item);
+        }
         //   })
         // }
       }
@@ -619,16 +637,19 @@ export class ManufacturingScheduleComponent implements OnInit {
     });
   }
 
-  refreshMLs() {
+  async refreshMLs(): Promise<void> {
     var thisobject = this;
-    this.restv2.getUsers(AndVsOr.AND, auth.getUsername(), null, null, null, null, null, null, auth.getLocal(), 1).then(users => {
-      if (users.length == 1) {
-        thisobject.manufacturingLinesToManage = users[0].manufacturinglinestomanage;
+    var users = await thisobject.restv2.getUsers(AndVsOr.AND, auth.getUsername(), null, null, null, null, null, null, auth.getLocal(), 1);
+    if (users.length == 1) {
+      this.manufacturingLinesToManage = users[0].manufacturinglinestomanage;
+      if (this.manufacturingLinesToManage.length > 0) {
+        this.isSelectable = true;
+        console.log('changed to true')
       }
-    }).catch(err => {});
-    if (this.manufacturingLinesToManage.length > 0) {
-      this.isSelectable = true;
     }
+    console.log('user', users[0]);
+    
+    console.log('isSelectable', this.isSelectable)
   }
   
 }
