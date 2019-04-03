@@ -3,7 +3,7 @@ const database = require('../database.js');
 
 function getGoals(filterSchema, limit) {
     return new Promise((resolve, reject) => {
-        database.goalsModel.find(filterSchema).limit(limit).deepPopulate('activities.activity.sku.formula.ingredientsandquantities.ingredient').exec(function (err, results) {
+        database.goalsModel.find(filterSchema).limit(limit).populate('owner').deepPopulate('activities.activity.sku.formula.ingredientsandquantities.ingredient').exec(function (err, results) {
             if (err) {
                 reject(Error(err));
             } else {

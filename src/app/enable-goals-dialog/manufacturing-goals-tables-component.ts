@@ -2,6 +2,7 @@ import { Component, Input, forwardRef, Inject } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import {CdkDragDrop, moveItemInArray, transferArrayItem} from '@angular/cdk/drag-drop';
 import { RestService } from '../rest.service';
+import {RestServiceV2, AndVsOr} from '../restv2.service'
 import { MatDialog, MatDialogRef, MatTableDataSource, MatPaginator } from "@angular/material";
 import {MatIconModule} from '@angular/material/icon'
 
@@ -19,7 +20,7 @@ const customValueProvider = {
 })
 export class ManufacturingGoalsTablesComponent implements ControlValueAccessor {
 
-  constructor(public rest: RestService, public dialog: MatDialog) { }
+  constructor(public restv2: RestServiceV2, public rest: RestService, public dialog: MatDialog) { }
   _value = '';
   stringified = '';
 
