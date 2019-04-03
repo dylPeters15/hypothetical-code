@@ -113,7 +113,7 @@ export class NewUserDialogComponent implements OnInit {
     console.log("mfgLinesToUpload: ", mfgLinesToUpload);
 
     if (this.initData) {
-      var response = await this.restv2.modifyUser(AndVsOr.AND, this.initData.username, this.initData.localuser, null, analyst, productmanager, businessmanager, mfgLinesToUpload, admin);
+      var response = await this.restv2.modifyUser(this.initData._id, null, analyst, productmanager, businessmanager, mfgLinesToUpload, admin);
       if (response['ok'] == 1) {
         this.snackBar.open("Successfully modified user permissions.", "close", {
           duration: 2000,
