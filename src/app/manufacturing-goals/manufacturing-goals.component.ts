@@ -4,7 +4,7 @@ import { RestService } from '../rest.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NewGoalDialogComponent, DisplayableActivity } from '../new-goal-dialog/new-goal-dialog.component'
 import {ManufacturingCalculatorComponent} from '../manufacturing-calculator/manufacturing-calculator.component'
-import { MatDialogRef, MatDialog, MatDialogConfig, MatTableDataSource,MatPaginator, MatSnackBar } from "@angular/material";
+import { MatDialogRef, MatDialog, MatDialogConfig, MatSort, MatTableDataSource,MatPaginator, MatSnackBar } from "@angular/material";
 import {ExportToCsv} from 'export-to-csv';
 import { RestServiceV2, AndVsOr } from '../restv2.service';
 import { auth } from '../auth.service';
@@ -56,6 +56,7 @@ export class ManufacturingGoalsComponent implements OnInit {
   data: ManufacturingGoal[] = [];
   dataSource = new MatTableDataSource<ManufacturingGoal>(this.data);
   @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatSort) sort: MatSort;
   newDialogRef: MatDialogRef<NewGoalDialogComponent>;
   calculatorDialogRef: MatDialogRef<ManufacturingCalculatorComponent>;
   activityDialogRef: MatDialogRef<ActivityDetailsComponent>;
@@ -137,6 +138,7 @@ export class ManufacturingGoalsComponent implements OnInit {
          
             }
             this.dataSource = new MatTableDataSource<ManufacturingGoal>(this.data);
+            this.dataSource.sort = this.sort;
             this.dataSource.paginator = this.paginator;
         })
     
@@ -234,6 +236,12 @@ export class ManufacturingGoalsComponent implements OnInit {
     this.enableGoalsDialogRef.afterClosed().subscribe(async event => {
       this.refreshData();
     })
+  }
+
+  sortData() {
+    this.data.sort((a,b) => {
+      return a.name > b.name ? 1 : -1;
+    });
   }
 
 }
