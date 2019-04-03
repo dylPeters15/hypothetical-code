@@ -307,8 +307,10 @@ export class SkuComponent implements OnInit {
      let manufacturingLinesWithSku = [];
      var manufacturinglines = await this.restv2.getLine(AndVsOr.OR, null,".*", null,null,50);
      manufacturinglines.forEach(manufacturingline => {
+      console.log("line iz: " + manufacturingline);
+      console.log("line skus iz: " + manufacturingline['skus']);
        manufacturingline['skus'].forEach(manufacturingLineSku => {
-         if(manufacturingLineSku['sku']['_id'] == sku['_id']){
+         if(manufacturingLineSku['_id'] == sku['_id']){
           manufacturingLinesWithSku.push(manufacturingline)
          }
          

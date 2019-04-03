@@ -309,6 +309,7 @@ export class NewSkuDialogComponent implements OnInit {
     var caseCheckLength = caseAsString.length != 12;
     var upcCheckLength = upcAsString.length != 12;
 
+    // Don't judge me for this sloppy list of if statements
     if(this.skunumber < 0 || this.caseupcnumber < 0 || this.unitupcnumber < 0 || this.countpercase < 0 || this.formulascalingfactor < 0)
     {
       this.snackBar.open("Numbers cannot be negative.", "close", {

@@ -119,7 +119,6 @@ export class NewFormulaDialogComponent implements OnInit {
 
   }
 
-
   addIngredientButton() {
     this.addIngredientToFormula(false, "", 0);
   }
