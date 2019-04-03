@@ -5,6 +5,7 @@ import { EnableGoalsDialogComponent } from '../enable-goals-dialog/enable-goals-
 import { RestService } from '../rest.service';
 import { RestServiceV2, AndVsOr } from '../restv2.service';
 import { LegendDetailsComponent } from './legend-details.component';
+import { auth } from '../auth.service';
 var moment = require('moment');     //please note that you should include moment library first
 require('moment-weekday-calc');
 
@@ -71,6 +72,7 @@ export class ManufacturingScheduleComponent implements OnInit {
   legendDialogRef: MatDialogRef<LegendDetailsComponent>;
   visibleData: DataForVisibleTable[] = [];
   visibleDataSource = new MatTableDataSource<DataForVisibleTable>(this.visibleData);
+  manufacturingLinesToManage: any[] = [];
 
   constructor(public rest:RestService, private restv2: RestServiceV2, private dialog: MatDialog, myElement: ElementRef) { 
       this.getTimelineData();
@@ -79,6 +81,7 @@ export class ManufacturingScheduleComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.refreshMLs();
     this.refreshData(); 
     this.tlContainer = document.getElementById('timeline');      
     this.timeline = new vis.Timeline(this.tlContainer, null, this.options);      
@@ -602,6 +605,15 @@ export class ManufacturingScheduleComponent implements OnInit {
     this.legendDialogRef.afterClosed().subscribe(event => {
       this.refreshData();
     });
+  }
+
+  refreshMLs() {
+    var thisobject = this;
+    this.restv2.getUsers(AndVsOr.AND, auth.getUsername(), null, null, null, null, null, null, auth.getLocal(), 1).then(users => {
+      if (users.length == 1) {
+        thisobject.manufacturingLinesToManage = users[0].manufacturinglinestomanage;
+      }
+    }).catch(err => {});
   }
   
 }

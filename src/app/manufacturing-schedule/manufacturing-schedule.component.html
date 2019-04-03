@@ -24,8 +24,16 @@
                 <div [ngClass]="['items']"  *ngFor="let goal of goalsDataSource['data']">
                     <h4>{{goal['goalname']}}</h4>
                     <p>Deadline: {{goal['date'].valueOf().split('T')[0]}}</p>
-                    <div draggable="true" (dragstart)="handleDragStart($event, activity)" [ngClass]="['item']" *ngFor="let activity of goal['activities']">
-                        {{activity['sku']['skuname']}}
+                    <div *ngIf= "manufacturingLinesToManage.length > 0">
+                        <div draggable="true" (dragstart)="handleDragStart($event, activity)" [ngClass]="['item']" *ngFor="let activity of goal['activities']">
+                            {{activity['sku']['skuname']}}
+                        </div>
+                    </div>
+                   
+                    <div *ngIf= "!(manufacturingLinesToManage.length > 0)">
+                        <div [ngClass]="['nondraggableitem']" *ngFor="let activity of goal['activities']">
+                            {{activity['sku']['skuname']}}
+                        </div>
                     </div>
                 
                 </div>
