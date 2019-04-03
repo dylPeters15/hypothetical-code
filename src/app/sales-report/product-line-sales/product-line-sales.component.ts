@@ -16,6 +16,22 @@ const customValueProvider = {
 })
 export class ProductLineSalesComponent implements OnInit, ControlValueAccessor {
 
+  currentYear = new Date().getFullYear();
+  tableData = [
+    // {
+    //   year2010: 10000000,
+    //   year2011: 20000000,
+    //   year2012: 30000000,
+    //   year2013: 40000000,
+    //   year2014: 50000000,
+    //   year2015: 60000000,
+    //   year2016: 70000000,
+    //   year2017: 80000000,
+    //   year2018: 90000000,
+    //   year2019: 100000000,
+    //   total: 200000000
+    // }
+  ]
   productLine: any;
   skus: any[] = [];
   selectedCustomerId: any = "all";
@@ -35,12 +51,11 @@ export class ProductLineSalesComponent implements OnInit, ControlValueAccessor {
     }
   }
 
-  refreshData() {
+  async refreshData() {
     this.productLine = this._value['productLine'];
     var thisobject = this;
-    this.calc.totalRevenue(this.productLine).then(revenue => {
-      thisobject.totalRevenue = "$" + revenue.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
-    });
+    this.tableData = [await this.calc.totalRevenue(this.productLine)];
+    console.log(this.tableData);
     this.skus = this.productLine['skus'];
     this.selectedCustomerId = this._value['selectedCustomerId'];
   }

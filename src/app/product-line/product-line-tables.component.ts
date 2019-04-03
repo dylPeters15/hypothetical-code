@@ -22,13 +22,13 @@ const customValueProvider = {
 })
 export class ProductLineTablesComponent implements ControlValueAccessor, OnInit {
 
-  admin: boolean = false;
+  productmanager: boolean = false;
   nameExists: boolean = false;
 
   constructor( private snackBar: MatSnackBar,public restv2: RestServiceV2, public rest: RestService, public dialog: MatDialog) { }
 
   ngOnInit() {
-    this.admin = auth.isAuthenticatedForAdminOperation();
+    this.productmanager = auth.isAuthenticatedForProductManagerOperation();
   }
 
   _value = '';
