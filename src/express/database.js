@@ -264,6 +264,11 @@ var manufacturingGoalsSchema = new mongoose.Schema({
     type: Boolean,
     required: true,
     unique: false
+  },
+  lastedit: {
+    type: Date,
+    required: true,
+    unique: false
   }
 });
 manufacturingGoalsSchema.index({ owner: 1, goalname: 1 }, { unique: true }); //the combination of owner and goal name should be unique

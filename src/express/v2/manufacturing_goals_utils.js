@@ -3,7 +3,7 @@ const database = require('../database.js');
 
 function getGoals(filterSchema, limit) {
     return new Promise((resolve, reject) => {
-        database.goalsModel.find(filterSchema).limit(limit).deepPopulate('activities.activity.sku.formula.ingredientsandquantities.ingredient').exec(function (err, results) {
+        database.goalsModel.find(filterSchema).limit(limit).populate('owner').deepPopulate('activities.activity.sku.formula.ingredientsandquantities.ingredient').exec(function (err, results) {
             if (err) {
                 reject(Error(err));
             } else {
@@ -15,6 +15,7 @@ function getGoals(filterSchema, limit) {
 
 function createGoal(newObject) {
     return new Promise((resolve, reject) => {
+        newObject['lastedit'] = new Date() + "";
         let goal = new database.goalsModel(newObject);
         goal.save().then(response => {
             resolve(response);
@@ -26,6 +27,7 @@ function createGoal(newObject) {
 
 function modifyGoal(filterSchema, newObject) {
     return new Promise((resolve, reject) => {
+        newObject['$set']['lastedit'] = new Date() + "";
         database.goalsModel.updateOne(filterSchema, newObject, (err, response) => {
             if (err) {
                 reject(Error(err));

@@ -10,19 +10,24 @@ import { RestServiceV2, AndVsOr } from '../restv2.service';
 import { auth } from '../auth.service';
 import { from } from 'rxjs';
 import { ActivityDetailsComponent } from '../activity-details/activity-details.component';
+import { EnableGoalsDialogComponent } from '../enable-goals-dialog/enable-goals-dialog.component';
 
 export class ManufacturingGoal {
   activities: String;
   activityCount: number;
   name: String;
   date: String;
-  checked: boolean;
-  constructor(name, activities, activityCount, date, checked){
+  owner: String;
+  lastedit: String;
+  enabled: boolean;
+  constructor(name, activities, activityCount, date, enabled, owner, lastedit){
     this.activityCount = activityCount;
     this.name = name;
     this.activities = activities;
     this.date = date;
-    this.checked = checked;
+    this.enabled = enabled;
+    this.owner = owner;
+    this.lastedit = lastedit;
   }
 }
 
@@ -47,13 +52,15 @@ export class ManufacturingGoalsComponent implements OnInit {
   businessmanager: boolean = false;
   allReplacement = 54321;
   goals:any = [];
-  displayedColumns: string[] = ['checked', 'name', 'activities', 'date', 'export', 'actions', 'calculator'];
+  displayedColumns: string[] = ['checked', 'name','owner', 'activities', 'date', 'calculator','lastedit', 'edit', 'delete', 'export'];
   data: ManufacturingGoal[] = [];
   dataSource = new MatTableDataSource<ManufacturingGoal>(this.data);
   @ViewChild(MatPaginator) paginator: MatPaginator;
   newDialogRef: MatDialogRef<NewGoalDialogComponent>;
   calculatorDialogRef: MatDialogRef<ManufacturingCalculatorComponent>;
   activityDialogRef: MatDialogRef<ActivityDetailsComponent>;
+  enableGoalsDialogRef: MatDialogRef<EnableGoalsDialogComponent>;
+
 
   constructor(public restv2: RestServiceV2,public rest:RestService, private route: ActivatedRoute, private router: Router, private snackBar: MatSnackBar, private dialog: MatDialog) {  }
 
@@ -96,14 +103,16 @@ export class ManufacturingGoalsComponent implements OnInit {
 
   refreshData() {
     this.data = [];
-    this.rest.getUserName().then(result => {
-      this.restv2.getGoals(AndVsOr.OR, result.toString(), null,null, null, 150).then(data => {
+      this.restv2.getGoals(AndVsOr.OR, null, null,".*", null, 150).then(data => {
         this.goals = data;
             var i;
             this.dataSource = new MatTableDataSource<ManufacturingGoal>(this.data);
             for(i = 0; i<this.goals.length; i++){
               let name = this.goals[i]['goalname'];
               let activities = this.goals[i]['activities'];
+              let owner = this.goals[i]['owner']['username'];
+              let enabled = this.goals[i]['enabled'];
+              console.log(this.goals[i])
               if(activities != undefined){
                 var j;
                 let activityCount = activities.length;
@@ -119,29 +128,22 @@ export class ManufacturingGoalsComponent implements OnInit {
                 activityString = activityString.substring(0,activityString.length-1)
                 let date = new Date(this.goals[i]['date']);
                 let dateString = date.getMonth()+1 + '/' + date.getDate() + '/' + date.getFullYear();
-                let currentGoal = new ManufacturingGoal(name, activityString, activityCount, dateString, false);
+                let lasteditdate = new Date(this.goals[i]['lastedit'])
+                let lasteditDateString = lasteditdate.getMonth()+1 + '/' + lasteditdate.getDate() + '/' + lasteditdate.getFullYear();
+                let currentGoal = new ManufacturingGoal(name, activityString, activityCount, dateString, enabled, owner, lasteditDateString);
                 this.data.push(currentGoal);
               }
               
          
             }
-            this.data.forEach(element => {
-              element['checked'] = false;
-            });
             this.dataSource = new MatTableDataSource<ManufacturingGoal>(this.data);
             this.dataSource.paginator = this.paginator;
         })
-      })
     
   }
 
-  deleteSelected() {
-    const dialogConfig = new MatDialogConfig();
-        this.data.forEach(goal => {
-          if (goal.checked) {
-            this.deleteGoalConfirmed(goal.name);
-          }
-        });
+  deleteSelected(goal) {
+    this.deleteGoalConfirmed(goal.name);
   }
 
   deleteGoalConfirmed(name) {
@@ -153,18 +155,6 @@ export class ManufacturingGoalsComponent implements OnInit {
         return value.name != name;
       });
       this.refreshData();
-    });
-  }
-
-  deselectAll() {
-    this.data.forEach(user => {
-      user.checked = false;
-    });
-  }
-
-  selectAll() {
-    this.data.forEach(user => {
-      user.checked = true;
     });
   }
 
@@ -227,17 +217,6 @@ export class ManufacturingGoalsComponent implements OnInit {
     modifyManufacturingGoal(present_goalname, present_activities, present_date) {
       this.newManufacturingGoal(true, present_goalname, present_activities, present_date);
     }
-  
-
-
-  noneSelected(): boolean {
-    for (var i = 0; i < this.data.length; i++) {
-      if (this.data[i].checked) {
-        return false;
-      }
-    }
-    return true;
-  }
 
   async showActivityDetails(goal){
     const dialogConfig = new MatDialogConfig();
@@ -247,6 +226,14 @@ export class ManufacturingGoalsComponent implements OnInit {
     this.activityDialogRef.afterClosed().subscribe(event => {
       this.refreshData();
     });
+  }
+
+  async openEnableGoalsDialog(): Promise<void> {
+    const dialogConfig = new MatDialogConfig();
+    this.enableGoalsDialogRef = this.dialog.open(EnableGoalsDialogComponent, dialogConfig);
+    this.enableGoalsDialogRef.afterClosed().subscribe(async event => {
+      this.refreshData();
+    })
   }
 
 }

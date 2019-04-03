@@ -4,21 +4,27 @@
       <mat-card-title>Manufacturing Goals</mat-card-title>
   </mat-card-header>
   <mat-card-content>
-    <button mat-raised-button (click)="selectAll()"> Select All </button>
-    <button mat-raised-button (click)="deselectAll()"> Deselect All </button>
-    <button mat-raised-button *ngIf="businessmanager" (click)="deleteSelected()" color="warn" [disabled]="noneSelected()"> Delete Selected </button>
+    <!-- <button mat-raised-button (click)="selectAll()"> Select All </button> -->
+    <!-- <button mat-raised-button (click)="deselectAll()"> Deselect All </button> -->
+    <!-- <button mat-raised-button *ngIf="businessmanager" (click)="deleteSelected()" color="warn" [disabled]="noneSelected()"> Delete Selected </button> -->
+    <button mat-raised-button *ngIf= "businessmanager" (click)="openEnableGoalsDialog()"> Enable/Disable Goals </button>
     <!-- <button mat-raised-button (click)="modifySelected()" style="color: white; background-color: blue;" [disabled]="dataSource.data.length==0"> Modify Selected </button> -->
     <button mat-raised-button *ngIf="businessmanager" (click)="newGoal()" color="primary"> New Goal </button>
     <mat-table [dataSource]="dataSource" class="mat-elevation-z8">
       <ng-container matColumnDef="checked">
-        <mat-header-cell *matHeaderCellDef>Selected</mat-header-cell>
+        <mat-header-cell *matHeaderCellDef>Enabled</mat-header-cell>
         <mat-cell *matCellDef="let element">
-          <mat-checkbox [(ngModel)]="element['checked']"></mat-checkbox>
+          <mat-icon *ngIf="element['enabled']">done</mat-icon>
         </mat-cell>
       </ng-container> 
       <ng-container matColumnDef="name">
         <mat-header-cell *matHeaderCellDef>Name</mat-header-cell>
         <mat-cell *matCellDef="let element">{{element.name}}</mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="owner">
+        <mat-header-cell *matHeaderCellDef>Author</mat-header-cell>
+        <mat-cell *matCellDef="let element">{{element.owner}}</mat-cell>
       </ng-container>
       
       <ng-container matColumnDef="activities">
@@ -32,13 +38,13 @@
         <mat-header-cell *matHeaderCellDef>Deadline</mat-header-cell>
         <mat-cell *matCellDef="let element">{{element.date}}</mat-cell>
       </ng-container>
-    
-      <ng-container matColumnDef="export">
-        <mat-header-cell *matHeaderCellDef>Export To CSV</mat-header-cell>
-        <mat-cell *matCellDef="let element">
-          <button mat-raised-button (click)="exportToCsv(element)"> Export to CSV </button>
-        </mat-cell>
+
+      <ng-container matColumnDef="lastedit">
+        <mat-header-cell *matHeaderCellDef>Last Modified</mat-header-cell>
+        <mat-cell *matCellDef="let element">{{element.lastedit}}</mat-cell>
       </ng-container>
+    
+
 
         <ng-container matColumnDef="calculator">
           <mat-header-cell *matHeaderCellDef>Calculator</mat-header-cell>
@@ -49,12 +55,28 @@
           </mat-cell>
         </ng-container>
 
-        <ng-container matColumnDef="actions">
-            <mat-header-cell *matHeaderCellDef>Actions</mat-header-cell>
+        <ng-container matColumnDef="edit">
+            <mat-header-cell *matHeaderCellDef>Edit</mat-header-cell>
             <mat-cell *matCellDef="let element">
               <button mat-button *ngIf="businessmanager" (click)="modifySelected(element)" [disabled]="dataSource.data.length==0" color="primary">
                 <mat-icon>edit</mat-icon> 
               </button>
+            </mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="delete">
+            <mat-header-cell *matHeaderCellDef>Delete</mat-header-cell>
+            <mat-cell *matCellDef="let element">
+              <button mat-button *ngIf="businessmanager" (click)="deleteSelected(element)" [disabled]="dataSource.data.length==0" color="primary">
+                <mat-icon>delete</mat-icon> 
+              </button>
+            </mat-cell>
+          </ng-container>
+
+          <ng-container matColumnDef="export">
+            <mat-header-cell *matHeaderCellDef>Export To CSV</mat-header-cell>
+            <mat-cell *matCellDef="let element">
+              <button mat-raised-button (click)="exportToCsv(element)"> Export to CSV </button>
             </mat-cell>
           </ng-container>
 
