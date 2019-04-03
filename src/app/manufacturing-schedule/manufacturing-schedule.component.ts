@@ -167,64 +167,78 @@ export class ManufacturingScheduleComponent implements OnInit {
     console.log('drag item', newItem_dropped)
 
     var newGroup = this.groups.get(newItem_dropped.group)
-    this.checkLine(newItem_dropped, newGroup).then(async isValid => {
-      console.log('isValid', isValid)
-      this.refreshData();
-      if (!isValid) {
-        this.timeline.itemsData.remove(newItem_dropped);
-      }
-      else {
-        var activities = await this.restv2.getActivities(AndVsOr.OR, null, null, null, 500);
-        var activityid = newItem_dropped.content.split("::")[1];
-        activities.forEach(activity => {
-          if (activity['_id'] == activityid) {
-            var className = 'normal';
-            var duration = activity['calculatedhours'];
-            if (activity['sethours']) {
-              duration = activity['sethours'];
-              className = "updated"
-            }
-            var startTime = 0;
-            if (activity['startdate'].split('T')) {
-              startTime = parseInt((activity['startdate'].split('T')[1]).split(':')[0], 10) - 7;
-            }
-            else {
-              startTime = parseInt((activity['startdate'].toString().split(' ')[4]).split(':')[0], 10);
-            }
-            
-            var endDate = this.calculateEndDate(new Date(activity['startdate']), Math.round(duration), startTime);
-            this.checkOverdue(activity['_id'], endDate).then(isOverdue => {
-              if (isOverdue) {
-                className = 'overdue';
+    var count = 0;
+    this.manufacturingLinesToManage.forEach(line => {
+      console.log(line['manufacturingline']['_id'])
+      if (newItem_dropped['group'] == line['manufacturingline']['_id']) {
+        count ++;
+        console.log('plus one')
+      } 
+    })
+    console.log('count', count)
+    if (count == 1) {
+      this.checkLine(newItem_dropped, newGroup).then(async isValid => {
+        console.log('isValid', isValid)
+        this.refreshData();
+        if (!isValid) {
+          this.timeline.itemsData.remove(newItem_dropped);
+        }
+        else {
+          var activities = await this.restv2.getActivities(AndVsOr.OR, null, null, null, 500);
+          var activityid = newItem_dropped.content.split("::")[1];
+          activities.forEach(activity => {
+            if (activity['_id'] == activityid) {
+              var className = 'normal';
+              var duration = activity['calculatedhours'];
+              if (activity['sethours']) {
+                duration = activity['sethours'];
+                className = "updated"
               }
-              this.timeline.itemsData.update({
-                id: newItem_dropped['id'],
-                group: newGroup,
-                start: new Date(activity['startdate']),
-                end: endDate,
-                content: activity['sku']['skuname'],
-                className: className
+              var startTime = 0;
+              if (activity['startdate'].split('T')) {
+                startTime = parseInt((activity['startdate'].split('T')[1]).split(':')[0], 10) - 7;
+              }
+              else {
+                startTime = parseInt((activity['startdate'].toString().split(' ')[4]).split(':')[0], 10);
+              }
+              
+              var endDate = this.calculateEndDate(new Date(activity['startdate']), Math.round(duration), startTime);
+              this.checkOverdue(activity['_id'], endDate).then(isOverdue => {
+                if (isOverdue) {
+                  className = 'overdue';
+                }
+                this.timeline.itemsData.update({
+                  id: newItem_dropped['id'],
+                  group: newGroup,
+                  start: new Date(activity['startdate']),
+                  end: endDate,
+                  content: activity['sku']['skuname'],
+                  className: className
+                })
+                console.log('timeline data',this.timeline.itemsData)
+                this.visibleData = [];
+                var newData = this.timeline.getVisibleItems();
+                console.log(newData)
+                newData.forEach(item => {
+                  var itemObject = this.timeline.itemsData.get(item);
+                  console.log('data update item', itemObject)
+                  let visibleTable = new DataForVisibleTable(itemObject['id'], itemObject['group'],
+                  itemObject['start'], itemObject['end'], itemObject['content'], itemObject['className']);
+                  this.visibleData.push(visibleTable)
+                  console.log(this.visibleData)
+                  
+                })
+                this.visibleDataSource = new MatTableDataSource<DataForVisibleTable>(this.visibleData);
+      
               })
-              console.log('timeline data',this.timeline.itemsData)
-              this.visibleData = [];
-              var newData = this.timeline.getVisibleItems();
-              console.log(newData)
-              newData.forEach(item => {
-                var itemObject = this.timeline.itemsData.get(item);
-                console.log('data update item', itemObject)
-                let visibleTable = new DataForVisibleTable(itemObject['id'], itemObject['group'],
-                itemObject['start'], itemObject['end'], itemObject['content'], itemObject['className']);
-                this.visibleData.push(visibleTable)
-                console.log(this.visibleData)
-                
-              })
-              this.visibleDataSource = new MatTableDataSource<DataForVisibleTable>(this.visibleData);
-    
-            })
-          }
-        }) 
-      }
-    }) 
+            }
+          }) 
+        }
+      })
+    }
+    else {
+      this.timeline.itemsData.remove(newItem_dropped);
+    }
   }
 
 
@@ -529,6 +543,7 @@ export class ManufacturingScheduleComponent implements OnInit {
 
       onAdd: async function (item, callback): Promise<void> {
         console.log('on add item', item)
+
         if (item.content == 'new item') {
           callback(null);
         }
@@ -538,9 +553,9 @@ export class ManufacturingScheduleComponent implements OnInit {
           //     console.log('not valid')
           //     callback(null);
           //   }
-            else {
-              callback(item);
-            }
+        else {
+          callback(item);
+        }
         //   })
         // }
       }
