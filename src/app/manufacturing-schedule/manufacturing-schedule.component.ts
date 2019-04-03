@@ -82,27 +82,30 @@ export class ManufacturingScheduleComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.refreshMLs();
-    this.refreshData(); 
-    this.tlContainer = document.getElementById('timeline');      
-    this.timeline = new vis.Timeline(this.tlContainer, null, this.options);      
-    this.timeline.setGroups(this.groups);
-    this.timeline.setItems(this.data);
-    var thisObject = this;
-    this.timeline.on('rangechanged',  function (properties) {
-      thisObject.visibleData = [];
-      var newData = thisObject.timeline.getVisibleItems();
-      console.log(newData)
-      newData.forEach(item => {
-        var itemObject = thisObject.timeline.itemsData.get(item);
-        console.log('resize item', itemObject)
-        let visibleTable = new DataForVisibleTable(itemObject['id'], itemObject['group'], 
-        itemObject['start'], itemObject['end'], itemObject['content'], itemObject['className']);
-        thisObject.visibleData.push(visibleTable)
+    this.refreshMLs().then(() => {
+      this.getOptions();
+      console.log('after method', this.isSelectable)
+      this.refreshData(); 
+      this.tlContainer = document.getElementById('timeline');      
+      this.timeline = new vis.Timeline(this.tlContainer, null, this.options);      
+      this.timeline.setGroups(this.groups);
+      this.timeline.setItems(this.data);
+      var thisObject = this;
+      this.timeline.on('rangechanged',  function (properties) {
+        thisObject.visibleData = [];
+        var newData = thisObject.timeline.getVisibleItems();
+        console.log(newData)
+        newData.forEach(item => {
+          var itemObject = thisObject.timeline.itemsData.get(item);
+          console.log('resize item', itemObject)
+          let visibleTable = new DataForVisibleTable(itemObject['id'], itemObject['group'], 
+          itemObject['start'], itemObject['end'], itemObject['content'], itemObject['className']);
+          thisObject.visibleData.push(visibleTable)
+        })
+        thisObject.visibleDataSource = new MatTableDataSource<DataForVisibleTable>(thisObject.visibleData);
       })
-      thisObject.visibleDataSource = new MatTableDataSource<DataForVisibleTable>(thisObject.visibleData);
-    }) 
-    // document.getElementById("delete").style.visibility = "hidden";
+      console.log('options', this.options)
+    });
   }
 
   ngAfterViewInit() {     
@@ -438,7 +441,7 @@ export class ManufacturingScheduleComponent implements OnInit {
         }  
       },
       
-      onMoving: async function(item, callback): Promise<void> {
+      onMove: async function(item, callback): Promise<void> {
         // console.log(item, callback);
         // var newGroup = thisObject.groups.get(item['group']);
         // console.log(newGroup)
@@ -619,16 +622,19 @@ export class ManufacturingScheduleComponent implements OnInit {
     });
   }
 
-  refreshMLs() {
+  async refreshMLs(): Promise<void> {
     var thisobject = this;
-    this.restv2.getUsers(AndVsOr.AND, auth.getUsername(), null, null, null, null, null, null, auth.getLocal(), 1).then(users => {
-      if (users.length == 1) {
-        thisobject.manufacturingLinesToManage = users[0].manufacturinglinestomanage;
+    var users = await thisobject.restv2.getUsers(AndVsOr.AND, auth.getUsername(), null, null, null, null, null, null, auth.getLocal(), 1);
+    if (users.length == 1) {
+      this.manufacturingLinesToManage = users[0].manufacturinglinestomanage;
+      if (this.manufacturingLinesToManage.length > 0) {
+        this.isSelectable = true;
+        console.log('changed to true')
       }
-    }).catch(err => {});
-    if (this.manufacturingLinesToManage.length > 0) {
-      this.isSelectable = true;
     }
+    console.log('user', users[0]);
+    
+    console.log('isSelectable', this.isSelectable)
   }
   
 }
