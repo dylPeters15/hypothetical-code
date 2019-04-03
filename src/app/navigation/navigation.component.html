@@ -41,7 +41,7 @@
       <!--Manufacturing Pages-->
       <a mat-list-item *ngIf="productmanager" routerLink='/manufacturing-lines' routerLinkActive="active">Manufacturing Lines</a>
       <a mat-list-item *ngIf="analyst" routerLink='/manufacturing-goal' routerLinkActive="active">Manufacturing Goal</a>
-      <a mat-list-item *ngIf="businessmanager || manufacturinglinestomanage.length > 0" routerLink='/manufacturing-schedule' routerLinkActive="active">Manufacturing Schedule</a>
+      <a mat-list-item *ngIf="analyst || manufacturinglinestomanage.length > 0" routerLink='/manufacturing-schedule' routerLinkActive="active">Manufacturing Schedule</a>
 
       <!--Reports Pages-->
       <a mat-list-item *ngIf="analyst" routerLink='/manufacturing-schedule-report' routerLinkActive="active">Manufacturing Schedule Report</a>

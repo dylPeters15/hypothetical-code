@@ -8,7 +8,8 @@
         </mat-card-header>
         <mat-card-content>
             <div class="dataContainer">
-                <button mat-raised-button (click)="openEnableGoalsDialog()"> Enable/Disable Goals </button>
+
+                <button mat-raised-button *ngIf= "manufacturingLinesToManage.length > 0" (click)="openEnableGoalsDialog()"> Enable/Disable Goals </button>
                 <button mat-raised-button (click)=showLegend()> Legend </button>
                 <div class="warningContainer">
                     <h4>Warnings</h4>
@@ -20,16 +21,20 @@
                 </div>
             </div>
             <div id="timeline" #timeline></div>
-            <div class="goalsContainer">
-                <div [ngClass]="['items']"  *ngFor="let goal of goalsDataSource['data']">
-                    <h4>{{goal['goalname']}}</h4>
-                    <p>Deadline: {{goal['date'].valueOf().split('T')[0]}}</p>
-                    <div draggable="true" (dragstart)="handleDragStart($event, activity)" [ngClass]="['item']" *ngFor="let activity of goal['activities']">
-                        {{activity['sku']['skuname']}}
+            <div *ngIf= "manufacturingLinesToManage.length > 0">
+                <div class="goalsContainer">
+                    <div [ngClass]="['items']"  *ngFor="let goal of goalsDataSource['data']">
+                        <h4>{{goal['goalname']}}</h4>
+                        <p>Deadline: {{goal['date'].valueOf().split('T')[0]}}</p>
+                        <div *ngIf= "manufacturingLinesToManage.length > 0">
+                            <div draggable="true" (dragstart)="handleDragStart($event, activity)" [ngClass]="['item']" *ngFor="let activity of goal['activities']">
+                                {{activity['sku']['skuname']}}
+                            </div>
+                        </div>
                     </div>
-                
                 </div>
             </div>
+            
             
             
         </mat-card-content>
