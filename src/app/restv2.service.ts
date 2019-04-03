@@ -45,7 +45,7 @@ export class RestServiceV2 {
     }
 
     headersOptions['andvsor'] = headersOptions['andvsor'];
-    headersOptions['andorclause'] = JSON.stringify(headersOptions['andorclause']);
+    headersOptions['andorclause'] = encodeURIComponent(JSON.stringify(headersOptions['andorclause']));
     let httpHeaders: HttpHeaders = new HttpHeaders(headersOptions);
     let httpOptions = {
       headers: httpHeaders
@@ -128,7 +128,7 @@ export class RestServiceV2 {
     ], limit)).toPromise();
   }
 
-  createFormula(formulaname: String, formulanumber: Number, ingredientsandquantities: any[], comment: String): Promise<any> {
+  createFormula(formulaname: string, formulanumber: Number, ingredientsandquantities: any[], comment: string): Promise<any> {
     return this.http.put(endpoint + "formulas", {
       formulaname: formulaname,
       formulanumber: formulanumber,
@@ -158,7 +158,7 @@ export class RestServiceV2 {
   }
 
   ///////////////////// skus /////////////////////
-  getSkus(andVsOr: AndVsOr, skuName: String, skunameregex: String, skuNumber: number, caseUpcNumber: number, unitUpcNumber: number, formula: String, limit: number): Promise<any> {
+  getSkus(andVsOr: AndVsOr, skuName: string, skunameregex: string, skuNumber: number, caseUpcNumber: number, unitUpcNumber: number, formula: string, limit: number): Promise<any> {
 
     return this.http.get(endpoint + "skus", this.generateHeaderWithFilterSchema(andVsOr, [
       {skuname: skuName},
@@ -170,9 +170,9 @@ export class RestServiceV2 {
     ], limit)).toPromise();
   }
 
-  createSku(skuname: String, skunumber: number,
+  createSku(skuname: string, skunumber: number,
     caseupcnumber: number, unitupcnumber: number, unitsize: string,
-    countpercase: number, formulaid: String, formulascalingfactor: Number, manufacturingrate: Number, manufacturingsetupcost: Number, manufacturingruncost: Number, comment: String): Promise<any> {
+    countpercase: number, formulaid: string, formulascalingfactor: Number, manufacturingrate: Number, manufacturingsetupcost: Number, manufacturingruncost: Number, comment: string): Promise<any> {
     return this.http.put(endpoint + "skus", {
       skuname: skuname,
       skunumber: skunumber,
@@ -190,9 +190,9 @@ export class RestServiceV2 {
       this.generateHeaderWithFilterSchema()).toPromise();
   }
 
-  modifySku(andVsOr: AndVsOr, oldSkuName: String, skuname: String, skunumber: number,
+  modifySku(andVsOr: AndVsOr, oldSkuName: string, skuname: string, skunumber: number,
     caseupcnumber: number, unitupcnumber: number, unitsize: string,
-    countpercase: number, formulaid: string, formulascalingfactor: Number, manufacturingrate: Number, manufacturingsetupcost: Number, manufacturingruncost: Number, comment: String): Promise<any> {
+    countpercase: number, formulaid: string, formulascalingfactor: Number, manufacturingrate: Number, manufacturingsetupcost: Number, manufacturingruncost: Number, comment: string): Promise<any> {
     return this.http.post(endpoint + "skus", this.generateBodyWithOptions({
       skuname: skuname,
       skunumber: skunumber,
@@ -212,7 +212,7 @@ export class RestServiceV2 {
       ])).toPromise();
   }
 
-  deleteSku(andVsOr: AndVsOr, skuName: String): Promise<any> {
+  deleteSku(andVsOr: AndVsOr, skuName: string): Promise<any> {
     return this.http.delete(endpoint + "skus", this.generateHeaderWithFilterSchema(andVsOr, [
       {skuName: skuName}
     ])).toPromise();
@@ -220,7 +220,7 @@ export class RestServiceV2 {
 
 
   ///////////////////// ingredients /////////////////////
-  getIngredients(andVsOr: AndVsOr, ingredientname: String, ingredientnameregex: String, ingredientnumber: number, limit: number): Promise<any> {
+  getIngredients(andVsOr: AndVsOr, ingredientname: string, ingredientnameregex: string, ingredientnumber: number, limit: number): Promise<any> {
     return this.http.get(endpoint + "ingredients", this.generateHeaderWithFilterSchema(andVsOr, [
       {ingredientname: ingredientname},
       {ingredientname: ingredientnameregex?{$regex: ingredientnameregex}:null},
@@ -228,9 +228,9 @@ export class RestServiceV2 {
     ], limit)).toPromise();
   }
 
-  createIngredient(ingredientname: String, ingredientnumber: number,
-    vendorinformation: String, unitofmeasure: String, amount: number,
-    costperpackage: number, comment: String): Promise<any> {
+  createIngredient(ingredientname: string, ingredientnumber: number,
+    vendorinformation: string, unitofmeasure: string, amount: number,
+    costperpackage: number, comment: string): Promise<any> {
     return this.http.put(endpoint + "ingredients", {
       ingredientname: ingredientname,
       ingredientnumber: ingredientnumber,
@@ -243,9 +243,9 @@ export class RestServiceV2 {
       this.generateHeaderWithFilterSchema()).toPromise();
   }
 
-  modifyIngredient(andVsOr: AndVsOr, ingredientname: String, newingredientname: String,
-    ingredientnumber: number, vendorinformation: String, unitofmeasure: String,
-    amount: number, costperpackage: number, comment: String): Promise<any> {
+  modifyIngredient(andVsOr: AndVsOr, ingredientname: string, newingredientname: string,
+    ingredientnumber: number, vendorinformation: string, unitofmeasure: string,
+    amount: number, costperpackage: number, comment: string): Promise<any> {
     return this.http.post(endpoint + "ingredients", this.generateBodyWithOptions({
       ingredientname: newingredientname,
       ingredientnumber: ingredientnumber,
@@ -260,7 +260,7 @@ export class RestServiceV2 {
       ])).toPromise();
   }
 
-  deleteIngredient(andVsOr: AndVsOr, ingredientname: String): Promise<any> {
+  deleteIngredient(andVsOr: AndVsOr, ingredientname: string): Promise<any> {
     return this.http.delete(endpoint + "ingredients", this.generateHeaderWithFilterSchema(andVsOr, [
       {ingredientname: ingredientname}
     ])).toPromise();
@@ -268,14 +268,14 @@ export class RestServiceV2 {
 
 
   ///////////////////// product lines /////////////////////
-  getProductLines(andVsOr: AndVsOr, productlinename: String, productlinenameregex: String, limit: number): Promise<any> {
+  getProductLines(andVsOr: AndVsOr, productlinename: string, productlinenameregex: string, limit: number): Promise<any> {
     return this.http.get(endpoint + "product_lines", this.generateHeaderWithFilterSchema(andVsOr, [
       {productlinename: productlinename},
       {productlinename: productlinenameregex?{$regex: productlinenameregex}:null}
     ], limit)).toPromise();
   }
 
-  createProductLine(productlinename: String, skus: any[]): Promise<any> {
+  createProductLine(productlinename: string, skus: any[]): Promise<any> {
     return this.http.put(endpoint + "product_lines", {
       productlinename: productlinename,
       skus: skus
@@ -283,7 +283,7 @@ export class RestServiceV2 {
       this.generateHeaderWithFilterSchema()).toPromise();
   }
 
-  modifyProductLine(andVsOr: AndVsOr, productlinename: String, newproductlinename: String, skus: any[]): Promise<any> {
+  modifyProductLine(andVsOr: AndVsOr, productlinename: string, newproductlinename: string, skus: any[]): Promise<any> {
     return this.http.post(endpoint + 'product_lines', this.generateBodyWithOptions({
       productlinename: newproductlinename,
       skus: skus
@@ -293,14 +293,14 @@ export class RestServiceV2 {
       ])).toPromise();
   }
 
-  deleteProductLine(andVsOr: AndVsOr, productlinename: String): Promise<any> {
+  deleteProductLine(andVsOr: AndVsOr, productlinename: string): Promise<any> {
     return this.http.delete(endpoint + "product_lines", this.generateHeaderWithFilterSchema(andVsOr, [
       {productlinename: productlinename}
     ])).toPromise();
   }
 
   ///////////////////// Manufacturing Goals /////////////////////
-  getGoals(andVsOr: AndVsOr, username: String, goalname: String, goalnameregex: String, enabled: boolean, limit: number): Promise<any> {
+  getGoals(andVsOr: AndVsOr, username: string, goalname: string, goalnameregex: string, enabled: boolean, limit: number): Promise<any> {
     return this.http.get(endpoint + "manufacturing-goals", this.generateHeaderWithFilterSchema(andVsOr, [
       {owner: username},
       {enabled: enabled},
@@ -319,7 +319,7 @@ export class RestServiceV2 {
     });
   }
 
-  createGoal(goalname: String, activities: [], date: Date, enabled: boolean): Promise<any> {
+  createGoal(goalname: string, activities: [], date: Date, enabled: boolean): Promise<any> {
     return new Promise((resolve, reject) => {
       this.getUserName().then(id => {
         this.http.put(endpoint + 'manufacturing-goals', {
@@ -335,7 +335,7 @@ export class RestServiceV2 {
     });
   }
 
-  modifyGoal(andVsOr: AndVsOr, goalname: String, newgoalname: String, activities: [], date: Date, enabled: boolean): Promise<any> {
+  modifyGoal(andVsOr: AndVsOr, goalname: string, newgoalname: string, activities: [], date: Date, enabled: boolean): Promise<any> {
     return this.http.post(endpoint + "manufacturing-goals", this.generateBodyWithOptions({
       goalname: newgoalname,
       activities: activities,
@@ -349,7 +349,7 @@ export class RestServiceV2 {
 
 
 //Need to specify owner too since goals can have the same name but different owners
-  deleteGoal(andVsOr: AndVsOr, goalname: String): Promise<any> {
+  deleteGoal(andVsOr: AndVsOr, goalname: string): Promise<any> {
     return this.http.delete(endpoint + "manufacturing-goals", this.generateHeaderWithFilterSchema(andVsOr, [
       {goalname: goalname}
     ])).toPromise();
@@ -357,7 +357,7 @@ export class RestServiceV2 {
 
 
   ///////////////////// Manufacturing Activities /////////////////////
-  getActivities(andVsOr: AndVsOr, startdate: any, line: any, skuid: String, limit: number): Promise<any> {
+  getActivities(andVsOr: AndVsOr, startdate: any, line: any, skuid: string, limit: number): Promise<any> {
     return this.http.get(endpoint + "manufacturing-activities", this.generateHeaderWithFilterSchema(andVsOr, [
       {startdate: startdate},
       {line: line},
@@ -396,7 +396,7 @@ export class RestServiceV2 {
   }
 
   ///////////////////// Manufacturing Lines /////////////////////
-  getLine(andVsOr: AndVsOr, linename: String, linenameregex: String, shortname: String, shortnameregex: String, limit: number): Promise<any> {
+  getLine(andVsOr: AndVsOr, linename: string, linenameregex: string, shortname: string, shortnameregex: string, limit: number): Promise<any> {
     return this.http.get(endpoint + 'manufacturing-lines', this.generateHeaderWithFilterSchema(andVsOr, [
       {linename: linename},
       {linename: linenameregex?{$regex: linenameregex}:null},
@@ -405,7 +405,7 @@ export class RestServiceV2 {
     ], limit)).toPromise();
   }
 
-  createLine(linename: String, shortname: String, skus: [], comment: String): Promise<any> {
+  createLine(linename: string, shortname: string, skus: [], comment: string): Promise<any> {
     return this.http.put(endpoint + 'manufacturing-lines', {
       linename: linename,
       shortname: shortname,
@@ -414,7 +414,7 @@ export class RestServiceV2 {
     }).toPromise();
   }
 
-  modifyLine(andVsOr: AndVsOr, linename: String, newlinename: String, shortname: String, skus: [], comment: String): Promise<any> {
+  modifyLine(andVsOr: AndVsOr, linename: string, newlinename: string, shortname: string, skus: [], comment: string): Promise<any> {
     return this.http.post(endpoint + 'manufacturing-lines', this.generateBodyWithOptions({
       linename: newlinename,
       shortname: shortname,
@@ -425,7 +425,7 @@ export class RestServiceV2 {
     ])).toPromise();
   }
 
-  deleteLine(andVsOr: AndVsOr, linename: String): Promise<any> {
+  deleteLine(andVsOr: AndVsOr, linename: string): Promise<any> {
     return this.http.delete(endpoint + 'manufacturing-lines', this.generateHeaderWithFilterSchema(andVsOr, [
       {linename: linename}
     ])).toPromise();
@@ -433,7 +433,7 @@ export class RestServiceV2 {
 
 
   ///////////////////// Customers /////////////////////
-  getCustomers(andVsOr: AndVsOr, customername: String, customernameregex: String, customernumber: Number, limit: number): Promise<any> {
+  getCustomers(andVsOr: AndVsOr, customername: string, customernameregex: string, customernumber: Number, limit: number): Promise<any> {
     return this.http.get(endpoint + "customers", this.generateHeaderWithFilterSchema(andVsOr, [
       {customername: customername},
       {customername: customernameregex?{$regex: customernameregex}:null},
@@ -441,7 +441,7 @@ export class RestServiceV2 {
     ], limit)).toPromise();
   }
 
-  createCustomer(customername: String, customernumber: Number): Promise<any> {
+  createCustomer(customername: string, customernumber: Number): Promise<any> {
     return this.http.put(endpoint + "customers", {
       customername: customername,
       customernumber: customernumber
@@ -449,7 +449,7 @@ export class RestServiceV2 {
       this.generateHeaderWithFilterSchema()).toPromise();
   }
 
-  // modifyCustomer(andVsOr: AndVsOr, customername: String, customernumber: Number, newcustomername: String, newcustomernumber: Number): Promise<any> {
+  // modifyCustomer(andVsOr: AndVsOr, customername: string, customernumber: Number, newcustomername: string, newcustomernumber: Number): Promise<any> {
   //   return this.http.post(endpoint + 'customers', this.generateBodyWithOptions({
   //     customername: newcustomername,
   //     customernumber: newcustomernumber
@@ -460,7 +460,7 @@ export class RestServiceV2 {
   //     ])).toPromise();
   // }
 
-  // deleteCustomer(andVsOr: AndVsOr, customername: String, customernumber: Number): Promise<any> {
+  // deleteCustomer(andVsOr: AndVsOr, customername: string, customernumber: Number): Promise<any> {
   //   return this.http.delete(endpoint + "customers", this.generateHeaderWithFilterSchema(andVsOr, [
   //     {customername: customername},
   //     {customernumber: customernumber}
@@ -543,22 +543,22 @@ export class RestServiceV2 {
     }
   }
 
-  loginRequest(username, password): Promise<any> {
-    return this.http.get(endpoint + 'login', {
-      headers: new HttpHeaders({
-        username: username,
-        password: password
-      })
-    }).toPromise();
-  }
+  // loginRequest(username, password): Promise<any> {
+  //   return this.http.get(endpoint + 'login', {
+  //     headers: new HttpHeaders({
+  //       username: username,
+  //       password: password
+  //     })
+  //   }).toPromise();
+  // }
 
-  loginRequestNetID(netidtoken): Promise<any> {
-    return this.http.get(endpoint + 'login', {
-      headers: new HttpHeaders({
-        netidtoken: netidtoken,
-        clientid: this.getClientID()
-      })
-    }).toPromise();
-  }
+  // loginRequestNetID(netidtoken): Promise<any> {
+  //   return this.http.get(endpoint + 'login', {
+  //     headers: new HttpHeaders({
+  //       netidtoken: netidtoken,
+  //       clientid: this.getClientID()
+  //     })
+  //   }).toPromise();
+  // }
 
 }

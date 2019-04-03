@@ -148,7 +148,7 @@ function startServerV1(app) {
             resolveError(err, res);
         });
     }).delete((req, res) => {
-        ingredient_utils.deleteIngredient(req.headers['ingredientname']).then(response => {
+        ingredient_utils.deleteIngredient(decodeURIComponent(req.headers['ingredientname'])).then(response => {
             res.send(response);
         }).catch(err => {
             resolveError(err, res);
