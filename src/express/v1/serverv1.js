@@ -100,7 +100,7 @@ function startServerV1(app) {
 
     app.route('/formulas').get((req, res) => {
         console.log("rest api invoked.", req.headers);
-        formula_utils.getFormulas(req.headers['formulaname'], req.headers['formulanameregex'], JSON.parse(req.headers['formulanumber']), req.headers['ingredient'], JSON.parse(req.headers['limit'])).then(formulas => {
+        formula_utils.getFormulas(decodeURIComponent(req.headers['formulaname']), decodeURIComponent(req.headers['formulanameregex']), JSON.parse(req.headers['formulanumber']), req.headers['ingredient'], JSON.parse(req.headers['limit'])).then(formulas => {
             res.send(formulas);
         }).catch(err => {
             resolveError(err, res);
@@ -113,7 +113,7 @@ function startServerV1(app) {
                 resolveError(err, res);
             });
     }).post((req, res) => {
-        formula_utils.modifyFormula(req.headers['formulaname'], req.body).then(response => {
+        formula_utils.modifyFormula(decodeURIComponent(req.headers['formulaname']), req.body).then(response => {
             res.send(response);
         }).catch(err => {
             resolveError(err, res);
@@ -128,7 +128,7 @@ function startServerV1(app) {
 
     ///////////////////// ingredients /////////////////////
     app.route('/ingredients').get((req, res) => {
-        ingredient_utils.getIngredients(req.headers['ingredientname'], req.headers['ingredientnameregex'], JSON.parse(req.headers['ingredientnumber']), req.headers['limit']).then(ingredients => {
+        ingredient_utils.getIngredients(decodeURIComponent(req.headers['ingredientname']), decodeURIComponent(req.headers['ingredientnameregex']), JSON.parse(req.headers['ingredientnumber']), req.headers['limit']).then(ingredients => {
             res.send(ingredients);
         }).catch(err => {
             resolveError(err, res);
@@ -142,13 +142,13 @@ function startServerV1(app) {
                 resolveError(err, res);
             });
     }).post((req, res) => {
-        ingredient_utils.modifyIngredient(req.headers['ingredientname'], req.body).then(response => {
+        ingredient_utils.modifyIngredient(decodeURIComponent(req.headers['ingredientname']), req.body).then(response => {
             res.send(response);
         }).catch(err => {
             resolveError(err, res);
         });
     }).delete((req, res) => {
-        ingredient_utils.deleteIngredient(req.headers['ingredientname']).then(response => {
+        ingredient_utils.deleteIngredient(decodeURIComponent(req.headers['ingredientname'])).then(response => {
             res.send(response);
         }).catch(err => {
             resolveError(err, res);
@@ -158,7 +158,7 @@ function startServerV1(app) {
     ///////////////////// skus /////////////////////
     app.route('/skus').get((req, res) => {
         console.log(req.headers);
-        sku_utils.getSkus(req.headers['skuname'], req.headers['skunameregex'], Number(req.headers['skunumber']), Number(req.headers['caseupcnumber']), Number(req.headers['unitupcnumber']), req.headers['formula'], Number(req.headers['limit'])).then(skus => {
+        sku_utils.getSkus(decodeURIComponent(req.headers['skuname']), decodeURIComponent(req.headers['skunameregex']), Number(req.headers['skunumber']), Number(req.headers['caseupcnumber']), Number(req.headers['unitupcnumber']), req.headers['formula'], Number(req.headers['limit'])).then(skus => {
             res.send(skus);
         }).catch(err => {
             resolveError(err, res);
@@ -172,7 +172,7 @@ function startServerV1(app) {
                 resolveError(err, res);
             });
     }).post((req, res) => {
-        sku_utils.modifySku(req.headers['skuname'], req.body['skuname'], req.body['skunumber'],
+        sku_utils.modifySku(decodeURIComponent(req.headers['skuname']), req.body['skuname'], req.body['skunumber'],
             req.body['caseupcnumber'], req.body['unitupcnumber'],
             req.body['unitsize'], req.body['countpercase'], req.body['formulanum'], req.body['formulascalingfactor'], req.body['manufacturingrate'], req.body['comment']).then(response => {
                 res.send(response);
@@ -180,7 +180,7 @@ function startServerV1(app) {
                 resolveError(err, res);
             });
     }).delete((req, res) => {
-        sku_utils.deleteSku(req.headers['skuname']).then(response => {
+        sku_utils.deleteSku(decodeURIComponent(req.headers['skuname'])).then(response => {
             res.send(response);
         }).catch(err => {
             resolveError(err, res);
@@ -189,7 +189,7 @@ function startServerV1(app) {
 
     ///////////////////// Manufacturing Goals /////////////////////
     app.route('/manufacturing-goals').get((req, res) => {
-        goals_utils.getGoals(req.headers['owner'], Boolean(req.headers['enabled']), req.headers['goalname'], req.headers['goalnameregex'], req.headers['limit']).then(formulas => {
+        goals_utils.getGoals(decodeURIComponent(req.headers['owner']), Boolean(req.headers['enabled']), decodeURIComponent(req.headers['goalname']), decodeURIComponent(req.headers['goalnameregex']), req.headers['limit']).then(formulas => {
             res.send(formulas);
         }).catch(err => {
             resolveError(err, res);
@@ -201,13 +201,13 @@ function startServerV1(app) {
             resolveError(err, res);
         });
     }).post((req, res) => {
-        goals_utils.modifyGoal(req.headers['goalname'], req.body).then(response => {
+        goals_utils.modifyGoal(decodeURIComponent(req.headers['goalname']), req.body).then(response => {
             res.send(response);
         }).catch(err => {
             resolveError(err, res);
         });
     }).delete((req, res) => {
-        goals_utils.deleteGoal(req.headers['goalname']).then(response => {
+        goals_utils.deleteGoal(decodeURIComponent(req.headers['goalname'])).then(response => {
             res.send(response);
         }).catch(err => {
             resolveError(err, res);
@@ -217,7 +217,7 @@ function startServerV1(app) {
 
     ///////////////////// Manufacturing Lines /////////////////////
     app.route('/manufacturing-lines').get((req, res) => {
-        line_utils.getLine(req.headers['linename'], req.headers['linenameregex'], req.headers['shortname'], req.headers['shortnameregex'], req.headers['limit']).then(formulas => {
+        line_utils.getLine(decodeURIComponent(req.headers['linename']), decodeURIComponent(req.headers['linenameregex']), decodeURIComponent(req.headers['shortname']), decodeURIComponent(req.headers['shortnameregex']), req.headers['limit']).then(formulas => {
             res.send(formulas);
         }).catch(err => {
             resolveError(err, res);
@@ -229,13 +229,13 @@ function startServerV1(app) {
             resolveError(err, res);
         });
     }).post((req, res) => {
-        line_utils.modifyLine(req.headers['linename'], req.body).then(response => {
+        line_utils.modifyLine(decodeURIComponent(req.headers['linename']), req.body).then(response => {
             res.send(response);
         }).catch(err => {
             resolveError(err, res);
         });
     }).delete((req, res) => {
-        line_utils.deleteLine(req.headers['linename'], req.headers['shortname'], req.headers['skus'], req.headers['comment']).then(response => {
+        line_utils.deleteLine(decodeURIComponent(req.headers['linename']), req.headers['shortname']?decodeURIComponent(req.headers['shortname']):req.headers['shortname'], req.headers['skus'], req.headers['comment']).then(response => {
             res.send(response);
         }).catch(err => {
             resolveError(err, res);
@@ -270,7 +270,7 @@ function startServerV1(app) {
     });
     ///////////////////// product lines /////////////////////
     app.route('/product_lines').get((req, res) => {
-        product_line_utils.getProductLines(req.headers['productlinename'], req.headers['productlinenameregex'], JSON.parse(req.headers['limit'])).then(productLines => {
+        product_line_utils.getProductLines(decodeURIComponent(req.headers['productlinename']), decodeURIComponent(req.headers['productlinenameregex']), JSON.parse(req.headers['limit'])).then(productLines => {
             res.send(productLines);
         }).catch(err => {
             resolveError(err, res);
@@ -282,7 +282,7 @@ function startServerV1(app) {
             resolveError(err, res);
         });
     }).post((req, res) => {
-        product_line_utils.modifyProductLine(req.headers['productlinename'], req.body).then(response => {
+        product_line_utils.modifyProductLine(decodeURIComponent(req.headers['productlinename']), req.body).then(response => {
             res.send(response);
             console.log('sent')
         }).catch(err => {
@@ -290,7 +290,7 @@ function startServerV1(app) {
             resolveError(err, res);
         });
     }).delete((req, res) => {
-        product_line_utils.deleteProductLine(req.headers['productlinename']).then(response => {
+        product_line_utils.deleteProductLine(decodeURIComponent(req.headers['productlinename'])).then(response => {
             res.send(response);
         }).catch(err => {
             resolveError(err, res);

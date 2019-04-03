@@ -22,7 +22,7 @@ function startServerV2(app) {
             return {};
         }
         var filterschema = {};
-        filterschema[headers['andvsor']] = JSON.parse(headers['andorclause']);
+        filterschema[headers['andvsor']] = JSON.parse(decodeURIComponent(headers['andorclause']));
         if (filterschema[headers['andvsor']].length == 0) {
             return {};
         }
