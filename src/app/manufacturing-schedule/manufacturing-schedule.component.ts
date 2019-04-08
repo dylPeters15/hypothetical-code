@@ -197,6 +197,7 @@ export class ManufacturingScheduleComponent implements OnInit {
                   duration = activity['sethours'];
                   className = "updated"
                 }
+                
               }
               var startTime = 0;
               if (activity['startdate'].split('T')) {
@@ -492,7 +493,7 @@ export class ManufacturingScheduleComponent implements OnInit {
         }  
       },
       
-      onMove: async function(item, callback): Promise<void> {
+      onMoving: async function(item, callback): Promise<void> {
         // console.log(item, callback);
         // var newGroup = thisObject.groups.get(item['group']);
         // console.log(newGroup)
@@ -519,6 +520,7 @@ export class ManufacturingScheduleComponent implements OnInit {
             
         //   }
         // })
+        console.log('moving')
         callback(null)
       },
 
