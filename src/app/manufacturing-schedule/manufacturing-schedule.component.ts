@@ -193,8 +193,10 @@ export class ManufacturingScheduleComponent implements OnInit {
               var className = 'normal';
               var duration = activity['calculatedhours'];
               if (activity['sethours']) {
-                duration = activity['sethours'];
-                className = "updated"
+                if (activity['sethours'] != duration) {
+                  duration = activity['sethours'];
+                  className = "updated"
+                }
               }
               var startTime = 0;
               if (activity['startdate'].split('T')) {
@@ -211,7 +213,7 @@ export class ManufacturingScheduleComponent implements OnInit {
                 }
                 this.timeline.itemsData.update({
                   id: newItem_dropped['id'],
-                  group: newGroup,
+                  group: newGroup['id'],
                   start: new Date(activity['startdate']),
                   end: endDate,
                   content: activity['sku']['skuname'],
@@ -449,8 +451,9 @@ export class ManufacturingScheduleComponent implements OnInit {
         overrideItems: false
       },
       selectable: thisObject.isSelectable,
+      tooltipOnItemUpdateTime: false,
       margin: {
-        item: 10, // minimal margin between items
+        item: 5, // minimal margin between items
         axis: 5   // minimal margin between items and the axis
       },
       orientation: 'top',
@@ -522,6 +525,7 @@ export class ManufacturingScheduleComponent implements OnInit {
       onUpdate: async function (item, callback): Promise<void> {
         // console.log('update')
         var count = 0;
+        console.log('item', item)
         thisObject.manufacturingLinesToManage.forEach(line => {
           console.log(line['manufacturingline']['_id'])
           if (item['group'] == line['manufacturingline']['_id']) {
@@ -551,7 +555,7 @@ export class ManufacturingScheduleComponent implements OnInit {
           var newDuration = prompt('Choose a new duration for this activity. The calculated duration is ' 
           + activity['calculatedhours'] + ' hours.', displayDuration);
           
-          if (item.content != null) {
+          if (item.content != null && newDuration != null) {
             /* Changed from rest to restv2, recheck this */
             var response = await thisObject.restv2.modifyActivity(AndVsOr.AND, activity['_id'], activity['sku']['_id'], 
             activity['numcases'], activity['calculatedhours'], parseInt(newDuration, 10), 
