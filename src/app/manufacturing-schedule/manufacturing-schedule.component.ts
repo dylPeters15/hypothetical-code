@@ -83,6 +83,7 @@ export class ManufacturingScheduleComponent implements OnInit {
 
   ngOnInit() {
     this.refreshMLs().then(() => {
+      this.getTimelineData();
       this.getTimelineGroups();
       this.getOptions();
       console.log('after method', this.isSelectable)
@@ -320,7 +321,8 @@ export class ManufacturingScheduleComponent implements OnInit {
         else {
           this.groups.add({
             id: currentId, 
-            content: currentLineName})
+            content: currentLineName,
+            className: 'invalid'})
         }
         
         })
@@ -387,14 +389,49 @@ export class ManufacturingScheduleComponent implements OnInit {
         if(isOrphaned) {
           className = 'orphan'
         }
-        this.data.add({
-          id: activity['_id'],
-          group: group,
-          start: new Date(activity['startdate']),
-          end: endDate,
-          content: activity['sku']['skuname'],
-          className: className
-        })
+
+        if (this.manufacturingLinesToManage) {
+          var count = 0;
+          this.manufacturingLinesToManage.forEach(validLine => {
+            console.log('line', validLine)
+            if (validLine['manufacturingline']['_id'] == group) {
+              this.data.add({
+                id: activity['_id'],
+                group: group,
+                start: new Date(activity['startdate']),
+                end: endDate,
+                content: activity['sku']['skuname'],
+                className: className
+              })
+              count ++;
+            }
+            
+          })
+          console.log('count', count)
+          if (count == 0) {
+            this.data.add({
+              id: activity['_id'],
+              group: group,
+              start: new Date(activity['startdate']),
+              end: endDate,
+              content: activity['sku']['skuname'],
+              className: className,
+              editable: false
+            })
+          }
+        }
+        else {
+          this.data.add({
+            id: activity['_id'],
+            group: group,
+            start: new Date(activity['startdate']),
+            end: endDate,
+            content: activity['sku']['skuname'],
+            className: className,
+            editable: false
+          })
+        }
+        
       })
     })
   }
@@ -445,7 +482,8 @@ export class ManufacturingScheduleComponent implements OnInit {
         add: true,         // add new items by double tapping
         updateTime: true,  // drag items horizontally
         updateGroup: true, // drag items from one group to another
-        remove: true       // delete an item by tapping the delete button top right
+        remove: true,       // delete an item by tapping the delete button top right,
+        overrideItems: false
       },
       selectable: thisObject.isSelectable,
       margin: {
@@ -520,7 +558,15 @@ export class ManufacturingScheduleComponent implements OnInit {
 
       onUpdate: async function (item, callback): Promise<void> {
         // console.log('update')
-        if (!(thisObject.manufacturingLinesToManage.length > 0)) {
+        var count = 0;
+        thisObject.manufacturingLinesToManage.forEach(line => {
+          console.log(line['manufacturingline']['_id'])
+          if (item['group'] == line['manufacturingline']['_id']) {
+            count ++;
+            console.log('plus one')
+          } 
+        })
+        if (count != 1) {
           callback(null);
         }
         else {
