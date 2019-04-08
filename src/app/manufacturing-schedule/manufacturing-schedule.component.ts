@@ -83,6 +83,7 @@ export class ManufacturingScheduleComponent implements OnInit {
 
   ngOnInit() {
     this.refreshMLs().then(() => {
+      this.getTimelineGroups();
       this.getOptions();
       console.log('after method', this.isSelectable)
       this.refreshData(); 
@@ -287,19 +288,43 @@ export class ManufacturingScheduleComponent implements OnInit {
     
   }
 
-  getTimelineGroups() {
+  async getTimelineGroups(): Promise<void> {
     // create groups
     this.groups = new vis.DataSet();
-    this.rest.getLine('','.*','','.*',100).subscribe(lines => {
+    var lines = await this.restv2.getLine(AndVsOr.OR, '','.*','','.*',100)
       lines.forEach(line => {
         var currentLineName = line['shortname'];
         var currentActivities = [];
         var currentId = line['_id'];
-        this.groups.add({
-          id: currentId, 
-          content: currentLineName})
+        if (this.manufacturingLinesToManage) {
+          var count = 0;
+          this.manufacturingLinesToManage.forEach(validLine => {
+            console.log('line', validLine)
+            if (validLine['manufacturingline']['_id'] == currentId) {
+              this.groups.add({
+                id: currentId, 
+                content: currentLineName,
+                className: ''})
+              count ++;
+            }
+            
+          })
+          console.log('count', count)
+          if (count == 0) {
+              this.groups.add({
+                id: currentId, 
+                content: currentLineName,
+                className: 'invalid'})
+          }
+        }
+        else {
+          this.groups.add({
+            id: currentId, 
+            content: currentLineName})
+        }
+        
         })
-      })
+      // })
     }
 
   async getTimelineData(): Promise<void> {
