@@ -76,7 +76,7 @@ export class ManufacturingScheduleComponent implements OnInit {
   isSelectable: boolean = false;
 
   constructor(public rest:RestService, private restv2: RestServiceV2, private dialog: MatDialog, myElement: ElementRef) { 
-      this.getTimelineData();
+      // this.getTimelineData();
       this.getTimelineGroups();
       this.getOptions();
   }
@@ -385,6 +385,7 @@ export class ManufacturingScheduleComponent implements OnInit {
             }
           })
         }
+        console.log('currentData', this.data)
         this.data.add({
           id: activity['_id'],
           group: group,
