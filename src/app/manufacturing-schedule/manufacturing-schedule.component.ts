@@ -298,35 +298,20 @@ export class ManufacturingScheduleComponent implements OnInit {
         var currentActivities = [];
         var currentId = line['_id'];
         if (this.manufacturingLinesToManage) {
-          var count = 0;
+          var className = 'invalid';
           this.manufacturingLinesToManage.forEach(validLine => {
             console.log('line', validLine)
             if (validLine['manufacturingline']['_id'] == currentId) {
-              this.groups.add({
-                id: currentId, 
-                content: currentLineName,
-                className: ''})
-              count ++;
+              className = '';
             }
-            
           })
-          console.log('count', count)
-          if (count == 0) {
-              this.groups.add({
-                id: currentId, 
-                content: currentLineName,
-                className: 'invalid'})
-          }
         }
-        else {
-          this.groups.add({
-            id: currentId, 
-            content: currentLineName,
-            className: 'invalid'})
-        }
-        
+        this.groups.add({
+          id: currentId, 
+          content: currentLineName,
+          className: className
         })
-      // })
+      })
     }
 
   async getTimelineData(): Promise<void> {
@@ -370,8 +355,10 @@ export class ManufacturingScheduleComponent implements OnInit {
     var className = 'normal';
     var duration = activity['calculatedhours'];
     if (activity['sethours']) {
-      duration = activity['sethours'];
-      className = 'updated'
+      if (activity['sethours'] != activity['calculatedhours']) {
+        duration = activity['sethours'];
+        className = 'updated';
+      }
     }
     var startTime = 0;
     if (activity['startdate'].split('T')) {
@@ -389,49 +376,24 @@ export class ManufacturingScheduleComponent implements OnInit {
         if(isOrphaned) {
           className = 'orphan'
         }
-
+        var edit = false;
         if (this.manufacturingLinesToManage) {
-          var count = 0;
           this.manufacturingLinesToManage.forEach(validLine => {
             console.log('line', validLine)
             if (validLine['manufacturingline']['_id'] == group) {
-              this.data.add({
-                id: activity['_id'],
-                group: group,
-                start: new Date(activity['startdate']),
-                end: endDate,
-                content: activity['sku']['skuname'],
-                className: className
-              })
-              count ++;
+              edit = true
             }
-            
-          })
-          console.log('count', count)
-          if (count == 0) {
-            this.data.add({
-              id: activity['_id'],
-              group: group,
-              start: new Date(activity['startdate']),
-              end: endDate,
-              content: activity['sku']['skuname'],
-              className: className,
-              editable: false
-            })
-          }
-        }
-        else {
-          this.data.add({
-            id: activity['_id'],
-            group: group,
-            start: new Date(activity['startdate']),
-            end: endDate,
-            content: activity['sku']['skuname'],
-            className: className,
-            editable: false
           })
         }
-        
+        this.data.add({
+          id: activity['_id'],
+          group: group,
+          start: new Date(activity['startdate']),
+          end: endDate,
+          content: activity['sku']['skuname'],
+          className: className,
+          editable: edit
+        })
       })
     })
   }
