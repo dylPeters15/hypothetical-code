@@ -435,7 +435,15 @@ export class ManufacturingScheduleComponent implements OnInit {
       
       onRemove: async function(item, callback): Promise<void> {
         // console.log(item, callback);
-        if (!(thisObject.manufacturingLinesToManage.length > 0)) {
+        var count = 0;
+        thisObject.manufacturingLinesToManage.forEach(line => {
+          console.log(line['manufacturingline']['_id'])
+          if (item['group'] == line['manufacturingline']['_id']) {
+            count ++;
+            console.log('plus one')
+          } 
+        })
+        if (count != 1) {
           callback(null);
         }
         else {
