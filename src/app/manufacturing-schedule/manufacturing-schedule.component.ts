@@ -83,6 +83,7 @@ export class ManufacturingScheduleComponent implements OnInit {
 
   ngOnInit() {
     this.refreshMLs().then(() => {
+      this.getTimelineData();
       this.getTimelineGroups();
       this.getOptions();
       console.log('after method', this.isSelectable)
@@ -297,34 +298,20 @@ export class ManufacturingScheduleComponent implements OnInit {
         var currentActivities = [];
         var currentId = line['_id'];
         if (this.manufacturingLinesToManage) {
-          var count = 0;
+          var className = 'invalid';
           this.manufacturingLinesToManage.forEach(validLine => {
             console.log('line', validLine)
             if (validLine['manufacturingline']['_id'] == currentId) {
-              this.groups.add({
-                id: currentId, 
-                content: currentLineName,
-                className: ''})
-              count ++;
+              className = '';
             }
-            
           })
-          console.log('count', count)
-          if (count == 0) {
-              this.groups.add({
-                id: currentId, 
-                content: currentLineName,
-                className: 'invalid'})
-          }
         }
-        else {
-          this.groups.add({
-            id: currentId, 
-            content: currentLineName})
-        }
-        
+        this.groups.add({
+          id: currentId, 
+          content: currentLineName,
+          className: className
         })
-      // })
+      })
     }
 
   async getTimelineData(): Promise<void> {
@@ -368,8 +355,10 @@ export class ManufacturingScheduleComponent implements OnInit {
     var className = 'normal';
     var duration = activity['calculatedhours'];
     if (activity['sethours']) {
-      duration = activity['sethours'];
-      className = 'updated'
+      if (activity['sethours'] != activity['calculatedhours']) {
+        duration = activity['sethours'];
+        className = 'updated';
+      }
     }
     var startTime = 0;
     if (activity['startdate'].split('T')) {
@@ -387,13 +376,23 @@ export class ManufacturingScheduleComponent implements OnInit {
         if(isOrphaned) {
           className = 'orphan'
         }
+        var edit = false;
+        if (this.manufacturingLinesToManage) {
+          this.manufacturingLinesToManage.forEach(validLine => {
+            console.log('line', validLine)
+            if (validLine['manufacturingline']['_id'] == group) {
+              edit = true
+            }
+          })
+        }
         this.data.add({
           id: activity['_id'],
           group: group,
           start: new Date(activity['startdate']),
           end: endDate,
           content: activity['sku']['skuname'],
-          className: className
+          className: className,
+          editable: edit
         })
       })
     })
@@ -445,7 +444,8 @@ export class ManufacturingScheduleComponent implements OnInit {
         add: true,         // add new items by double tapping
         updateTime: true,  // drag items horizontally
         updateGroup: true, // drag items from one group to another
-        remove: true       // delete an item by tapping the delete button top right
+        remove: true,       // delete an item by tapping the delete button top right,
+        overrideItems: false
       },
       selectable: thisObject.isSelectable,
       margin: {
@@ -520,7 +520,15 @@ export class ManufacturingScheduleComponent implements OnInit {
 
       onUpdate: async function (item, callback): Promise<void> {
         // console.log('update')
-        if (!(thisObject.manufacturingLinesToManage.length > 0)) {
+        var count = 0;
+        thisObject.manufacturingLinesToManage.forEach(line => {
+          console.log(line['manufacturingline']['_id'])
+          if (item['group'] == line['manufacturingline']['_id']) {
+            count ++;
+            console.log('plus one')
+          } 
+        })
+        if (count != 1) {
           callback(null);
         }
         else {
