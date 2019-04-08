@@ -25,7 +25,9 @@
         <input matInput [(ngModel)]="quantity" placeholder="Quantity">
       </mat-form-field>
     </div>
-    <button class="mat-raised-button" (click)="addActivity()">Add Activity</button>
+    <button mat-raised-button (click)="openProjection(currentSku)" [disabled]="currentSku==null" color="primary">View Projection</button>
+    <button class="mat-raised-button" [disabled]="currentSku==null || quantity==null" (click)="addActivity()">Add Activity</button>
+    
 
       <mat-form-field>
         <input matInput [matDatepicker]="picker" placeholder="Choose the goal's Deadline" [formControl] = "dateCtrl"
