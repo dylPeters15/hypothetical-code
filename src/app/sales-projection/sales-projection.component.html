@@ -1,0 +1,74 @@
+<mat-form-field *ngIf="!initData">
+    <mat-chip-list #chipList>
+      <mat-chip *ngIf="selectedSKU" [selectable]="false" [removable]="true" (removed)="remove()">
+        {{selectedSKU['skuname']}}
+        <mat-icon matChipRemove>cancel</mat-icon>
+      </mat-chip>
+      <input placeholder="Enter a SKU" #skuInput [formControl]="skuCtrl" [matAutocomplete]="auto"
+        [matChipInputFor]="chipList" [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+        [matChipInputAddOnBlur]="true" (matChipInputTokenEnd)="add($event)" [hidden]="selectedSKU">
+    </mat-chip-list>
+    <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
+      <mat-option *ngFor="let skuOption of autoCompleteSKUs | async" [value]="skuOption">
+        {{skuOption['skuname']}}
+      </mat-option>
+    </mat-autocomplete>
+    </mat-form-field>
+
+    <mat-form-field>
+        <input matInput [matDatepicker]="start" placeholder="Select a Start Date" [formControl]="startdateCtrl" (dateInput)="addStartDate('input', $event)">
+        <mat-datepicker-toggle matSuffix [for]="start"></mat-datepicker-toggle>
+        <mat-datepicker #start
+                        startView="month"
+                        (daySelected)="chosenDayHandler($event)"
+                        (monthSelected)="chosenMonthHandler($event, start)"
+                        panelClass="example-month-picker">
+        </mat-datepicker>
+      </mat-form-field>
+
+      <mat-form-field>
+        <input matInput [matDatepicker]="end" placeholder="Select an End Date" [formControl]="enddateCtrl" (dateInput)="addEndDate('input', $event)">
+        <mat-datepicker-toggle matSuffix [for]="end"></mat-datepicker-toggle>
+        <mat-datepicker #end
+                        startView="month"
+                        (daySelected)="endDayHandler($event)"
+                        (monthSelected)="endMonthHandler($event, end)"
+                        panelClass="example-month-picker">
+        </mat-datepicker>
+      </mat-form-field>
+      <button mat-raised-button (click)="showProjection()">Show Projection</button>
+      <mat-table [dataSource]="dataSource" style="width: 100%;" class="mat-elevation-z8">
+        <ng-container matColumnDef="timespan">
+          <mat-header-cell *matHeaderCellDef>Timespan</mat-header-cell>
+          <mat-cell *matCellDef="let summary">
+            {{summary['timespan']}}
+          </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="sales">
+          <mat-header-cell *matHeaderCellDef>Total Sales</mat-header-cell>
+          <mat-cell *matCellDef="let summary">
+            {{summary['totalSales']}}
+          </mat-cell>
+        </ng-container>
+        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+</mat-table>
+
+<mat-table [dataSource]="avgDataSource" style="width: 100%;" class="mat-elevation-z8">
+  <ng-container matColumnDef="title">
+      <mat-header-cell *matHeaderCellDef [hidden]="true">Average</mat-header-cell>
+    <mat-cell *matCellDef="let average">
+      {{average['title']}}
+    </mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="average">
+      <mat-header-cell *matHeaderCellDef [hidden]="true">Average Sales + Standard Deviation</mat-header-cell>
+    <mat-cell *matCellDef="let average">
+      {{average['average']}}
+    </mat-cell>
+  </ng-container>
+  <mat-header-row *matHeaderRowDef="avgDisplayedColumns"></mat-header-row>
+<mat-row *matRowDef="let row; columns: avgDisplayedColumns;"></mat-row>
+</mat-table>

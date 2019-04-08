@@ -1,12 +1,13 @@
 import { Component, OnInit, ElementRef, ViewChild, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA} from "@angular/material";
 import { RestService } from '../rest.service';
-import {MatSnackBar, MatAutocompleteSelectedEvent, MatChipInputEvent, MatAutocomplete, MatDatepickerInputEvent} from '@angular/material';
+import { MatDialog, MatDialogConfig, MatSnackBar, MatAutocompleteSelectedEvent, MatChipInputEvent, MatAutocomplete, MatDatepickerInputEvent} from '@angular/material';
 import {FormControl} from '@angular/forms';
 import {Observable} from 'rxjs';
 import {map, startWith} from 'rxjs/operators';
 import {COMMA, ENTER} from '@angular/cdk/keycodes';
 import { RestServiceV2, AndVsOr } from '../restv2.service';
+import { SalesProjectionComponent } from '../sales-projection/sales-projection.component';
 
 export class DisplayableActivity{
   skuname: string = '';
@@ -51,11 +52,12 @@ export class NewGoalDialogComponent implements OnInit {
   skuList: any = [];
   skuNameList: string[] = [];
   edit: Boolean;
+  projectionDialogRef: MatDialogRef<SalesProjectionComponent>;
 
   @ViewChild('skuInput') skuInput: ElementRef<HTMLInputElement>;
   @ViewChild('auto') matAutocomplete: MatAutocomplete;
 
-  constructor(public restv2: RestServiceV2,@Inject(MAT_DIALOG_DATA) public data: any, private dialogRef: MatDialogRef<NewGoalDialogComponent>, public rest:RestService, private snackBar: MatSnackBar) { }
+  constructor(private dialog: MatDialog, public restv2: RestServiceV2,@Inject(MAT_DIALOG_DATA) public data: any, private dialogRef: MatDialogRef<NewGoalDialogComponent>, public rest:RestService, private snackBar: MatSnackBar) { }
 
   ngOnInit() {
     console.log("IDS: " + this.activityIds)
@@ -107,21 +109,20 @@ export class NewGoalDialogComponent implements OnInit {
     this.quantity = null;
   }
 
-  addActivity(){
+  async addActivity(){
     var hours = Math.ceil(this.quantity/this.currentSku['manufacturingrate']);
     let newActivity = new DisplayableActivity(hours, this.currentSku['skuname']);
     
     this.displayableActivities.push(newActivity);
-    
-    this.rest.createActivity(this.currentSku['_id'], this.quantity, hours, null,new Date(),null).subscribe(response => {
-      this.activityIds.push({activity: response['_id']});
+    var newActivityObject = await this.restv2.createActivity(this.currentSku['_id'], this.quantity, hours, null,new Date(),null);
+      this.activityIds.push({activity: newActivityObject['_id']});
       this.snackBar.open("Successfully created Activity: " + this.currentSku['skuname'] + ".", "close", {
               duration: 2000,
             });
       this.skuCtrl.setValue(null);
+      this.currentSku = null;
       this.quantity = null;
-    });
-
+    
   }
 
   createGoal() {
@@ -176,4 +177,12 @@ export class NewGoalDialogComponent implements OnInit {
     this.date = event.value;
   }
 
-}
+  async openProjection(currentSku){
+      const dialogConfig = new MatDialogConfig();
+      dialogConfig.data = {sku: currentSku};
+      this.projectionDialogRef = this.dialog.open(SalesProjectionComponent, dialogConfig);
+      this.projectionDialogRef.afterClosed().subscribe(async event => {
+
+      })
+    }
+  }
