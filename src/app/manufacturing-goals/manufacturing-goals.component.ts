@@ -113,7 +113,6 @@ export class ManufacturingGoalsComponent implements OnInit {
               let activities = this.goals[i]['activities'];
               let owner = this.goals[i]['owner']['username'];
               let enabled = this.goals[i]['enabled'];
-              console.log(this.goals[i])
               if(activities != undefined){
                 let goalActivities = [];
                 var j;
@@ -187,7 +186,6 @@ export class ManufacturingGoalsComponent implements OnInit {
     dialogConfig.data = {edit: edit, present_name: present_name, present_activities: present_activities, present_date:present_date, present_enabled:present_enabled };
     this.newDialogRef = this.dialog.open(NewGoalDialogComponent, dialogConfig);
     this.newDialogRef.afterClosed().subscribe(event => {
-      console.log("What is this?", event)
       this.refreshData();
     });
   }

@@ -16,7 +16,6 @@ export class ActivityDetailsComponent implements OnInit {
 constructor(@Inject(MAT_DIALOG_DATA) public data: any,private dialogRef: MatDialogRef<ActivityDetailsComponent>, public rest:RestService, private route: ActivatedRoute, private router: Router)  { }
 
   ngOnInit() {
-    console.log("DATA: ", this.data.goal[0])
     this.goal = this.data.goal[0];
     this.createStrings(this.goal['activities'])
   }
@@ -25,10 +24,8 @@ constructor(@Inject(MAT_DIALOG_DATA) public data: any,private dialogRef: MatDial
     this.activityStrings = [];
     this.activities = [];
     var i;
-    console.log("LIST: ", activitiesList)
     for(i = 0; i<activitiesList.length; i++){
       let currentActivity = activitiesList[i]['activity'];
-      console.log("Activity: ", currentActivity);
       if(this.activities.indexOf(currentActivity) == -1){
         this.activities.push(currentActivity);
         let sku = currentActivity['sku'];
