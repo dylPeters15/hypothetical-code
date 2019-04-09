@@ -17,6 +17,7 @@ import { RestServiceV2, AndVsOr } from '../restv2.service';
 export class NewFormulaIngredientDialogComponent implements OnInit {
 
   dialog_title: string;
+  finish_title: string;
   edit: Boolean;
   visible = true;
   selectable = true;
@@ -52,8 +53,13 @@ export class NewFormulaIngredientDialogComponent implements OnInit {
     if (this.edit == true)
     {
       this.dialog_title = "Modify Ingredient";
+      this.finish_title = "Save Changes"
     }
-    else this.dialog_title = "Add Ingredient to Formula";
+    else
+    {
+      this.dialog_title = "Add Ingredient to Formula";
+      this.finish_title = "Add Ingredient"
+    }
 
     this.rest.getIngredients('','.*',0,5).subscribe(response => {
       this.ingredientList = response;
@@ -119,12 +125,14 @@ export class NewFormulaIngredientDialogComponent implements OnInit {
     this.selectedIngredientNames.push(event.option.viewValue);
     console.log(event.option.viewValue)
     this.ingredientName = event.option.viewValue;
+    /** 
     this.rest.getIngredients(event.option.viewValue, '', 0, 5).subscribe(response => {
       var i;
       for(i = 0; i<response.length; i++){
         this.selectedIngredients.push({ingredient: response[i]['_id']})
       }
     });
+    */
     this.ingredientInput.nativeElement.value = '';
     this.ingredientCtrl.setValue(null);
   }
