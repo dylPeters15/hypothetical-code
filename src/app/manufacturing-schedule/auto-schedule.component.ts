@@ -88,6 +88,7 @@ export class AutoScheduleComponent implements OnInit {
 
     setEnd(event: MatDatepickerInputEvent<Date>) {
         this.endDate = event.value;
+        this.endDate.setHours(this.startDate.getHours() + 18)
         this.endSet = true;
     }
 
@@ -119,22 +120,21 @@ export class AutoScheduleComponent implements OnInit {
                 await new Promise(async (resolve, reject) => {
                     this.getValidLines(activity).then(async potentialLines => {
                         var temp = new Date(this.endDate)
-                        temp.setDate(temp.getDate()+ 1)
+                        temp.setDate(temp.getDate())
                         console.log(temp)
                         var newLine: Object;
                         console.log(potentialLines)
                         var wait2 = new Promise(async (resolve, reject) => {
                             potentialLines.forEach(async (line, index, array) => {
                                 // potentialLines.forEach(line => {
-                                this.findValidStart(activity[2], line['_id'], this.startDate).then(potS => {
-                                    console.log(potS, temp)
-                                    if (potS.valueOf() < temp.valueOf()) {
-                                        temp = potS;
+                                this.findValidStart(activity[2], line['_id'], this.startDate).then(potDates => {
+                                    console.log(potDates, temp)
+                                    if (potDates[1].valueOf() <= temp.valueOf()) {
+                                        temp = potDates[0];
                                         newLine = line;
                                     }
                                     if (index === array.length -1) resolve();
                                 })
-                                // })
                             })
                                                 
                             
@@ -142,22 +142,25 @@ export class AutoScheduleComponent implements OnInit {
                         wait2.then(async () => {
                             console.log('modifyActivty')
                             console.log('newLine', newLine)
-                            this.restv2.modifyActivity(AndVsOr.OR, activity[2]['_id'], activity[2]['sku'], 
-                            activity[2]['numcases'], activity[2]['calculatedhours'], activity[2]['sethours'], 
-                            new Date(temp), newLine['_id']).then(response => {
+                            if (newLine) {
+                                this.restv2.modifyActivity(AndVsOr.OR, activity[2]['_id'], activity[2]['sku'], 
+                                    activity[2]['numcases'], activity[2]['calculatedhours'], activity[2]['sethours'], 
+                                    new Date(temp), newLine['_id']).then(response => {
                                 console.log('response', response);
                                 resolve();
                                 
-                            })
-                            
-                            
+                                })
+                            }
+                            else {
+                                this.snackBar.open("Unable to schedule activity" + activity[2]['sku']['skuname'], "close", {
+                                    duration: 2000,
+                                  });
+                            }
                         })
     
                     })
                 })
-                // wait3.then(() => {
                     console.log('next activity')
-                // })
             
             }
         })
@@ -200,7 +203,7 @@ export class AutoScheduleComponent implements OnInit {
         return potentialLines
     }
 
-    async findValidStart(activity, line, start: Date): Promise<Date> {
+    async findValidStart(activity, line, start: Date): Promise<Date[]> {
         var returnDate: Date;
         var potS = start.valueOf();
         var potE = this.calculateEndDate(start, activity['calculatedhours']).valueOf();
@@ -263,12 +266,12 @@ export class AutoScheduleComponent implements OnInit {
                     var potE = this.calculateEndDate(minEndDate, activity['calculatedhours']).valueOf();
                 }
             }
-            return returnDate;
+            return [returnDate, this.calculateEndDate(returnDate, activity['calculatedhours'])];
             
         }
         else {
             console.log('no activities')
-            return start;
+            return [start, this.calculateEndDate(start, activity['calculatedhours'])];
         }
         
     }
