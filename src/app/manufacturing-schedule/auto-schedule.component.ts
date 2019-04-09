@@ -216,12 +216,12 @@ export class AutoScheduleComponent implements OnInit {
                 console.log('potential dates', new Date(potS), new Date(potE))
                 activities.forEach(setActivity => {
                     console.log('activity', setActivity)
-                    var startValue = (new Date(activity['startdate'])).valueOf();
+                    var startValue = (new Date(setActivity['startdate'])).valueOf();
                     var duration = setActivity['calculatedhours'];
                     if (setActivity['sethours']) {
                         duration = setActivity['sethours']
                     }
-                    var endValue = this.calculateEndDate(new Date(activity['startdate']), duration).valueOf()
+                    var endValue = this.calculateEndDate(new Date(setActivity['startdate']), duration).valueOf()
                     console.log('scheduled activity', duration, new Date(startValue), new Date(endValue))
                     // var temp = new Date(endValue);
                     // temp.setHours(temp.getHours() + 1);
