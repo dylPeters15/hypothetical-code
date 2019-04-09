@@ -24,16 +24,16 @@
             </table>
 
             <mat-form-field class="example-full-width">
-                <input matInput [max]="maxDate" [matDatepicker]="picker1" placeholder="Start Date"
-                (dateInput)="setStart($event)">
+                <input matInput [max]="endDate" [matDatepicker]="picker1" placeholder="Start Date"
+                (dateInput)="setStart($event)" disabled>
                 <mat-datepicker-toggle matSuffix [for]="picker1"></mat-datepicker-toggle>
-                <mat-datepicker #picker1></mat-datepicker>
+                <mat-datepicker #picker1 disabled="false"></mat-datepicker>
             </mat-form-field>
             <mat-form-field class="example-full-width">
-                <input matInput [min]="minDate" [matDatepicker]="picker2" placeholder="End Date"
-                (dateInput)="setEnd($event)">
+                <input matInput [min]="startDate" [matDatepicker]="picker2" placeholder="End Date"
+                (dateInput)="setEnd($event)" disabled>
                 <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
-                <mat-datepicker #picker2></mat-datepicker>
+                <mat-datepicker #picker2 disabled="false"></mat-datepicker>
             </mat-form-field>
         </mat-card-content>
     </mat-card>

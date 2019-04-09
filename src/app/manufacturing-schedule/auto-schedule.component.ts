@@ -38,10 +38,8 @@ export class AutoScheduleComponent implements OnInit {
     data: ActivityData[] = [];
     dataSource = new MatTableDataSource<ActivityData>(this.data);
     displayedColumns: string[] = ['selected', 'activityInfo'];
-    minDate = new Date(1970, 0, 1);
-    maxDate = new Date(2100, 0, 1);
-    startDate = new FormControl(new Date());
-    endDate = new FormControl(new Date());
+    startDate = new Date(1970, 0, 1);
+    endDate = new Date(2100, 0, 1);
     startSet: Boolean = false;
     endSet: Boolean = false;
     unscheduledActivityList: any[] = [];
@@ -83,18 +81,19 @@ export class AutoScheduleComponent implements OnInit {
     }
 
     setStart(event: MatDatepickerInputEvent<Date>) {
-        this.minDate = event.value;
+        this.startDate = event.value;
         this.startSet = true;
     }
 
     setEnd(event: MatDatepickerInputEvent<Date>) {
-        this.maxDate = event.value;
+        this.endDate = event.value;
         this.endSet = true;
     }
 
     async createSchedule(): Promise<void> {
         var selectedActivities: any[] = [];
         var thisObject = this;
+        console.log('endDate', this.endDate);
         var wait = new Promise((resolve, reject) => {
             this.data.forEach(async (activity, index, array) => {
                 var goal = await this.restv2.getGoals(AndVsOr.OR, null, 
@@ -117,7 +116,15 @@ export class AutoScheduleComponent implements OnInit {
             selectedActivities.forEach(async (activity) => {
                 this.getValidLines(activity).then(potentialLines => {
                     console.log(potentialLines);
-                    
+                    var temp = new Date(this.endDate)
+                    temp.setDate(temp.getDate()+ 1)
+                    var newLine: Object;
+
+                    potentialLines.forEach(line => {
+                        this.findValidStart(activity[2], line, this.startDate).then(potS => {
+
+                        })
+                    })
                 })
             })
         })
@@ -158,6 +165,13 @@ export class AutoScheduleComponent implements OnInit {
         })  
         console.log('final line')
         return potentialLines
+    }
+
+    async findValidStart(activity, line, start): Promise<any> {
+        
+        // while (!startFinal) {
+
+        // }
     }
  
     deselectAll() {
