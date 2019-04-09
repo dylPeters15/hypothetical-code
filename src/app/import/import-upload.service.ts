@@ -97,8 +97,8 @@ export class ImportUploadService {
     var modifyResponse = await this.restv2.modifyFormula(AndVsOr.AND, oldname, formula['formulaname'], formula['formulanumber'], ingredientsAndQuantities, formula['comment'] || "");
     console.log(ingredientsAndQuantities);
     console.log(modifyResponse);
-    if (modifyResponse['ok'] == 1) {
-      throw Error("Error creating formula.");
+    if (modifyResponse['ok'] != 1) {
+      throw Error("Error modifying formula.");
     }
   }
 
