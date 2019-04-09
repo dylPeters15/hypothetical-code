@@ -68,14 +68,12 @@ export class NewGoalDialogComponent implements OnInit {
       
       if(this.activities.length> 0){
             this.activities.forEach(element => {
-              console.log("ACT: ", element)
               let hours = element['sethours'] != null ? element['sethours'] : element['calculatedhours'];
               let activityString = new DisplayableActivity(hours, element['sku']['skuname'])
               this.activityIds.push({activity: element['_id']});
               this.displayableActivities.push(activityString);
             })
       }
-      console.log("Array: " + JSON.stringify(this.displayableActivities))
      
       this.dialog_title = "Modify Manufacturing Goal";
     }
@@ -83,7 +81,6 @@ export class NewGoalDialogComponent implements OnInit {
       this.dialog_title = "Create New Manufacturing Goal";
     }
     this.date = new Date(this.data.present_date);
-    console.log("DATE: " + this.date.toString())
     this.dateCtrl = new FormControl(this.date)
     this.rest.getSkus('', '.*',0,0,0,'',5).subscribe(response => {
         this.skuList = response;
@@ -109,13 +106,10 @@ export class NewGoalDialogComponent implements OnInit {
     let newActivity = new DisplayableActivity(hours, this.currentSku['skuname']);
     
     this.displayableActivities.push(newActivity);
-    console.log("SKU:",this.currentSku)
     var newActivityObject = await this.restv2.createActivity(this.currentSku['_id'], this.quantity, hours, null,new Date(),null);
-    console.log("NEW: ", newActivityObject)
     if(this.activityIds.indexOf({activity: newActivityObject['_id']}) == -1){
       this.activityIds.push({activity: newActivityObject['_id']});
     }
-    console.log("New IDS: ", this.activityIds);
     this.snackBar.open("Successfully created Activity: " + this.currentSku['skuname'] + ".", "close", {
               duration: 2000,
           });

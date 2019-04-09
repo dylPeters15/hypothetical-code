@@ -137,7 +137,6 @@ export class SalesProjectionComponent implements OnInit {
     await this.summarize(year);
     this.dataSource = new MatTableDataSource<SummaryRow>(this.tableData);
     await this.calculateAverage();
-    console.log(this.averageData)
   }
 
   async calculateAverage(){
@@ -194,7 +193,6 @@ export class SalesProjectionComponent implements OnInit {
     if(this.startdate.getMonth() > this.enddate.getMonth()){
       this.startdate.setFullYear(today.getFullYear() - 1)
     }
-    console.log("START : " + this.startdate + " END : " + this.enddate + " TODAY: " + today)
     if(this.startdate <= today && this.enddate >= today){
       return today.getFullYear() - 1;
     }
