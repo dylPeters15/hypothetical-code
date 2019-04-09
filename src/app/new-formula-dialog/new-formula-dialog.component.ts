@@ -89,6 +89,21 @@ export class NewFormulaDialogComponent implements OnInit {
     this.comment = this.data.present_comment;
   }
 
+  // Remove ingredient 
+  removeIngredient(item)
+  {
+    console.log("trying to remove ingredient");
+    for (var i = 0; i < this.ingredientsandquantities.length; i++)
+    {
+      if(this.ingredientsandquantities[i].ingredient == item)
+      {
+        this.ingredientsandquantities.splice(i,1); // remove ith item from array
+      }
+
+    }
+      this.refreshData();
+  }
+
   addIngredientToFormula(edit, ingredientname, amount) {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.data = { edit: edit, present_name: ingredientname, present_amount: amount, present_ingredientsandquantities: this.ingredientsandquantities };
