@@ -92,7 +92,6 @@ export class NewFormulaDialogComponent implements OnInit {
   // Remove ingredient 
   removeIngredient(item)
   {
-    console.log("trying to remove ingredient");
     for (var i = 0; i < this.ingredientsandquantities.length; i++)
     {
       if(this.ingredientsandquantities[i].ingredient == item)
