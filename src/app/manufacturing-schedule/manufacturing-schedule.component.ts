@@ -79,7 +79,7 @@ export class ManufacturingScheduleComponent implements OnInit {
 
   constructor(public rest: RestService, private restv2: RestServiceV2, private dialog: MatDialog, myElement: ElementRef) {
     // this.getTimelineData();
-    this.getTimelineGroups();
+    // this.getTimelineGroups();
     this.getOptions();
   }
 
@@ -200,14 +200,14 @@ export class ManufacturingScheduleComponent implements OnInit {
 
               }
               var startTime = 0;
-              if (activity['startdate'].split('T')) {
-                startTime = parseInt((activity['startdate'].split('T')[1]).split(':')[0], 10) - 7;
-              }
-              else {
-                startTime = parseInt((activity['startdate'].toString().split(' ')[4]).split(':')[0], 10);
-              }
+              // if (activity['startdate'].split('T')) {
+              //   startTime = parseInt((activity['startdate'].split('T')[1]).split(':')[0], 10) - 7;
+              // }
+              // else {
+              //   startTime = parseInt((activity['startdate'].toString().split(' ')[4]).split(':')[0], 10);
+              // }
 
-              var endDate = this.calculateEndDate(new Date(activity['startdate']), Math.round(duration), startTime);
+              var endDate = this.calculateEndDate(new Date(activity['startdate']), Math.round(duration));
               this.checkOverdue(activity['_id'], endDate).then(isOverdue => {
                 if (isOverdue) {
                   className = 'overdue';
@@ -366,14 +366,14 @@ export class ManufacturingScheduleComponent implements OnInit {
         className = 'updated';
       }
     }
-    var startTime = 0;
-    if (activity['startdate'].split('T')) {
-      startTime = parseInt((activity['startdate'].split('T')[1]).split(':')[0], 10) - 7;
-    }
-    else {
-      startTime = parseInt((activity['startdate'].toString().split(' ')[4]).split(':')[0], 10);
-    }
-    var endDate = this.calculateEndDate(new Date(activity['startdate']), Math.round(duration), startTime);
+    // var startTime = 0;
+    // if (activity['startdate'].split('T')) {
+    //   startTime = parseInt((activity['startdate'].split('T')[1]).split(':')[0], 10) - 7;
+    // }
+    // else {
+    //   startTime = parseInt((activity['startdate'].toString().split(' ')[4]).split(':')[0], 10);
+    // }
+    var endDate = this.calculateEndDate(new Date(activity['startdate']), Math.round(duration));
     this.checkOverdue(activity['_id'], endDate).then(isOverdue => {
       if (isOverdue) {
         className = 'overdue';
@@ -573,14 +573,14 @@ export class ManufacturingScheduleComponent implements OnInit {
             if ((activity['calculatedhours'] == parseInt(newDuration, 10)) && className == 'updated') {
               className = 'normal';
             }
-            var startTime = 0;
-            if (activity['startdate'].split('T')) {
-              startTime = parseInt((activity['startdate'].split('T')[1]).split(':')[0], 10) - 7;
-            }
-            else {
-              startTime = parseInt((activity['startdate'].toString().split(' ')[4]).split(':')[0], 10);
-            }
-            var endDate = thisObject.calculateEndDate(new Date(item['start']), Math.round(parseInt(newDuration, 10)), startTime);
+            // var startTime = 0;
+            // if (activity['startdate'].split('T')) {
+            //   startTime = parseInt((activity['startdate'].split('T')[1]).split(':')[0], 10) - 7;
+            // }
+            // else {
+            //   startTime = parseInt((activity['startdate'].toString().split(' ')[4]).split(':')[0], 10);
+            // }
+            var endDate = thisObject.calculateEndDate(new Date(item['start']), Math.round(parseInt(newDuration, 10)));
 
             item.className = className;
             item.end = endDate
@@ -613,72 +613,43 @@ export class ManufacturingScheduleComponent implements OnInit {
     };
   }
 
-  // async openEnableGoalsDialog(): Promise<void> {
-  //   const dialogConfig = new MatDialogConfig();
-  //   this.enableGoalsDialogRef = this.dialog.open(EnableGoalsDialogComponent, dialogConfig);
-  //   this.enableGoalsDialogRef.afterClosed().subscribe(async event => {
-  //     this.refreshData();
-  //     var activities = await this.restv2.getActivities(AndVsOr.OR, null, null, null, 500);
-  //     console.log(activities)
-  //     activities.forEach(activity => {
-  //       this.checkOrphaned(activity['_id']).then(isOrphaned => {
-  //         var className;
-  //         var orphanItem = this.data.get(activity['_id']);
-  //         console.log('orphan item', orphanItem);
-  //         console.log(activity['_id'], this.data)
-  //         var update = false;
-  //         if (orphanItem && (orphanItem['className'] == 'orphan') && !isOrphaned) {
-  //           className = 'normal';
-  //           update = true
-  //           this.checkOverdue(orphanItem['id'], orphanItem['end']).then(isOverdue => {
-  //             if (isOverdue) {
-  //               className = 'overdue';
-  //             }
-  //           })
-  //         }
-  //         if (isOrphaned && orphanItem) {
-  //           className = 'orphan';
-  //           update = true;
-  //         }
-  //         if (update) {
-  //           this.data.update({
-  //             id: orphanItem['id'],
-  //             group: orphanItem['group'],
-  //             start: orphanItem['start'],
-  //             end: orphanItem['end'],
-  //             content: orphanItem['content'],
-  //             className: className
-  //           })
-  //         }
-  //       })
-  //     })
-  //   });
+  // calculateEndDate(startDate: Date, hours: number, startTime: number): Date {
+  //   var endDate = new Date((new Date(startDate)).valueOf());
+  //   // var endDate = new Date(startDate);
+  //   const NUM_HOURS_PER_DAY = 10;
+  //   const remainder = hours % NUM_HOURS_PER_DAY;
+  //   // console.log('startDate', endDate)
+  //   while (moment().isoWeekdayCalc([startDate.getUTCFullYear(), startDate.getUTCMonth(), startDate.getUTCDay()], [endDate.getUTCFullYear(), endDate.getUTCMonth(), endDate.getUTCDay() + 1], [1, 2, 3, 4, 5, 6, 7]) < Math.floor(hours / NUM_HOURS_PER_DAY)) {
+  //     // console.log('plus one day', moment().isoWeekdayCalc([startDate.getUTCFullYear(), startDate.getUTCMonth(), startDate.getUTCDay()], [endDate.getUTCFullYear(), endDate.getUTCMonth(), endDate.getUTCDay()+1], [1, 2, 3, 4, 5]) * NUM_HOURS_PER_DAY)
+  //     // console.log(startDate.getUTCDay(), endDate.getUTCDay())
+  //     endDate.setDate(endDate.getDate() + 1);
+  //   }
+  //   // console.log('endDate', endDate)
+  //   endDate = new Date(1000 * 60 * 60 * remainder + (new Date(endDate)).valueOf());
+  //   if (startTime < 0) {
+  //     startTime = 24 + startTime
+  //   }
+  //   if (startTime < 8 || startTime > 18) {
+  //     endDate = new Date(1000 * 60 * 60 * 14 + (new Date(endDate)).valueOf());
+  //   }
+  //   if (hours + startTime > 18 || hours + startTime < 8) {
+  //     endDate = new Date(1000 * 60 * 60 * 14 + (new Date(endDate)).valueOf());
+  //   }
+  //   return endDate;
   // }
 
-  calculateEndDate(startDate: Date, hours: number, startTime: number): Date {
-    var endDate = new Date((new Date(startDate)).valueOf());
-    // var endDate = new Date(startDate);
-    const NUM_HOURS_PER_DAY = 10;
-    const remainder = hours % NUM_HOURS_PER_DAY;
-    // console.log('startDate', endDate)
-    while (moment().isoWeekdayCalc([startDate.getUTCFullYear(), startDate.getUTCMonth(), startDate.getUTCDay()], [endDate.getUTCFullYear(), endDate.getUTCMonth(), endDate.getUTCDay() + 1], [1, 2, 3, 4, 5, 6, 7]) < Math.floor(hours / NUM_HOURS_PER_DAY)) {
-      // console.log('plus one day', moment().isoWeekdayCalc([startDate.getUTCFullYear(), startDate.getUTCMonth(), startDate.getUTCDay()], [endDate.getUTCFullYear(), endDate.getUTCMonth(), endDate.getUTCDay()+1], [1, 2, 3, 4, 5]) * NUM_HOURS_PER_DAY)
-      // console.log(startDate.getUTCDay(), endDate.getUTCDay())
-      endDate.setDate(endDate.getDate() + 1);
-    }
-    // console.log('endDate', endDate)
-    endDate = new Date(1000 * 60 * 60 * remainder + (new Date(endDate)).valueOf());
-    if (startTime < 0) {
-      startTime = 24 + startTime
-    }
-    if (startTime < 8 || startTime > 18) {
-      endDate = new Date(1000 * 60 * 60 * 14 + (new Date(endDate)).valueOf());
-    }
-    if (hours + startTime > 18 || hours + startTime < 8) {
-      endDate = new Date(1000 * 60 * 60 * 14 + (new Date(endDate)).valueOf());
+  calculateEndDate(startDate: Date, hours: number): Date {
+    var endDate = new Date(startDate) 
+    var extraDays = Math.floor(hours / 10);
+    endDate.setDate(endDate.getDate() + extraDays);
+    endDate.setHours(endDate.getHours() + (hours % 10))
+    var endHour = endDate.getHours();
+    if (endHour > 18 || endHour < 8) {
+        endDate.setHours(endHour + 14);
     }
     return endDate;
-  }
+    
+}
 
   showLegend() {
     const dialogConfig = new MatDialogConfig()

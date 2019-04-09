@@ -82,6 +82,7 @@ export class AutoScheduleComponent implements OnInit {
 
     setStart(event: MatDatepickerInputEvent<Date>) {
         this.startDate = event.value;
+        this.startDate.setHours(this.startDate.getHours() + 8)
         this.startSet = true;
     }
 
@@ -113,20 +114,52 @@ export class AutoScheduleComponent implements OnInit {
         wait.then(async () => {
             selectedActivities.sort(thisObject.sortFunction)
             console.log('selectedActivities sorted', selectedActivities)
-            selectedActivities.forEach(async (activity) => {
-                this.getValidLines(activity).then(potentialLines => {
-                    console.log(potentialLines);
-                    var temp = new Date(this.endDate)
-                    temp.setDate(temp.getDate()+ 1)
-                    var newLine: Object;
-
-                    potentialLines.forEach(line => {
-                        this.findValidStart(activity[2], line, this.startDate).then(potS => {
-
+            for (const activity of selectedActivities) {
+            // selectedActivities.forEach(async (activity) => {
+                await new Promise(async (resolve, reject) => {
+                    this.getValidLines(activity).then(async potentialLines => {
+                        var temp = new Date(this.endDate)
+                        temp.setDate(temp.getDate()+ 1)
+                        console.log(temp)
+                        var newLine: Object;
+                        console.log(potentialLines)
+                        var wait2 = new Promise(async (resolve, reject) => {
+                            potentialLines.forEach(async (line, index, array) => {
+                                // potentialLines.forEach(line => {
+                                this.findValidStart(activity[2], line['_id'], this.startDate).then(potS => {
+                                    console.log(potS, temp)
+                                    if (potS.valueOf() < temp.valueOf()) {
+                                        temp = potS;
+                                        newLine = line;
+                                    }
+                                    if (index === array.length -1) resolve();
+                                })
+                                // })
+                            })
+                                                
+                            
                         })
+                        wait2.then(async () => {
+                            console.log('modifyActivty')
+                            console.log('newLine', newLine)
+                            this.restv2.modifyActivity(AndVsOr.OR, activity[2]['_id'], activity[2]['sku'], 
+                            activity[2]['numcases'], activity[2]['calculatedhours'], activity[2]['sethours'], 
+                            new Date(temp), newLine['_id']).then(response => {
+                                console.log('response', response);
+                                resolve();
+                                
+                            })
+                            
+                            
+                        })
+    
                     })
                 })
-            })
+                // wait3.then(() => {
+                    console.log('next activity')
+                // })
+            
+            }
         })
         
 
@@ -159,7 +192,7 @@ export class AutoScheduleComponent implements OnInit {
                 lineSkus.push(lineSku['sku']);
             })
             if (lineSkus.includes(sku['_id'])) {
-                potentialLines.push(line);
+                potentialLines.push(line['manufacturingline']);
             }
             console.log('potentialLines', potentialLines)
         })  
@@ -167,11 +200,77 @@ export class AutoScheduleComponent implements OnInit {
         return potentialLines
     }
 
-    async findValidStart(activity, line, start): Promise<any> {
+    async findValidStart(activity, line, start: Date): Promise<Date> {
+        var returnDate: Date;
+        var potS = start.valueOf();
+        var potE = this.calculateEndDate(start, activity['calculatedhours']).valueOf();
+        console.log('potential dates', new Date(potS), new Date(potE))
+        var activities = await this.restv2.getActivities(AndVsOr.OR, null, line, null, 100);
+        console.log('activities', activities)
+        if (activities.length > 0) {
+            
+            
+            while (returnDate == null) {
+                var isValid = true;
+                var minActivityEnd = (new Date(2100, 0, 1)).valueOf();
+                console.log('potential dates', new Date(potS), new Date(potE))
+                activities.forEach(setActivity => {
+                    console.log('activity', setActivity)
+                    var startValue = (new Date(activity['startdate'])).valueOf();
+                    var duration = setActivity['calculatedhours'];
+                    if (setActivity['sethours']) {
+                        duration = setActivity['sethours']
+                    }
+                    var endValue = this.calculateEndDate(new Date(activity['startdate']), duration).valueOf()
+                    console.log('scheduled activity', duration, new Date(startValue), new Date(endValue))
+                    // var temp = new Date(endValue);
+                    // temp.setHours(temp.getHours() + 1);
+                    // if (temp.getHours() > 18 || temp.getHours() < 8) {
+                    //     temp.setHours(temp.getHours() + 14);
+                    // }
+                    if (potS <= startValue && potE >= startValue) {
+                        console.log('invalid')
+                        isValid = false;
+                        if (endValue < minActivityEnd && startValue >= potS) {
+                            minActivityEnd = endValue;
+                        }
+                        // this.findValidStart(activity, line, temp).then(newDate => {
+                        //     console.log('new date', newDate)
+                        //     returnDate = newDate
+                        // })
+                    }
+                    else if (potS >= startValue && potS <= endValue) {
+                        // this.findValidStart(activity, line, temp).then(newDate => {
+                        //     console.log('new date', newDate)
+                        //     returnDate = newDate;
+                        // })
+                        isValid = false;
+                        if (endValue < minActivityEnd && startValue >= potS) {
+                            minActivityEnd = endValue;
+                        }
+                    }
+                    // else {
+                    //     console.log('start', start)
+                    // }
+                })
+                if (isValid) {
+                    returnDate = new Date(potS);
+                }
+                else {
+                    var minEndDate = new Date(minActivityEnd);
+                    minEndDate.setHours(minEndDate.getHours() + 1);
+                    var potS = minEndDate.valueOf();
+                    var potE = this.calculateEndDate(minEndDate, activity['calculatedhours']).valueOf();
+                }
+            }
+            return returnDate;
+            
+        }
+        else {
+            console.log('no activities')
+            return start;
+        }
         
-        // while (!startFinal) {
-
-        // }
     }
  
     deselectAll() {
@@ -188,6 +287,19 @@ export class AutoScheduleComponent implements OnInit {
 
     closeDialog() {
         this.dialogRef.close();
+    }
+
+    calculateEndDate(startDate: Date, hours: number): Date {
+        var endDate = new Date(startDate) 
+        var extraDays = Math.floor(hours / 10);
+        endDate.setDate(endDate.getDate() + extraDays);
+        endDate.setHours(endDate.getHours() + (hours % 10))
+        var endHour = endDate.getHours();
+        if (endHour > 18 || endHour < 8) {
+            endDate.setHours(endHour + 14);
+        }
+        return endDate;
+        
     }
 
     checkValid(): boolean {
