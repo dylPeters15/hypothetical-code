@@ -19,6 +19,7 @@ import { ingredienttuple } from "./ingredienttuple";
 export class NewFormulaDialogComponent implements OnInit {
 
   dialog_title: string;
+  create_title: string;
   edit: Boolean;
   formulaname: string = '';
   oldformulaname: string = '';
@@ -53,8 +54,13 @@ export class NewFormulaDialogComponent implements OnInit {
     // edit == true if formula is being modified, false if a new formula is being created
     if (this.edit == true) {
       this.dialog_title = "Modify Formula";
+      this.create_title = "Modify";
     }
-    else this.dialog_title = "Create New Formula";
+    else
+    {
+      this.dialog_title = "Create New Formula";
+      this.create_title = "Create";
+    } 
   }
 
   refreshData() {
