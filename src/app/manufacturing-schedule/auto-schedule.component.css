@@ -1,0 +1,21 @@
+button {
+    margin: 4px 2px;
+  }
+  
+  table {
+      width: 100%;
+      float: center;
+  }
+  
+  th.mat-sort-header-sorted {
+    color: black;
+  }
+  
+  th.mat-header-cell {
+    text-align: center;
+  }
+
+  .mat-form-field {
+    padding-top: 5px;
+  }
+  
