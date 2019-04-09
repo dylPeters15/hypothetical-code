@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, OnInit, ElementRef, ViewChild } from '@angular/core';
 import * as vis from 'vis';
 import { MatDialogRef, MatDialog, MatDialogConfig, MatTableDataSource, MatPaginator, MatSnackBar } from "@angular/material";
-import { EnableGoalsDialogComponent } from '../enable-goals-dialog/enable-goals-dialog.component'
+// import { EnableGoalsDialogComponent } from '../enable-goals-dialog/enable-goals-dialog.component'
 import { RestService } from '../rest.service';
 import { RestServiceV2, AndVsOr } from '../restv2.service';
 import { LegendDetailsComponent } from './legend-details.component';
@@ -65,7 +65,7 @@ export class ManufacturingScheduleComponent implements OnInit {
   groups: any;
   options: {};
   unscheduledData: any;
-  enableGoalsDialogRef: MatDialogRef<EnableGoalsDialogComponent>;
+  // enableGoalsDialogRef: MatDialogRef<EnableGoalsDialogComponent>;
   goalsData: DataForGoalsTable[] = [];
   goalsDataSource = new MatTableDataSource<DataForGoalsTable>(this.goalsData);
   linesData: DataForLinesTable[] = [];
@@ -88,7 +88,6 @@ export class ManufacturingScheduleComponent implements OnInit {
       this.getTimelineData();
       this.getTimelineGroups();
       this.getOptions();
-      console.log('after method', this.isSelectable)
       this.refreshData();
       this.tlContainer = document.getElementById('timeline');
       this.timeline = new vis.Timeline(this.tlContainer, null, this.options);
@@ -108,7 +107,6 @@ export class ManufacturingScheduleComponent implements OnInit {
         })
         thisObject.visibleDataSource = new MatTableDataSource<DataForVisibleTable>(thisObject.visibleData);
       })
-      console.log('options', this.options)
     });
   }
 
@@ -317,12 +315,15 @@ export class ManufacturingScheduleComponent implements OnInit {
         className: className
       })
     })
+    console.log
   }
 
   async getTimelineData(): Promise<void> {
     // Create a DataSet (allows two way data-binding)
     // create items
     this.data = new vis.DataSet();
+    // not sure if clear actually does anything
+    this.data.clear();
     var thisObject = this;
     this.data.on('*', function (event, properties, senderId) {
       thisObject.visibleData = [];
@@ -612,47 +613,47 @@ export class ManufacturingScheduleComponent implements OnInit {
     };
   }
 
-  async openEnableGoalsDialog(): Promise<void> {
-    const dialogConfig = new MatDialogConfig();
-    this.enableGoalsDialogRef = this.dialog.open(EnableGoalsDialogComponent, dialogConfig);
-    this.enableGoalsDialogRef.afterClosed().subscribe(async event => {
-      this.refreshData();
-      var activities = await this.restv2.getActivities(AndVsOr.OR, null, null, null, 500);
-      console.log(activities)
-      activities.forEach(activity => {
-        this.checkOrphaned(activity['_id']).then(isOrphaned => {
-          var className;
-          var orphanItem = this.data.get(activity['_id']);
-          console.log('orphan item', orphanItem);
-          console.log(activity['_id'], this.data)
-          var update = false;
-          if (orphanItem && (orphanItem['className'] == 'orphan') && !isOrphaned) {
-            className = 'normal';
-            update = true
-            this.checkOverdue(orphanItem['id'], orphanItem['end']).then(isOverdue => {
-              if (isOverdue) {
-                className = 'overdue';
-              }
-            })
-          }
-          if (isOrphaned && orphanItem) {
-            className = 'orphan';
-            update = true;
-          }
-          if (update) {
-            this.data.update({
-              id: orphanItem['id'],
-              group: orphanItem['group'],
-              start: orphanItem['start'],
-              end: orphanItem['end'],
-              content: orphanItem['content'],
-              className: className
-            })
-          }
-        })
-      })
-    });
-  }
+  // async openEnableGoalsDialog(): Promise<void> {
+  //   const dialogConfig = new MatDialogConfig();
+  //   this.enableGoalsDialogRef = this.dialog.open(EnableGoalsDialogComponent, dialogConfig);
+  //   this.enableGoalsDialogRef.afterClosed().subscribe(async event => {
+  //     this.refreshData();
+  //     var activities = await this.restv2.getActivities(AndVsOr.OR, null, null, null, 500);
+  //     console.log(activities)
+  //     activities.forEach(activity => {
+  //       this.checkOrphaned(activity['_id']).then(isOrphaned => {
+  //         var className;
+  //         var orphanItem = this.data.get(activity['_id']);
+  //         console.log('orphan item', orphanItem);
+  //         console.log(activity['_id'], this.data)
+  //         var update = false;
+  //         if (orphanItem && (orphanItem['className'] == 'orphan') && !isOrphaned) {
+  //           className = 'normal';
+  //           update = true
+  //           this.checkOverdue(orphanItem['id'], orphanItem['end']).then(isOverdue => {
+  //             if (isOverdue) {
+  //               className = 'overdue';
+  //             }
+  //           })
+  //         }
+  //         if (isOrphaned && orphanItem) {
+  //           className = 'orphan';
+  //           update = true;
+  //         }
+  //         if (update) {
+  //           this.data.update({
+  //             id: orphanItem['id'],
+  //             group: orphanItem['group'],
+  //             start: orphanItem['start'],
+  //             end: orphanItem['end'],
+  //             content: orphanItem['content'],
+  //             className: className
+  //           })
+  //         }
+  //       })
+  //     })
+  //   });
+  // }
 
   calculateEndDate(startDate: Date, hours: number, startTime: number): Date {
     var endDate = new Date((new Date(startDate)).valueOf());
@@ -697,9 +698,6 @@ export class ManufacturingScheduleComponent implements OnInit {
         console.log('changed to true')
       }
     }
-    console.log('user', users[0]);
-
-    console.log('isSelectable', this.isSelectable)
   }
 
   openAutoScheduleDialog() {
