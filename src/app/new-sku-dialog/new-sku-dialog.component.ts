@@ -20,8 +20,8 @@ export class NewSkuDialogComponent implements OnInit {
   dialog_title: String;
   submit_title: String;
   edit: Boolean;
-  skuname: String = '';
-  oldskuname: String = '';
+  skuname: string = '';
+  oldskuname: string = '';
   skunumber: number = 0;
   caseupcnumber: number = 0;
   unitupcnumber: number = 0;
@@ -36,10 +36,10 @@ export class NewSkuDialogComponent implements OnInit {
   manufacturingsetupcost: number = 0;
   manufacturingruncost: number = 0;
   productline: string = '';
-  comment: String = '';
+  comment: string = '';
 
-  formulaname: String = ''; // for displaying purposes.
-  productlinename: String = ''; // for displaying purposes.
+  formulaname: string = ''; // for displaying purposes.
+  productlinename: string = ''; // for displaying purposes.
 
 
   // I know this is weird with the double boolean.

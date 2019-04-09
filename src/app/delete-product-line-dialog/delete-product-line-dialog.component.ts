@@ -12,7 +12,7 @@ import {MatSnackBar} from '@angular/material';
     productlines: String[];
     constructor(@Inject(MAT_DIALOG_DATA) public data: any, public rest: RestService, private snackBar: MatSnackBar, private dialogRef: MatDialogRef<DeleteProductLineDialogComponent>) {}
   
-    selectedOptions: String[] = [];
+    selectedOptions: string[] = [];
 
     ngOnInit() {
       this.productlines = this.data;
