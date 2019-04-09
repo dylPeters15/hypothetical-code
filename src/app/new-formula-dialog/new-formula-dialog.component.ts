@@ -102,7 +102,7 @@ export class NewFormulaDialogComponent implements OnInit {
   {
     var edit = true;
     const dialogConfig = new MatDialogConfig();
-    dialogConfig.data = { edit: edit, present_name: item, present_amount: quantity, present_ingredientsandquantities: this.ingredientsandquantities};
+    dialogConfig.data = { edit: edit, present_name: item.ingredient, present_amount: quantity, present_ingredientsandquantities: this.ingredientsandquantities};
     this.newIngredientDialogRef = this.dialog.open(NewFormulaIngredientDialogComponent, dialogConfig);
     //this.newIngredientDialogRef.componentInstance.amount = this.return_amount;
     //this.newIngredientDialogRef.componentInstance.ingredientNameList = this.ingredientNameList;
@@ -126,6 +126,8 @@ export class NewFormulaDialogComponent implements OnInit {
           // });
           new_ingredienttuple.ingredient = new_objectid;
           new_ingredienttuple.quantity = new_amount;
+          
+          this.removeIngredient(item);
           this.ingredientsandquantities.push(new_ingredienttuple);
 
           this.refreshData();
