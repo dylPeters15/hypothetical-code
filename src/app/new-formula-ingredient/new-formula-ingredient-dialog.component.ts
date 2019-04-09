@@ -125,12 +125,14 @@ export class NewFormulaIngredientDialogComponent implements OnInit {
     this.selectedIngredientNames.push(event.option.viewValue);
     console.log(event.option.viewValue)
     this.ingredientName = event.option.viewValue;
+    /** 
     this.rest.getIngredients(event.option.viewValue, '', 0, 5).subscribe(response => {
       var i;
       for(i = 0; i<response.length; i++){
         this.selectedIngredients.push({ingredient: response[i]['_id']})
       }
     });
+    */
     this.ingredientInput.nativeElement.value = '';
     this.ingredientCtrl.setValue(null);
   }
