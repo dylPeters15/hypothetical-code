@@ -74,6 +74,7 @@ export class SalesProjectionComponent implements OnInit {
   dataSource = new MatTableDataSource<SummaryRow>(this.tableData);
   averageData: AverageRow[] = [];
   avgDataSource = new MatTableDataSource<AverageRow>(this.averageData);
+  average: number = 0;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild('skuInput') skuInput: ElementRef<HTMLInputElement>;
   @ViewChild('auto') matAutocomplete: MatAutocomplete;
@@ -87,10 +88,12 @@ export class SalesProjectionComponent implements OnInit {
     this.skuInput.nativeElement.value = "";
   }
 
-  constructor(public restv2: RestServiceV2, @Inject(MAT_DIALOG_DATA) public data: any) { }
+  constructor(public restv2: RestServiceV2, @Inject(MAT_DIALOG_DATA) public data: any, private dialogRef: MatDialogRef<SalesProjectionComponent>) { }
 
   ngOnInit() {
-    this.selectedSKU = this.data['sku']
+    this.selectedSKU = this.data['sku'];
+    this.startdate = new Date();
+    this.enddate = new Date();
   }
 
   startdateCtrl = new FormControl(moment());
@@ -99,6 +102,10 @@ export class SalesProjectionComponent implements OnInit {
     const ctrlValue = this.startdateCtrl.value;
     ctrlValue.day(normalizedDay.day());
     this.startdateCtrl.setValue(ctrlValue);
+  }
+
+  closeDialog(){
+    this.dialogRef.close(); 
   }
 
   chosenMonthHandler(normalizedMonth: Moment, datepicker: MatDatepicker<Moment>) {
@@ -138,10 +145,11 @@ export class SalesProjectionComponent implements OnInit {
     this.allSales.forEach(totalSales => {
       sum += totalSales;
     })
-    let average = Math.round(sum/4);
+    this.average = Math.round(sum/4);
+    this.data['average'] = this.average;
     var squaredDiffs = [];
     this.allSales.forEach(totalSales => {
-      squaredDiffs.push(Math.pow(totalSales-average,2));
+      squaredDiffs.push(Math.pow(totalSales-this.average,2));
     })
     let deviationSum = 0;
     squaredDiffs.forEach(squaredDiff => {
@@ -149,7 +157,7 @@ export class SalesProjectionComponent implements OnInit {
     })
     let standardDeviationSquared = deviationSum/4;
     let standardDeviation = Math.round(10*Math.sqrt(standardDeviationSquared))/10;
-    let averageString = average + " +/- " + standardDeviation;
+    let averageString = this.average + " +/- " + standardDeviation;
     let averageRow = new AverageRow(averageString, 'Average +/- SD')
     this.averageData.push(averageRow)
     this.avgDataSource = new MatTableDataSource<AverageRow>(this.averageData);

@@ -14,6 +14,7 @@ function getActivity(filterSchema, limit) {
 }
 
 function createActivity(newObject) {
+    console.log("Creating:",newObject)
     return new Promise((resolve, reject) => {
         let newActivity = new database.manufacturingActivityModel(newObject);
         newActivity.save().then(response => {
