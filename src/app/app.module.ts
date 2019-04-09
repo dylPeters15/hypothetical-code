@@ -29,9 +29,7 @@ import { ManufacturingCalculatorComponent } from './manufacturing-calculator/man
 import { ManufacturingGoalsComponent } from './manufacturing-goals/manufacturing-goals.component';
 import { ManufacturingGoalsTablesComponent} from './enable-goals-dialog/manufacturing-goals-tables-component'
 import { ManufacturingLinesComponent } from './manufacturing-lines/manufacturing-lines.component';
-import { ManufacturingLinesTableComponent } from './manufacturing-schedule/manufacturing-lines-table.component';
 import { ManufacturingScheduleComponent } from './manufacturing-schedule/manufacturing-schedule.component';
-import { ManufactoringScheduleTableComponent } from './manufacturing-schedule/manufacturing-schedule-tables.component';
 import { ManufacturingScheduleReportComponent } from './manufacturing-schedule-report/manufacturing-schedule-report.component';
 import { ManufacturingScheduleReportLineTableComponent } from './manufacturing-schedule-report/manufacturing-schedule-report-line-table/manufacturing-schedule-report-line-table.component';
 import { ManufacturingScheduleReportIngredientTableComponent } from './manufacturing-schedule-report/manufacturing-schedule-report-ingredient-table/manufacturing-schedule-report-ingredient-table.component';
@@ -82,6 +80,7 @@ import { SalesSummaryRowComponent } from './sales-report/sales-summary-row/sales
 import { SkuGraphComponent } from './sales-report/sku-drilldown/sku-graph/sku-graph.component';
 import { NgDygraphsModule } from 'ng-dygraphs';
 import { LegendDetailsComponent} from './manufacturing-schedule/legend-details.component';
+import { AutoScheduleComponent} from './manufacturing-schedule/auto-schedule.component';
 import { ActivityDetailsComponent } from './activity-details/activity-details.component';
 import { SkuDetailsComponent } from './sku-details/sku-details.component';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
@@ -160,8 +159,6 @@ const appRoutes: Routes = [
     ManufacturingScheduleReportIngredientTableComponent,
     EnableGoalsDialogComponent,
     ModifyActivityDialogComponent,
-    ManufactoringScheduleTableComponent,
-    ManufacturingLinesTableComponent,
     ConfirmDeletionDialogComponent,
     SalesReportComponent,
     ProductLineSalesComponent,
@@ -170,6 +167,7 @@ const appRoutes: Routes = [
     SalesSummaryRowComponent,
     SkuGraphComponent,
     LegendDetailsComponent,
+    AutoScheduleComponent,
     ActivityDetailsComponent,
     SkuDetailsComponent,
     ViewUserMfgLinesDialogComponent
@@ -208,7 +206,7 @@ const appRoutes: Routes = [
   providers: [],
   bootstrap: [AppComponent],
 
-  entryComponents: [LegendDetailsComponent, ConfirmDeletionDialogComponent, DeleteProductLineDialogComponent, UserNotificationDialogComponent, NewUserDialogComponent, PasswordConfirmationDialogComponent, PrivacyPolicyDialogComponent, TermsAndConditionsDialogComponent, MoreInfoDialogComponent, NewSkuDialogComponent, NewFormulaDialogComponent, NewFormulaIngredientDialogComponent, NewIngredientDialogComponent, NewGoalDialogComponent, NewProductLineDialogComponent, NewSkuFormulaComponent, ConfirmActionDialogComponent, ImportPreviewDialogComponent, NewLineDialogComponent, EnableGoalsDialogComponent, ModifyActivityDialogComponent, SkuDrilldownComponent, ActivityDetailsComponent, SkuDetailsComponent, AssignSkuManufacturingLines, AssignSkuProductlineComponent, ViewUserMfgLinesDialogComponent]
+  entryComponents: [AutoScheduleComponent, LegendDetailsComponent, ConfirmDeletionDialogComponent, DeleteProductLineDialogComponent, UserNotificationDialogComponent, NewUserDialogComponent, PasswordConfirmationDialogComponent, PrivacyPolicyDialogComponent, TermsAndConditionsDialogComponent, MoreInfoDialogComponent, NewSkuDialogComponent, NewFormulaDialogComponent, NewFormulaIngredientDialogComponent, NewIngredientDialogComponent, NewGoalDialogComponent, NewProductLineDialogComponent, NewSkuFormulaComponent, ConfirmActionDialogComponent, ImportPreviewDialogComponent, NewLineDialogComponent, EnableGoalsDialogComponent, ModifyActivityDialogComponent, SkuDrilldownComponent, ActivityDetailsComponent, SkuDetailsComponent, AssignSkuManufacturingLines, AssignSkuProductlineComponent, ViewUserMfgLinesDialogComponent]
 
 
 })

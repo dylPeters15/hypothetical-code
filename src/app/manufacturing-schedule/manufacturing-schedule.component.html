@@ -9,6 +9,7 @@
 
                 <button mat-raised-button *ngIf= "manufacturingLinesToManage.length > 0" (click)="openEnableGoalsDialog()"> Enable/Disable Goals </button>
                 <button mat-raised-button (click)=showLegend()> Legend </button>
+                <button mat-raised-button (click)=openAutoScheduleDialog()> Auto Schedule Activities </button>
                 <div class="warningContainer">
                     <h4>Warnings</h4>
                     <div *ngFor="let item of visibleDataSource['data']"> 

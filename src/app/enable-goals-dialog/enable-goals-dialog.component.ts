@@ -41,9 +41,9 @@ export class EnableGoalsDialogComponent implements OnInit {
     this.refreshData();
   }
 
-  getPageSizeOptions() {
-    return [20, 50, 100, this.allReplacement];
-  }
+  // getPageSizeOptions() {
+  //   return [20, 50, 100, this.allReplacement];
+  // }
 
   refreshData() {
     this.rest.getUserName().then(result => {
