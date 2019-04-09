@@ -54,7 +54,7 @@ export class NewFormulaDialogComponent implements OnInit {
     // edit == true if formula is being modified, false if a new formula is being created
     if (this.edit == true) {
       this.dialog_title = "Modify Formula";
-      this.create_title = "Modify";
+      this.create_title = "Save Changes";
     }
     else
     {
@@ -149,7 +149,7 @@ export class NewFormulaDialogComponent implements OnInit {
     else {
       console.log("We're modifying a formula");
       this.rest.modifyFormula(this.oldformulaname, this.formulaname, this.formulanumber, this.ingredientsandquantities, this.comment).subscribe(response => {
-        if (response['success']) {
+        if (response['ok'] == 1) {
           this.snackBar.open("Successfully modifyed formula " + this.formulaname + ".", "close", {
             duration: 2000,
           });
