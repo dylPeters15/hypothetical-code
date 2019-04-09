@@ -13,7 +13,7 @@ import { ActivityDetailsComponent } from '../activity-details/activity-details.c
 import { EnableGoalsDialogComponent } from '../enable-goals-dialog/enable-goals-dialog.component';
 
 export class ManufacturingGoal {
-  activities: String;
+  activities: any[];
   activityCount: number;
   name: String;
   date: String;
@@ -93,7 +93,7 @@ export class ManufacturingGoalsComponent implements OnInit {
   }
 
   newGoal() {
-    this.newManufacturingGoal(false, "","","");
+    this.newManufacturingGoal(false, "","","", false);
 }
 
   ngOnInit() {
@@ -115,15 +115,17 @@ export class ManufacturingGoalsComponent implements OnInit {
               let enabled = this.goals[i]['enabled'];
               console.log(this.goals[i])
               if(activities != undefined){
+                let goalActivities = [];
                 var j;
                 let activityCount = activities.length;
                 let activityString = '';
                 for(j = 0; j<activities.length; j++){                  
                   let currentActivity =  activities[j]['activity']
-                  if(currentActivity != null && currentActivity != undefined){
-                    let hoursString = currentActivity['sethours'] != null ? currentActivity['sethours'] : currentActivity['calculatedhours'];
-                    activityString += "SKU: " + currentActivity['sku']['skuname'] + ": Hours Required: " + hoursString + '\n'; 
-                  }
+                  goalActivities.push(currentActivity);
+                  // if(currentActivity != null && currentActivity != undefined){
+                  //   let hoursString = currentActivity['sethours'] != null ? currentActivity['sethours'] : currentActivity['calculatedhours'];
+                  //   activityString += "SKU: " + currentActivity['sku']['skuname'] + ": Hours Required: " + hoursString + '\n'; 
+                  // }
                  
                 }
                 activityString = activityString.substring(0,activityString.length-1)
@@ -131,7 +133,7 @@ export class ManufacturingGoalsComponent implements OnInit {
                 let dateString = date.getMonth()+1 + '/' + date.getDate() + '/' + date.getFullYear();
                 let lasteditdate = new Date(this.goals[i]['lastedit'])
                 let lasteditDateString = lasteditdate.getMonth()+1 + '/' + lasteditdate.getDate() + '/' + lasteditdate.getFullYear();
-                let currentGoal = new ManufacturingGoal(name, activityString, activityCount, dateString, enabled, owner, lasteditDateString);
+                let currentGoal = new ManufacturingGoal(name, goalActivities, activityCount, dateString, enabled, owner, lasteditDateString);
                 this.data.push(currentGoal);
               }
               
@@ -180,9 +182,9 @@ export class ManufacturingGoalsComponent implements OnInit {
     csvExporter.generateCsv(toExport);
   }
 
-  newManufacturingGoal(edit, present_name, present_activities, present_date) {
+  newManufacturingGoal(edit, present_name, present_activities, present_date, present_enabled) {
     const dialogConfig = new MatDialogConfig();
-    dialogConfig.data = {edit: edit, present_name: present_name, present_activities: present_activities, present_date:present_date };
+    dialogConfig.data = {edit: edit, present_name: present_name, present_activities: present_activities, present_date:present_date, present_enabled:present_enabled };
     this.newDialogRef = this.dialog.open(NewGoalDialogComponent, dialogConfig);
     this.newDialogRef.afterClosed().subscribe(event => {
       this.refreshData();
@@ -200,24 +202,12 @@ export class ManufacturingGoalsComponent implements OnInit {
   }
 
   modifySelected(goal) {
-    let displayableArray: DisplayableActivity[] = [];
-    if(goal.activities != ""){
-      let activitiesArray = goal.activities.split(':').join('\n').split('\n');
-      var i;
-      for(i = 0; i<activitiesArray.length; i+=4){
-        let currentActivity = new DisplayableActivity(activitiesArray[i+3].trim(), activitiesArray[i+1].trim())
-        if(currentActivity != null && displayableArray.indexOf(currentActivity) == -1){
-          displayableArray.push(currentActivity);
-        }
-        
-      }
-    }
    
-    this.modifyManufacturingGoal(goal.name, displayableArray, goal.date)
+    this.modifyManufacturingGoal(goal.name, goal.activities, goal.date, goal.enabled)
   }
 
-    modifyManufacturingGoal(present_goalname, present_activities, present_date) {
-      this.newManufacturingGoal(true, present_goalname, present_activities, present_date);
+    modifyManufacturingGoal(present_goalname, present_activities, present_date, present_enabled) {
+      this.newManufacturingGoal(true, present_goalname, present_activities, present_date, present_enabled);
     }
 
   async showActivityDetails(goal){

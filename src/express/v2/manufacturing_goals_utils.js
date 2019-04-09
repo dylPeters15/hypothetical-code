@@ -7,6 +7,7 @@ function getGoals(filterSchema, limit) {
             if (err) {
                 reject(Error(err));
             } else {
+                console.log("FOUND: ", results)
                 resolve(results);
             }
         });
@@ -16,6 +17,7 @@ function getGoals(filterSchema, limit) {
 function createGoal(newObject) {
     return new Promise((resolve, reject) => {
         newObject['lastedit'] = new Date() + "";
+        console.log("CREATING:", newObject);
         let goal = new database.goalsModel(newObject);
         goal.save().then(response => {
             resolve(response);

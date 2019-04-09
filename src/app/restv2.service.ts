@@ -367,7 +367,7 @@ export class RestServiceV2 {
 
   createActivity(skuid: string, numcases: number, calculatedhours: number, sethours: number, startdate: Date, line: number): Promise<any> {
     return this.http.put(endpoint + 'manufacturing-activities', {
-      skuid: skuid,
+      sku: skuid,
       numcases: numcases,
       calculatedhours: calculatedhours,
       sethours: sethours,

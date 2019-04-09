@@ -60,25 +60,17 @@ export class NewGoalDialogComponent implements OnInit {
   constructor(private dialog: MatDialog, public restv2: RestServiceV2,@Inject(MAT_DIALOG_DATA) public data: any, private dialogRef: MatDialogRef<NewGoalDialogComponent>, public rest:RestService, private snackBar: MatSnackBar) { }
 
   ngOnInit() {
-    console.log("IDS: " + this.activityIds)
     this.edit = this.data.edit;
     if(this.edit == true){
       this.name = this.data.present_name;
-      this.displayableActivities = this.data.present_activities;
+      this.activityIds = this.data.present_activities;
       
-      if(this.displayableActivities.length> 0){
-        this.rest.getActivities(null, 100).subscribe(response => {
-          response.forEach(activityInDatabase => {
-            this.displayableActivities.forEach(element => {
-              console.log("Act: " + activityInDatabase['sku']['skuname'])
-              console.log("ELEMENT:" + element.skuname)
-              if(activityInDatabase['sku']['skuname'] == element.skuname && activityInDatabase['calculatedhours'] == Number(element.hours) && this.activityIds.indexOf(activityInDatabase['_id']) == -1){
-                this.activityIds.push({activity: activityInDatabase['_id']})
-              }
+      if(this.activityIds.length> 0){
+            this.activityIds.forEach(element => {
+              let hours = element['sethours'] != null ? element['sethours'] : element['calculatedhours'];
+              let activityString = new DisplayableActivity(hours, element['sku']['skuname'])
+              this.displayableActivities.push(activityString);
             })
-            });
-      
-        })
       }
       console.log("Array: " + JSON.stringify(this.displayableActivities))
      
@@ -114,21 +106,26 @@ export class NewGoalDialogComponent implements OnInit {
     let newActivity = new DisplayableActivity(hours, this.currentSku['skuname']);
     
     this.displayableActivities.push(newActivity);
+    console.log("SKU:",this.currentSku)
     var newActivityObject = await this.restv2.createActivity(this.currentSku['_id'], this.quantity, hours, null,new Date(),null);
+    console.log("NEW: ", newActivityObject)
+    if(this.activityIds.indexOf({activity: newActivityObject['_id']}) == -1){
       this.activityIds.push({activity: newActivityObject['_id']});
-      this.snackBar.open("Successfully created Activity: " + this.currentSku['skuname'] + ".", "close", {
+    }
+    console.log("New IDS: ", this.activityIds);
+    this.snackBar.open("Successfully created Activity: " + this.currentSku['skuname'] + ".", "close", {
               duration: 2000,
-            });
-      this.skuCtrl.setValue(null);
-      this.currentSku = null;
-      this.quantity = null;
+          });
+    this.skuCtrl.setValue(null);
+    this.currentSku = null;
+    this.quantity = null;
     
   }
 
   createGoal() {
     if(this.edit == false){
       this.restv2.createGoal(this.name, this.activityIds, this.date, false).then(response => {
-        this.snackBar.open("Successfully created Goal: " + this.name + ". Last edit" + response['lastedit'], "close", {
+        this.snackBar.open("Successfully created Goal: " + this.name + ".", "close", {
           duration: 2000,
         }
         );
@@ -141,8 +138,8 @@ export class NewGoalDialogComponent implements OnInit {
       });
     }
     else{
-      this.restv2.modifyGoal(AndVsOr.OR, this.data.present_name, this.name, this.activityIds, this.date, false).then(response => {
-        this.snackBar.open("Successfully modified Line: " + this.name + ".", "close", {
+      this.restv2.modifyGoal(AndVsOr.OR, this.data.present_name, this.name, this.activityIds, this.date, this.data.present_enabled).then(response => {
+        this.snackBar.open("Successfully modified Goal: " + this.name + ".", "close", {
           duration: 2000,
         });
         this.closeDialog();
