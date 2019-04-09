@@ -187,6 +187,7 @@ export class ManufacturingGoalsComponent implements OnInit {
     dialogConfig.data = {edit: edit, present_name: present_name, present_activities: present_activities, present_date:present_date, present_enabled:present_enabled };
     this.newDialogRef = this.dialog.open(NewGoalDialogComponent, dialogConfig);
     this.newDialogRef.afterClosed().subscribe(event => {
+      console.log("What is this?", event)
       this.refreshData();
     });
   }

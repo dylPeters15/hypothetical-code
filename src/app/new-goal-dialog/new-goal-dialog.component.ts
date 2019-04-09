@@ -47,6 +47,7 @@ export class NewGoalDialogComponent implements OnInit {
   currentSku: any;
   displayableActivities: any = [];
   activityIds: any = [];
+  activities: any = [];
   date: Date;
   dateCtrl: FormControl;
   skuList: any = [];
@@ -63,12 +64,14 @@ export class NewGoalDialogComponent implements OnInit {
     this.edit = this.data.edit;
     if(this.edit == true){
       this.name = this.data.present_name;
-      this.activityIds = this.data.present_activities;
+      this.activities = this.data.present_activities;
       
-      if(this.activityIds.length> 0){
-            this.activityIds.forEach(element => {
+      if(this.activities.length> 0){
+            this.activities.forEach(element => {
+              console.log("ACT: ", element)
               let hours = element['sethours'] != null ? element['sethours'] : element['calculatedhours'];
               let activityString = new DisplayableActivity(hours, element['sku']['skuname'])
+              this.activityIds.push({activity: element['_id']});
               this.displayableActivities.push(activityString);
             })
       }
@@ -179,7 +182,10 @@ export class NewGoalDialogComponent implements OnInit {
       dialogConfig.data = {sku: currentSku};
       this.projectionDialogRef = this.dialog.open(SalesProjectionComponent, dialogConfig);
       this.projectionDialogRef.afterClosed().subscribe(async event => {
-
+        if(event['average'] != null){
+          this.quantity = event['average'];
+        }
+        
       })
     }
   }

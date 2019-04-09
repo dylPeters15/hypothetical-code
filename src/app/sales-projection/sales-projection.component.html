@@ -36,7 +36,7 @@
                         panelClass="example-month-picker">
         </mat-datepicker>
       </mat-form-field>
-      <button mat-raised-button (click)="showProjection()">Show Projection</button>
+      <button mat-raised-button (click)="showProjection()" [disabled]="selectedSKU == null">Show Projection</button>
       <mat-table [dataSource]="dataSource" style="width: 100%;" class="mat-elevation-z8">
         <ng-container matColumnDef="timespan">
           <mat-header-cell *matHeaderCellDef>Timespan</mat-header-cell>
@@ -72,3 +72,7 @@
   <mat-header-row *matHeaderRowDef="avgDisplayedColumns"></mat-header-row>
 <mat-row *matRowDef="let row; columns: avgDisplayedColumns;"></mat-row>
 </mat-table>
+<mat-dialog-actions align="center">
+<button mat-raised-button [mat-dialog-close]="data" color="primary" [disabled]="average==0">Use Average</button>
+<button mat-raised-button (click)="closeDialog()">Cancel</button>
+</mat-dialog-actions>
