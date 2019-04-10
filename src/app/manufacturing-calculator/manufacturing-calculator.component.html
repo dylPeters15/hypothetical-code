@@ -13,12 +13,12 @@
 
           <ng-container matColumnDef="packages">
             <mat-header-cell *matHeaderCellDef>Packages</mat-header-cell>
-            <mat-cell *matCellDef="let element">{{element.packages}}</mat-cell>
+            <mat-cell *matCellDef="let element">{{element.packages.toFixed(2)}}</mat-cell>
           </ng-container>
 
           <ng-container matColumnDef="packagesMeasured">
             <mat-header-cell *matHeaderCellDef>Packages With Units</mat-header-cell>
-            <mat-cell *matCellDef="let element">{{element.packagesMeasured}}</mat-cell>
+            <mat-cell *matCellDef="let element">{{element.packagesMeasured.toFixed(0)}} {{element.unitofmeasure}}</mat-cell>
           </ng-container>
 
           <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>

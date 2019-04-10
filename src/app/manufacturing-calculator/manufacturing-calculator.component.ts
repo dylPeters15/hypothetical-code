@@ -7,11 +7,13 @@ import { MatDialogRef, MAT_DIALOG_DATA, MatDialog, MatDialogConfig, MatTableData
 export class SkuQuantityTable{
   ingredientName: any;
   packages: any;
+  unitofmeasure: any;
   packagesMeasured: any;
-  constructor(ingredientName,packages, packagesMeasured){
+  constructor(ingredientName,packages, packagesMeasured, unitofmeasure){
     this.ingredientName = ingredientName;
     this.packages = packages;
     this.packagesMeasured = packagesMeasured;
+    this.unitofmeasure = unitofmeasure;
   }
 }
 
@@ -64,10 +66,10 @@ export class ManufacturingCalculatorComponent implements OnInit {
       let name = ingredient['ingredientname'];
       let packages = Math.round(100*numCases * formulaScaleFactor * ingredientQuantity)/100; ;
       let packagesMeasured = Math.round(100*(packages * ingredient['amount']))/100;
-      let packagesMeasuredString = packagesMeasured + " " + ingredient['unitofmeasure']
+      let unitofmeasure = ingredient['unitofmeasure']
       if(this.ingredients.indexOf(name) == -1){
         this.ingredients.push(name);
-        let newIngredient = new SkuQuantityTable(name, packages, packagesMeasuredString);
+        let newIngredient = new SkuQuantityTable(name, packages, packagesMeasured, unitofmeasure);
         this.dataForTable.push(newIngredient);
       }
       else{
@@ -76,9 +78,9 @@ export class ManufacturingCalculatorComponent implements OnInit {
           if(this.dataForTable[i].ingredientName == name){
             let ingredientToUpdate = this.dataForTable[i];
             ingredientToUpdate.packages +=  packages;
-            let oldMeasured = Number(ingredientToUpdate.packagesMeasured.substring(0,ingredientToUpdate.packagesMeasured.indexOf(" ")))
+            let oldMeasured = ingredientToUpdate.packagesMeasured;
             let updatedPackagesMeasured = oldMeasured + packagesMeasured;
-            ingredientToUpdate.packagesMeasured = updatedPackagesMeasured + " " + ingredient['unitofmeasure']
+            ingredientToUpdate.packagesMeasured = updatedPackagesMeasured
             this.dataForTable.splice(i,1);
             this.dataForTable.push(ingredientToUpdate)
           }
