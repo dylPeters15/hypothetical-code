@@ -48,7 +48,7 @@ export class ExportableLine {
 export class ManufacturingLinesComponent implements OnInit {
   allReplacement = 54321;
   lines:any = [];
-  displayedColumns: string[] = ['checked', 'linename', 'shortname','skus', 'comment', 'export', 'actions'];
+  displayedColumns: string[] = [];
   data: ManufacturingLine[] = [];
   dataSource = new MatTableDataSource<ManufacturingLine>(this.data);
   @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -57,6 +57,7 @@ export class ManufacturingLinesComponent implements OnInit {
   skuString: string = '';
   constructor(public restv2: RestServiceV2,public rest:RestService, private route: ActivatedRoute, private router: Router, private snackBar: MatSnackBar, private dialog: MatDialog) {  }
   admin: boolean = false;
+  productmanager: boolean = false;
 
   getPageSizeOptions() {
     return [20, 50, 100, this.allReplacement];
@@ -69,9 +70,16 @@ export class ManufacturingLinesComponent implements OnInit {
   ngOnInit() {
     this.refreshData();
     this.admin = auth.isAuthenticatedForAdminOperation();
+    this.productmanager = auth.isAuthenticatedForProductManagerOperation();
     if (!this.admin) { //remove "checked" and "actions" columns
       this.displayedColumns.shift();
       this.displayedColumns.pop();
+    }
+    if(this.productmanager){
+      this.displayedColumns = ['linename', 'shortname','skus', 'comment', 'export', 'edit', 'delete'];
+    }
+    else{
+      this.displayedColumns = ['linename', 'shortname','skus', 'comment', 'export'];
     }
   }
 
@@ -96,21 +104,13 @@ export class ManufacturingLinesComponent implements OnInit {
         let currentLine = new ManufacturingLine(linename, shortname, this.skuString, comment, false, count);
         this.data.push(currentLine)
       }
-      this.data.forEach(element => {
-        element['checked'] = false;
-      });
       this.dataSource = new MatTableDataSource<ManufacturingLine>(this.data);
       this.dataSource.paginator = this.paginator;
     });
   }
 
-  deleteSelected() {
-    const dialogConfig = new MatDialogConfig();
-        this.data.forEach(line => {
-          if (line.checked) {
-            this.deleteGoalConfirmed(line.linename);
-          }
-        });
+  deleteSelected(element) {
+    this.deleteGoalConfirmed(element.linename);
   }
 
   deleteGoalConfirmed(name) {
@@ -123,18 +123,6 @@ export class ManufacturingLinesComponent implements OnInit {
       });
       this.skuString = "";
       this.refreshData();
-    });
-  }
-
-  deselectAll() {
-    this.data.forEach(line => {
-      line.checked = false;
-    });
-  }
-
-  selectAll() {
-    this.data.forEach(line => {
-      line.checked = true;
     });
   }
 

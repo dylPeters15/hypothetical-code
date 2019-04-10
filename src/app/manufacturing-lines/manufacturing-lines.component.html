@@ -4,18 +4,10 @@
       <mat-card-title>Manufacturing Lines</mat-card-title>
   </mat-card-header>
   <mat-card-content>
-    <button mat-raised-button (click)="selectAll()" *ngIf="admin"> Select All </button>
-    <button mat-raised-button (click)="deselectAll()" *ngIf="admin"> Deselect All </button>
-    <button mat-raised-button (click)="deleteSelected()" color="warn" [disabled]="noneSelected()" *ngIf="admin"> Delete Selected </button>
     <!-- <button mat-raised-button (click)="modifySelected()" style="color: white; background-color: red;" [disabled]="dataSource.data.length==0"> Modify Selected </button> -->
-    <button mat-raised-button (click)="newLine()" color="primary" *ngIf="admin"> New Line </button>
-    <mat-table [dataSource]="dataSource" class="mat-elevation-z8">
-      <ng-container matColumnDef="checked">
-        <mat-header-cell *matHeaderCellDef>Selected</mat-header-cell>
-        <mat-cell *matCellDef="let element">
-          <mat-checkbox [(ngModel)]="element['checked']"></mat-checkbox>
-        </mat-cell>
-      </ng-container> 
+    <button mat-raised-button *ngIf="productmanager" (click)="newLine()" color="primary"> New Line </button>
+    <mat-table [dataSource]="dataSource" class="mat-elevation-z8"> 
+
       <ng-container matColumnDef="linename">
         <mat-header-cell *matHeaderCellDef>Linename</mat-header-cell>
         <mat-cell *matCellDef="let element">{{element.linename}}</mat-cell>
@@ -44,15 +36,25 @@
         </mat-cell>
       </ng-container>
 
-      <ng-container matColumnDef="actions">
-        <mat-header-cell *matHeaderCellDef>Actions</mat-header-cell>
+      <ng-container matColumnDef="edit">
+        <mat-header-cell *matHeaderCellDef>Edit</mat-header-cell>
         <mat-cell *matCellDef="let element">
-          <button mat-button (click)="modifySelected(element)" [disabled]="dataSource.data.length==0" color="primary">
+          <button mat-button *ngIf="productmanager" (click)="modifySelected(element)" [disabled]="dataSource.data.length==0" color="primary">
             <mat-icon>edit</mat-icon> 
           </button>
         </mat-cell>
-        
       </ng-container>
+
+        <ng-container matColumnDef="delete">
+          <mat-header-cell *matHeaderCellDef>Delete</mat-header-cell>
+          <mat-cell *matCellDef="let element">
+            <button mat-button *ngIf="productmanager" (click)="deleteSelected(element)" [disabled]="dataSource.data.length==0" color="primary">
+              <mat-icon>delete</mat-icon> 
+            </button>
+          </mat-cell>
+        </ng-container>
+        
+
       
       <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
       <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>

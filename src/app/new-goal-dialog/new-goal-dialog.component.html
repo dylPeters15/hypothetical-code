@@ -25,7 +25,7 @@
         <input matInput [(ngModel)]="quantity" placeholder="Quantity">
       </mat-form-field>
     </div>
-    <button mat-raised-button (click)="openProjection(currentSku)" [disabled]="currentSku==null" color="primary">View Projection</button>
+    <button mat-raised-button (click)="openProjection(currentSku)" [disabled]="currentSku == null || skuCtrl.value != currentSku['skuname']" color="primary">View Projection</button>
     <button class="mat-raised-button" [disabled]="currentSku==null || quantity==null" (click)="addActivity()">Add Activity</button>
     
 
