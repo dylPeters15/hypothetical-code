@@ -53,7 +53,16 @@ export class NewFormulaIngredientDialogComponent implements OnInit {
     if (this.edit == true)
     {
       this.dialog_title = "Modify Ingredient";
-      this.finish_title = "Save Changes"
+      this.finish_title = "Save Changes";
+      this.selectedIngredientNames.push(this.data.present_name);
+      var thisobject = this;
+      this.restv2.getIngredients(AndVsOr.AND, this.data.present_name, null, null, 1).then(ingredients => {
+        if (ingredients.length == 1) {
+          thisobject.selectedIngredients.push(ingredients[0]);
+        }
+      });
+      this.ingredientName = this.data.present_name;
+      console.log(this.data);
     }
     else
     {

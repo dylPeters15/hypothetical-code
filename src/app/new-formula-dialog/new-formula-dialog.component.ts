@@ -103,7 +103,7 @@ export class NewFormulaDialogComponent implements OnInit {
   {
     var edit = true;
     const dialogConfig = new MatDialogConfig();
-    dialogConfig.data = { edit: edit, present_name: item.ingredient, present_amount: quantity, present_ingredientsandquantities: this.ingredientsandquantities};
+    dialogConfig.data = { edit: edit, present_name: item.ingredientname, present_amount: quantity, present_ingredientsandquantities: this.ingredientsandquantities};
     this.newIngredientDialogRef = this.dialog.open(NewFormulaIngredientDialogComponent, dialogConfig);
     this.newIngredientDialogRef.afterClosed().subscribe(event => {
       var new_ingredient = this.newIngredientDialogRef.componentInstance.ingredientName;
