@@ -187,7 +187,7 @@ export class NewFormulaDialogComponent implements OnInit {
       console.log("We're modifying a formula");
       this.rest.modifyFormula(this.oldformulaname, this.formulaname, this.formulanumber, this.ingredientsandquantities, this.comment).subscribe(response => {
         if (response['ok'] == 1) {
-          this.snackBar.open("Successfully modifyed formula " + this.formulaname + ".", "close", {
+          this.snackBar.open("Successfully modified formula " + this.formulaname + ".", "close", {
             duration: 2000,
           });
         } else {
