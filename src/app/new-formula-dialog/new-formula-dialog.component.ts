@@ -86,6 +86,7 @@ export class NewFormulaDialogComponent implements OnInit {
   // Remove ingredient 
   removeIngredient(item)
   {
+    console.log(this.ingredientsandquantities);
     for (var i = 0; i < this.ingredientsandquantities.length; i++)
     {
       if(this.ingredientsandquantities[i].ingredient == item)
@@ -94,7 +95,9 @@ export class NewFormulaDialogComponent implements OnInit {
       }
 
     }
-      //this.refreshData();
+    console.log(this.ingredientsandquantities);
+
+      this.refreshData();
   }
 
   // This method is very similar to addIngredientToFormula() but involves removing ingredient as well.
