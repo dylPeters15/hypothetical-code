@@ -85,7 +85,8 @@ import { ActivityDetailsComponent } from './activity-details/activity-details.co
 import { SkuDetailsComponent } from './sku-details/sku-details.component';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import { ViewUserMfgLinesDialogComponent } from './view-user-mfg-lines-dialog/view-user-mfg-lines-dialog.component';
-import { SalesProjectionComponent } from './sales-projection/sales-projection.component'; 
+import { SalesProjectionComponent } from './sales-projection/sales-projection.component';
+import { IngredientsAndQuantitiesDialogComponent } from './ingredients-and-quantities-dialog/ingredients-and-quantities-dialog.component'; 
 
 const appRoutes: Routes = [
   { path: 'login', component: LoginComponent, data: { title: 'Log In' }, canActivate: [AlreadyLoggedInRouteGuardService] },
@@ -172,7 +173,8 @@ const appRoutes: Routes = [
     ActivityDetailsComponent,
     SkuDetailsComponent,
     ViewUserMfgLinesDialogComponent,
-    SalesProjectionComponent
+    SalesProjectionComponent,
+    IngredientsAndQuantitiesDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -209,7 +211,7 @@ const appRoutes: Routes = [
   bootstrap: [AppComponent],
 
 
-  entryComponents: [AutoScheduleComponent, LegendDetailsComponent, ConfirmDeletionDialogComponent, DeleteProductLineDialogComponent, UserNotificationDialogComponent, NewUserDialogComponent, PasswordConfirmationDialogComponent, PrivacyPolicyDialogComponent, TermsAndConditionsDialogComponent, MoreInfoDialogComponent, NewSkuDialogComponent, NewFormulaDialogComponent, NewFormulaIngredientDialogComponent, NewIngredientDialogComponent, NewGoalDialogComponent, NewProductLineDialogComponent, NewSkuFormulaComponent, ConfirmActionDialogComponent, ImportPreviewDialogComponent, NewLineDialogComponent, EnableGoalsDialogComponent, ModifyActivityDialogComponent, SkuDrilldownComponent, ActivityDetailsComponent, SkuDetailsComponent, AssignSkuManufacturingLines, AssignSkuProductlineComponent, ViewUserMfgLinesDialogComponent, SalesProjectionComponent]
+  entryComponents: [AutoScheduleComponent, LegendDetailsComponent, ConfirmDeletionDialogComponent, DeleteProductLineDialogComponent, UserNotificationDialogComponent, NewUserDialogComponent, PasswordConfirmationDialogComponent, PrivacyPolicyDialogComponent, TermsAndConditionsDialogComponent, MoreInfoDialogComponent, NewSkuDialogComponent, NewFormulaDialogComponent, NewFormulaIngredientDialogComponent, NewIngredientDialogComponent, NewGoalDialogComponent, NewProductLineDialogComponent, NewSkuFormulaComponent, ConfirmActionDialogComponent, ImportPreviewDialogComponent, NewLineDialogComponent, EnableGoalsDialogComponent, ModifyActivityDialogComponent, SkuDrilldownComponent, ActivityDetailsComponent, SkuDetailsComponent, AssignSkuManufacturingLines, AssignSkuProductlineComponent, ViewUserMfgLinesDialogComponent, SalesProjectionComponent, IngredientsAndQuantitiesDialogComponent]
 
 
 })

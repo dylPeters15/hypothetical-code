@@ -77,7 +77,7 @@ export class RestServiceV2 {
       { admin: admin },
       { localuser: localuser }
     ], limit);
-    console.log(header);
+    // console.log(header);
     return this.http.get(endpoint + 'users', header).toPromise();
   }
 

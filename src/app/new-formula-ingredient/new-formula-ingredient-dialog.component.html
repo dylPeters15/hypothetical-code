@@ -3,7 +3,24 @@
   <mat-card>
     <mat-card-content style="display: grid; width: 100%; justify-items: center;">
 
-      <mat-form-field class="example-chip-list">
+      <mat-form-field>
+        <mat-chip-list #chipList>
+          <mat-chip *ngIf="selectedIngredient" [selectable]="false" [removable]="true" (removed)="remove()">
+            {{selectedIngredient['ingredientname']}}
+            <mat-icon matChipRemove>cancel</mat-icon>
+          </mat-chip>
+          <input placeholder="Enter an Ingredient" #ingredientInput [formControl]="ingredientCtrl" [matAutocomplete]="auto"
+            [matChipInputFor]="chipList" [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+            [matChipInputAddOnBlur]="true" (matChipInputTokenEnd)="add($event)" [hidden]="selectedIngredient">
+        </mat-chip-list>
+        <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
+          <mat-option *ngFor="let ingredientOption of autoCompleteIngredients | async" [value]="ingredientOption">
+            {{ingredientOption['ingredientname']}}
+          </mat-option>
+        </mat-autocomplete>
+      </mat-form-field>
+
+      <!-- <mat-form-field class="example-chip-list">
         <mat-chip-list #chipList>
           <mat-chip
             *ngFor="let ingredient of selectedIngredientNames"
@@ -28,15 +45,16 @@
             {{ingredient['ingredientname']}}
           </mat-option>
         </mat-autocomplete>
-      </mat-form-field>
+      </mat-form-field> -->
 
       <mat-form-field>
-        <input matInput [(ngModel)]="amount" placeholder="Amount" required>
+        <input matInput [(ngModel)]="amount" placeholder="Amount" required type=number>
+        <span matSuffix *ngIf="selectedIngredient">{{selectedIngredient.unitofmeasure}}</span>
       </mat-form-field>
     </mat-card-content>
   </mat-card>
 </mat-dialog-content>
 <mat-dialog-actions align="center">
-  <button class="mat-raised-button" (click)="closeDialog()">Cancel</button>
-  <button class="mat-raised-button" (click)="addIngredient()" [disabled]="username==''" color=orange >{{ finish_title }}</button>
+  <button mat-raised-button (click)="closeDialog()">Cancel</button>
+  <button mat-raised-button (click)="addIngredient()" [disabled]="!(selectedIngredient && amount > 0)" color="primary" >{{ finish_title }}</button>
 </mat-dialog-actions>

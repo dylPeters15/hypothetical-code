@@ -86,6 +86,7 @@ export class NewFormulaDialogComponent implements OnInit {
   // Remove ingredient 
   removeIngredient(item)
   {
+    console.log(this.ingredientsandquantities);
     for (var i = 0; i < this.ingredientsandquantities.length; i++)
     {
       if(this.ingredientsandquantities[i].ingredient == item)
@@ -94,7 +95,9 @@ export class NewFormulaDialogComponent implements OnInit {
       }
 
     }
-      //this.refreshData();
+    console.log(this.ingredientsandquantities);
+
+      this.refreshData();
   }
 
   // This method is very similar to addIngredientToFormula() but involves removing ingredient as well.
@@ -103,26 +106,29 @@ export class NewFormulaDialogComponent implements OnInit {
   {
     var edit = true;
     const dialogConfig = new MatDialogConfig();
-    dialogConfig.data = { edit: edit, present_name: item.ingredient, present_amount: quantity, present_ingredientsandquantities: this.ingredientsandquantities};
+    dialogConfig.data = { edit: edit, present_name: item.ingredientname, present_amount: quantity, present_ingredientsandquantities: this.ingredientsandquantities};
     this.newIngredientDialogRef = this.dialog.open(NewFormulaIngredientDialogComponent, dialogConfig);
     this.newIngredientDialogRef.afterClosed().subscribe(event => {
-      var new_ingredient = this.newIngredientDialogRef.componentInstance.ingredientName;
-      var new_amount = this.newIngredientDialogRef.componentInstance.amount;
-      var new_objectid;
-      this.rest.getIngredients(new_ingredient, "$a", -1, 1).subscribe(response => {
-          this.snackBar.open("Successfully modified ingredient.", "close", {
-            duration: 2000,
+      if (this.newIngredientDialogRef.componentInstance.ingredientName && this.newIngredientDialogRef.componentInstance.amount) {
+        var new_ingredient = this.newIngredientDialogRef.componentInstance.ingredientName;
+        var new_amount = this.newIngredientDialogRef.componentInstance.amount;
+        var new_objectid;
+        this.rest.getIngredients(new_ingredient, "$a", -1, 1).subscribe(response => {
+            this.snackBar.open("Successfully modified ingredient.", "close", {
+              duration: 2000,
+            });
+            new_objectid = response[0];
+            let new_ingredienttuple = new ingredienttuple();
+            new_ingredienttuple.ingredient = new_objectid;
+            new_ingredienttuple.quantity = new_amount;
+  
+            this.removeIngredient(item);
+            this.ingredientsandquantities.push(new_ingredienttuple);
+  
+            this.refreshData();
           });
-          new_objectid = response[0];
-          let new_ingredienttuple = new ingredienttuple();
-          new_ingredienttuple.ingredient = new_objectid;
-          new_ingredienttuple.quantity = new_amount;
-
-          this.removeIngredient(item);
-          this.ingredientsandquantities.push(new_ingredienttuple);
-
-          this.refreshData();
-        });
+      }
+      
       });
   }
 
@@ -133,7 +139,8 @@ export class NewFormulaDialogComponent implements OnInit {
     //this.newIngredientDialogRef.componentInstance.amount = this.return_amount;
     //this.newIngredientDialogRef.componentInstance.ingredientNameList = this.ingredientNameList;
     this.newIngredientDialogRef.afterClosed().subscribe(event => {
-      // grab the new formula values
+      if (this.newIngredientDialogRef.componentInstance.ingredientName && this.newIngredientDialogRef.componentInstance.amount) {
+        // grab the new formula values
       var new_ingredient = this.newIngredientDialogRef.componentInstance.ingredientName;
       var new_amount = this.newIngredientDialogRef.componentInstance.amount;
       var new_objectid;
@@ -156,6 +163,8 @@ export class NewFormulaDialogComponent implements OnInit {
 
           this.refreshData();
         });
+      }
+      
 
 
       });
@@ -187,7 +196,7 @@ export class NewFormulaDialogComponent implements OnInit {
       console.log("We're modifying a formula");
       this.rest.modifyFormula(this.oldformulaname, this.formulaname, this.formulanumber, this.ingredientsandquantities, this.comment).subscribe(response => {
         if (response['ok'] == 1) {
-          this.snackBar.open("Successfully modifyed formula " + this.formulaname + ".", "close", {
+          this.snackBar.open("Successfully modified formula " + this.formulaname + ".", "close", {
             duration: 2000,
           });
         } else {

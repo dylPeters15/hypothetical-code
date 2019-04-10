@@ -9,6 +9,7 @@ import { auth } from '../auth.service';
 import {ExportToCsv} from 'export-to-csv';
 import { ingredienttuple } from "../new-formula-dialog/ingredienttuple";
 import { ConfirmDeletionDialogComponent } from '../confirm-deletion-dialog/confirm-deletion-dialog.component';
+import { IngredientsAndQuantitiesDialogComponent } from '../ingredients-and-quantities-dialog/ingredients-and-quantities-dialog.component';
 
 export interface FormulaForTable {
   formulaname: String;
@@ -185,6 +186,13 @@ export class FormulaComponent implements OnInit {
         })
       }
     });
+  }
+
+  viewIngredientsAndQuantities(formula) {
+    console.log(formula);
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.data = {formula: formula};
+    this.dialog.open(IngredientsAndQuantitiesDialogComponent, dialogConfig);
   }
 
   exportSelected(){
