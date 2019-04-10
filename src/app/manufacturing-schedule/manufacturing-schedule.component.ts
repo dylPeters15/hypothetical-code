@@ -674,8 +674,13 @@ export class ManufacturingScheduleComponent implements OnInit {
   openAutoScheduleDialog() {
     const dialogConfig = new MatDialogConfig()
     this.autoScheduleDialogRef = this.dialog.open(AutoScheduleComponent, dialogConfig);
-    this.autoScheduleDialogRef.afterClosed().subscribe(event => {
-      // this.refreshData();
+    this.autoScheduleDialogRef.afterClosed().subscribe(closeData => {
+      if (closeData) {
+        console.log('data sent back', closeData)
+        var newActivities = closeData['newActivities']
+      }
+
+      this.refreshData();
     });
   }
 
