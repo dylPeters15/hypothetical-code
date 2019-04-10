@@ -6,7 +6,7 @@
     <mat-card-content>
       <mat-list>
         <mat-list-item *ngFor="let ingredientandquantity of formula.ingredientsandquantities">
-          {{ingredientandquantity.ingredient.ingredientname}} | {{ingredientandquantity.quantity}}
+          {{ingredientandquantity.ingredient.ingredientname}} | {{(ingredientandquantity.quantity * ingredientandquantity.ingredient.amount).toFixed(4)}} {{ingredientandquantity.ingredient.unitofmeasure}}
         </mat-list-item>
       </mat-list>
     </mat-card-content>
