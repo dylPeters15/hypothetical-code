@@ -39,10 +39,10 @@
             <ng-container matColumnDef="ingredientsandquantities">
               <mat-header-cell *matHeaderCellDef mat-sort-header>Ingredients and Quantities</mat-header-cell>
               <mat-cell *matCellDef="let formula">
-                <div *ngFor="let ingredienttuple of formula['ingredientsandquantities']">
+                <!-- <div *ngFor="let ingredienttuple of formula['ingredientsandquantities']">
                     {{ingredienttuple['ingredient']['ingredientname']}}, {{ingredienttuple['quantity']}}<br />
-                </div>
-                
+                </div> -->
+                <button mat-raised-button (click)="viewIngredientsAndQuantities(formula)" [disabled]="formula['ingredientsandquantities'].length == 0">{{formula['ingredientsandquantities'].length}} <mat-icon>list</mat-icon></button>
               </mat-cell>
             </ng-container>
           
