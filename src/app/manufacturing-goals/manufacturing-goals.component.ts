@@ -52,7 +52,7 @@ export class ManufacturingGoalsComponent implements OnInit {
   businessmanager: boolean = false;
   allReplacement = 54321;
   goals:any = [];
-  displayedColumns: string[] = ['checked', 'name','owner', 'activities', 'date', 'calculator','lastedit', 'edit', 'delete', 'export'];
+  displayedColumns: string[] = [];
   data: ManufacturingGoal[] = [];
   dataSource = new MatTableDataSource<ManufacturingGoal>(this.data);
   @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -98,6 +98,12 @@ export class ManufacturingGoalsComponent implements OnInit {
 
   ngOnInit() {
     this.businessmanager = auth.isAuthenticatedForBusinessManagerOperation();
+    if(this.businessmanager){
+      this.displayedColumns = ['checked', 'name','owner', 'activities', 'date', 'calculator','lastedit', 'edit', 'delete', 'export'];
+    }
+    else{
+      this.displayedColumns = ['checked', 'name','owner', 'activities', 'date', 'calculator','lastedit', 'export'];
+    }
     this.refreshData();
 
   }
