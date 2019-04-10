@@ -90,8 +90,9 @@ export class NewFormulaIngredientDialogComponent implements OnInit {
       this.restv2.getIngredients(AndVsOr.AND, this.data.present_name, null, null, 1).then(ingredients => {
         console.log("Prepopulated: ",ingredients)
         if (ingredients.length == 1) {
-          thisobject.amount = thisobject.data.present_amount;
           thisobject.selectedIngredient = ingredients[0];
+          thisobject.amount = thisobject.data.present_amount * thisobject.selectedIngredient.amount;
+
         }
       });
       this.dialog_title = "Modify Ingredient";
@@ -155,7 +156,7 @@ export class NewFormulaIngredientDialogComponent implements OnInit {
   addIngredient() {
     console.log("Let's send the data back! new ingredient: " + this.ingredientName + ". Amount: " + this.amount);
     this.dialogRef.componentInstance.ingredientName = this.selectedIngredient.ingredientname;
-    this.dialogRef.componentInstance.amount = this.amount;
+    this.dialogRef.componentInstance.amount = this.amount / this.selectedIngredient.amount;
     this.dialogRef.close();
   }
 
