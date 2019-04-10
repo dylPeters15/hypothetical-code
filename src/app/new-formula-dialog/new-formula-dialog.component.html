@@ -11,7 +11,7 @@
       </mat-form-field>
 
       <div *ngFor="let item of arrayIngredients;let i = index">
-        <p>{{item['ingredientname']}} | {{arrayQuantity[i]}} <button type="submit" (click)="modifyIngredient(item, arrayQuantity[i])">Edit</button><button type="submit" (click)="removeIngredient(item)">X</button></p>
+        <p>{{item['ingredientname']}} | {{(arrayQuantity[i] * item.amount).toFixed(4)}} {{item.unitofmeasure}} <button type="submit" (click)="modifyIngredient(item, arrayQuantity[i])">Edit</button><button type="submit" (click)="removeIngredient(item)">X</button></p>
      </div>
 
       <!---<p>Beans | 10 lbs <button type="submit">Edit</button><button type="submit">X</button></p> -->
