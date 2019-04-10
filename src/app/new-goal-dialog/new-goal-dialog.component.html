@@ -40,5 +40,5 @@
 </mat-dialog-content>
 <mat-dialog-actions align="center">
   <button mat-raised-button (click)="closeDialog()">Cancel</button>
-  <button mat-raised-button (click)="createGoal()" [disabled]="username=='' || name=='' || date=='Invalid Date'" color="primary">Create</button>
+  <button mat-raised-button (click)="createGoal()" [disabled]="username=='' || name=='' || date=='Invalid Date'" color="primary">{{create_title}}</button>
 </mat-dialog-actions>

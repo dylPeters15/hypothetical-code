@@ -75,6 +75,7 @@ export class SalesProjectionComponent implements OnInit {
   averageData: AverageRow[] = [];
   avgDataSource = new MatTableDataSource<AverageRow>(this.averageData);
   average: number = 0;
+  datesWrapAround: boolean = false;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild('skuInput') skuInput: ElementRef<HTMLInputElement>;
   @ViewChild('auto') matAutocomplete: MatAutocomplete;
@@ -167,7 +168,12 @@ export class SalesProjectionComponent implements OnInit {
     for(currentYear = endYear - 3; currentYear <= endYear; currentYear++){
       var yearsSales = [];
       var currentStartDate = this.startdate;
-      currentStartDate.setFullYear(currentYear)
+      if(this.datesWrapAround){
+        currentStartDate.setFullYear(currentYear-1);
+      }
+      else{
+        currentStartDate.setFullYear(currentYear)
+      }
       var currentEndDate = this.enddate;
       currentEndDate.setFullYear(currentYear)
       yearsSales = await this.restv2.getSales(AndVsOr.AND, this.selectedSKU['_id'],null, this.startdate, this.enddate, 54321);
@@ -190,8 +196,11 @@ export class SalesProjectionComponent implements OnInit {
 
   getEndYear(){
     let today = new Date();
-    if(this.startdate.getMonth() > this.enddate.getMonth()){
+    this.startdate.setFullYear(today.getFullYear());
+    this.enddate.setFullYear(today.getFullYear());
+    if(this.startdate > this.enddate){
       this.startdate.setFullYear(today.getFullYear() - 1)
+      this.datesWrapAround = true;
     }
     if(this.startdate <= today && this.enddate >= today){
       return today.getFullYear() - 1;

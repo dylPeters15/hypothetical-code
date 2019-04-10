@@ -53,6 +53,7 @@ export class NewGoalDialogComponent implements OnInit {
   skuList: any = [];
   skuNameList: string[] = [];
   edit: Boolean;
+  create_title: String;
   projectionDialogRef: MatDialogRef<SalesProjectionComponent>;
 
   @ViewChild('skuInput') skuInput: ElementRef<HTMLInputElement>;
@@ -76,9 +77,11 @@ export class NewGoalDialogComponent implements OnInit {
       }
      
       this.dialog_title = "Modify Manufacturing Goal";
+      this.create_title = "Save Changes";
     }
     else {
       this.dialog_title = "Create New Manufacturing Goal";
+      this.create_title = "Create";
     }
     this.date = new Date(this.data.present_date);
     this.dateCtrl = new FormControl(this.date)
