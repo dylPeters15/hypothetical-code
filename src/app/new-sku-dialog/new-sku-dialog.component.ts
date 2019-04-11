@@ -535,6 +535,23 @@ async caseupcnumberChanged() {
 }
 
 
+unitupcnumberErrorMessage;
+unitupcnumberError = false;
+unitupcnumberErrorMatcher = {
+  isErrorState: (control: FormControl, form: FormGroupDirective): boolean => {
+    return this.unitupcnumberError;
+  }
+}
+async unitupcnumberChanged() {
+  if (!(this.unitupcnumber>0) || !Number.isInteger(this.unitupcnumber)) {
+    this.unitupcnumberError = true;
+    this.unitupcnumberErrorMessage = "Unit UPC Number must be an integer greater than 0.";
+    return;
+  }
+  this.unitupcnumberError = false;
+}
+
+
 
 
 

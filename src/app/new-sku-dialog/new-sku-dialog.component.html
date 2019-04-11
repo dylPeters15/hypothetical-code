@@ -19,7 +19,8 @@
       </mat-form-field>
 
       <mat-form-field>
-        <input type="number" matInput [(ngModel)]="unitupcnumber" placeholder="Unit UPC#">
+        <input type="number" matInput [(ngModel)]="unitupcnumber" placeholder="Unit UPC#" [errorStateMatcher]="unitupcnumberErrorMatcher" (input)="unitupcnumberChanged()">
+        <mat-error>{{unitupcnumberErrorMessage}}</mat-error>
       </mat-form-field>
 
       <mat-form-field>
