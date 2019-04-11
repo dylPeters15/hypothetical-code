@@ -9,6 +9,7 @@ import { AssignSkuManufacturingLines } from '../assign-sku-manufacturinglines/as
 import { NewFormulaDialogComponent } from '../new-formula-dialog/new-formula-dialog.component';
 import { AssignSkuProductlineComponent } from '../assign-sku-productline/assign-sku-productline.component';
 import { RestServiceV2, AndVsOr } from '../restv2.service';
+import { FormControl, FormGroupDirective, FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'app-new-sku-dialog',
@@ -436,4 +437,42 @@ export class NewSkuDialogComponent implements OnInit {
     this.refreshData();
   }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+////////////////////////// Error State Checking //////////////////////////////
+skunameExists = false;
+skunameErrorMatcher = {
+  isErrorState: (control: FormControl, form: FormGroupDirective): boolean => {
+    return this.skunameExists;
+  }
+}
+skunameChanged() {
+  this.restv2.getSkus(AndVsOr.OR, this.skuname, null, null, null, null, null, 1).then(result => {
+    console.log(result);
+    this.skunameExists = result.length == 1;
+  });
+}
+
+
+
+
+
+
+
+
+
+
+
 }

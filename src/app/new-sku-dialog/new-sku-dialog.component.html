@@ -4,7 +4,8 @@
     <mat-card-content style="display: grid; width: 100%; justify-items: center;">
       
       <mat-form-field>
-        <input matInput [(ngModel)]="skuname" placeholder="Name" maxlength="32" required>
+        <input matInput [(ngModel)]="skuname" placeholder="Name" maxlength="32" required [errorStateMatcher]="skunameErrorMatcher" (input)="skunameChanged()">
+        <mat-error>SKU Name already exists.</mat-error>
       </mat-form-field>
 
       <mat-form-field>
