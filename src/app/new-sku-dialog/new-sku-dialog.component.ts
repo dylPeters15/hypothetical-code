@@ -603,6 +603,23 @@ async manufacturingrunsetupcostChanged() {
 }
 
 
+manufacturingruncostErrorMessage;
+manufacturingruncostError = false;
+manufacturingruncostErrorMatcher = {
+  isErrorState: (control: FormControl, form: FormGroupDirective): boolean => {
+    return this.manufacturingruncostError;
+  }
+}
+async manufacturingruncostChanged() {
+  if (!this.manufacturingruncost || !(this.manufacturingruncost>=0)) {
+    this.manufacturingruncostError = true;
+    this.manufacturingruncostErrorMessage = "Manufacturing run cost must be greater than or equal to 0.";
+    return;
+  }
+  this.manufacturingruncostError = false;
+}
+
+
 
 
 
