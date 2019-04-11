@@ -24,7 +24,8 @@
       </mat-form-field>
 
       <mat-form-field>
-        <input matInput [(ngModel)]="unitsize" placeholder="Unit Size" required>
+        <input matInput [(ngModel)]="unitsize" placeholder="Unit Size" required [errorStateMatcher]="unitsizeErrorMatcher" (input)="unitsizeChanged()">
+        <mat-error>{{unitsizeErrorMessage}}</mat-error>
       </mat-form-field>
 
       <mat-form-field>

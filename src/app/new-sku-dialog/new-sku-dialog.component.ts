@@ -552,6 +552,23 @@ async unitupcnumberChanged() {
 }
 
 
+unitsizeErrorMessage;
+unitsizeError = false;
+unitsizeErrorMatcher = {
+  isErrorState: (control: FormControl, form: FormGroupDirective): boolean => {
+    return this.unitsizeError;
+  }
+}
+async unitsizeChanged() {
+  if (!this.unitsize) {
+    this.unitsizeError = true;
+    this.unitsizeErrorMessage = "Unit Size is required.";
+    return;
+  }
+  this.unitsizeError = false;
+}
+
+
 
 
 
