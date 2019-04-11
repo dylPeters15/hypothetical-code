@@ -124,6 +124,7 @@ export class ManufacturingScheduleComponent implements OnInit {
         goals.forEach(goal => {
           var activityList = [];
           if (goal['enabled']) {
+            console.log('activities for goal', goal['activities'])
             goal['activities'].forEach(activity => {
               console.log('activity', activity)
               if (activity['activity']['line'] == null || activity['activity']['line'] == undefined) {
@@ -199,8 +200,17 @@ export class ManufacturingScheduleComponent implements OnInit {
                 }
 
               }
+              var start = new Date(activity['startdate'])
+              start.setMinutes(0)
+              if (start.getHours() < 8) {
+                start.setHours(8);
+              }
+              if (start.getHours() > 18) {
+                start.setDate(start.getDate() + 1)
+                start.setHours(8)
+              }
               
-              var endDate = this.calculateEndDate(new Date(activity['startdate']), Math.round(duration));
+              var endDate = this.calculateEndDate(new Date(start), Math.round(duration));
               this.checkOverdue(activity['_id'], endDate).then(isOverdue => {
                 if (isOverdue) {
                   className = 'overdue';
@@ -208,7 +218,7 @@ export class ManufacturingScheduleComponent implements OnInit {
                 this.timeline.itemsData.update({
                   id: newItem_dropped['id'],
                   group: newGroup['id'],
-                  start: new Date(activity['startdate']),
+                  start: new Date(start),
                   end: endDate,
                   content: activity['sku']['skuname'],
                   className: className
@@ -413,6 +423,7 @@ export class ManufacturingScheduleComponent implements OnInit {
     var goals = await this.restv2.getGoals(AndVsOr.AND, null, null, ".*", false, 500);
     var isOrphaned = false;
     goals.forEach(goal => {
+      console.log('goal', goal)
       goal['activities'].forEach(activity => {
         if (activity['activity']['_id'] == activityId) {
           // console.log('goal', goal)
@@ -602,6 +613,7 @@ export class ManufacturingScheduleComponent implements OnInit {
     if (endHour > 18 || endHour < 8) {
         endDate.setHours(endHour + 14);
     }
+    
     return endDate;
     
 }
