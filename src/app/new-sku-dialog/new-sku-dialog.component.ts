@@ -569,6 +569,23 @@ async unitsizeChanged() {
 }
 
 
+countpercaseErrorMessage;
+countpercaseError = false;
+countpercaseErrorMatcher = {
+  isErrorState: (control: FormControl, form: FormGroupDirective): boolean => {
+    return this.countpercaseError;
+  }
+}
+async countpercaseChanged() {
+  if (!(this.countpercase>0) || !Number.isInteger(this.countpercase)) {
+    this.countpercaseError = true;
+    this.countpercaseErrorMessage = "Count Per Case must be an integer greater than 0.";
+    return;
+  }
+  this.countpercaseError = false;
+}
+
+
 
 
 

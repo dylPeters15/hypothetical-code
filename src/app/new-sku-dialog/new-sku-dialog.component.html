@@ -29,7 +29,8 @@
       </mat-form-field>
 
       <mat-form-field>
-        <input type="number" matInput [(ngModel)]="countpercase" placeholder="Count Per Case" required>
+        <input type="number" matInput [(ngModel)]="countpercase" placeholder="Count Per Case" required [errorStateMatcher]="countpercaseErrorMatcher" (input)="countpercaseChanged()">
+        <mat-error>{{countpercaseErrorMessage}}</mat-error>
       </mat-form-field>
 
       <div  class="dropdown-content" [hidden]="formulaDoesNotExist">
