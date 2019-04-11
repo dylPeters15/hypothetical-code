@@ -101,5 +101,5 @@
 </mat-dialog-content>
 <mat-dialog-actions align="center">
   <button mat-raised-button (click)="closeDialog()">Cancel</button>
-  <button mat-raised-button (click)="createSku()" [disabled]="manufacturingrate==''||!manufacturingrate || skunameError || skunumberError || caseupcnumberError || !(unitupcnumber>0) || !(countpercase>0) || !(manufacturingsetupcost>0) || !(manufacturingruncost>0) || !(manufacturingrate>0) || formulaDoesNotExist" color="primary">{{submit_title}}</button>
+  <button mat-raised-button (click)="createSku()" [disabled]="manufacturingrate==''||!manufacturingrate || skunameError || skunumberError || caseupcnumberError || unitupcnumberError || countpercaseErrror || !(manufacturingsetupcost>0) || !(manufacturingruncost>0) || !(manufacturingrate>0) || formulaDoesNotExist" color="primary">{{submit_title}}</button>
 </mat-dialog-actions>
