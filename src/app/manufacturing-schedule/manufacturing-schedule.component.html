@@ -7,8 +7,11 @@
         <mat-card-content>
             <div class="dataContainer">
                 <button mat-raised-button (click)=showLegend()> Legend </button>
-                <button mat-raised-button *ngIf= "manufacturingLinesToManage.length > 0" (click)=openAutoScheduleDialog()> Auto Schedule Activities </button>
-                <div class="warningContainer">
+                <button mat-raised-button *ngIf= "manufacturingLinesToManage.length > 0" 
+                    (click)=openAutoScheduleDialog() [disabled]="provisionalActivities.length>0"> Auto Schedule Activities </button>
+                <button mat-raised-button (click)=approveAll() 
+                    [disabled]="provisionalActivities.length==0"> Approve Provisional Activities </button>
+                    <div class="warningContainer">
                     <h4>Warnings</h4>
                     <div *ngFor="let item of visibleDataSource['data']"> 
                         <div [ngClass]="warning" *ngIf="item['className'] != 'normal'">

@@ -649,11 +649,43 @@ export class ManufacturingScheduleComponent implements OnInit {
         });
         console.log('provisional', this.provisionalActivities)
         this.refreshData();
-        // add activities to data but don't change in backend 
       }
-
-      
     });
+  }
+
+  async approveAll(): Promise<void> {
+    await new Promise((resolve, reject) => {
+      this.provisionalActivities.forEach(async activityid => {
+        var activities = await this.restv2.getActivities(AndVsOr.OR, null, null, null, 500);
+        activities.forEach(async (activity, index, array) => {
+          console.log('activity', activity)
+          if (activity['_id'] == activityid) {
+            var profAct = this.data.get(activityid);
+            var isOverdue = await this.checkOverdue(profAct['id'], profAct['end'])
+            var className = '';
+            if (isOverdue) {
+              className = 'overdue'
+            }
+            this.data.update({
+              id: profAct['id'],
+              group: profAct['group'],
+              start: new Date(profAct['start']),
+              end: new Date(profAct['end']),
+              content: profAct['content'],
+              className: className,
+              editable: profAct['editable']
+            })
+            await this.restv2.modifyActivity(AndVsOr.OR, activityid, activity['newsku'],
+            activity['number'], activity['calculatedhours'], activity['sethours'],
+          new Date(profAct['start']), profAct['group'])
+          if (index === array.length -1) resolve();
+          }
+        })
+  
+      })
+    })
+    
+    this.provisionalActivities = [];
   }
 
 }
