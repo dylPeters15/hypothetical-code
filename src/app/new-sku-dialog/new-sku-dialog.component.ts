@@ -9,6 +9,7 @@ import { AssignSkuManufacturingLines } from '../assign-sku-manufacturinglines/as
 import { NewFormulaDialogComponent } from '../new-formula-dialog/new-formula-dialog.component';
 import { AssignSkuProductlineComponent } from '../assign-sku-productline/assign-sku-productline.component';
 import { RestServiceV2, AndVsOr } from '../restv2.service';
+import { FormControl, FormGroupDirective, FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'app-new-sku-dialog',
@@ -436,4 +437,211 @@ export class NewSkuDialogComponent implements OnInit {
     this.refreshData();
   }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+////////////////////////// Error State Checking //////////////////////////////
+skunameError = false;
+skunameErrorMatcher = {
+  isErrorState: (control: FormControl, form: FormGroupDirective): boolean => {
+    return this.skunameError;
+  }
+}
+async skunameChanged() {
+  if (this.edit) {
+    if (this.skuname == this.oldskuname) {
+      this.skunameError = false;
+      return;
+    }
+  }
+  var result = await this.restv2.getSkus(AndVsOr.OR, this.skuname, null, null, null, null, null, 1);
+  if (result.length == 1) {
+    this.skunameError = true;
+    return;
+  }
+  this.skunameError = false;
+}
+
+
+skunumberErrorMessage;
+skunumberError = false;
+skunumberErrorMatcher = {
+  isErrorState: (control: FormControl, form: FormGroupDirective): boolean => {
+    return this.skunumberError;
+  }
+}
+async skunumberChanged() {
+  if (!(this.skunumber>0) || !Number.isInteger(this.skunumber)) {
+    this.skunumberError = true;
+    this.skunumberErrorMessage = "SKU Number must be an integer greater than 0.";
+    return;
+  }
+  if (this.edit) {
+    var oldSKU = (await this.restv2.getSkus(AndVsOr.AND, this.oldskuname, null, null, null, null, null, 1))[0];
+    if (oldSKU.skunumber == this.skunumber) {
+      this.skunumberError = false;
+      return;
+    }
+  }
+  var result = await this.restv2.getSkus(AndVsOr.OR, null, null, this.skunumber, null, null, null, 1);
+  if (result.length == 1) {
+    this.skunumberError = true;
+    this.skunumberErrorMessage = "SKU Number already exists.";
+    return;
+  }
+  this.skunumberError = false;
+}
+
+
+caseupcnumberErrorMessage;
+caseupcnumberError = false;
+caseupcnumberErrorMatcher = {
+  isErrorState: (control: FormControl, form: FormGroupDirective): boolean => {
+    return this.caseupcnumberError;
+  }
+}
+async caseupcnumberChanged() {
+  if (!(this.caseupcnumber>0) || !Number.isInteger(this.caseupcnumber)) {
+    this.caseupcnumberError = true;
+    this.caseupcnumberErrorMessage = "Case UPC Number must be an integer greater than 0.";
+    return;
+  }
+  if (this.edit) {
+    var oldSKU = (await this.restv2.getSkus(AndVsOr.AND, this.oldskuname, null, null, null, null, null, 1))[0];
+    if (oldSKU.caseupcnumber == this.caseupcnumber) {
+      this.caseupcnumberError = false;
+      return;
+    }
+  }
+  var result = await this.restv2.getSkus(AndVsOr.OR, null, null, null, this.caseupcnumber, null, null, 1);
+  console.log(result);
+  if (result.length == 1) {
+    this.caseupcnumberError = true;
+    this.caseupcnumberErrorMessage = "Case UPC Number already exists.";
+    return;
+  }
+  this.caseupcnumberError = false;
+}
+
+
+unitupcnumberErrorMessage;
+unitupcnumberError = false;
+unitupcnumberErrorMatcher = {
+  isErrorState: (control: FormControl, form: FormGroupDirective): boolean => {
+    return this.unitupcnumberError;
+  }
+}
+async unitupcnumberChanged() {
+  if (!(this.unitupcnumber>0) || !Number.isInteger(this.unitupcnumber)) {
+    this.unitupcnumberError = true;
+    this.unitupcnumberErrorMessage = "Unit UPC Number must be an integer greater than 0.";
+    return;
+  }
+  this.unitupcnumberError = false;
+}
+
+
+unitsizeErrorMessage;
+unitsizeError = false;
+unitsizeErrorMatcher = {
+  isErrorState: (control: FormControl, form: FormGroupDirective): boolean => {
+    return this.unitsizeError;
+  }
+}
+async unitsizeChanged() {
+  if (!this.unitsize) {
+    this.unitsizeError = true;
+    this.unitsizeErrorMessage = "Unit Size is required.";
+    return;
+  }
+  this.unitsizeError = false;
+}
+
+
+countpercaseErrorMessage;
+countpercaseError = false;
+countpercaseErrorMatcher = {
+  isErrorState: (control: FormControl, form: FormGroupDirective): boolean => {
+    return this.countpercaseError;
+  }
+}
+async countpercaseChanged() {
+  if (!(this.countpercase>0) || !Number.isInteger(this.countpercase)) {
+    this.countpercaseError = true;
+    this.countpercaseErrorMessage = "Count Per Case must be an integer greater than 0.";
+    return;
+  }
+  this.countpercaseError = false;
+}
+
+
+manufacturingrunsetupcostErrorMessage;
+manufacturingrunsetupcostError = false;
+manufacturingrunsetupcostErrorMatcher = {
+  isErrorState: (control: FormControl, form: FormGroupDirective): boolean => {
+    return this.manufacturingrunsetupcostError;
+  }
+}
+async manufacturingrunsetupcostChanged() {
+  if (this.manufacturingsetupcost == null || this.manufacturingsetupcost == undefined || !(this.manufacturingsetupcost>=0)) {
+    this.manufacturingrunsetupcostError = true;
+    this.manufacturingrunsetupcostErrorMessage = "Manufacturing run setup cost must be greater than or equal to 0.";
+    return;
+  }
+  this.manufacturingrunsetupcostError = false;
+}
+
+
+manufacturingruncostErrorMessage;
+manufacturingruncostError = false;
+manufacturingruncostErrorMatcher = {
+  isErrorState: (control: FormControl, form: FormGroupDirective): boolean => {
+    return this.manufacturingruncostError;
+  }
+}
+async manufacturingruncostChanged() {
+  if (this.manufacturingruncost == null || this.manufacturingruncost == undefined || !(this.manufacturingruncost>=0)) {
+    this.manufacturingruncostError = true;
+    this.manufacturingruncostErrorMessage = "Manufacturing run cost must be greater than or equal to 0.";
+    return;
+  }
+  this.manufacturingruncostError = false;
+}
+
+
+manufacturingrateErrorMessage;
+manufacturingrateError = false;
+manufacturingrateErrorMatcher = {
+  isErrorState: (control: FormControl, form: FormGroupDirective): boolean => {
+    return this.manufacturingrateError;
+  }
+}
+async manufacturingrateChanged() {
+  if (this.manufacturingrate == null || this.manufacturingrate == undefined || !(this.manufacturingrate>=0)) {
+    this.manufacturingrateError = true;
+    this.manufacturingrateErrorMessage = "Manufacturing rate must be greater than or equal to 0.";
+    return;
+  }
+  this.manufacturingrateError = false;
+}
+
+
+
+
+
+
+
+
+
 }
