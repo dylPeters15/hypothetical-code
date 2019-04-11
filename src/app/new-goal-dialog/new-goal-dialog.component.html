@@ -22,11 +22,11 @@
         </mat-autocomplete>
       </mat-form-field>
       <mat-form-field class="right">
-        <input matInput [(ngModel)]="quantity" placeholder="Quantity">
+        <input type="number" matInput [(ngModel)]="quantity" placeholder="Quantity">
       </mat-form-field>
     </div>
     <button mat-raised-button (click)="openProjection(currentSku)" [disabled]="currentSku == null || skuCtrl.value != currentSku['skuname']" color="primary">View Projection</button>
-    <button class="mat-raised-button" [disabled]="currentSku==null || quantity==null" (click)="addActivity()">Add Activity</button>
+    <button class="mat-raised-button" [disabled]="currentSku==null || quantity==null || !(quantity>0)" (click)="addActivity()">Add Activity</button>
     
 
       <mat-form-field>

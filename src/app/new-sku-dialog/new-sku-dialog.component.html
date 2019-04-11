@@ -8,15 +8,15 @@
       </mat-form-field>
 
       <mat-form-field>
-        <input matInput [(ngModel)]="skunumber" placeholder="Sku#" required>
+        <input type="number" matInput [(ngModel)]="skunumber" placeholder="Sku#" required>
       </mat-form-field>
 
       <mat-form-field>
-        <input matInput [(ngModel)]="caseupcnumber" placeholder="Case UPC#">
+        <input type="number" matInput [(ngModel)]="caseupcnumber" placeholder="Case UPC#">
       </mat-form-field>
 
       <mat-form-field>
-        <input matInput [(ngModel)]="unitupcnumber" placeholder="Unit UPC#">
+        <input type="number" matInput [(ngModel)]="unitupcnumber" placeholder="Unit UPC#">
       </mat-form-field>
 
       <mat-form-field>
@@ -24,7 +24,7 @@
       </mat-form-field>
 
       <mat-form-field>
-        <input matInput [(ngModel)]="countpercase" placeholder="Count Per Case" required>
+        <input type="number" matInput [(ngModel)]="countpercase" placeholder="Count Per Case" required>
       </mat-form-field>
 
       <div  class="dropdown-content" [hidden]="formulaDoesNotExist">
@@ -78,15 +78,15 @@
         <br /> 
 
       <mat-form-field>
-        <input matInput [(ngModel)]="manufacturingsetupcost" placeholder="Manufacturing Setup Cost" (keydown.enter)="createSku()" required>
+        <input type="number" matInput [(ngModel)]="manufacturingsetupcost" placeholder="Manufacturing Setup Cost" (keydown.enter)="createSku()" required>
       </mat-form-field>
 
       <mat-form-field>
-        <input matInput [(ngModel)]="manufacturingruncost" placeholder="Manufacturing Run Cost (per case)" (keydown.enter)="createSku()" required>
+        <input type="number" matInput [(ngModel)]="manufacturingruncost" placeholder="Manufacturing Run Cost (per case)" (keydown.enter)="createSku()" required>
       </mat-form-field>
 
       <mat-form-field>
-        <input matInput [(ngModel)]="manufacturingrate" placeholder="Manufacturing Rate" (keydown.enter)="createSku()" required>
+        <input type="number" matInput [(ngModel)]="manufacturingrate" placeholder="Manufacturing Rate" (keydown.enter)="createSku()" required>
       </mat-form-field>
       <textarea rows="5" cols="50" style="border:inset 4px grey;" matInput [(ngModel)]="comment" placeholder="Additional Comments"> </textarea>
 
@@ -95,5 +95,5 @@
 </mat-dialog-content>
 <mat-dialog-actions align="center">
   <button mat-raised-button (click)="closeDialog()">Cancel</button>
-  <button mat-raised-button (click)="createSku()" [disabled]="manufacturingrate==''||!manufacturingrate" color="primary">{{submit_title}}</button>
+  <button mat-raised-button (click)="createSku()" [disabled]="manufacturingrate==''||!manufacturingrate || !(skunumber>0) || !(caseupcnumber>0) || !(unitupcnumber>0) || !(countpercase>0) || !(manufacturingsetupcost>0) || !(manufacturingruncost>0) || !(manufacturingrate>0)" color="primary">{{submit_title}}</button>
 </mat-dialog-actions>

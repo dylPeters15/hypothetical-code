@@ -7,7 +7,7 @@
       </mat-form-field>
 
       <mat-form-field>
-        <input matInput [(ngModel)]="data['ingredientnumber']" placeholder="Ingr#" [errorStateMatcher]="numberErrorMatcher" (input)="numberChanged()">
+        <input matInput type="number" [(ngModel)]="data['ingredientnumber']" placeholder="Ingr#" [errorStateMatcher]="numberErrorMatcher" (input)="numberChanged()">
       </mat-form-field>
 
       <mat-form-field>
@@ -27,11 +27,11 @@
       </mat-form-field>
 
       <mat-form-field>
-        <input matInput [(ngModel)]="data['amount']" placeholder="Amount" [errorStateMatcher]="amountErrorMatcher" (input)="amountChanged()" required>
+        <input matInput type="number" [(ngModel)]="data['amount']" placeholder="Amount" [errorStateMatcher]="amountErrorMatcher" (input)="amountChanged()" required>
       </mat-form-field>
 
       <mat-form-field>
-        <input matInput [(ngModel)]="data['costperpackage']" placeholder="Cost Per Package (USD)" [errorStateMatcher]="costErrorMatcher" (input)="costChanged()" required>
+        <input matInput type="number"  [(ngModel)]="data['costperpackage']" placeholder="Cost Per Package (USD)" [errorStateMatcher]="costErrorMatcher" (input)="costChanged()" required>
       </mat-form-field>
       
 
@@ -44,5 +44,5 @@
 </mat-dialog-content>
 <mat-dialog-actions align="center">
   <button mat-raised-button (click)="onNoClick()">Cancel</button>
-  <button mat-raised-button [mat-dialog-close]="data" color="primary" [disabled]="costError || amountError || numberError ||shouldDisableCreateButton()">Create</button>
+  <button mat-raised-button [mat-dialog-close]="data" color="primary" [disabled]="costError || amountError || numberError ||shouldDisableCreateButton() || !(data['ingredientnumber']>0) || !(data['amount']>0) || !(data['costperpackage']>0)">Create</button>
 </mat-dialog-actions>
