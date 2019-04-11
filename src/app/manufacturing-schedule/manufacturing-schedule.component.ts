@@ -129,8 +129,10 @@ export class ManufacturingScheduleComponent implements OnInit {
               // this.rest.getActivities(null, 100).subscribe(sameActivity => {
               //   // console.log('sameActivity', sameActivity)
               // });
+              console.log('provisional refresh', this.provisionalActivities)
+
               if (activity['activity']['line'] == null || activity['activity']['line'] == undefined) {
-                if (!this.provisionalActivities.includes(activity['_id'])) {
+                if (!this.provisionalActivities.includes(activity['activity']['_id'])) {
                   activityList.push(activity['activity'])
                 }           
               }
@@ -202,14 +204,7 @@ export class ManufacturingScheduleComponent implements OnInit {
                 }
 
               }
-              var startTime = 0;
-              // if (activity['startdate'].split('T')) {
-              //   startTime = parseInt((activity['startdate'].split('T')[1]).split(':')[0], 10) - 7;
-              // }
-              // else {
-              //   startTime = parseInt((activity['startdate'].toString().split(' ')[4]).split(':')[0], 10);
-              // }
-
+              
               var endDate = this.calculateEndDate(new Date(activity['startdate']), Math.round(duration));
               this.checkOverdue(activity['_id'], endDate).then(isOverdue => {
                 if (isOverdue) {
@@ -369,13 +364,6 @@ export class ManufacturingScheduleComponent implements OnInit {
         className = 'updated';
       }
     }
-    // var startTime = 0;
-    // if (activity['startdate'].split('T')) {
-    //   startTime = parseInt((activity['startdate'].split('T')[1]).split(':')[0], 10) - 7;
-    // }
-    // else {
-    //   startTime = parseInt((activity['startdate'].toString().split(' ')[4]).split(':')[0], 10);
-    // }
     var endDate = this.calculateEndDate(new Date(activity['startdate']), Math.round(duration));
     this.checkOverdue(activity['_id'], endDate).then(isOverdue => {
       if (isOverdue) {
@@ -579,13 +567,6 @@ export class ManufacturingScheduleComponent implements OnInit {
             if ((activity['calculatedhours'] == parseInt(newDuration, 10)) && className == 'updated') {
               className = 'normal';
             }
-            // var startTime = 0;
-            // if (activity['startdate'].split('T')) {
-            //   startTime = parseInt((activity['startdate'].split('T')[1]).split(':')[0], 10) - 7;
-            // }
-            // else {
-            //   startTime = parseInt((activity['startdate'].toString().split(' ')[4]).split(':')[0], 10);
-            // }
             var endDate = thisObject.calculateEndDate(new Date(item['start']), Math.round(parseInt(newDuration, 10)));
 
             item.className = className;
@@ -618,31 +599,6 @@ export class ManufacturingScheduleComponent implements OnInit {
       }
     };
   }
-
-  // calculateEndDate(startDate: Date, hours: number, startTime: number): Date {
-  //   var endDate = new Date((new Date(startDate)).valueOf());
-  //   // var endDate = new Date(startDate);
-  //   const NUM_HOURS_PER_DAY = 10;
-  //   const remainder = hours % NUM_HOURS_PER_DAY;
-  //   // console.log('startDate', endDate)
-  //   while (moment().isoWeekdayCalc([startDate.getUTCFullYear(), startDate.getUTCMonth(), startDate.getUTCDay()], [endDate.getUTCFullYear(), endDate.getUTCMonth(), endDate.getUTCDay() + 1], [1, 2, 3, 4, 5, 6, 7]) < Math.floor(hours / NUM_HOURS_PER_DAY)) {
-  //     // console.log('plus one day', moment().isoWeekdayCalc([startDate.getUTCFullYear(), startDate.getUTCMonth(), startDate.getUTCDay()], [endDate.getUTCFullYear(), endDate.getUTCMonth(), endDate.getUTCDay()+1], [1, 2, 3, 4, 5]) * NUM_HOURS_PER_DAY)
-  //     // console.log(startDate.getUTCDay(), endDate.getUTCDay())
-  //     endDate.setDate(endDate.getDate() + 1);
-  //   }
-  //   // console.log('endDate', endDate)
-  //   endDate = new Date(1000 * 60 * 60 * remainder + (new Date(endDate)).valueOf());
-  //   if (startTime < 0) {
-  //     startTime = 24 + startTime
-  //   }
-  //   if (startTime < 8 || startTime > 18) {
-  //     endDate = new Date(1000 * 60 * 60 * 14 + (new Date(endDate)).valueOf());
-  //   }
-  //   if (hours + startTime > 18 || hours + startTime < 8) {
-  //     endDate = new Date(1000 * 60 * 60 * 14 + (new Date(endDate)).valueOf());
-  //   }
-  //   return endDate;
-  // }
 
   calculateEndDate(startDate: Date, hours: number): Date {
     var endDate = new Date(startDate) 
@@ -684,11 +640,14 @@ export class ManufacturingScheduleComponent implements OnInit {
       if (closeData) {
         console.log('data sent back', closeData)
         var newActivities = closeData['newActivities'];
-        await newActivities.forEach(activity => {
-          this.provisionalActivities.push(activity['_id']);
-          this.addItem(activity, activity['line'], true);
-        })
-
+        await new Promise(async (resolve, reject) => {
+          newActivities.forEach(async (activity, index, array) => {
+            this.provisionalActivities.push(activity['_id']);
+            this.addItem(activity, activity['line'], true);
+            if (index === array.length -1) resolve();
+          })
+        });
+        console.log('provisional', this.provisionalActivities)
         this.refreshData();
         // add activities to data but don't change in backend 
       }

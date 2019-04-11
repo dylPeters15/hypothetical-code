@@ -249,24 +249,13 @@ export class AutoScheduleComponent implements OnInit {
                         if (endValue < minActivityEnd && startValue >= potS) {
                             minActivityEnd = endValue;
                         }
-                        // this.findValidStart(activity, line, temp).then(newDate => {
-                        //     console.log('new date', newDate)
-                        //     returnDate = newDate
-                        // })
                     }
                     else if (potS >= startValue && potS <= endValue) {
-                        // this.findValidStart(activity, line, temp).then(newDate => {
-                        //     console.log('new date', newDate)
-                        //     returnDate = newDate;
-                        // })
                         isValid = false;
                         if (endValue < minActivityEnd && startValue >= potS) {
                             minActivityEnd = endValue;
                         }
                     }
-                    // else {
-                    //     console.log('start', start)
-                    // }
                 })
                 if (isValid) {
                     returnDate = new Date(potS);
