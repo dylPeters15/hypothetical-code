@@ -586,6 +586,23 @@ async countpercaseChanged() {
 }
 
 
+manufacturingrunsetupcostErrorMessage;
+manufacturingrunsetupcostError = false;
+manufacturingrunsetupcostErrorMatcher = {
+  isErrorState: (control: FormControl, form: FormGroupDirective): boolean => {
+    return this.manufacturingrunsetupcostError;
+  }
+}
+async manufacturingrunsetupcostChanged() {
+  if (!this.manufacturingsetupcost || !(this.manufacturingsetupcost>=0)) {
+    this.manufacturingrunsetupcostError = true;
+    this.manufacturingrunsetupcostErrorMessage = "Manufacturing run setup cost must be greater than or equal to 0.";
+    return;
+  }
+  this.manufacturingrunsetupcostError = false;
+}
+
+
 
 
 

@@ -84,7 +84,8 @@
         <br /> 
 
       <mat-form-field>
-        <input type="number" matInput [(ngModel)]="manufacturingsetupcost" placeholder="Manufacturing Setup Cost" (keydown.enter)="createSku()" required>
+        <input type="number" matInput [(ngModel)]="manufacturingsetupcost" placeholder="Manufacturing Setup Cost" (keydown.enter)="createSku()" required [errorStateMatcher]="manufacturingrunsetupcostErrorMatcher" (input)="manufacturingrunsetupcostChanged()">
+        <mat-error>{{manufacturingrunsetupcostErrorMessage}}</mat-error>
       </mat-form-field>
 
       <mat-form-field>
@@ -101,5 +102,5 @@
 </mat-dialog-content>
 <mat-dialog-actions align="center">
   <button mat-raised-button (click)="closeDialog()">Cancel</button>
-  <button mat-raised-button (click)="createSku()" [disabled]="manufacturingrate==''||!manufacturingrate || skunameError || skunumberError || caseupcnumberError || unitupcnumberError || countpercaseErrror || !(manufacturingsetupcost>0) || !(manufacturingruncost>0) || !(manufacturingrate>0) || formulaDoesNotExist" color="primary">{{submit_title}}</button>
+  <button mat-raised-button (click)="createSku()" [disabled]="manufacturingrate==''||!manufacturingrate || skunameError || skunumberError || caseupcnumberError || unitupcnumberError || countpercaseErrror || manufacturingrunsetupcostError || !(manufacturingruncost>0) || !(manufacturingrate>0) || formulaDoesNotExist" color="primary">{{submit_title}}</button>
 </mat-dialog-actions>
