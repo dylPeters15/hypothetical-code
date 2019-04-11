@@ -100,9 +100,11 @@ export class AutoScheduleComponent implements OnInit {
 
         console.log('valid activities', this.validActivities)
         console.log('invalid activities', this.invalidActivities)
-        this.snackBar.open("Unable to schedule activities " + this.invalidActivities, "close", {
-            duration: 4000,
-        });
+        if (this.invalidActivities.length > 0) {
+            this.snackBar.open("Unable to schedule activities " + this.invalidActivities, "close", {
+                duration: 4000,
+            });
+        }
         this.dialogRef.close({newActivities:this.validActivities});
     }
 

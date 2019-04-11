@@ -325,11 +325,9 @@ export class ManufacturingScheduleComponent implements OnInit {
       console.log(newData)
       newData.forEach(item => {
         var itemObject = thisObject.timeline.itemsData.get(item);
-        console.log('data update item', itemObject)
         let visibleTable = new DataForVisibleTable(itemObject['id'], itemObject['group'],
           itemObject['start'], itemObject['end'], itemObject['content'], itemObject['className']);
         thisObject.visibleData.push(visibleTable)
-        console.log(thisObject.visibleData)
 
       })
       thisObject.visibleDataSource = new MatTableDataSource<DataForVisibleTable>(thisObject.visibleData);
@@ -479,7 +477,7 @@ export class ManufacturingScheduleComponent implements OnInit {
               console.log(response)
               thisObject.refreshData();
               thisObject.data.remove(item['id']);
-              thisObject.getTimelineData();
+              // thisObject.getTimelineData();
               callback(item)
             })
         }
