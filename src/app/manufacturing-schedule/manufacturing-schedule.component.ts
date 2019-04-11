@@ -126,11 +126,6 @@ export class ManufacturingScheduleComponent implements OnInit {
           if (goal['enabled']) {
             goal['activities'].forEach(activity => {
               console.log('activity', activity)
-              // this.rest.getActivities(null, 100).subscribe(sameActivity => {
-              //   // console.log('sameActivity', sameActivity)
-              // });
-              console.log('provisional refresh', this.provisionalActivities)
-
               if (activity['activity']['line'] == null || activity['activity']['line'] == undefined) {
                 if (!this.provisionalActivities.includes(activity['activity']['_id'])) {
                   activityList.push(activity['activity'])
@@ -386,7 +381,7 @@ export class ManufacturingScheduleComponent implements OnInit {
           })
         }
         console.log('currentData', this.data)
-        this.data.add({
+        this.data.update({
           id: activity['_id'],
           group: group,
           start: new Date(activity['startdate']),
@@ -662,7 +657,7 @@ export class ManufacturingScheduleComponent implements OnInit {
           if (activity['_id'] == activityid) {
             var profAct = this.data.get(activityid);
             var isOverdue = await this.checkOverdue(profAct['id'], profAct['end'])
-            var className = '';
+            var className = 'normal';
             if (isOverdue) {
               className = 'overdue'
             }
@@ -678,8 +673,9 @@ export class ManufacturingScheduleComponent implements OnInit {
             await this.restv2.modifyActivity(AndVsOr.OR, activityid, activity['newsku'],
             activity['number'], activity['calculatedhours'], activity['sethours'],
           new Date(profAct['start']), profAct['group'])
-          if (index === array.length -1) resolve();
+          
           }
+          if (index === array.length -1) resolve();
         })
   
       })
