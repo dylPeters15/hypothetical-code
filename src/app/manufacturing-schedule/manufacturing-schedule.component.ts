@@ -76,6 +76,7 @@ export class ManufacturingScheduleComponent implements OnInit {
   visibleDataSource = new MatTableDataSource<DataForVisibleTable>(this.visibleData);
   manufacturingLinesToManage: any[] = [];
   isSelectable: boolean = false;
+  provisionalActivities: any[] = [];
 
   constructor(public rest: RestService, private restv2: RestServiceV2, private dialog: MatDialog, myElement: ElementRef) {
     // this.getTimelineData();
@@ -129,7 +130,9 @@ export class ManufacturingScheduleComponent implements OnInit {
               //   // console.log('sameActivity', sameActivity)
               // });
               if (activity['activity']['line'] == null || activity['activity']['line'] == undefined) {
-                activityList.push(activity['activity'])
+                if (!this.provisionalActivities.includes(activity['_id'])) {
+                  activityList.push(activity['activity'])
+                }           
               }
             });
             let goalTable = new DataForGoalsTable(goal['goalname'], activityList, goal['date'])
@@ -348,7 +351,7 @@ export class ManufacturingScheduleComponent implements OnInit {
         console.log('activites', activities)
         if (activities.length > 0) {
           activities.forEach(activity => {
-            this.addItem(activity, line['_id']);
+            this.addItem(activity, line['_id'], false);
           })
         }
         console.log(this.data)
@@ -357,7 +360,7 @@ export class ManufacturingScheduleComponent implements OnInit {
 
   }
 
-  async addItem(activity, group): Promise<void> {
+  async addItem(activity, group, isProvisional): Promise<void> {
     var className = 'normal';
     var duration = activity['calculatedhours'];
     if (activity['sethours']) {
@@ -381,6 +384,9 @@ export class ManufacturingScheduleComponent implements OnInit {
       this.checkOrphaned(activity['_id']).then(isOrphaned => {
         if (isOrphaned) {
           className = 'orphan'
+        }
+        if (isProvisional) {
+          className = 'provisional'
         }
         var edit = false;
         if (this.manufacturingLinesToManage) {
@@ -655,7 +661,7 @@ export class ManufacturingScheduleComponent implements OnInit {
     const dialogConfig = new MatDialogConfig()
     this.legendDialogRef = this.dialog.open(LegendDetailsComponent, dialogConfig);
     this.legendDialogRef.afterClosed().subscribe(event => {
-      this.refreshData();
+      
     });
   }
 
@@ -671,16 +677,23 @@ export class ManufacturingScheduleComponent implements OnInit {
     }
   }
 
-  openAutoScheduleDialog() {
+  async openAutoScheduleDialog(): Promise<void> {
     const dialogConfig = new MatDialogConfig()
     this.autoScheduleDialogRef = this.dialog.open(AutoScheduleComponent, dialogConfig);
-    this.autoScheduleDialogRef.afterClosed().subscribe(closeData => {
+    this.autoScheduleDialogRef.afterClosed().subscribe(async closeData => {
       if (closeData) {
         console.log('data sent back', closeData)
-        var newActivities = closeData['newActivities']
+        var newActivities = closeData['newActivities'];
+        await newActivities.forEach(activity => {
+          this.provisionalActivities.push(activity['_id']);
+          this.addItem(activity, activity['line'], true);
+        })
+
+        this.refreshData();
+        // add activities to data but don't change in backend 
       }
 
-      this.refreshData();
+      
     });
   }
 

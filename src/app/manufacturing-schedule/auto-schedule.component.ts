@@ -135,7 +135,7 @@ export class AutoScheduleComponent implements OnInit {
         await new Promise(async (resolve, reject) => {
             this.getValidLines(activity).then(async potentialLines => {
                 var temp = new Date(this.endDate)
-                temp.setDate(temp.getDate())
+                // temp.setDate(temp.getDate()+1)
                 console.log(temp)
                 var newLine: Object;
                 console.log(potentialLines)
@@ -215,6 +215,13 @@ export class AutoScheduleComponent implements OnInit {
         console.log('potential dates', new Date(potS), new Date(potE))
         var activities = await this.restv2.getActivities(AndVsOr.OR, null, line, null, 100);
         console.log('activities', activities)
+        console.log(this.validActivities) 
+        // need to add one by one
+        this.validActivities.forEach(activity => {
+            if (activity['line'] == line) {
+                activities.push(activity)
+            }
+        })
         if (activities.length > 0) {
             
             
