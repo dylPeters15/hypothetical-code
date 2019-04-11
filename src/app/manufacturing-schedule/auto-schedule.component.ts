@@ -8,6 +8,7 @@ import {FormControl} from '@angular/forms';
 import {MatDatepickerInputEvent} from '@angular/material/datepicker';
 import { auth } from '../auth.service';
 import { LineToLineMappedSource } from 'webpack-sources';
+import { invalid } from 'moment';
 
 export class ActivityData {
     selected: Boolean;
@@ -45,6 +46,8 @@ export class AutoScheduleComponent implements OnInit {
     unscheduledActivityList: any[] = [];
     scheduledActivityList: any[] = [];
     manufacturingLinesToManage: any[] = [];
+    invalidActivities: any[] = [];
+    validActivities: any[] = [];
 
     ngOnInit() {
         // this.paginator.pageSize = 20;
@@ -92,11 +95,25 @@ export class AutoScheduleComponent implements OnInit {
         this.endSet = true;
     }
 
+    async confirm(): Promise<void> {
+        await this.createSchedule()
+
+        console.log('valid activities', this.validActivities)
+        console.log('invalid activities', this.invalidActivities)
+        if (this.invalidActivities.length > 0) {
+            this.snackBar.open("Unable to schedule activities " + this.invalidActivities, "close", {
+                duration: 4000,
+            });
+        }
+        this.dialogRef.close({newActivities:this.validActivities});
+    }
+
     async createSchedule(): Promise<void> {
         var selectedActivities: any[] = [];
         var thisObject = this;
+        
         console.log('endDate', this.endDate);
-        var wait = new Promise((resolve, reject) => {
+        await new Promise((resolve, reject) => {
             this.data.forEach(async (activity, index, array) => {
                 var goal = await this.restv2.getGoals(AndVsOr.OR, null, 
                     activity['goalName'], null, true, 1);
@@ -112,62 +129,52 @@ export class AutoScheduleComponent implements OnInit {
                 }  
             })
         });
-        wait.then(async () => {
-            selectedActivities.sort(thisObject.sortFunction)
-            console.log('selectedActivities sorted', selectedActivities)
-            for (const activity of selectedActivities) {
-            // selectedActivities.forEach(async (activity) => {
+        ///////
+        
+        selectedActivities.sort(thisObject.sortFunction)
+        console.log('selectedActivities sorted', selectedActivities)
+        for (const activity of selectedActivities) {
+        await new Promise(async (resolve, reject) => {
+            this.getValidLines(activity).then(async potentialLines => {
+                var temp = new Date(this.endDate)
+                // temp.setDate(temp.getDate()+1)
+                console.log(temp)
+                var newLine: Object;
+                console.log(potentialLines)
                 await new Promise(async (resolve, reject) => {
-                    this.getValidLines(activity).then(async potentialLines => {
-                        var temp = new Date(this.endDate)
-                        temp.setDate(temp.getDate())
-                        console.log(temp)
-                        var newLine: Object;
-                        console.log(potentialLines)
-                        var wait2 = new Promise(async (resolve, reject) => {
-                            potentialLines.forEach(async (line, index, array) => {
-                                // potentialLines.forEach(line => {
-                                this.findValidStart(activity[2], line['_id'], this.startDate).then(potDates => {
-                                    console.log(potDates, temp)
-                                    if (potDates[1].valueOf() <= temp.valueOf()) {
-                                        temp = potDates[0];
-                                        newLine = line;
-                                    }
-                                    if (index === array.length -1) resolve();
-                                })
-                            })
-                                                
-                            
-                        })
-                        wait2.then(async () => {
-                            console.log('modifyActivty')
-                            console.log('newLine', newLine)
-                            if (newLine) {
-                                this.restv2.modifyActivity(AndVsOr.OR, activity[2]['_id'], activity[2]['sku'], 
-                                    activity[2]['numcases'], activity[2]['calculatedhours'], activity[2]['sethours'], 
-                                    new Date(temp), newLine['_id']).then(response => {
-                                console.log('response', response);
-                                resolve();
-                                
-                                })
+                    potentialLines.forEach(async (line, index, array) => {
+                        // potentialLines.forEach(line => {
+                        this.findValidStart(activity[2], line['_id'], this.startDate).then(potDates => {
+                            console.log(potDates, temp)
+                            if (potDates[1].valueOf() <= temp.valueOf()) {
+                                temp = potDates[0];
+                                newLine = line;
                             }
-                            else {
-                                this.snackBar.open("Unable to schedule activity" + activity[2]['sku']['skuname'], "close", {
-                                    duration: 2000,
-                                  });
-                            }
+                            if (index === array.length -1) resolve();
                         })
-    
                     })
                 })
-                    console.log('next activity')
-            
-            }
-        })
-        
+                    console.log('modifyActivty')
+                    console.log('newLine', newLine)
+                    if (newLine) {
+                        console.log('original activity', activity)
+                        var tempActivity = activity[2];
+                        tempActivity['startdate'] = new Date(temp);
+                        tempActivity['line'] = newLine['_id'];
+                        this.validActivities.push(tempActivity);
+                        resolve();
+                        console.log('original activity', activity, 'new activity', tempActivity)
 
-
-        this.dialogRef.close();
+                    }
+                    else {
+                        this.invalidActivities.push(activity[2]['sku']['skuname']);
+                        console.log('could not schedule activity', activity[2])
+                        resolve();
+                    }
+                })
+            })
+                console.log('next activity')    
+        }
     }
 
     sortFunction(a, b) {
@@ -210,6 +217,13 @@ export class AutoScheduleComponent implements OnInit {
         console.log('potential dates', new Date(potS), new Date(potE))
         var activities = await this.restv2.getActivities(AndVsOr.OR, null, line, null, 100);
         console.log('activities', activities)
+        console.log(this.validActivities) 
+        // need to add one by one
+        this.validActivities.forEach(activity => {
+            if (activity['line'] == line) {
+                activities.push(activity)
+            }
+        })
         if (activities.length > 0) {
             
             
@@ -237,24 +251,13 @@ export class AutoScheduleComponent implements OnInit {
                         if (endValue < minActivityEnd && startValue >= potS) {
                             minActivityEnd = endValue;
                         }
-                        // this.findValidStart(activity, line, temp).then(newDate => {
-                        //     console.log('new date', newDate)
-                        //     returnDate = newDate
-                        // })
                     }
                     else if (potS >= startValue && potS <= endValue) {
-                        // this.findValidStart(activity, line, temp).then(newDate => {
-                        //     console.log('new date', newDate)
-                        //     returnDate = newDate;
-                        // })
                         isValid = false;
                         if (endValue < minActivityEnd && startValue >= potS) {
                             minActivityEnd = endValue;
                         }
                     }
-                    // else {
-                    //     console.log('start', start)
-                    // }
                 })
                 if (isValid) {
                     returnDate = new Date(potS);
