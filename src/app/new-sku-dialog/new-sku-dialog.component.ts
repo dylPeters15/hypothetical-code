@@ -594,7 +594,7 @@ manufacturingrunsetupcostErrorMatcher = {
   }
 }
 async manufacturingrunsetupcostChanged() {
-  if (!this.manufacturingsetupcost || !(this.manufacturingsetupcost>=0)) {
+  if (this.manufacturingsetupcost == null || this.manufacturingsetupcost == undefined || !(this.manufacturingsetupcost>=0)) {
     this.manufacturingrunsetupcostError = true;
     this.manufacturingrunsetupcostErrorMessage = "Manufacturing run setup cost must be greater than or equal to 0.";
     return;
@@ -611,12 +611,29 @@ manufacturingruncostErrorMatcher = {
   }
 }
 async manufacturingruncostChanged() {
-  if (!this.manufacturingruncost || !(this.manufacturingruncost>=0)) {
+  if (this.manufacturingruncost == null || this.manufacturingruncost == undefined || !(this.manufacturingruncost>=0)) {
     this.manufacturingruncostError = true;
     this.manufacturingruncostErrorMessage = "Manufacturing run cost must be greater than or equal to 0.";
     return;
   }
   this.manufacturingruncostError = false;
+}
+
+
+manufacturingrateErrorMessage;
+manufacturingrateError = false;
+manufacturingrateErrorMatcher = {
+  isErrorState: (control: FormControl, form: FormGroupDirective): boolean => {
+    return this.manufacturingrateError;
+  }
+}
+async manufacturingrateChanged() {
+  if (this.manufacturingrate == null || this.manufacturingrate == undefined || !(this.manufacturingrate>=0)) {
+    this.manufacturingrateError = true;
+    this.manufacturingrateErrorMessage = "Manufacturing rate must be greater than or equal to 0.";
+    return;
+  }
+  this.manufacturingrateError = false;
 }
 
 
