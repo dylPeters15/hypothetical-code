@@ -473,6 +473,7 @@ async skunameChanged() {
   this.skunameError = false;
 }
 
+
 skunumberErrorMessage;
 skunumberError = false;
 skunumberErrorMatcher = {
@@ -482,8 +483,6 @@ skunumberErrorMatcher = {
 }
 async skunumberChanged() {
   if (!(this.skunumber>0) || !Number.isInteger(this.skunumber)) {
-    console.log("this.skunumber>0", this.skunumber>0);
-    console.log("isinteger", Number.isInteger(this.skunumber));
     this.skunumberError = true;
     this.skunumberErrorMessage = "SKU Number must be an integer greater than 0.";
     return;
@@ -505,6 +504,35 @@ async skunumberChanged() {
 }
 
 
+caseupcnumberErrorMessage;
+caseupcnumberError = false;
+caseupcnumberErrorMatcher = {
+  isErrorState: (control: FormControl, form: FormGroupDirective): boolean => {
+    return this.caseupcnumberError;
+  }
+}
+async caseupcnumberChanged() {
+  if (!(this.caseupcnumber>0) || !Number.isInteger(this.caseupcnumber)) {
+    this.caseupcnumberError = true;
+    this.caseupcnumberErrorMessage = "Case UPC Number must be an integer greater than 0.";
+    return;
+  }
+  if (this.edit) {
+    var oldSKU = (await this.restv2.getSkus(AndVsOr.AND, this.oldskuname, null, null, null, null, null, 1))[0];
+    if (oldSKU.caseupcnumber == this.caseupcnumber) {
+      this.caseupcnumberError = false;
+      return;
+    }
+  }
+  var result = await this.restv2.getSkus(AndVsOr.OR, null, null, null, this.caseupcnumber, null, null, 1);
+  console.log(result);
+  if (result.length == 1) {
+    this.caseupcnumberError = true;
+    this.caseupcnumberErrorMessage = "Case UPC Number already exists.";
+    return;
+  }
+  this.caseupcnumberError = false;
+}
 
 
 
