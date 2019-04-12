@@ -1,5 +1,5 @@
-import { Component, OnInit, Inject } from '@angular/core';
-import { MatDialogRef} from "@angular/material";
+import { Component, OnInit, Inject, ViewChild, ElementRef } from '@angular/core';
+import { MatDialogRef, MatAutocomplete} from "@angular/material";
 import { MatDialogConfig, MatDialog} from "@angular/material";
 import { RestService } from '../rest.service';
 import {MatSnackBar} from '@angular/material';
@@ -10,6 +10,8 @@ import { NewFormulaDialogComponent } from '../new-formula-dialog/new-formula-dia
 import { AssignSkuProductlineComponent } from '../assign-sku-productline/assign-sku-productline.component';
 import { RestServiceV2, AndVsOr } from '../restv2.service';
 import { FormControl, FormGroupDirective, FormGroup } from '@angular/forms';
+import { ENTER } from '@angular/cdk/keycodes';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-new-sku-dialog',
@@ -36,11 +38,11 @@ export class NewSkuDialogComponent implements OnInit {
   manufacturingrate: number = 0;
   manufacturingsetupcost: number = 0;
   manufacturingruncost: number = 0;
-  productline: string = '';
+  productline: any = '';
   comment: string = '';
 
   formulaname: string = ''; // for displaying purposes.
-  productlinename: string = ''; // for displaying purposes.
+  productlinename: any = ''; // for displaying purposes.
 
 
   // I know this is weird with the double boolean.
@@ -58,7 +60,7 @@ export class NewSkuDialogComponent implements OnInit {
 
   ///////////////////////////////////////////////////////////////////////
 
-  chosen_productline: String;
+  chosen_productline: any;
   chosen_formula: String;
   chosen_scaling_factor: Number;
   
@@ -82,6 +84,15 @@ export class NewSkuDialogComponent implements OnInit {
     this.formula = this.data.present_formula;
     this.formulascalingfactor = this.data.present_formulascalingfactor;
     this.productline = this.data.present_productline;
+    var thisobject = this;
+    if (this.productline) {
+      this.restv2.getProductLines(AndVsOr.AND, this.productline, null, 1).then(result => {
+        if (result.length == 1) {
+          thisobject.selectedProductLine = result[0];
+          console.log(thisobject.selectedProductLine);
+        }
+      });
+    }
     this.manufacturinglines = this.data.present_manufacturinglines;
     this.manufacturingrate = this.data.present_manufacturingrate;
     this.comment = this.data.present_comment;
@@ -368,7 +379,7 @@ export class NewSkuDialogComponent implements OnInit {
         
         // this.manufacturinglines, this.productlinename
         var i;
-        for (i = 0; i < this.manufacturinglines.length; i++)
+        for (i = 0; this.manufacturinglines && i < this.manufacturinglines.length; i++)
         {
             var thisLine = this.manufacturinglines[i];
             thisLine['skus'].push({
@@ -398,13 +409,14 @@ export class NewSkuDialogComponent implements OnInit {
       
       }
     else{
-      var formulaobject = await this.restv2.getFormulas(AndVsOr.OR, null,null,this.formula, null,null,1);
+      console.log("this.formula:", this.formula);
+      var formulaobject = await this.restv2.getFormulas(AndVsOr.OR, null,null,this.formula.formulanumber, null,null,1);
       let formulaId = formulaobject[0]['_id'];
       var modified = await this.restv2.modifySku(AndVsOr.OR,this.oldskuname, this.skuname, this.skunumber, this.caseupcnumber, this.unitupcnumber, this.unitsize, this.countpercase, formulaId, this.formulascalingfactor, this.manufacturingrate, this.manufacturingsetupcost, this.manufacturingruncost, this.comment);
         this.snackBar.open("Successfully modifyed sku " + this.skuname + ".", "close", {
           duration: 2000,
         });
-        var modifiedSku = await this.restv2.getSkus(AndVsOr.OR, this.skuname, this.skuname, null,null,null,null,1);
+        var modifiedSku = await this.restv2.getSkus(AndVsOr.OR, this.skuname, null, null,null,null,null,1);
         console.log("CREATED: " + JSON.stringify(modifiedSku))
         var i;
         for (i = 0; i < this.manufacturinglines.length; i++)
@@ -421,17 +433,29 @@ export class NewSkuDialogComponent implements OnInit {
             });
         }
 
-        var productline = await this.restv2.getProductLines(AndVsOr.OR, this.productlinename, this.productlinename, 1);
-        // this.rest.getProductLines(this.productlinename, "$a",1).subscribe(productLine => {
-          productline[0]['skus'].push({
-            sku: modifiedSku[0]['_id']
-          })
-          this.rest.modifyProductLine(productline[0]['productlinename'], productline[0]['productlinename'], productline[0]['skus']).subscribe(response => {
-            if (response['ok'] != 1 || response['nModified'] != 1)
-            {
-              // print error
+        var productlines = await this.restv2.getProductLines(AndVsOr.AND, null, null, 10000);
+        for (var j = 0; j < productlines.length; j++) {
+          var changedProductLine = false;
+          for (var k = 0; k < productlines[j].skus.length; k++) {
+            if (productlines[j].skus[k].sku._id == modifiedSku[0]['_id']) {
+              console.log("Splice");
+              productlines[j].skus.splice(k,1);
+              changedProductLine = true;
             }
+          }
+          if (changedProductLine) {
+            console.log(productlines[j]);
+            await this.restv2.modifyProductLine(AndVsOr.AND, productlines[j].productlinename, productlines[j].productlinename, productlines[j].skus);
+          }
+        }
+        var newproductlines = await this.restv2.getProductLines(AndVsOr.AND, this.selectedProductLine.productlinename, null, 1);
+        if (newproductlines.length == 1) {
+          newproductlines[0].skus.push({
+            sku: modifiedSku[0]['_id']
           });
+          this.restv2.modifyProductLine(AndVsOr.AND, newproductlines[0].productlinename, newproductlines[0].productlinename, newproductlines[0].skus);
+        }
+
         this.closeDialog();
     }
     this.refreshData();
@@ -634,6 +658,54 @@ async manufacturingrateChanged() {
     return;
   }
   this.manufacturingrateError = false;
+}
+
+
+
+
+
+
+
+
+
+/////////////////////////////// autocompletes ///////////////////////////////
+
+selectedProductLine = null;
+separatorKeysCodes: number[] = [ENTER];
+productlineCtrl = new FormControl();
+autoCompleteProductLines: Observable<string[]> = new Observable(observer => {
+  this.productlineCtrl.valueChanges.subscribe(async newVal => {
+    observer.next(await this.restv2.getProductLines(AndVsOr.AND, null, "(?i).*"+newVal+".*", 1000))
+  });
+});
+@ViewChild('productlineInput') productlineInput: ElementRef<HTMLInputElement>;
+@ViewChild('productlineauto') matAutocomplete: MatAutocomplete;
+productlineremove() {
+  this.selectedProductLine = null;
+  //I hate that I have to do this but whoever originally wrote this class made like 200 different "product line" variables so here we go:
+  console.log(this.productline);
+  console.log(this.productlinename);
+  console.log(this.chosen_productline);
+  this.productline = '';
+  this.productlinename = '';
+  this.chosen_productline = '';
+  this.productLineDoesNotExist = true;
+  this.productLineExists = false;
+}
+productlineselected(event){
+  this.selectedProductLine = event.option.value;
+  //I hate that I have to do this but whoever originally wrote this class made like 200 different "product line" variables so here we go:
+  console.log(this.productline);
+  console.log(this.productlinename);
+  console.log(this.chosen_productline);
+  this.productline = [this.selectedProductLine.productlinename];
+  this.productlinename = [this.selectedProductLine.productlinename];
+  this.chosen_productline = [this.selectedProductLine.productlinename];
+  this.productLineDoesNotExist = false;
+  this.productLineExists = true;
+}
+productlineadd(event) {
+  this.productlineInput.nativeElement.value = "";
 }
 
 

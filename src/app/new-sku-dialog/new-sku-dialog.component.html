@@ -53,22 +53,40 @@
         <br /> 
         <br /> 
 
-        <div  class="dropdown-content" [hidden]="productLineDoesNotExist">
+        <!-- <div  class="dropdown-content" [hidden]="productLineDoesNotExist">
           <p> {{chosen_productline}} </p>
-        </div>
+        </div> -->
+
+
+        <mat-form-field>
+          <mat-chip-list #chipList>
+            <mat-chip *ngIf="selectedProductLine" [selectable]="false" [removable]="true" (removed)="productlineremove()">
+              {{selectedProductLine['productlinename']}}
+              <mat-icon matChipRemove>cancel</mat-icon>
+            </mat-chip>
+            <input placeholder="Enter a Product Line" #productlineInput [formControl]="productlineCtrl" [matAutocomplete]="productlineauto"
+              [matChipInputFor]="chipList" [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+              [matChipInputAddOnBlur]="true" (matChipInputTokenEnd)="productlineadd($event)" [hidden]="selectedProductLine">
+          </mat-chip-list>
+          <mat-autocomplete #productlineauto="matAutocomplete" (optionSelected)="productlineselected($event)">
+            <mat-option *ngFor="let productlineOption of autoCompleteProductLines | async" [value]="productlineOption">
+              {{productlineOption['productlinename']}}
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
   
-        <div  class="add-form-button" [hidden]="productLineExists">
+        <!-- <div  class="add-form-button" [hidden]="productLineExists">
           <mat-dialog-actions align="center" >
             <button class="mat-raised-button" (click)="addProductLineButton()">Add Product Line</button>
           </mat-dialog-actions>
-        </div> 
+        </div>  -->
+
+        <!-- <br /> 
+        <br /> 
+
 
         <br /> 
-        <br /> 
-
-
-        <br /> 
-        <br /> 
+        <br />  -->
 
         <div  class="dropdown-content" [hidden]="manufacturingLineDoesNotExist">
           <p> {{manufacturinglinesNames}} </p>
@@ -104,5 +122,5 @@
 </mat-dialog-content>
 <mat-dialog-actions align="center">
   <button mat-raised-button (click)="closeDialog()">Cancel</button>
-  <button mat-raised-button (click)="createSku()" [disabled]="manufacturingrate==''||!manufacturingrate || skunameError || skunumberError || caseupcnumberError || unitupcnumberError || countpercaseErrror || manufacturingrunsetupcostError || manufacturingruncostError || manufacturingrateError || formulaDoesNotExist" color="primary">{{submit_title}}</button>
+  <button mat-raised-button (click)="createSku()" [disabled]="manufacturingrate==''||!manufacturingrate || skunameError || skunumberError || caseupcnumberError || unitupcnumberError || countpercaseErrror || manufacturingrunsetupcostError || manufacturingruncostError || manufacturingrateError || formulaDoesNotExist || productLineDoesNotExist" color="primary">{{submit_title}}</button>
 </mat-dialog-actions>
