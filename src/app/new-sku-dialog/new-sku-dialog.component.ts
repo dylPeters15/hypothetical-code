@@ -106,6 +106,14 @@ export class NewSkuDialogComponent implements OnInit {
         }
       });
     }
+    if (this.edit) {
+      this.restv2.getSkus(AndVsOr.AND, this.oldskuname, null, null, null, null, null, 1).then(result => {
+        if (result.length == 1) {
+          this.selectedFormula = result[0].formula;
+          this.formulascalingfactor = result[0].formulascalingfactor;
+        }
+      })
+    }
     this.manufacturingrate = this.data.present_manufacturingrate;
     this.comment = this.data.present_comment;
     this.manufacturingsetupcost = this.data.present_manufacturingsetupcost;
@@ -382,7 +390,7 @@ export class NewSkuDialogComponent implements OnInit {
       console.log("right here, formula name is unfortunately " + this.formulaname);
       var formulaobject = await this.restv2.getFormulas(AndVsOr.OR, null,null,this.formula, null,null,1);
       let formulaId = formulaobject[0]['_id'];
-      var created = await this.restv2.createSku(this.skuname, this.skunumber, this.caseupcnumber, this.unitupcnumber, this.unitsize, this.countpercase, formulaId, this.formulascalingfactor, this.manufacturingrate, this.manufacturingsetupcost, this.manufacturingruncost, this.comment);
+      var created = await this.restv2.createSku(this.skuname, this.skunumber, this.caseupcnumber, this.unitupcnumber, this.unitsize, this.countpercase, this.selectedFormula._id, this.formulascalingfactor, this.manufacturingrate, this.manufacturingsetupcost, this.manufacturingruncost, this.comment);
       this.snackBar.open("Successfully created sku " + this.skuname + ".", "close", {
         duration: 2000,
       });
@@ -424,7 +432,7 @@ export class NewSkuDialogComponent implements OnInit {
       console.log("this.formula:", this.formula);
       var formulaobject = await this.restv2.getFormulas(AndVsOr.OR, null,null,this.formula.formulanumber, null,null,1);
       let formulaId = formulaobject[0]['_id'];
-      var modified = await this.restv2.modifySku(AndVsOr.OR,this.oldskuname, this.skuname, this.skunumber, this.caseupcnumber, this.unitupcnumber, this.unitsize, this.countpercase, formulaId, this.formulascalingfactor, this.manufacturingrate, this.manufacturingsetupcost, this.manufacturingruncost, this.comment);
+      var modified = await this.restv2.modifySku(AndVsOr.OR,this.oldskuname, this.skuname, this.skunumber, this.caseupcnumber, this.unitupcnumber, this.unitsize, this.countpercase, this.selectedFormula._id, this.formulascalingfactor, this.manufacturingrate, this.manufacturingsetupcost, this.manufacturingruncost, this.comment);
         this.snackBar.open("Successfully modifyed sku " + this.skuname + ".", "close", {
           duration: 2000,
         });
@@ -700,6 +708,21 @@ async manufacturingrateChanged() {
   this.manufacturingrateError = false;
 }
 
+formulascalingfactorErrorMessage;
+formulascalingfactorError = false;
+formulascalingfactorErrorMatcher = {
+  isErrorState: (control: FormControl, form: FormGroupDirective): boolean => {
+    return this.formulascalingfactorError;
+  }
+}
+async formulascalingfactorChanged() {
+  if (!(this.formulascalingfactor>0)) {
+    this.formulascalingfactorError = true;
+    this.formulascalingfactorErrorMessage = "Formula scaling factor must be greater than 0.";
+    return;
+  }
+  this.formulascalingfactorError = false;
+}
 
 
 
@@ -709,9 +732,9 @@ async manufacturingrateChanged() {
 
 
 /////////////////////////////// autocompletes ///////////////////////////////
+separatorKeysCodes: number[] = [ENTER];
 
 selectedProductLine = null;
-separatorKeysCodes: number[] = [ENTER];
 productlineCtrl = new FormControl();
 autoCompleteProductLines: Observable<string[]> = new Observable(observer => {
   this.productlineCtrl.valueChanges.subscribe(async newVal => {
@@ -746,6 +769,26 @@ productlineselected(event){
 }
 productlineadd(event) {
   this.productlineInput.nativeElement.value = "";
+}
+
+
+selectedFormula = null;
+formulaCtrl = new FormControl();
+autoCompleteFormulas: Observable<string[]> = new Observable(observer => {
+  this.formulaCtrl.valueChanges.subscribe(async newVal => {
+    observer.next(await this.restv2.getFormulas(AndVsOr.AND, null, "(?i).*"+newVal+".*", null, null, null, 1000))
+  });
+});
+@ViewChild('formulaInput') formulaInput: ElementRef<HTMLInputElement>;
+@ViewChild('formulaauto') formulamatAutocomplete: MatAutocomplete;
+formularemove() {
+  this.selectedFormula = null;
+}
+formulaselected(event){
+  this.selectedFormula = event.option.value;
+}
+formulaadd(event) {
+  this.formulaInput.nativeElement.value = "";
 }
 
 

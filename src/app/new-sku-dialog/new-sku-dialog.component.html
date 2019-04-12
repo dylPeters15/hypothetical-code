@@ -33,7 +33,7 @@
         <mat-error>{{countpercaseErrorMessage}}</mat-error>
       </mat-form-field>
 
-      <div  class="dropdown-content" [hidden]="formulaDoesNotExist">
+      <!-- <div  class="dropdown-content" [hidden]="formulaDoesNotExist">
         <p> {{chosen_formula}} | {{chosen_scaling_factor}} <button type="submit" (click)="addFormulaButton()">Edit</button></p>
       </div>
 
@@ -41,7 +41,31 @@
         <mat-dialog-actions align="center" >
           <button class="mat-raised-button" (click)="addFormulaButton()">Add Existing Formula</button>
         </mat-dialog-actions>
-      </div>
+      </div> -->
+
+      <br>
+
+      <mat-form-field>
+        <mat-chip-list #formulachipList>
+          <mat-chip *ngIf="selectedFormula" [selectable]="false" [removable]="true" (removed)="formularemove()">
+            {{selectedFormula['formulaname']}}
+            <mat-icon matChipRemove>cancel</mat-icon>
+          </mat-chip>
+          <input placeholder="Enter a Formula" #formulaInput [formControl]="formulaCtrl" [matAutocomplete]="formulaauto"
+            [matChipInputFor]="formulachipList" [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+            [matChipInputAddOnBlur]="true" (matChipInputTokenEnd)="formulaadd($event)" [hidden]="selectedFormula">
+        </mat-chip-list>
+        <mat-autocomplete #formulaauto="matAutocomplete" (optionSelected)="formulaselected($event)">
+          <mat-option *ngFor="let formulaOption of autoCompleteFormulas | async" [value]="formulaOption">
+            {{formulaOption['formulaname']}}
+          </mat-option>
+        </mat-autocomplete>
+      </mat-form-field>
+
+      <mat-form-field>
+        <input type="number" matInput [(ngModel)]="formulascalingfactor" placeholder="Formula Scaling Factor" required [errorStateMatcher]="formulascalingfactorErrorMatcher" (input)="formulascalingfactorChanged()">
+        <mat-error>{{formulascalingfactorErrorMessage}}</mat-error>
+      </mat-form-field>
 
       <!-- <br />  -->
       <!-- <span>OR</span> -->
@@ -53,6 +77,7 @@
  
         <br /> 
         <br /> 
+        <br>
 
         <!-- <div  class="dropdown-content" [hidden]="productLineDoesNotExist">
           <p> {{chosen_productline}} </p>
@@ -140,5 +165,5 @@
 </mat-dialog-content>
 <mat-dialog-actions align="center">
   <button mat-raised-button (click)="closeDialog()">Cancel</button>
-  <button mat-raised-button (click)="createSku()" [disabled]="skunameError || skunumberError || caseupcnumberError || unitupcnumberError || countpercaseErrror || manufacturingrunsetupcostError || manufacturingruncostError || manufacturingrateError || formulaDoesNotExist || productLineDoesNotExist" color="primary">{{submit_title}}</button>
+  <button mat-raised-button (click)="createSku()" [disabled]="skunameError || skunumberError || caseupcnumberError || unitupcnumberError || countpercaseErrror || manufacturingrunsetupcostError || manufacturingruncostError || manufacturingrateError || selectedFormula == null || productLineDoesNotExist" color="primary">{{submit_title}}</button>
 </mat-dialog-actions>
