@@ -46,5 +46,5 @@
 </mat-dialog-content>
 <mat-dialog-actions align="center">
   <button mat-raised-button (click)="closeDialog()">Cancel</button>
-  <button mat-raised-button (click)="createLine()" [disabled]="linename==''||shortname==''||shortnameError||linenameError" color="primary">Create</button>
+  <button mat-raised-button (click)="createLine()" [disabled]="linename==''||shortname==''||shortnameError||linenameError" color="primary">{{edit?'Modify':'Create'}}</button>
 </mat-dialog-actions>
