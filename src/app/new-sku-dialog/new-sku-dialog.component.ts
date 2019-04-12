@@ -344,7 +344,7 @@ export class NewSkuDialogComponent implements OnInit {
     }
 
   async createSku() {
-    console.log("right now, formula is " + this.formula); // for some reason formula is the number here?
+    console.log("right now, formula is " + this.formula + ", " + this.selectedFormula); // for some reason formula is the number here?
     var caseAsString = this.caseupcnumber.toString();
     var upcAsString = this.unitupcnumber.toString();
 
@@ -363,12 +363,12 @@ export class NewSkuDialogComponent implements OnInit {
       });
     }
 
-    else if (this.formula == undefined || this.formula == null)
-    {
-      this.snackBar.open("A formula must be specified for this sku.", "close", {
-        duration: 4000,
-      });
-    }
+    //else if (this.formula == undefined || this.formula == null)
+   // {
+     // this.snackBar.open("A formula must be specified for this sku.", "close", {
+     //   duration: 4000,
+     // });
+   // }
 
     // else if(caseCheck)
     //   {
