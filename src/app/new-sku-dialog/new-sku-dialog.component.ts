@@ -336,33 +336,33 @@ export class NewSkuDialogComponent implements OnInit {
       });
     }
 
-    else if(caseCheck)
-      {
-        this.snackBar.open("Case UPC# must start with 0-1 or 6-9.", "close", {
-          duration: 2000,
-        });
-      }
+    // else if(caseCheck)
+    //   {
+    //     this.snackBar.open("Case UPC# must start with 0-1 or 6-9.", "close", {
+    //       duration: 2000,
+    //     });
+    //   }
 
-    else if(upcCheck)
-      {
-        this.snackBar.open("Unit UPC# must start with 0-1 or 6-9.", "close", {
-          duration: 2000,
-        });
-      }
+    // else if(upcCheck)
+    //   {
+    //     this.snackBar.open("Unit UPC# must start with 0-1 or 6-9.", "close", {
+    //       duration: 2000,
+    //     });
+    //   }
 
-      else if(caseCheckLength)
-      {
-        this.snackBar.open("Case UPC# must be a 12 digit number", "close", {
-          duration: 2000,
-        });
-      }
+    //   else if(caseCheckLength)
+    //   {
+    //     this.snackBar.open("Case UPC# must be a 12 digit number", "close", {
+    //       duration: 2000,
+    //     });
+    //   }
 
-      else if(upcCheckLength)
-      {
-        this.snackBar.open("Unit UPC# must be a 12 digit number", "close", {
-          duration: 2000,
-        });
-      }
+    //   else if(upcCheckLength)
+    //   {
+    //     this.snackBar.open("Unit UPC# must be a 12 digit number", "close", {
+    //       duration: 2000,
+    //     });
+    //   }
       else
       {
     if (this.edit == false)
