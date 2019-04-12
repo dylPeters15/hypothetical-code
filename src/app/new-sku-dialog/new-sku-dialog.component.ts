@@ -212,20 +212,27 @@ export class NewSkuDialogComponent implements OnInit {
     //this.newIngredientDialogRef.componentInstance.ingredientNameList = this.ingredientNameList;
     this.newFormulaDialogRef.afterClosed().subscribe(event => {
       if (this.newFormulaDialogRef.componentInstance.formulaName) {
-        // grab the new formula values
-      var new_formula = this.newFormulaDialogRef.componentInstance.formulaName;
-      this.formulascalingfactor = this.newFormulaDialogRef.componentInstance.scalingFactor;
+        this.restv2.getFormulas(AndVsOr.AND, this.newFormulaDialogRef.componentInstance.formulaName, null, null, null, null, 1).then(response => {
+          console.log("Fromula response");
+          if (response.length == 1) {
+            this.selectedFormula = response[0];
+          }
+        })
+      //   // grab the new formula values
+      // var new_formula = this.newFormulaDialogRef.componentInstance.formulaName;
+      // this.formulascalingfactor = this.newFormulaDialogRef.componentInstance.scalingFactor;
 
-      // get object id from formula name
-      this.rest.getFormulas(new_formula,0, 0, 1).subscribe(response => {
-        this.snackBar.open("Successfully added formula " + new_formula, "close", {
-          duration: 2000,
-             });
-          this.formula = response[0]['formulanumber'];
-          this.formulaname = response[0]['formulaname'];
+      // // get object id from formula name
+      // this.rest.getFormulas(new_formula,0, 0, 1).subscribe(response => {
+      //   this.snackBar.open("Successfully added formula " + new_formula, "close", {
+      //     duration: 2000,
+      //        });
+      //     this.formula = response[0]['formulanumber'];
+      //     this.formulaname = response[0]['formulaname'];
+      //     this.selectedFormula = response[0];
         
-        this.refreshData();
-        });
+      //   this.refreshData();
+      //   });
       }
       
         });
@@ -254,7 +261,14 @@ export class NewSkuDialogComponent implements OnInit {
     dialogConfig.data = {edit: edit, present_formulaname: present_formulaname, present_formulanumber: present_formulanumber, present_ingredientsandquantities: present_ingredientsandquantities, present_comment:present_comment};
     //console.log('formulas ingredient data', present_ingredientTuples)
     this.newDialogRef = this.dialog.open(NewFormulaDialogComponent, dialogConfig);
-    this.newDialogRef.afterClosed().subscribe(event => {
+    this.newDialogRef.afterClosed().subscribe(async event => {
+      console.log(event);
+      if (event.formulaname) {
+        var formulas = await this.restv2.getFormulas(AndVsOr.AND, event.formulaname, null, null, null, null, 1);
+        if (formulas.length == 1) {
+          this.selectedFormula = formulas[0];
+        }
+      }
       this.refreshData();
     });
   }
