@@ -2,107 +2,160 @@
 <mat-dialog-content align="center">
   <mat-card>
     <mat-card-content style="display: grid; width: 100%; justify-items: center;">
-      
-      <mat-form-field>
-        <input matInput [(ngModel)]="skuname" placeholder="Name" maxlength="32" required [errorStateMatcher]="skunameErrorMatcher" (input)="skunameChanged()">
-        <mat-error>SKU Name already exists.</mat-error>
-      </mat-form-field>
 
-      <mat-form-field>
-        <input type="number" matInput [(ngModel)]="skunumber" placeholder="Sku#" required [errorStateMatcher]="skunumberErrorMatcher" (input)="skunumberChanged()">
-        <mat-error>{{skunumberErrorMessage}}</mat-error>
-      </mat-form-field>
+      <div>
+        <mat-form-field style="float: left;">
+          <input matInput [(ngModel)]="skuname" placeholder="Name" maxlength="32" required
+            [errorStateMatcher]="skunameErrorMatcher" (input)="skunameChanged()">
+          <mat-error>SKU Name already exists.</mat-error>
+        </mat-form-field>
 
-      <mat-form-field>
-        <input type="number" matInput [(ngModel)]="caseupcnumber" placeholder="Case UPC#" [errorStateMatcher]="caseupcnumberErrorMatcher" (input)="caseupcnumberChanged()">
-        <mat-error>{{caseupcnumberErrorMessage}}</mat-error>
-      </mat-form-field>
-
-      <mat-form-field>
-        <input type="number" matInput [(ngModel)]="unitupcnumber" placeholder="Unit UPC#" [errorStateMatcher]="unitupcnumberErrorMatcher" (input)="unitupcnumberChanged()">
-        <mat-error>{{unitupcnumberErrorMessage}}</mat-error>
-      </mat-form-field>
-
-      <mat-form-field>
-        <input matInput [(ngModel)]="unitsize" placeholder="Unit Size" required [errorStateMatcher]="unitsizeErrorMatcher" (input)="unitsizeChanged()">
-        <mat-error>{{unitsizeErrorMessage}}</mat-error>
-      </mat-form-field>
-
-      <mat-form-field>
-        <input type="number" matInput [(ngModel)]="countpercase" placeholder="Count Per Case" required [errorStateMatcher]="countpercaseErrorMatcher" (input)="countpercaseChanged()">
-        <mat-error>{{countpercaseErrorMessage}}</mat-error>
-      </mat-form-field>
-
-      <div  class="dropdown-content" [hidden]="formulaDoesNotExist">
-        <p> {{chosen_formula}} | {{chosen_scaling_factor}} <button type="submit" (click)="addFormulaButton()">Edit</button></p>
+        <mat-form-field style="float: left;">
+          <input type="number" matInput [(ngModel)]="skunumber" placeholder="Sku#" required
+            [errorStateMatcher]="skunumberErrorMatcher" (input)="skunumberChanged()">
+          <mat-error>{{skunumberErrorMessage}}</mat-error>
+        </mat-form-field>
       </div>
 
-      <div  class="add-form-button" [hidden]="formulaExists">
-        <mat-dialog-actions align="center" >
-          <button class="mat-raised-button" (click)="addFormulaButton()">Add Existing Formula</button>
-        </mat-dialog-actions>
+      <div>
+        <mat-form-field style="float: left;">
+          <input type="number" matInput [(ngModel)]="caseupcnumber" placeholder="Case UPC#"
+            [errorStateMatcher]="caseupcnumberErrorMatcher" (input)="caseupcnumberChanged()">
+          <mat-error>{{caseupcnumberErrorMessage}}</mat-error>
+        </mat-form-field>
+
+        <mat-form-field style="float: left;">
+          <input type="number" matInput [(ngModel)]="unitupcnumber" placeholder="Unit UPC#"
+            [errorStateMatcher]="unitupcnumberErrorMatcher" (input)="unitupcnumberChanged()">
+          <mat-error>{{unitupcnumberErrorMessage}}</mat-error>
+        </mat-form-field>
       </div>
 
-      <br /> 
-      <br /> 
+      <div>
+        <mat-form-field style="float: left;">
+          <input matInput [(ngModel)]="unitsize" placeholder="Unit Size" required
+            [errorStateMatcher]="unitsizeErrorMatcher" (input)="unitsizeChanged()">
+          <mat-error>{{unitsizeErrorMessage}}</mat-error>
+        </mat-form-field>
 
-        <mat-dialog-actions align="center" >
+        <mat-form-field style="float: left;">
+          <input type="number" matInput [(ngModel)]="countpercase" placeholder="Count Per Case" required
+            [errorStateMatcher]="countpercaseErrorMatcher" (input)="countpercaseChanged()">
+          <mat-error>{{countpercaseErrorMessage}}</mat-error>
+        </mat-form-field>
+
+      </div>
+
+      <div>
+        <mat-form-field style="float: left;">
+          <mat-chip-list #formulachipList>
+            <mat-chip *ngIf="selectedFormula" [selectable]="false" [removable]="true" (removed)="formularemove()">
+              {{selectedFormula['formulaname']}}
+              <mat-icon matChipRemove>cancel</mat-icon>
+            </mat-chip>
+            <input placeholder="Enter a Formula" #formulaInput [formControl]="formulaCtrl"
+              [matAutocomplete]="formulaauto" [matChipInputFor]="formulachipList"
+              [matChipInputSeparatorKeyCodes]="separatorKeysCodes" [matChipInputAddOnBlur]="true"
+              (matChipInputTokenEnd)="formulaadd($event)" [hidden]="selectedFormula">
+          </mat-chip-list>
+          <mat-autocomplete #formulaauto="matAutocomplete" (optionSelected)="formulaselected($event)">
+            <mat-option *ngFor="let formulaOption of autoCompleteFormulas | async" [value]="formulaOption">
+              {{formulaOption['formulaname']}}
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
+
+        <mat-form-field style="float: left;">
+          <input type="number" matInput [(ngModel)]="formulascalingfactor" placeholder="Formula Scaling Factor" required
+            [errorStateMatcher]="formulascalingfactorErrorMatcher" (input)="formulascalingfactorChanged()">
+          <mat-error>{{formulascalingfactorErrorMessage}}</mat-error>
+        </mat-form-field>
+      </div>
+
+      <div>
+        <mat-dialog-actions align="center">
           <button class="mat-raised-button" (click)="newFormulaButton()">Create New Formula</button>
         </mat-dialog-actions>
- 
-        <br /> 
-        <br /> 
+        <br>
+        <br>
+      </div>
 
-        <div  class="dropdown-content" [hidden]="productLineDoesNotExist">
-          <p> {{chosen_productline}} </p>
-        </div>
-  
-        <div  class="add-form-button" [hidden]="productLineExists">
-          <mat-dialog-actions align="center" >
-            <button class="mat-raised-button" (click)="addProductLineButton()">Add Product Line</button>
-          </mat-dialog-actions>
-        </div> 
+      <div>
+        <mat-form-field style="float: left;">
+          <mat-chip-list #productlinechipList>
+            <mat-chip *ngIf="selectedProductLine" [selectable]="false" [removable]="true"
+              (removed)="productlineremove()">
+              {{selectedProductLine['productlinename']}}
+              <mat-icon matChipRemove>cancel</mat-icon>
+            </mat-chip>
+            <input placeholder="Enter a Product Line" #productlineInput [formControl]="productlineCtrl"
+              [matAutocomplete]="productlineauto" [matChipInputFor]="productlinechipList"
+              [matChipInputSeparatorKeyCodes]="separatorKeysCodes" [matChipInputAddOnBlur]="true"
+              (matChipInputTokenEnd)="productlineadd($event)" [hidden]="selectedProductLine">
+          </mat-chip-list>
+          <mat-autocomplete #productlineauto="matAutocomplete" (optionSelected)="productlineselected($event)">
+            <mat-option *ngFor="let productlineOption of autoCompleteProductLines | async" [value]="productlineOption">
+              {{productlineOption['productlinename']}}
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
 
-        <br /> 
-        <br /> 
+        <mat-form-field style="float: left;">
+          <mat-chip-list #manufacturinglinechipList>
+            <mat-chip *ngFor="let mfgLine of selectedManufacturingLines" [selectable]="false" [removable]="true"
+              (removed)="manufacturinglineremove(mfgLine)">
+              {{mfgLine['linename']}}
+              <mat-icon matChipRemove>cancel</mat-icon>
+            </mat-chip>
+            <input placeholder="Enter Manufacturing Lines" #manufacturinglineInput [formControl]="manufacturinglineCtrl"
+              [matAutocomplete]="manufacturinglineauto" [matChipInputFor]="manufacturinglinechipList"
+              [matChipInputSeparatorKeyCodes]="separatorKeysCodes" [matChipInputAddOnBlur]="true"
+              (matChipInputTokenEnd)="manufacturinglineadd($event)">
+          </mat-chip-list>
+          <mat-autocomplete #manufacturinglineauto="matAutocomplete"
+            (optionSelected)="manufacturinglineselected($event)">
+            <mat-option *ngFor="let manufacturinglineOption of autoCompleteManufacturingLines | async"
+              [value]="manufacturinglineOption">
+              {{manufacturinglineOption['linename']}}
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
+      </div>
 
+      <div>
+        <mat-form-field style="float: left;">
+          <input type="number" matInput [(ngModel)]="manufacturingsetupcost" placeholder="Manufacturing Setup Cost"
+            (keydown.enter)="createSku()" required [errorStateMatcher]="manufacturingrunsetupcostErrorMatcher"
+            (input)="manufacturingrunsetupcostChanged()">
+          <mat-error>{{manufacturingrunsetupcostErrorMessage}}</mat-error>
+        </mat-form-field>
 
-        <br /> 
-        <br /> 
+        <mat-form-field style="float: left;">
+          <input type="number" matInput [(ngModel)]="manufacturingruncost"
+            placeholder="Manufacturing Run Cost (per case)" (keydown.enter)="createSku()" required
+            [errorStateMatcher]="manufacturingruncostErrorMatcher" (input)="manufacturingruncostChanged()">
+          <mat-error>{{manufacturingruncostErrorMessage}}</mat-error>
+        </mat-form-field>
+      </div>
 
-        <div  class="dropdown-content" [hidden]="manufacturingLineDoesNotExist">
-          <p> {{manufacturinglinesNames}} </p>
-        </div>
-  
-        <div  class="add-form-button" [hidden]="manufacturingLineExists">
-          <mat-dialog-actions align="center" >
-            <button class="mat-raised-button" (click)="addManufacturingLineButton()">Add Manufacturing Line(s)</button>
-          </mat-dialog-actions>
-        </div> 
+      <div>
+        <mat-form-field style="float: left;">
+          <input type="number" matInput [(ngModel)]="manufacturingrate" placeholder="Manufacturing Rate"
+            (keydown.enter)="createSku()" required [errorStateMatcher]="manufacturingrateErrorMatcher"
+            (input)="manufacturingrateChanged()">
+          <mat-error>{{manufacturingrateErrorMessage}}</mat-error>
+        </mat-form-field>
+      </div>
 
-        <br /> 
-        <br /> 
-
-      <mat-form-field>
-        <input type="number" matInput [(ngModel)]="manufacturingsetupcost" placeholder="Manufacturing Setup Cost" (keydown.enter)="createSku()" required [errorStateMatcher]="manufacturingrunsetupcostErrorMatcher" (input)="manufacturingrunsetupcostChanged()">
-        <mat-error>{{manufacturingrunsetupcostErrorMessage}}</mat-error>
-      </mat-form-field>
-
-      <mat-form-field>
-        <input type="number" matInput [(ngModel)]="manufacturingruncost" placeholder="Manufacturing Run Cost (per case)" (keydown.enter)="createSku()" required [errorStateMatcher]="manufacturingruncostErrorMatcher" (input)="manufacturingruncostChanged()">
-        <mat-error>{{manufacturingruncostErrorMessage}}</mat-error>
-      </mat-form-field>
-
-      <mat-form-field>
-        <input type="number" matInput [(ngModel)]="manufacturingrate" placeholder="Manufacturing Rate" (keydown.enter)="createSku()" required [errorStateMatcher]="manufacturingrateErrorMatcher" (input)="manufacturingrateChanged()">
-        <mat-error>{{manufacturingrateErrorMessage}}</mat-error>
-      </mat-form-field>
-      <textarea rows="5" cols="50" style="border:inset 4px grey;" matInput [(ngModel)]="comment" placeholder="Additional Comments"> </textarea>
+      <textarea rows="5" cols="50" style="border:inset 4px grey;" matInput [(ngModel)]="comment"
+        placeholder="Additional Comments"> </textarea>
 
     </mat-card-content>
   </mat-card>
 </mat-dialog-content>
 <mat-dialog-actions align="center">
   <button mat-raised-button (click)="closeDialog()">Cancel</button>
-  <button mat-raised-button (click)="createSku()" [disabled]="manufacturingrate==''||!manufacturingrate || skunameError || skunumberError || caseupcnumberError || unitupcnumberError || countpercaseErrror || manufacturingrunsetupcostError || manufacturingruncostError || manufacturingrateError || formulaDoesNotExist" color="primary">{{submit_title}}</button>
+  <button mat-raised-button (click)="createSku()"
+    [disabled]="skunameError || skunumberError || caseupcnumberError || unitupcnumberError || countpercaseErrror || manufacturingrunsetupcostError || manufacturingruncostError || manufacturingrateError || selectedFormula == null || productLineDoesNotExist"
+    color="primary">{{submit_title}}</button>
 </mat-dialog-actions>

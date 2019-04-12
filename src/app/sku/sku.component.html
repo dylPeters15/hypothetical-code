@@ -89,6 +89,9 @@
             <ng-container matColumnDef="comment">
                 <mat-header-cell *matHeaderCellDef mat-sort-header>Comment</mat-header-cell>
                 <mat-cell *matCellDef="let sku">
+                    <div *ngIf="sku['comment'].length == 0">
+                        No comment
+                    </div>
                     {{sku['comment']}}
                 </mat-cell>
             </ng-container>

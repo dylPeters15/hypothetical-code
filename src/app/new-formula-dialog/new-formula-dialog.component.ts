@@ -74,7 +74,7 @@ export class NewFormulaDialogComponent implements OnInit {
   }
 
   closeDialog() {
-    this.dialogRef.close();
+    this.dialogRef.close({formulaname: this.formulaname});
     this.edit = this.data.edit;
     this.formulaname = this.data.present_formulaname;
     this.oldformulaname = this.data.present_formulaname;
