@@ -59,13 +59,13 @@
 
 
         <mat-form-field>
-          <mat-chip-list #chipList>
+          <mat-chip-list #productlinechipList>
             <mat-chip *ngIf="selectedProductLine" [selectable]="false" [removable]="true" (removed)="productlineremove()">
               {{selectedProductLine['productlinename']}}
               <mat-icon matChipRemove>cancel</mat-icon>
             </mat-chip>
             <input placeholder="Enter a Product Line" #productlineInput [formControl]="productlineCtrl" [matAutocomplete]="productlineauto"
-              [matChipInputFor]="chipList" [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+              [matChipInputFor]="productlinechipList" [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
               [matChipInputAddOnBlur]="true" (matChipInputTokenEnd)="productlineadd($event)" [hidden]="selectedProductLine">
           </mat-chip-list>
           <mat-autocomplete #productlineauto="matAutocomplete" (optionSelected)="productlineselected($event)">
@@ -88,7 +88,7 @@
         <br /> 
         <br />  -->
 
-        <div  class="dropdown-content" [hidden]="manufacturingLineDoesNotExist">
+        <!-- <div  class="dropdown-content" [hidden]="manufacturingLineDoesNotExist">
           <p> {{manufacturinglinesNames}} </p>
         </div>
   
@@ -96,7 +96,24 @@
           <mat-dialog-actions align="center" >
             <button class="mat-raised-button" (click)="addManufacturingLineButton()">Add Manufacturing Line(s)</button>
           </mat-dialog-actions>
-        </div> 
+        </div>  -->
+
+        <mat-form-field>
+          <mat-chip-list #manufacturinglinechipList>
+            <mat-chip *ngFor="let mfgLine of selectedManufacturingLines" [selectable]="false" [removable]="true" (removed)="manufacturinglineremove(mfgLine)">
+              {{mfgLine['linename']}}
+              <mat-icon matChipRemove>cancel</mat-icon>
+            </mat-chip>
+            <input placeholder="Enter Manufacturing Lines" #manufacturinglineInput [formControl]="manufacturinglineCtrl" [matAutocomplete]="manufacturinglineauto"
+              [matChipInputFor]="manufacturinglinechipList" [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+              [matChipInputAddOnBlur]="true" (matChipInputTokenEnd)="manufacturinglineadd($event)">
+          </mat-chip-list>
+          <mat-autocomplete #manufacturinglineauto="matAutocomplete" (optionSelected)="manufacturinglineselected($event)">
+            <mat-option *ngFor="let manufacturinglineOption of autoCompleteManufacturingLines | async" [value]="manufacturinglineOption">
+              {{manufacturinglineOption['linename']}}
+            </mat-option>
+          </mat-autocomplete>
+        </mat-form-field>
 
         <br /> 
         <br /> 

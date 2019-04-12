@@ -10,7 +10,7 @@ import { NewFormulaDialogComponent } from '../new-formula-dialog/new-formula-dia
 import { AssignSkuProductlineComponent } from '../assign-sku-productline/assign-sku-productline.component';
 import { RestServiceV2, AndVsOr } from '../restv2.service';
 import { FormControl, FormGroupDirective, FormGroup } from '@angular/forms';
-import { ENTER } from '@angular/cdk/keycodes';
+import { ENTER, A } from '@angular/cdk/keycodes';
 import { Observable } from 'rxjs';
 
 @Component({
@@ -94,6 +94,18 @@ export class NewSkuDialogComponent implements OnInit {
       });
     }
     this.manufacturinglines = this.data.present_manufacturinglines;
+    console.log("MFG Lines: ", this.manufacturinglines);
+    if (this.edit) {
+      this.restv2.getLine(AndVsOr.AND, null, null, null, null, 10000).then(lines => {
+        for(let line of lines) {
+          for (let sku of line.skus) {
+            if (sku.sku.skuname == this.oldskuname) {
+              this.selectedManufacturingLines.push(line);
+            }
+          }
+        }
+      });
+    }
     this.manufacturingrate = this.data.present_manufacturingrate;
     this.comment = this.data.present_comment;
     this.manufacturingsetupcost = this.data.present_manufacturingsetupcost;
@@ -379,9 +391,9 @@ export class NewSkuDialogComponent implements OnInit {
         
         // this.manufacturinglines, this.productlinename
         var i;
-        for (i = 0; this.manufacturinglines && i < this.manufacturinglines.length; i++)
+        for (i = 0; this.selectedManufacturingLines && i < this.selectedManufacturingLines.length; i++)
         {
-            var thisLine = this.manufacturinglines[i];
+            var thisLine = this.selectedManufacturingLines[i];
             thisLine['skus'].push({
               sku: created['_id']
             });
@@ -418,20 +430,48 @@ export class NewSkuDialogComponent implements OnInit {
         });
         var modifiedSku = await this.restv2.getSkus(AndVsOr.OR, this.skuname, null, null,null,null,null,1);
         console.log("CREATED: " + JSON.stringify(modifiedSku))
-        var i;
-        for (i = 0; i < this.manufacturinglines.length; i++)
-        {
-            var thisLine = this.manufacturinglines[i];
-            thisLine['skus'].push({
+
+        //modify manufacturing lines.
+        var allMfgLines = await this.restv2.getLine(AndVsOr.AND, null, null, null, null, 10000);
+        for (var j = 0; j < allMfgLines.length; j++) {
+          var changedMfgLine = false;
+          for (var k = 0; k < allMfgLines[j].skus.length; k++) {
+            if (allMfgLines[j].skus[k].sku._id == modifiedSku[0]['_id']) {
+              console.log("Splice");
+              allMfgLines[j].skus.splice(k,1);
+              changedMfgLine = true;
+            }
+          }
+          if (changedMfgLine) {
+            console.log(allMfgLines[j]);
+            await this.restv2.modifyLine(AndVsOr.AND, allMfgLines[j].linename, allMfgLines[j].linename, allMfgLines[j].shortname, allMfgLines[j].skus, allMfgLines[j].comment);
+          }
+        }
+        for (var j = 0; j < this.selectedManufacturingLines.length; j++) {
+          var newmfglines = await this.restv2.getLine(AndVsOr.AND, this.selectedManufacturingLines[j].linename, null, null, null, 1);
+          if (newmfglines.length == 1) {
+            newmfglines[0].skus.push({
               sku: modifiedSku[0]['_id']
             });
-            this.rest.modifyLine(thisLine['linename'], thisLine['linename'], thisLine['shortname'], thisLine['skus'], thisLine['comment']).subscribe(response => {
-              if (response['ok'] != 1 || response['nModified'] != 1)
-              {
-                // print error
-              }
-            });
+            this.restv2.modifyLine(AndVsOr.AND, newmfglines[0].linename, newmfglines[0].linename, newmfglines[0].shortname, newmfglines[0].skus, newmfglines[0].comment);
+          }
         }
+        
+
+        // var i;
+        // for (i = 0; i < this.manufacturinglines.length; i++)
+        // {
+        //     var thisLine = this.manufacturinglines[i];
+        //     thisLine['skus'].push({
+        //       sku: modifiedSku[0]['_id']
+        //     });
+        //     this.rest.modifyLine(thisLine['linename'], thisLine['linename'], thisLine['shortname'], thisLine['skus'], thisLine['comment']).subscribe(response => {
+        //       if (response['ok'] != 1 || response['nModified'] != 1)
+        //       {
+        //         // print error
+        //       }
+        //     });
+        // }
 
         var productlines = await this.restv2.getProductLines(AndVsOr.AND, null, null, 10000);
         for (var j = 0; j < productlines.length; j++) {
@@ -679,7 +719,7 @@ autoCompleteProductLines: Observable<string[]> = new Observable(observer => {
   });
 });
 @ViewChild('productlineInput') productlineInput: ElementRef<HTMLInputElement>;
-@ViewChild('productlineauto') matAutocomplete: MatAutocomplete;
+@ViewChild('productlineauto') productlinematAutocomplete: MatAutocomplete;
 productlineremove() {
   this.selectedProductLine = null;
   //I hate that I have to do this but whoever originally wrote this class made like 200 different "product line" variables so here we go:
@@ -707,6 +747,43 @@ productlineselected(event){
 productlineadd(event) {
   this.productlineInput.nativeElement.value = "";
 }
+
+
+selectedManufacturingLines = [];
+manufacturinglineCtrl = new FormControl();
+autoCompleteManufacturingLines: Observable<string[]> = new Observable(observer => {
+  this.manufacturinglineCtrl.valueChanges.subscribe(async newVal => {
+    var lines = await this.restv2.getLine(AndVsOr.AND, null, "(?i).*"+newVal+".*", null, "(?i).*"+newVal+".*", 1000);
+    lines = lines.filter((value, index, array) => {
+      for (let line of this.selectedManufacturingLines) {
+        if (line._id == value._id) {
+          return false;
+        }
+      }
+      return true;
+    });
+    observer.next(lines);
+  });
+});
+@ViewChild('manufacturinglineInput') manufacturinglineInput: ElementRef<HTMLInputElement>;
+@ViewChild('manufacturinglineauto') manufacturinglinematAutocomplete: MatAutocomplete;
+manufacturinglineremove(mfgLine) {
+  for (var i = 0; i < this.selectedManufacturingLines.length; i++) {
+    if (this.selectedManufacturingLines[i]._id == mfgLine._id) {
+      this.selectedManufacturingLines.splice(i, 1);
+      i--;
+    }
+  }
+}
+manufacturinglineselected(event){
+  this.selectedManufacturingLines.push(event.option.value);
+}
+manufacturinglineadd(event) {
+  this.manufacturinglineInput.nativeElement.value = "";
+}
+
+
+
 
 
 
