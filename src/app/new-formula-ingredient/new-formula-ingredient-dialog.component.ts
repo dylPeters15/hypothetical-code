@@ -19,7 +19,17 @@ export class NewFormulaIngredientDialogComponent implements OnInit {
   ingredientCtrl = new FormControl();
   autoCompleteIngredients: Observable<string[]> = new Observable(observer => {
     this.ingredientCtrl.valueChanges.subscribe(async newVal => {
-      observer.next(await this.restv2.getIngredients(AndVsOr.AND, null, "(?i).*"+newVal+".*", null, 1000))
+      var ingredients = await this.restv2.getIngredients(AndVsOr.AND, null, "(?i).*"+newVal+".*", null, 1000);
+      ingredients = ingredients.filter((value,index,array) => {
+        for (let ingredient of this.data.present_ingredientsandquantities) {
+          if (ingredient.ingredient._id == value._id) {
+            return false;
+          }
+        }
+        return true;
+      });
+      
+      observer.next(ingredients);
     });
   });
   @ViewChild('ingredientInput') ingredientInput: ElementRef<HTMLInputElement>;
