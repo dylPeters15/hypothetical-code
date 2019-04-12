@@ -33,16 +33,6 @@
         <mat-error>{{countpercaseErrorMessage}}</mat-error>
       </mat-form-field>
 
-      <!-- <div  class="dropdown-content" [hidden]="formulaDoesNotExist">
-        <p> {{chosen_formula}} | {{chosen_scaling_factor}} <button type="submit" (click)="addFormulaButton()">Edit</button></p>
-      </div>
-
-      <div  class="add-form-button" [hidden]="formulaExists">
-        <mat-dialog-actions align="center" >
-          <button class="mat-raised-button" (click)="addFormulaButton()">Add Existing Formula</button>
-        </mat-dialog-actions>
-      </div> -->
-
       <br>
 
       <mat-form-field>
@@ -67,10 +57,6 @@
         <mat-error>{{formulascalingfactorErrorMessage}}</mat-error>
       </mat-form-field>
 
-      <!-- <br />  -->
-      <!-- <span>OR</span> -->
-      <!-- <br />  -->
-
         <mat-dialog-actions align="center" >
           <button class="mat-raised-button" (click)="newFormulaButton()">Create New Formula</button>
         </mat-dialog-actions>
@@ -78,11 +64,6 @@
         <br /> 
         <br /> 
         <br>
-
-        <!-- <div  class="dropdown-content" [hidden]="productLineDoesNotExist">
-          <p> {{chosen_productline}} </p>
-        </div> -->
-
 
         <mat-form-field>
           <mat-chip-list #productlinechipList>
@@ -100,29 +81,6 @@
             </mat-option>
           </mat-autocomplete>
         </mat-form-field>
-  
-        <!-- <div  class="add-form-button" [hidden]="productLineExists">
-          <mat-dialog-actions align="center" >
-            <button class="mat-raised-button" (click)="addProductLineButton()">Add Product Line</button>
-          </mat-dialog-actions>
-        </div>  -->
-
-        <!-- <br /> 
-        <br /> 
-
-
-        <br /> 
-        <br />  -->
-
-        <!-- <div  class="dropdown-content" [hidden]="manufacturingLineDoesNotExist">
-          <p> {{manufacturinglinesNames}} </p>
-        </div>
-  
-        <div  class="add-form-button" [hidden]="manufacturingLineExists">
-          <mat-dialog-actions align="center" >
-            <button class="mat-raised-button" (click)="addManufacturingLineButton()">Add Manufacturing Line(s)</button>
-          </mat-dialog-actions>
-        </div>  -->
 
         <mat-form-field>
           <mat-chip-list #manufacturinglinechipList>
@@ -140,9 +98,6 @@
             </mat-option>
           </mat-autocomplete>
         </mat-form-field>
-
-        <!-- <br /> 
-        <br />  -->
 
       <mat-form-field>
         <input type="number" matInput [(ngModel)]="manufacturingsetupcost" placeholder="Manufacturing Setup Cost" (keydown.enter)="createSku()" required [errorStateMatcher]="manufacturingrunsetupcostErrorMatcher" (input)="manufacturingrunsetupcostChanged()">
