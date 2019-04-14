@@ -1,5 +1,5 @@
 import { AccountSettingsComponent } from './account-settings/account-settings.component';
-import { AdminRouteGuardService } from './route-guard.service';
+import { AdminRouteGuardService, ProductManagerRouteGuardService } from './route-guard.service';
 import { AlreadyLoggedInRouteGuardService } from './route-guard.service';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
@@ -106,7 +106,7 @@ const appRoutes: Routes = [
   { path: 'formulas', component: FormulaComponent, data: { title: 'Formulas' }, canActivate: [UserRouteGuardService] },
   { path: 'product-line', component: ProductLineComponent, data: { title: 'Product Lines' }, canActivate: [UserRouteGuardService] },
   { path: 'sales-report', component: SalesReportComponent, data: { title: 'Sales Report' }, canActivate: [UserRouteGuardService] },
-  { path: 'import', component: ImportComponent, data: { title: 'Import' }, canActivate: [AdminRouteGuardService] },
+  { path: 'import', component: ImportComponent, data: { title: 'Import' }, canActivate: [ProductManagerRouteGuardService] },
   { path: 'logout', component: LogoutComponent, data: { title: "Logout" }, canActivate: [UserRouteGuardService] },
   { path: '**', redirectTo: 'home' }
 ];
