@@ -6,6 +6,7 @@ import { MAT_DIALOG_DATA } from '@angular/material';
 import { MatDialogConfig, MatDialog } from "@angular/material";
 import { NewFormulaIngredientDialogComponent } from '../new-formula-ingredient/new-formula-ingredient-dialog.component';
 import { ingredienttuple } from "./ingredienttuple";
+import { RestServiceV2, AndVsOr } from '../restv2.service';
 
 
 
@@ -33,7 +34,7 @@ export class NewFormulaDialogComponent implements OnInit {
   newIngredientDialogRef: MatDialogRef<NewFormulaIngredientDialogComponent>;
 
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: any, private dialogRef: MatDialogRef<NewFormulaDialogComponent>, public rest: RestService, private snackBar: MatSnackBar, private dialog: MatDialog) { }
+  constructor(@Inject(MAT_DIALOG_DATA) public data: any, private dialogRef: MatDialogRef<NewFormulaDialogComponent>, public rest: RestService, private snackBar: MatSnackBar, private dialog: MatDialog, public restv2: RestServiceV2) { }
 
   ngOnInit() {
 
@@ -60,6 +61,19 @@ export class NewFormulaDialogComponent implements OnInit {
       this.dialog_title = "Create New Formula";
       this.create_title = "Create";
     } 
+    this.initNum();
+  }
+
+  async initNum() {
+    var formulanumber = 1;
+    while (this.formulanumber == null || this.formulanumber == undefined || this.formulanumber == 0) {
+      var formulas = await this.restv2.getFormulas(AndVsOr.AND, null, null, formulanumber, null, null, 1);
+      if (formulas.length == 1) {
+        formulanumber++;
+      } else {
+        this.formulanumber = formulanumber;
+      }
+    }
   }
 
   refreshData() {
