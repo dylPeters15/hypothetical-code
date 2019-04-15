@@ -69,8 +69,8 @@ export class ManufacturingScheduleReportCalculatorService {
           tableData.push({
             ingredientNumber: ingredients.get(ingredientName)['ingredientNumber'],
             ingredientName: ingredientName,
-            numCases: ingredients.get(ingredientName)['numCases'],
-            quantity: ingredients.get(ingredientName)['quantity'] + " " + unitsOfMeasure.get(ingredientName)
+            numCases: ingredients.get(ingredientName)['numCases'].toFixed(2),
+            quantity: ingredients.get(ingredientName)['quantity'].toFixed(2) + " " + unitsOfMeasure.get(ingredientName)
           });
         }
         console.log("Ingredient table data: ",tableData);
