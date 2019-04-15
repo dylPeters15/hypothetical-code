@@ -10,7 +10,7 @@ import { NewFormulaDialogComponent } from '../new-formula-dialog/new-formula-dia
 import { AssignSkuProductlineComponent } from '../assign-sku-productline/assign-sku-productline.component';
 import { RestServiceV2, AndVsOr } from '../restv2.service';
 import { FormControl, FormGroupDirective, FormGroup } from '@angular/forms';
-import { ENTER, A } from '@angular/cdk/keycodes';
+import { ENTER } from '@angular/cdk/keycodes';
 import { Observable } from 'rxjs';
 
 @Component({
@@ -143,6 +143,19 @@ export class NewSkuDialogComponent implements OnInit {
     {
       this.dialog_title = "Create New Sku";
       this.submit_title = "Create";
+    }
+    this.initNum();
+  }
+
+  async initNum() {
+    var skunumber = 1;
+    while (this.skunumber == null || this.skunumber == undefined) {
+      var skus = await this.restv2.getSkus(AndVsOr.AND, null, null, skunumber, null, null, null, 1);
+      if (skus.length == 1) {
+        skunumber++;
+      } else {
+        this.skunumber = skunumber;
+      }
     }
   }
 

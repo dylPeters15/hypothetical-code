@@ -125,14 +125,14 @@
       <div>
         <mat-form-field style="float: left;">
           <input type="number" matInput [(ngModel)]="manufacturingsetupcost" placeholder="Manufacturing Setup Cost"
-            (keydown.enter)="createSku()" required [errorStateMatcher]="manufacturingrunsetupcostErrorMatcher"
+          required [errorStateMatcher]="manufacturingrunsetupcostErrorMatcher"
             (input)="manufacturingrunsetupcostChanged()">
           <mat-error>{{manufacturingrunsetupcostErrorMessage}}</mat-error>
         </mat-form-field>
 
         <mat-form-field style="float: left;">
           <input type="number" matInput [(ngModel)]="manufacturingruncost"
-            placeholder="Manufacturing Run Cost (per case)" (keydown.enter)="createSku()" required
+            placeholder="Manufacturing Run Cost (per case)" required
             [errorStateMatcher]="manufacturingruncostErrorMatcher" (input)="manufacturingruncostChanged()">
           <mat-error>{{manufacturingruncostErrorMessage}}</mat-error>
         </mat-form-field>
@@ -156,6 +156,6 @@
 <mat-dialog-actions align="center">
   <button mat-raised-button (click)="closeDialog()">Cancel</button>
   <button mat-raised-button (click)="createSku()"
-    [disabled]="skunameError || skunumberError || caseupcnumberError || unitupcnumberError || countpercaseErrror || manufacturingrunsetupcostError || manufacturingruncostError || manufacturingrateError || selectedFormula == null || productLineDoesNotExist"
+    [disabled]="skunameError || skunumberError || caseupcnumberError || unitupcnumberError || countpercaseErrror || manufacturingrunsetupcostError || manufacturingruncostError || manufacturingrateError || selectedFormula == null || productLineDoesNotExist || !manufacturingsetupcost || !manufacturingruncost || !manufacturingrate"
     color="primary">{{submit_title}}</button>
 </mat-dialog-actions>
