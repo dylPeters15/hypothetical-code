@@ -8,9 +8,31 @@
           <button mat-raised-button (click)="deselectAll()"> Deselect All </button>
           <button mat-raised-button *ngIf="productmanager" (click)="deleteSelected()" color="warn" [disabled]="noneSelected()"> Delete Selected </button>
           <button mat-raised-button *ngIf="productmanager" (click)="newSkuButton()" color="primary"> New Sku </button>  
-          <button mat-raised-button (click)="exportSelected()" [disabled]="noneSelected()"> Export Selected </button>        
+          <button mat-raised-button (click)="exportSelected()" [disabled]="noneSelected()"> Export Selected </button>
+          
           <mat-form-field>
-            <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter">
+          <mat-chip-list #ingredientchipList>
+              <mat-chip *ngFor="let ingredient of selectedIngredients" [selectable]="false" [removable]="true"
+                (removed)="ingredientremove(ingredient)">
+                {{ingredient['ingredientname']}}
+                <mat-icon matChipRemove>cancel</mat-icon>
+              </mat-chip>
+              <input placeholder="Enter Ingredients to Filter by" #ingredientInput [formControl]="ingredientCtrl"
+                [matAutocomplete]="ingredientauto" [matChipInputFor]="ingredientchipList"
+                [matChipInputSeparatorKeyCodes]="separatorKeysCodes" [matChipInputAddOnBlur]="true"
+                (matChipInputTokenEnd)="ingredientadd($event)">
+            </mat-chip-list>
+            <mat-autocomplete #ingredientauto="matAutocomplete"
+              (optionSelected)="ingredientselected($event)">
+              <mat-option *ngFor="let ingredientOption of autoCompleteIngredients | async"
+                [value]="ingredientOption">
+                {{ingredientOption['ingredientname']}}
+              </mat-option>
+            </mat-autocomplete>
+          </mat-form-field>
+
+          <mat-form-field>
+            <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter by SKU name or number.">
           </mat-form-field>
 
           <mat-table [dataSource]="dataSource" matSort (matSortChange)="sortData($event)" class="mat-elevation-z8">

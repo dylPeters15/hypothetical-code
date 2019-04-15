@@ -1,6 +1,6 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { RestService } from '../rest.service';
-import {MatSnackBar} from '@angular/material';
+import {MatSnackBar, MatAutocomplete} from '@angular/material';
 import { MatDialogRef, MatDialog, MatSort, MatDialogConfig, MatTableDataSource, MatPaginator } from "@angular/material";
 import { MoreInfoDialogComponent } from '../more-info-dialog/more-info-dialog.component';
 import { NewSkuDialogComponent } from '../new-sku-dialog/new-sku-dialog.component';
@@ -10,6 +10,9 @@ import {ExportToCsv} from 'export-to-csv';
 import { LineToLineMappedSource } from 'webpack-sources';
 import { ConfirmDeletionDialogComponent } from '../confirm-deletion-dialog/confirm-deletion-dialog.component';
 import { RestServiceV2, AndVsOr } from '../restv2.service';
+import { FormControl } from '@angular/forms';
+import { Observable } from 'rxjs';
+import { ENTER } from '@angular/cdk/keycodes';
 
 
 // skuname', 'skunumber','caseupcnumber', 'unitupcnumber', 'unitsize', 'countpercase', 'formula', 'formulascalingfactor', "manufacturingrate", "comment"
@@ -68,6 +71,50 @@ export class ExportableSKU {
     styleUrls: ['./sku.component.css']
   })
 export class SkuComponent implements OnInit {
+  separatorKeysCodes: number[] = [ENTER];
+
+  selectedIngredients = [];
+  ingredientCtrl = new FormControl();
+  autoCompleteIngredients: Observable<string[]> = new Observable(observer => {
+    this.ingredientCtrl.valueChanges.subscribe(async newVal => {
+      var ingredients = await this.restv2.getIngredients(AndVsOr.AND, null, "(?i).*"+newVal+".*", null, 1000);
+      ingredients = ingredients.filter((value, index, array) => {
+        for (let ingredient of this.selectedIngredients) {
+          if (ingredient._id == value._id) {
+            return false;
+          }
+        }
+        return true;
+      });
+      observer.next(ingredients);
+    });
+  });
+  @ViewChild('ingredientInput') ingredientInput: ElementRef<HTMLInputElement>;
+  @ViewChild('ingredientauto') ingredientmatAutocomplete: MatAutocomplete;
+  ingredientremove(ingredient) {
+    for (var i = 0; i < this.selectedIngredients.length; i++) {
+      if (this.selectedIngredients[i]._id == ingredient._id) {
+        this.selectedIngredients.splice(i, 1);
+        i--;
+      }
+    }
+    this.refreshData();
+  }
+  ingredientselected(event){
+    this.selectedIngredients.push(event.option.value);
+    this.refreshData();
+  }
+  ingredientadd(event) {
+    this.ingredientInput.nativeElement.value = "";
+  }
+
+
+
+
+
+
+
+
 
   constructor(public restv2: RestServiceV2, public rest:RestService, private snackBar: MatSnackBar, private dialog: MatDialog) { }
   allReplacement = 54321;
@@ -106,6 +153,23 @@ export class SkuComponent implements OnInit {
       //for each:
         //sku['manufacturinglines'] = await restElement.getManufacturingLines(sku)
       console.log(this.data);
+
+      //filter skus by ingredients
+      if (this.selectedIngredients.length > 0) {
+        this.data = this.data.filter((value, index, array) => {
+          for (let selectedIngredient of this.selectedIngredients) {
+            for (let ingredientandquantity of value.formula.ingredientsandquantities) {
+              if (selectedIngredient._id == ingredientandquantity.ingredient) {
+                return true;
+              }
+            }
+          }
+          return false;
+        });
+      }
+      
+
+
       this.dataSource =  new MatTableDataSource<UserForTable>(this.data);
       this.dataSource.sort = this.sort;
       this.dataSource.paginator = this.paginator;
