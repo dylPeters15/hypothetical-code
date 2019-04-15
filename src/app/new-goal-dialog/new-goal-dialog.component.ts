@@ -2,22 +2,13 @@ import { Component, OnInit, ElementRef, ViewChild, Inject } from '@angular/core'
 import { MatDialogRef, MAT_DIALOG_DATA} from "@angular/material";
 import { RestService } from '../rest.service';
 import { MatDialog, MatDialogConfig, MatSnackBar, MatAutocompleteSelectedEvent, MatChipInputEvent, MatAutocomplete, MatDatepickerInputEvent} from '@angular/material';
-import {FormControl} from '@angular/forms';
+import {FormControl, FormGroupDirective} from '@angular/forms';
 import {Observable} from 'rxjs';
 import {map, startWith} from 'rxjs/operators';
 import {COMMA, ENTER} from '@angular/cdk/keycodes';
 import { RestServiceV2, AndVsOr } from '../restv2.service';
 import { SalesProjectionComponent } from '../sales-projection/sales-projection.component';
 
-export class DisplayableActivity{
-  skuname: string = '';
-  hours: number;
-
-  constructor(hours, skuname){
-    this.hours = hours;
-    this.skuname = skuname;
-  }
-}
 
 @Component({
   selector: 'app-new-goal-dialog',
@@ -45,7 +36,6 @@ export class NewGoalDialogComponent implements OnInit {
   selectedSkuNames: string[] = [];
   selectedSkus: any = [];
   currentSku: any;
-  displayableActivities: any = [];
   activityIds: any = [];
   activities: any = [];
   date: Date;
@@ -69,10 +59,7 @@ export class NewGoalDialogComponent implements OnInit {
       
       if(this.activities.length> 0){
             this.activities.forEach(element => {
-              let hours = element['sethours'] != null ? element['sethours'] : element['calculatedhours'];
-              let activityString = new DisplayableActivity(hours, element['sku']['skuname'])
               this.activityIds.push({activity: element['_id']});
-              this.displayableActivities.push(activityString);
             })
       }
      
@@ -106,12 +93,11 @@ export class NewGoalDialogComponent implements OnInit {
 
   async addActivity(){
     var hours = Math.ceil(this.quantity/this.currentSku['manufacturingrate']);
-    let newActivity = new DisplayableActivity(hours, this.currentSku['skuname']);
-    
-    this.displayableActivities.push(newActivity);
     var newActivityObject = await this.restv2.createActivity(this.currentSku['_id'], this.quantity, hours, null,new Date(),null);
+    newActivityObject['skuname'] = this.currentSku['skuname']
     if(this.activityIds.indexOf({activity: newActivityObject['_id']}) == -1){
       this.activityIds.push({activity: newActivityObject['_id']});
+      this.activities.push(newActivityObject)
     }
     this.snackBar.open("Successfully created Activity: " + this.currentSku['skuname'] + ".", "close", {
               duration: 2000,
@@ -122,13 +108,28 @@ export class NewGoalDialogComponent implements OnInit {
     
   }
 
+  async removeActivity(activity){
+    let index = this.activities.indexOf(activity);
+    this.activities.splice(index,1);
+    this.activityIds = [];
+    this.activities.forEach(element => {
+      this.activityIds.push({activity: element['_id']})
+    });
+  }
+
   createGoal() {
     if(this.edit == false){
       this.restv2.createGoal(this.name, this.activityIds, this.date, false).then(response => {
-        this.snackBar.open("Successfully created Goal: " + this.name + ".", "close", {
-          duration: 2000,
+        if(response['err']){
+          this.snackBar.open("Cannot create Goal: " + this.name + ". Please try again", "close", {
+            duration: 2000,
+          });
         }
-        );
+        else{
+          this.snackBar.open("Successfully created Goal: " + this.name + ".", "close", {
+            duration: 2000,
+          });
+        }
         this.closeDialog();
       }).catch(err => {
         this.snackBar.open("Error creating Goal: " + this.name + ". Please refresh and try again.", "close", {
@@ -184,5 +185,17 @@ export class NewGoalDialogComponent implements OnInit {
         }
         
       })
+    }
+
+    goalnameError: boolean = false;
+    async goalnameChanged(): Promise<void> {
+      var goals = await this.restv2.getGoals(AndVsOr.OR, null, this.name, null, null, 1);
+      console.log("GOALS for NAME:", goals)
+      this.goalnameError = goals.length > 0;
+    }
+    goalnameErrorMatcher = {
+      isErrorState: (control: FormControl, form: FormGroupDirective): boolean => {
+        return this.goalnameError;
+      }
     }
   }
