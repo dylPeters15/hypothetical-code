@@ -22,9 +22,9 @@
   </ng-container>
 
   <ng-container matColumnDef="skuNameNum">
-    <mat-header-cell *matHeaderCellDef>SKU Name/#</mat-header-cell>
+    <mat-header-cell *matHeaderCellDef>SKU</mat-header-cell>
     <mat-cell *matCellDef="let element">
-      {{element['sku']['skuname']}}/{{element['sku']['skunumber']}}
+      {{element['sku']['skuname']}}: {{element['sku']['unitsize']}} * {{element['sku']['countpercase']}}
     </mat-cell>
   </ng-container>
 
