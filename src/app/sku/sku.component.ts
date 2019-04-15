@@ -154,7 +154,7 @@ export class SkuComponent implements OnInit {
         //sku['manufacturinglines'] = await restElement.getManufacturingLines(sku)
       console.log(this.data);
 
-      //filter skus by ingredients
+      //filter skus by ingredients (this is implicitly an OR gate of the ingredients - if a SKU contains at least 1 of the selected ingredients it will be shown)
       if (this.selectedIngredients.length > 0) {
         this.data = this.data.filter((value, index, array) => {
           for (let selectedIngredient of this.selectedIngredients) {
