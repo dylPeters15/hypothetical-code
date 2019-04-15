@@ -109,11 +109,40 @@ export class SkuComponent implements OnInit {
   }
 
 
-
-
-
-
-
+  selectedProductLines = [];
+  productlineCtrl = new FormControl();
+  autoCompleteProductLines: Observable<string[]> = new Observable(observer => {
+    this.productlineCtrl.valueChanges.subscribe(async newVal => {
+      var productlines = await this.restv2.getProductLines(AndVsOr.AND, null, "(?i).*"+newVal+".*", 1000);
+      productlines = productlines.filter((value, index, array) => {
+        for (let productline of this.selectedProductLines) {
+          if (productline._id == value._id) {
+            return false;
+          }
+        }
+        return true;
+      });
+      observer.next(productlines);
+    });
+  });
+  @ViewChild('productlineInput') productlineInput: ElementRef<HTMLInputElement>;
+  @ViewChild('productlineauto') productlinematAutocomplete: MatAutocomplete;
+  productlineremove(productline) {
+    for (var i = 0; i < this.selectedProductLines.length; i++) {
+      if (this.selectedProductLines[i]._id == productline._id) {
+        this.selectedProductLines.splice(i, 1);
+        i--;
+      }
+    }
+    this.refreshData();
+  }
+  productlineselected(event){
+    this.selectedProductLines.push(event.option.value);
+    this.refreshData();
+  }
+  productlineadd(event) {
+    this.productlineInput.nativeElement.value = "";
+  }
 
 
   constructor(public restv2: RestServiceV2, public rest:RestService, private snackBar: MatSnackBar, private dialog: MatDialog) { }
@@ -160,6 +189,20 @@ export class SkuComponent implements OnInit {
           for (let selectedIngredient of this.selectedIngredients) {
             for (let ingredientandquantity of value.formula.ingredientsandquantities) {
               if (selectedIngredient._id == ingredientandquantity.ingredient) {
+                return true;
+              }
+            }
+          }
+          return false;
+        });
+      }
+
+      //filter skus by product lines (this is implicitly an OR gate of the product lines - if at least 1 of the product lines contains the sku then the sku will be shown)
+      if (this.selectedProductLines.length > 0) {
+        this.data = this.data.filter((value, index, array) => {
+          for (let selectedProductLine of this.selectedProductLines) {
+            for (let sku of selectedProductLine.skus) {
+              if (sku.sku._id == value['_id']) {
                 return true;
               }
             }

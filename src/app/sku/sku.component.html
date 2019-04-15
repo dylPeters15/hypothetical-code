@@ -35,6 +35,27 @@
               </mat-option>
             </mat-autocomplete>
           </mat-form-field>
+
+          <mat-form-field style="display: inline-block; width: 30%; padding-left: 3%;">
+          <mat-chip-list #productlinechipList>
+              <mat-chip *ngFor="let productline of selectedProductLines" [selectable]="false" [removable]="true"
+                (removed)="productlineremove(productline)">
+                {{productline['productlinename']}}
+                <mat-icon matChipRemove>cancel</mat-icon>
+              </mat-chip>
+              <input placeholder="Enter Product Lines to Filter by" #productlineInput [formControl]="productlineCtrl"
+                [matAutocomplete]="productlineauto" [matChipInputFor]="productlinechipList"
+                [matChipInputSeparatorKeyCodes]="separatorKeysCodes" [matChipInputAddOnBlur]="true"
+                (matChipInputTokenEnd)="productlineadd($event)">
+            </mat-chip-list>
+            <mat-autocomplete #productlineauto="matAutocomplete"
+              (optionSelected)="productlineselected($event)">
+              <mat-option *ngFor="let productlineOption of autoCompleteProductLines | async"
+                [value]="productlineOption">
+                {{productlineOption['productlinename']}}
+              </mat-option>
+            </mat-autocomplete>
+          </mat-form-field>
         </div>
 
           <mat-table [dataSource]="dataSource" matSort (matSortChange)="sortData($event)" class="mat-elevation-z8">
