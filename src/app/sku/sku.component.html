@@ -10,7 +10,8 @@
           <button mat-raised-button *ngIf="productmanager" (click)="newSkuButton()" color="primary"> New Sku </button>  
           <button mat-raised-button (click)="exportSelected()" [disabled]="noneSelected()"> Export Selected </button>
           
-          <mat-form-field>
+          <div style="width: 100%;">
+          <mat-form-field style="display: inline-block; width: 30%">
           <mat-chip-list #ingredientchipList>
               <mat-chip *ngFor="let ingredient of selectedIngredients" [selectable]="false" [removable]="true"
                 (removed)="ingredientremove(ingredient)">
@@ -31,9 +32,10 @@
             </mat-autocomplete>
           </mat-form-field>
 
-          <mat-form-field>
+          <mat-form-field style="display: inline-block; width: 30%; padding-left: 3%;">
             <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter by SKU name or number.">
           </mat-form-field>
+        </div>
 
           <mat-table [dataSource]="dataSource" matSort (matSortChange)="sortData($event)" class="mat-elevation-z8">
             <ng-container matColumnDef="checked">
