@@ -97,7 +97,7 @@ export class FormulaComponent implements OnInit {
   @ViewChild(MatSort) sort: MatSort;
 
   ngOnInit() {
-    this.paginator.pageSize = 5;
+    this.paginator.pageSize = 20;
     this.productmanager = auth.isAuthenticatedForProductManagerOperation();
     this.refreshData();
   }
