@@ -11,7 +11,11 @@
           <button mat-raised-button (click)="exportSelected()" [disabled]="noneSelected()"> Export Selected </button>
           
           <div style="width: 100%;">
-          <mat-form-field style="display: inline-block; width: 30%">
+            <mat-form-field style="display: inline-block; width: 30%;">
+              <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter by SKU name or number.">
+            </mat-form-field>
+
+          <mat-form-field style="display: inline-block; width: 30%; padding-left: 3%;">
           <mat-chip-list #ingredientchipList>
               <mat-chip *ngFor="let ingredient of selectedIngredients" [selectable]="false" [removable]="true"
                 (removed)="ingredientremove(ingredient)">
@@ -30,10 +34,6 @@
                 {{ingredientOption['ingredientname']}}
               </mat-option>
             </mat-autocomplete>
-          </mat-form-field>
-
-          <mat-form-field style="display: inline-block; width: 30%; padding-left: 3%;">
-            <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter by SKU name or number.">
           </mat-form-field>
         </div>
 
