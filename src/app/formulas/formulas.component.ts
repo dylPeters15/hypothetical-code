@@ -103,7 +103,7 @@ export class FormulaComponent implements OnInit {
   newFormulaButton()
   {
     let blankTuple = [];
-    this.newFormula(false, "", 0, blankTuple, "");
+    this.newFormula(false, "", 1.0, blankTuple, "");
   }
 
   sortData() {
