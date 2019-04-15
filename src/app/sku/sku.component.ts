@@ -72,7 +72,7 @@ export class SkuComponent implements OnInit {
   constructor(public restv2: RestServiceV2, public rest:RestService, private snackBar: MatSnackBar, private dialog: MatDialog) { }
   allReplacement = 54321;
   //displayedColumns: string[] = ['checked', 'skuname', 'skunumber','caseupcnumber', 'unitupcnumber', 'unitsize', 'countpercase', 'formula', 'formulascalingfactor', 'manufacturingrate', 'comment', 'actions'];
-  displayedColumns: string[] = ['checked', 'skuname', 'skunumber', 'unitsize', 'countpercase', 'formula', 'manufacturingrate', 'comment', 'actions'];
+  displayedColumns: string[] = ['checked', 'skuname', 'skunumber', 'unitsize', 'countpercase', 'formula', 'manufacturingrate', 'comment'];
   data: UserForTable[] = [];
   dialogRef: MatDialogRef<MoreInfoDialogComponent>;
   newDialogRef: MatDialogRef<NewSkuDialogComponent>;
@@ -85,6 +85,9 @@ export class SkuComponent implements OnInit {
 
   ngOnInit() {
     this.productmanager = auth.isAuthenticatedForProductManagerOperation();
+    if (this.productmanager) {
+      this.displayedColumns.push('actions');
+    }
     this.paginator.pageSize = 20;
     this.refreshData();
   }
