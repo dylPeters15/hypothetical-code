@@ -10,10 +10,46 @@
         <button mat-raised-button *ngIf="productmanager" (click)="deleteSelected()" color="warn" [disabled]="noneSelected()"> Delete Selected </button>
         <button mat-raised-button *ngIf="productmanager" (click)="newIngredient()" color="primary"> New Ingredient </button>      
         <button mat-raised-button (click)="exportSelected()" [disabled]="noneSelected()"> Export Selected To CSV </button>
-        <mat-form-field>
-          <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter">
-          <!-- <input matInput placeholder="Filter" [(ngModel)]="filterQuery" (ngModelChange)="refreshData($event)"> -->
-        </mat-form-field>
+        
+
+        <div style="width: 100%;">
+            <mat-form-field style="display: inline-block; width: 45%;">
+              <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter by Ingredient Name or Number">
+            </mat-form-field>
+  
+            <mat-form-field style="display: inline-block; width: 45%; padding-left: 5%;">
+            <mat-chip-list #skuchipList>
+                <mat-chip *ngFor="let sku of selectedSKUs" [selectable]="false" [removable]="true"
+                  (removed)="skuremove(sku)">
+                  {{sku['skuname']}}
+                  <mat-icon matChipRemove>cancel</mat-icon>
+                </mat-chip>
+                <input placeholder="Filter by SKU Created with Ingredient" #skuInput [formControl]="skuCtrl"
+                  [matAutocomplete]="skuauto" [matChipInputFor]="skuchipList"
+                  [matChipInputSeparatorKeyCodes]="separatorKeysCodes" [matChipInputAddOnBlur]="true"
+                  (matChipInputTokenEnd)="skuadd($event)">
+              </mat-chip-list>
+              <mat-autocomplete #skuauto="matAutocomplete"
+                (optionSelected)="skuselected($event)">
+                <mat-option *ngFor="let skuOption of autoCompleteSKUs | async"
+                  [value]="skuOption">
+                  {{skuOption['skuname']}}
+                </mat-option>
+              </mat-autocomplete>
+            </mat-form-field>
+          </div>
+
+
+
+
+
+
+
+
+
+
+
+
 
         <mat-table [dataSource]="dataSource" matSort (matSortChange)="sortData($event)" class="mat-elevation-z8">
             
