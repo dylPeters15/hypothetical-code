@@ -1,5 +1,5 @@
 <div>
-    <h3 style="display: inline;">{{sku['skuname']}} &nbsp;&nbsp;&nbsp;</h3>
+    <h3 style="display: inline;">{{sku['skuname']}}: {{sku['unitsize']}} * {{sku['countpercase']}} &nbsp;&nbsp;&nbsp;</h3>
     <button mat-raised-button style="display: inline;" (click)="displayDrilldown();">Details</button>
     <!-- <button mat-raised-button style="display: inline;" (click)="export();">Export</button> -->
 </div>
@@ -16,9 +16,9 @@
   </ng-container>
 
   <ng-container matColumnDef="sku">
-    <mat-header-cell *matHeaderCellDef>SKU Name/#</mat-header-cell>
+    <mat-header-cell *matHeaderCellDef>SKU</mat-header-cell>
     <mat-cell *matCellDef="let sale">
-      {{sale['sku']['skuname']}}/{{sale['sku']['skunumber']}}
+        {{sale['sku']['skuname']}}: {{sale['sku']['unitsize']}} * {{sale['sku']['countpercase']}}
     </mat-cell>
   </ng-container>
 
