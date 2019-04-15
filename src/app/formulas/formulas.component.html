@@ -24,7 +24,7 @@
                   {{ingredient['ingredientname']}}
                   <mat-icon matChipRemove>cancel</mat-icon>
                 </mat-chip>
-                <input placeholder="Enter Ingredients to Filter by" #ingredientInput [formControl]="ingredientCtrl"
+                <input placeholder="Filter by Ingredient in Formula" #ingredientInput [formControl]="ingredientCtrl"
                   [matAutocomplete]="ingredientauto" [matChipInputFor]="ingredientchipList"
                   [matChipInputSeparatorKeyCodes]="separatorKeysCodes" [matChipInputAddOnBlur]="true"
                   (matChipInputTokenEnd)="ingredientadd($event)">

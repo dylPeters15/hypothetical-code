@@ -22,7 +22,7 @@
                 {{ingredient['ingredientname']}}
                 <mat-icon matChipRemove>cancel</mat-icon>
               </mat-chip>
-              <input placeholder="Enter Ingredients to Filter by" #ingredientInput [formControl]="ingredientCtrl"
+              <input placeholder="Filter by Ingredient in SKU" #ingredientInput [formControl]="ingredientCtrl"
                 [matAutocomplete]="ingredientauto" [matChipInputFor]="ingredientchipList"
                 [matChipInputSeparatorKeyCodes]="separatorKeysCodes" [matChipInputAddOnBlur]="true"
                 (matChipInputTokenEnd)="ingredientadd($event)">
@@ -43,7 +43,7 @@
                 {{productline['productlinename']}}
                 <mat-icon matChipRemove>cancel</mat-icon>
               </mat-chip>
-              <input placeholder="Enter Product Lines to Filter by" #productlineInput [formControl]="productlineCtrl"
+              <input placeholder="Filter by Product Line" #productlineInput [formControl]="productlineCtrl"
                 [matAutocomplete]="productlineauto" [matChipInputFor]="productlinechipList"
                 [matChipInputSeparatorKeyCodes]="separatorKeysCodes" [matChipInputAddOnBlur]="true"
                 (matChipInputTokenEnd)="productlineadd($event)">
