@@ -460,7 +460,7 @@ export class NewSkuDialogComponent implements OnInit {
       var formulaobject = await this.restv2.getFormulas(AndVsOr.OR, null,null,this.formula.formulanumber, null,null,1);
       let formulaId = formulaobject[0]['_id'];
       var modified = await this.restv2.modifySku(AndVsOr.OR,this.oldskuname, this.skuname, this.skunumber, this.caseupcnumber, this.unitupcnumber, this.unitsize, this.countpercase, this.selectedFormula._id, this.formulascalingfactor, this.manufacturingrate, this.manufacturingsetupcost, this.manufacturingruncost, this.comment);
-        this.snackBar.open("Successfully modifyed sku " + this.skuname + ".", "close", {
+        this.snackBar.open("Successfully modified sku " + this.skuname + ".", "close", {
           duration: 2000,
         });
         var modifiedSku = await this.restv2.getSkus(AndVsOr.OR, this.skuname, null, null,null,null,null,1);
@@ -823,7 +823,7 @@ selectedManufacturingLines = [];
 manufacturinglineCtrl = new FormControl();
 autoCompleteManufacturingLines: Observable<string[]> = new Observable(observer => {
   this.manufacturinglineCtrl.valueChanges.subscribe(async newVal => {
-    var lines = await this.restv2.getLine(AndVsOr.AND, null, "(?i).*"+newVal+".*", null, "(?i).*"+newVal+".*", 1000);
+    var lines = await this.restv2.getLine(AndVsOr.OR, null, "(?i).*"+newVal+".*", null, "(?i).*"+newVal+".*", 1000);
     lines = lines.filter((value, index, array) => {
       for (let line of this.selectedManufacturingLines) {
         if (line._id == value._id) {

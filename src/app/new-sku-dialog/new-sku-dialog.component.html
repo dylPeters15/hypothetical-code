@@ -104,7 +104,7 @@
           <mat-chip-list #manufacturinglinechipList>
             <mat-chip *ngFor="let mfgLine of selectedManufacturingLines" [selectable]="false" [removable]="true"
               (removed)="manufacturinglineremove(mfgLine)">
-              {{mfgLine['linename']}}
+              {{mfgLine['shortname']}}
               <mat-icon matChipRemove>cancel</mat-icon>
             </mat-chip>
             <input placeholder="Enter Manufacturing Lines" #manufacturinglineInput [formControl]="manufacturinglineCtrl"
@@ -116,7 +116,7 @@
             (optionSelected)="manufacturinglineselected($event)">
             <mat-option *ngFor="let manufacturinglineOption of autoCompleteManufacturingLines | async"
               [value]="manufacturinglineOption">
-              {{manufacturinglineOption['linename']}}
+              {{manufacturinglineOption['shortname']}}
             </mat-option>
           </mat-autocomplete>
         </mat-form-field>
