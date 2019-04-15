@@ -76,6 +76,8 @@ export class SkuComponent implements OnInit {
   data: UserForTable[] = [];
   dialogRef: MatDialogRef<MoreInfoDialogComponent>;
   newDialogRef: MatDialogRef<NewSkuDialogComponent>;
+  formulaDetailsRef: MatDialogRef<FormulaDetailsDialogComponent>;
+
   dataSource =  new MatTableDataSource<UserForTable>(this.data);
   productmanager: boolean = false;
   filterQuery: string = "";
@@ -130,6 +132,16 @@ export class SkuComponent implements OnInit {
       this.refreshData();
     });
   }
+
+    // edit
+    seeFormulaDetails(edit, formula) {
+      const dialogConfig = new MatDialogConfig();
+      dialogConfig.data = {edit: edit, present_formula: formula};
+      this.newDialogRef = this.dialog.open(NewSkuDialogComponent, dialogConfig);
+      this.newDialogRef.afterClosed().subscribe(event => {
+        this.refreshData();
+      });
+    }
 
   newSkuButton()
   {
