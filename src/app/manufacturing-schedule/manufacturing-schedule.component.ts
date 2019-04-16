@@ -78,7 +78,7 @@ export class ManufacturingScheduleComponent implements OnInit {
   isSelectable: boolean = false;
   provisionalActivities: any[] = [];
 
-  constructor(public rest: RestService, private restv2: RestServiceV2, private dialog: MatDialog, myElement: ElementRef) {
+  constructor(public rest: RestService, private snackBar: MatSnackBar, private restv2: RestServiceV2, private dialog: MatDialog, myElement: ElementRef) {
     // this.getTimelineData();
     // this.getTimelineGroups();
     this.getOptions();
@@ -185,6 +185,9 @@ export class ManufacturingScheduleComponent implements OnInit {
         // this.refreshData();
         if (!isValid) {
           // this.timeline.itemsData.remove(newItem_dropped);
+          this.snackBar.open("You do not have access to line " + newGroup['content'],  "close", {
+            duration: 4000,
+          });
           this.refreshData();
           this.data.remove(newItem_dropped['id'])
         }
@@ -254,6 +257,9 @@ export class ManufacturingScheduleComponent implements OnInit {
                   })
                 }
                 else {
+                  this.snackBar.open("Activities on schedule cannot overlap.",  "close", {
+                    duration: 4000,
+                  });
                   this.refreshData();
                   this.data.remove(newItem_dropped['id'])
                   
