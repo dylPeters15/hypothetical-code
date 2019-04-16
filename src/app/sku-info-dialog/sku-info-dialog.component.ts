@@ -53,12 +53,10 @@ export class SkuDetailsDialogComponent implements OnInit {
       this.comments.push(this.skus[j].comment);
     }
 
-    //console.log("my test array is " + this.testArray);
-
-
-
   }
 
+  // Calling my event listener in ngOnInit() means it's called before the children have been initialized.
+  // I needed to use ngAfterViewInit() hook.
   ngAfterViewInit() {
     var acc = document.getElementsByClassName("accordion");
     var k;
