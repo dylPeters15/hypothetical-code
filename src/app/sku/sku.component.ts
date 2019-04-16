@@ -134,9 +134,9 @@ export class SkuComponent implements OnInit {
     });
   }
 
-  seeFormulaDetails(edit, formula) {
+  seeFormulaDetails(formula) {
     const dialogConfig = new MatDialogConfig();
-    dialogConfig.data = {edit: edit, present_formula: formula};
+    dialogConfig.data = {present_formula: formula};
     this.formulaDetailsRef = this.dialog.open(FormulaDetailsDialogComponent, dialogConfig);
   }
 

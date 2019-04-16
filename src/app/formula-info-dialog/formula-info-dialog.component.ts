@@ -4,16 +4,13 @@ import { RestService } from '../rest.service';
 import { MatSnackBar } from '@angular/material';
 import { MAT_DIALOG_DATA } from '@angular/material';
 import { MatDialogConfig, MatDialog } from "@angular/material";
-import { NewFormulaIngredientDialogComponent } from '../new-formula-ingredient/new-formula-ingredient-dialog.component';
 import { ingredienttuple } from "./ingredienttuple";
 
 
-
-
 @Component({
-  selector: 'app-new-formula-dialog',
-  templateUrl: './new-formula-dialog.component.html',
-  styleUrls: ['./new-formula-dialog.component.css']
+  selector: 'app-formula-info-dialog',
+  templateUrl: './formula-info-dialog.component.html',
+  styleUrls: ['./formula-info-dialog.component.css']
 })
 
 export class FormulaDetailsDialogComponent implements OnInit {
@@ -26,9 +23,6 @@ export class FormulaDetailsDialogComponent implements OnInit {
 
   arrayIngredients: any[] = [];
   arrayQuantity: any[] = [];
-
-  newIngredientDialogRef: MatDialogRef<NewFormulaIngredientDialogComponent>;
-
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: any, private dialogRef: MatDialogRef<FormulaDetailsDialogComponent>, public rest: RestService, private snackBar: MatSnackBar, private dialog: MatDialog) { }
 
