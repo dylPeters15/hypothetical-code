@@ -1,0 +1,78 @@
+<h2 mat-dialog-title align="center">Formula {{ formulaname }} Details</h2>
+<mat-dialog-content align="center">
+  <mat-card>
+      <mat-card-content>
+              <div *ngFor="let item of names;let i = index">
+                  <button class="accordion">{{item}}</button>
+                  <div class="panel">
+                      <button class="accordion">Sku Number</button>
+                      <div class="panel">
+                          <br> 
+                        <p>{{ numbers[i] }}</p>
+                      </div> 
+
+                      <button class="accordion">Case UPC Number</button>
+                      <div class="panel">
+                          <br> 
+                        <p>{{ caseUpcNumbers[i] }}</p>
+                      </div> 
+
+                      <button class="accordion">Unit UPC Number</button>
+                      <div class="panel">
+                          <br> 
+                        <p>{{ unitUpcNumbers[i] }}</p>
+                      </div> 
+
+                      <button class="accordion">Unit Size</button>
+                      <div class="panel">
+                          <br> 
+                        <p>{{ unitSizes[i] }}</p>
+                      </div> 
+
+                      <button class="accordion">Count Per Case</button>
+                      <div class="panel">
+                          <br> 
+                        <p>{{ countPerCases[i] }}</p>
+                      </div> 
+
+                      <button class="accordion">Formula Scaling Factor</button>
+                      <div class="panel">
+                          <br> 
+                        <p>{{ formulascalingfactors[i] }} X {{formulas[i]}}</p>
+                      </div> 
+
+                      <button class="accordion">Manufacturing Rate</button>
+                      <div class="panel">
+                          <br> 
+                        <p>{{ manufacturingrates[i] }}</p>
+                      </div> 
+
+                      <button class="accordion">Manufacturing Setup Cost</button>
+                      <div class="panel">
+                          <br> 
+                        <p>{{ manufacturingsetupcosts[i] }}</p>
+                      </div> 
+
+                      <button class="accordion">Manufacturing Run Cost</button>
+                      <div class="panel">
+                          <br> 
+                        <p>{{ manufacturingruncosts[i] }}</p>
+                      </div> 
+
+                      <button class="accordion">Comment</button>
+                      <div class="panel">
+                          <br> 
+                        <p>{{ comments[i] }}</p>
+                      </div> 
+              </div>
+            </div>
+      </mat-card-content>
+      <br> 
+      <br> 
+
+    </mat-card-content>
+  </mat-card>
+</mat-dialog-content>
+<mat-dialog-actions align="center">
+  <button class="mat-raised-button" (click)="closeDialog()">Close</button>
+</mat-dialog-actions>
