@@ -576,6 +576,32 @@ export class ManufacturingScheduleComponent implements OnInit {
         }
       },
 
+      onMove: async function(item, callback): Promise<void> {
+        var newGroup = thisObject.groups.get(item['group']);
+        if (item['className'] == 'provisional') {
+          callback(null);
+        }
+        var isValid = await thisObject.checkLine(item, newGroup)
+        console.log('isValid', isValid)
+        if (!isValid) {
+          callback(null)
+        }
+        var activities = await thisObject.restv2.getActivities(AndVsOr.OR, null, null, null, 500)
+        activities.forEach(async activity => {
+          if (activity['_id'] == item['id']) {
+            var potDates = await thisObject.findValidStart(activity, newGroup['id'], new Date(item['start']))
+            if (!potDates) {
+              callback(null)
+            }
+            else {
+              callback(item)
+            }
+          }
+
+        })
+        
+      },
+
       onMoving: async function (item, callback): Promise<void> {
         console.log(item, callback);
         var newGroup = thisObject.groups.get(item['group']);
@@ -606,12 +632,12 @@ export class ManufacturingScheduleComponent implements OnInit {
                   item['start'].setHours(8)
                   console.log(item['start'])
                 }
-                var potDates = await thisObject.findValidStart(activity, newGroup['id'], new Date(item['start']))
-                if (!potDates) {
-                  callback(null)
-                }
-                else {
-                  item['end'] = potDates[1];
+                // var potDates = await thisObject.findValidStart(activity, newGroup['id'], new Date(item['start']))
+                // if (!potDates) {
+                //   callback(null)
+                // }
+                // else {
+                  item['end'] = thisObject.calculateEndDate(new Date(item['start']), newDuration);
                 
                   var isOverdue = await thisObject.checkOverdue(item['id'], item['end'])
                   if (isOverdue && item['className'] != 'orphan') {
@@ -627,7 +653,7 @@ export class ManufacturingScheduleComponent implements OnInit {
                   callback(item);
                 }
                 
-              }
+              // }
             })
 
           }
