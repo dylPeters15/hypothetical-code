@@ -187,7 +187,7 @@ export class NewFormulaDialogComponent implements OnInit {
   async createFormula(): Promise<void> {
 
     var response = await this.restv2.getFormulas(AndVsOr.OR, this.formulaname, this.formulaname, null, null, null, 1);
-    if (response.length == 1) {
+    if (response.length == 1 && this.formulaname != this.oldformulaname) {
       this.snackBar.open("Formula name already exists. Please try a new name", "close", {
         duration: 4000,
       });
