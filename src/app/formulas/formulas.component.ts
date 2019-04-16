@@ -196,8 +196,12 @@ export class FormulaComponent implements OnInit {
   }
 
 
-  viewAssociatedSkus(formula) {
+  async viewAssociatedSkus(formula) {
     // Get list of skus that are associated with this formula
+    // getSkus(andVsOr: AndVsOr, skuName: string, skunameregex: string, skuNumber: number, caseUpcNumber: number, unitUpcNumber: number, formula: string, limit: number): Promise<any> {
+      var relatedSkus = await this.restv2.getSkus(AndVsOr.OR, oldSku.skuname, oldSku.skuname, null,null,null,null,1);
+
+
     const dialogConfig = new MatDialogConfig();
     dialogConfig.data = {formula: formula};
     this.dialog.open(IngredientsAndQuantitiesDialogComponent, dialogConfig);
