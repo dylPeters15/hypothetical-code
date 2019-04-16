@@ -10,6 +10,7 @@ import {ExportToCsv} from 'export-to-csv';
 import { ingredienttuple } from "../new-formula-dialog/ingredienttuple";
 import { ConfirmDeletionDialogComponent } from '../confirm-deletion-dialog/confirm-deletion-dialog.component';
 import { IngredientsAndQuantitiesDialogComponent } from '../ingredients-and-quantities-dialog/ingredients-and-quantities-dialog.component';
+import { RestServiceV2, AndVsOr } from '../restv2.service';
 
 export interface FormulaForTable {
   formulaname: String;
@@ -42,7 +43,7 @@ export class ExportableFormula {
   })
 export class FormulaComponent implements OnInit {
 
-  constructor(public rest:RestService, private snackBar: MatSnackBar, private dialog: MatDialog) { }
+  constructor(public restv2: RestServiceV2, public rest:RestService, private snackBar: MatSnackBar, private dialog: MatDialog) { }
   allReplacement = 54321;
   displayedColumns: string[] = ['checked', 'formulaname', 'formulanumber','ingredientsandquantities', 'relatedskus', 'comment',  'actions'];
   data: FormulaForTable[] = [];
@@ -198,13 +199,16 @@ export class FormulaComponent implements OnInit {
 
   async viewAssociatedSkus(formula) {
     // Get list of skus that are associated with this formula
-    // getSkus(andVsOr: AndVsOr, skuName: string, skunameregex: string, skuNumber: number, caseUpcNumber: number, unitUpcNumber: number, formula: string, limit: number): Promise<any> {
-      var relatedSkus = await this.restv2.getSkus(AndVsOr.OR, oldSku.skuname, oldSku.skuname, null,null,null,null,1);
+      var relatedSkus = await this.restv2.getSkus(AndVsOr.OR, null, null, null, null,null, formula, 1000); //1000 is just a large number of skus that use the formula.
+      console.log("related skus:");
+      for (var i = 0; i < relatedSkus.length; i++)
+      {
+        console.log(relatedSkus[i].skuname);
+      }
 
-
-    const dialogConfig = new MatDialogConfig();
-    dialogConfig.data = {formula: formula};
-    this.dialog.open(IngredientsAndQuantitiesDialogComponent, dialogConfig);
+    //const dialogConfig = new MatDialogConfig();
+    //dialogConfig.data = {formula: formula};
+    //this.dialog.open(IngredientsAndQuantitiesDialogComponent, dialogConfig);
   }
 
   exportSelected(){
