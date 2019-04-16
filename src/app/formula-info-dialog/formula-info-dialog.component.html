@@ -3,14 +3,14 @@
   <mat-card>
     
     <mat-card-content style="display: grid; width: 100%; justify-items: center;">
-      <button class="accordion">Formula Number</button>
-      <div class="panel">
+      <h3>Formula Number</h3>
+      <div>
           <br> 
         <p>{{ formulanumber }}</p>
       </div>
       
-      <button class="accordion">Ingredients and Quantities</button>
-      <div class="panel">
+      <h3>Ingredients and Quantities</h3>
+      <div>
         <mat-list>
           <mat-list-item *ngFor="let ingredientandquantity of formula.ingredientsandquantities">
             {{ingredientandquantity.ingredient.ingredientname}} | {{(ingredientandquantity.quantity * ingredientandquantity.ingredient.amount).toFixed(4)}} {{ingredientandquantity.ingredient.unitofmeasure}}
@@ -18,8 +18,8 @@
         </mat-list>
       </div>
       
-      <button class="accordion">Comment</button>
-      <div class="panel">
+      <h3>Comment</h3>
+      <div>
           <br> 
         <p>{{ comment }}</p>
       </div> 
