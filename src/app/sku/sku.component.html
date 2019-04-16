@@ -8,10 +8,55 @@
           <button mat-raised-button (click)="deselectAll()"> Deselect All </button>
           <button mat-raised-button *ngIf="productmanager" (click)="deleteSelected()" color="warn" [disabled]="noneSelected()"> Delete Selected </button>
           <button mat-raised-button *ngIf="productmanager" (click)="newSkuButton()" color="primary"> New Sku </button>  
-          <button mat-raised-button (click)="exportSelected()" [disabled]="noneSelected()"> Export Selected </button>        
-          <mat-form-field>
-            <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter">
+          <button mat-raised-button (click)="exportSelected()" [disabled]="noneSelected()"> Export Selected </button>
+          
+          <div style="width: 100%;">
+            <mat-form-field style="display: inline-block; width: 30%;">
+              <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter by SKU name or number.">
+            </mat-form-field>
+
+          <mat-form-field style="display: inline-block; width: 30%; padding-left: 3%;">
+          <mat-chip-list #ingredientchipList>
+              <mat-chip *ngFor="let ingredient of selectedIngredients" [selectable]="false" [removable]="true"
+                (removed)="ingredientremove(ingredient)">
+                {{ingredient['ingredientname']}}
+                <mat-icon matChipRemove>cancel</mat-icon>
+              </mat-chip>
+              <input placeholder="Filter by Ingredient in SKU" #ingredientInput [formControl]="ingredientCtrl"
+                [matAutocomplete]="ingredientauto" [matChipInputFor]="ingredientchipList"
+                [matChipInputSeparatorKeyCodes]="separatorKeysCodes" [matChipInputAddOnBlur]="true"
+                (matChipInputTokenEnd)="ingredientadd($event)">
+            </mat-chip-list>
+            <mat-autocomplete #ingredientauto="matAutocomplete"
+              (optionSelected)="ingredientselected($event)">
+              <mat-option *ngFor="let ingredientOption of autoCompleteIngredients | async"
+                [value]="ingredientOption">
+                {{ingredientOption['ingredientname']}}
+              </mat-option>
+            </mat-autocomplete>
           </mat-form-field>
+
+          <mat-form-field style="display: inline-block; width: 30%; padding-left: 3%;">
+          <mat-chip-list #productlinechipList>
+              <mat-chip *ngFor="let productline of selectedProductLines" [selectable]="false" [removable]="true"
+                (removed)="productlineremove(productline)">
+                {{productline['productlinename']}}
+                <mat-icon matChipRemove>cancel</mat-icon>
+              </mat-chip>
+              <input placeholder="Filter by Product Line" #productlineInput [formControl]="productlineCtrl"
+                [matAutocomplete]="productlineauto" [matChipInputFor]="productlinechipList"
+                [matChipInputSeparatorKeyCodes]="separatorKeysCodes" [matChipInputAddOnBlur]="true"
+                (matChipInputTokenEnd)="productlineadd($event)">
+            </mat-chip-list>
+            <mat-autocomplete #productlineauto="matAutocomplete"
+              (optionSelected)="productlineselected($event)">
+              <mat-option *ngFor="let productlineOption of autoCompleteProductLines | async"
+                [value]="productlineOption">
+                {{productlineOption['productlinename']}}
+              </mat-option>
+            </mat-autocomplete>
+          </mat-form-field>
+        </div>
 
           <mat-table [dataSource]="dataSource" matSort (matSortChange)="sortData($event)" class="mat-elevation-z8">
             <ng-container matColumnDef="checked">

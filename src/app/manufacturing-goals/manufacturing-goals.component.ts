@@ -2,7 +2,7 @@ import { Component, OnInit,ViewChild } from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import { RestService } from '../rest.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { NewGoalDialogComponent, DisplayableActivity } from '../new-goal-dialog/new-goal-dialog.component'
+import { NewGoalDialogComponent} from '../new-goal-dialog/new-goal-dialog.component'
 import {ManufacturingCalculatorComponent} from '../manufacturing-calculator/manufacturing-calculator.component'
 import { MatDialogRef, MatDialog, MatDialogConfig, MatSort, MatTableDataSource,MatPaginator, MatSnackBar } from "@angular/material";
 import {ExportToCsv} from 'export-to-csv';

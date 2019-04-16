@@ -3,13 +3,14 @@
   <mat-card>
     <mat-card-content style="display: grid; width: 100%; justify-items: center;">
       <mat-form-field>
-        <input matInput [(ngModel)]="name" placeholder="Name" required>
+        <input matInput [(ngModel)]="name" placeholder="Name" required [errorStateMatcher]="goalnameErrorMatcher" (input)="goalnameChanged()">
+        <mat-error>Goalname is required and must be unique.</mat-error>
       </mat-form-field>
 
       <mat-list>
-        <mat-list-item *ngFor="let activity of displayableActivities">
-          SKU: {{activity.skuname}}: {{activity.hours}} Hours
-        </mat-list-item>
+        <mat-list-item *ngFor="let activity of activities">
+          SKU: {{activity['sku']['skuname'] != null ? activity['sku']['skuname'] : activity['skuname']}}: {{activity['sethours'] != null ? activity['sethours'] : activity['calculatedhours']}} Hours
+          <button type="submit" (click)="removeActivity(activity)">X</button></mat-list-item>
         </mat-list>
 
       <div class="activities">
@@ -40,5 +41,5 @@
 </mat-dialog-content>
 <mat-dialog-actions align="center">
   <button mat-raised-button (click)="closeDialog()">Cancel</button>
-  <button mat-raised-button (click)="createGoal()" [disabled]="username=='' || name=='' || date=='Invalid Date'" color="primary">{{create_title}}</button>
+  <button mat-raised-button (click)="createGoal()" [disabled]="username=='' || name=='' || date=='Invalid Date' || goalnameError" color="primary">{{create_title}}</button>
 </mat-dialog-actions>

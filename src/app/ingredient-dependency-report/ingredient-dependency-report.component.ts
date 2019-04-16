@@ -1,11 +1,15 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { RestService } from '../rest.service';
-import {MatSnackBar} from '@angular/material';
+import {MatSnackBar, MatAutocomplete} from '@angular/material';
 import { MatDialogRef, MatDialog, MatSort, MatTableDataSource, MatPaginator } from "@angular/material";
 import { MoreInfoDialogComponent } from '../more-info-dialog/more-info-dialog.component';
 import { NewIngredientDialogComponent } from '../new-ingredient-dialog/new-ingredient-dialog.component';
 import { AfterViewChecked } from '@angular/core';
 import {ExportToCsv} from 'export-to-csv';
+import { ENTER } from '@angular/cdk/keycodes';
+import { FormControl } from '@angular/forms';
+import { Observable } from 'rxjs';
+import { AndVsOr, RestServiceV2 } from '../restv2.service';
 
 export class IngredientDependencyData {
   // completion: boolean;
@@ -43,9 +47,49 @@ export class ExportableIngredientDependency {
   templateUrl: './ingredient-dependency-report.component.html',
 })
 export class IngredientDependencyComponent implements OnInit {
+  separatorKeysCodes: number[] = [ENTER];
+
+  selectedSKUs = [];
+  skuCtrl = new FormControl();
+  autoCompleteSKUs: Observable<string[]> = new Observable(observer => {
+    this.skuCtrl.valueChanges.subscribe(async newVal => {
+      var skus = await this.restv2.getSkus(AndVsOr.AND, null, "(?i).*"+newVal+".*", null, null, null, null, 1000);
+      skus = skus.filter((value, index, array) => {
+        for (let sku of this.selectedSKUs) {
+          if (sku._id == value._id) {
+            return false;
+          }
+        }
+        return true;
+      });
+      observer.next(skus);
+    });
+  });
+  @ViewChild('skuInput') skuInput: ElementRef<HTMLInputElement>;
+  @ViewChild('skuauto') skumatAutocomplete: MatAutocomplete;
+  skuremove(sku) {
+    for (var i = 0; i < this.selectedSKUs.length; i++) {
+      if (this.selectedSKUs[i]._id == sku._id) {
+        this.selectedSKUs.splice(i, 1);
+        i--;
+      }
+    }
+    this.refreshData();
+  }
+  skuselected(event){
+    this.selectedSKUs.push(event.option.value);
+    this.refreshData();
+  }
+  skuadd(event) {
+    this.skuInput.nativeElement.value = "";
+  }
+
+
+
+  
   allReplacement = 54321;
   displayedColumns: string[] = ['checked', 'ingredientName', 'ingredientNumber', 'numberSKUs', 'SKUs'];
-  constructor(public rest:RestService, private snackBar: MatSnackBar, private dialog: MatDialog) { }
+  constructor(public rest:RestService, private snackBar: MatSnackBar, private dialog: MatDialog, public restv2: RestServiceV2) { }
   data: IngredientDependencyData[] = [];
   dialogRef: MatDialogRef<MoreInfoDialogComponent>;
   newDialogRef: MatDialogRef<NewIngredientDialogComponent>;
@@ -100,6 +144,22 @@ export class IngredientDependencyComponent implements OnInit {
       });
     });
       console.log('data sent', this.data)
+
+    //filter ingredients by skus (this is implicitly an OR gate of the ingredients - if an ingredient is contained in at least 1 sku it will be shown)
+    console.log(this.selectedSKUs);
+    if (this.selectedSKUs.length > 0) {
+      this.data = this.data.filter((value, index, array) => {
+        for (let selectedSKU of this.selectedSKUs) {
+          for (let ingredientandquantity of selectedSKU.formula.ingredientsandquantities) {
+            if (value['ingredientname'] == ingredientandquantity.ingredient.ingredientname) {
+              return true;
+            }
+          }
+        }
+        return false;
+      });
+    }
+
       this.dataSource.sort = this.sort;
       this.dataSource =  new MatTableDataSource<IngredientDependencyData>(this.data);
       this.dataSource.paginator = this.paginator;

@@ -59,6 +59,19 @@ export class NewFormulaDialogComponent implements OnInit {
       this.dialog_title = "Create New Formula";
       this.create_title = "Create";
     } 
+    this.initNum();
+  }
+
+  async initNum() {
+    var formulanumber = 1;
+    while (this.formulanumber == null || this.formulanumber == undefined || this.formulanumber == 0) {
+      var formulas = await this.restv2.getFormulas(AndVsOr.AND, null, null, formulanumber, null, null, 1);
+      if (formulas.length == 1) {
+        formulanumber++;
+      } else {
+        this.formulanumber = formulanumber;
+      }
+    }
   }
 
   refreshData() {

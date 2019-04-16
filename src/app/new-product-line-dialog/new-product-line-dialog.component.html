@@ -1,10 +1,12 @@
 <h1 mat-dialog-title>Create New Product Line</h1>
 <div mat-dialog-content>
   <mat-form-field>
-    <input matInput [(ngModel)]="data['productlinename']" placeholder="Product Line Name" cdkFocusInitial required (keydown.enter)="createProductLine()">
+    <input matInput [(ngModel)]="productlinename" placeholder="Product Line Name" cdkFocusInitial required (keydown.enter)="createProductLine()"
+    [errorStateMatcher]="productlinenameErrorMatcher" (input)="productlinenameChanged()">
+  <mat-error>Product Line Name already exists.</mat-error>
   </mat-form-field>
 </div>
 <div mat-dialog-actions>
   <button mat-raised-button (click)="onNoClick()">Cancel</button>
-  <button mat-raised-button (click)="createProductLine()" color="primary" [disabled]="data['productlinename']==''||!data['productlinename'] || nameExists">Save</button>
+  <button mat-raised-button (click)="createProductLine()" color="primary" [disabled]="productlinename==null||productlinename==undefined||productlinename==''||productlinenameError">Save</button>
 </div>
