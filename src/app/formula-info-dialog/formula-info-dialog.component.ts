@@ -40,6 +40,7 @@ export class FormulaDetailsDialogComponent implements OnInit {
     
     for (i = 0; i < acc.length; i++) {
       acc[i].addEventListener("click", function() {
+        console.log("formula CLICK")
         this.classList.toggle("active");
         var panel = this.nextElementSibling;
         if (panel.style.maxHeight){

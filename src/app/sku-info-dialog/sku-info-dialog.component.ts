@@ -15,18 +15,18 @@ import { MatDialogConfig, MatDialog } from "@angular/material";
 export class SkuDetailsDialogComponent implements OnInit {
 
   skus: any[];
-  names: String[];
-  numbers: Number[];
-  caseUpcNumbers: Number[];
-  unitUpcNumbers: Number[];
-  unitSizes: String[];
-  countPerCases: Number[]
-  formulas: any[];
-  formulascalingfactors: Number[];
-  manufacturingrates: Number[];
-  manufacturingsetupcosts: Number[];
-  manufacturingruncosts: Number[];
-  comments: String[]
+  names: String[] = [];
+  numbers: Number[] = [];
+  caseUpcNumbers: Number[] = [];
+  unitUpcNumbers: Number[] = [];
+  unitSizes: String[] = [];
+  countPerCases: Number[] = [];
+  formulas: any[] = [];
+  formulascalingfactors: Number[] = [];
+  manufacturingrates: Number[] = [];
+  manufacturingsetupcosts: Number[] = [];
+  manufacturingruncosts: Number[] = [];
+  comments: String[] = [];
 
   //formulaname: string = '';
   //formulanumber: number = 0;
@@ -36,30 +36,36 @@ export class SkuDetailsDialogComponent implements OnInit {
 
   ngOnInit() {
     this.skus = this.data.present_skus;
-
+    console.log("skus over here: " + this.skus);
     for(var j = 0; j < this.skus.length; j++)
     {
-      this.names[j] = this.skus[j].skuname;
-      this.numbers[j] = this.skus[j].skunumber;
-      this.caseUpcNumbers[j] = this.skus[j].caseupcnumber;
-      this.unitUpcNumbers[j] = this.skus[j].unitupcnumber;
-      this.unitSizes[j] = this.skus[j].unitsize;
-      this.countPerCases[j] = this.skus[j].countpercase;
-      this.formulas[j] = this.skus[j].formula;
-      this.formulascalingfactors[j] = this.skus[j].formulascalingfactor;
-      this.manufacturingrates[j] = this.skus[j].manufacturingrate;
-      this.manufacturingsetupcosts[j] = this.skus[j].manufacturingsetupcost;
-      this.manufacturingruncosts[j] = this.skus[j].manufacturingruncost;
-      this.comments[j] = this.skus[j].comment;
+      this.names.push(this.skus[j].skuname);
+      this.numbers.push(this.skus[j].skunumber);
+      this.caseUpcNumbers.push(this.skus[j].caseupcnumber);
+      this.unitUpcNumbers.push(this.skus[j].unitupcnumber);
+      this.unitSizes.push(this.skus[j].unitsize);
+      this.countPerCases.push(this.skus[j].countpercase);
+      this.formulas.push(this.skus[j].formula);
+      this.formulascalingfactors.push(this.skus[j].formulascalingfactor);
+      this.manufacturingrates.push(this.skus[j].manufacturingrate);
+      this.manufacturingsetupcosts.push(this.skus[j].manufacturingsetupcost);
+      this.manufacturingruncosts.push(this.skus[j].manufacturingruncost);
+      this.comments.push(this.skus[j].comment);
     }
 
     //console.log("my test array is " + this.testArray);
 
+
+
+  }
+
+  ngAfterViewInit() {
     var acc = document.getElementsByClassName("accordion");
-    var i;
+    var k;
     
-    for (i = 0; i < acc.length; i++) {
-      acc[i].addEventListener("click", function() {
+    for (k = 0; k < acc.length;k++) {
+      acc[k].addEventListener("click", function() {
+        console.log("sku CLICK")
         this.classList.toggle("active");
         var panel = this.nextElementSibling;
         if (panel.style.maxHeight){
@@ -69,7 +75,6 @@ export class SkuDetailsDialogComponent implements OnInit {
         } 
       });
     }
-
   }
 
   closeDialog() {

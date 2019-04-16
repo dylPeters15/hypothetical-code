@@ -1,11 +1,13 @@
-<h2 mat-dialog-title align="center">Formula {{ formulaname }} Details</h2>
+<h2 mat-dialog-title align="center">Skus</h2>
 <mat-dialog-content align="center">
   <mat-card>
       <mat-card-content>
               <div *ngFor="let item of names;let i = index">
+                  <mat-card-content style="display: grid; width: 100%; justify-items: center;">
                   <button class="accordion">{{item}}</button>
                   <div class="panel">
-                      <button class="accordion">Sku Number</button>
+                      
+                    <button class="accordion">Sku Number</button>
                       <div class="panel">
                           <br> 
                         <p>{{ numbers[i] }}</p>
@@ -65,6 +67,8 @@
                         <p>{{ comments[i] }}</p>
                       </div> 
               </div>
+
+             </mat-card-content>
             </div>
       </mat-card-content>
       <br> 
