@@ -4,6 +4,7 @@ import {MatSnackBar} from '@angular/material';
 import { MatDialogRef, MatDialog, MatSort, MatDialogConfig, MatTableDataSource, MatPaginator } from "@angular/material";
 import { MoreInfoDialogComponent } from '../more-info-dialog/more-info-dialog.component';
 import { NewSkuDialogComponent } from '../new-sku-dialog/new-sku-dialog.component';
+import {FormulaDetailsDialogComponent} from '../formula-info-dialog/formula-info-dialog.component';
 import { AfterViewChecked } from '@angular/core';
 import { auth } from '../auth.service';
 import {ExportToCsv} from 'export-to-csv';
@@ -133,15 +134,11 @@ export class SkuComponent implements OnInit {
     });
   }
 
-    // edit
-    seeFormulaDetails(edit, formula) {
-      const dialogConfig = new MatDialogConfig();
-      dialogConfig.data = {edit: edit, present_formula: formula};
-      this.newDialogRef = this.dialog.open(NewSkuDialogComponent, dialogConfig);
-      this.newDialogRef.afterClosed().subscribe(event => {
-        this.refreshData();
-      });
-    }
+  seeFormulaDetails(edit, formula) {
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.data = {edit: edit, present_formula: formula};
+    this.formulaDetailsRef = this.dialog.open(FormulaDetailsDialogComponent, dialogConfig);
+  }
 
   newSkuButton()
   {

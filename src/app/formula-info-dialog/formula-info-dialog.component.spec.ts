@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { NewFormulaDialogComponent } from './new-formula-dialog.component';
+import { FormulaDetailsDialogComponent } from './formula-info-dialog.component';
 
-describe('NewFOrmulaDialogComponent', () => {
-  let component: NewFormulaDialogComponent;
-  let fixture: ComponentFixture<NewFormulaDialogComponent>;
+describe('FormulaDetailsDialogComponent', () => {
+  let component: FormulaDetailsDialogComponent;
+  let fixture: ComponentFixture<FormulaDetailsDialogComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ NewFormulaDialogComponent ]
+      declarations: [ FormulaDetailsDialogComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(NewFormulaDialogComponent);
+    fixture = TestBed.createComponent(FormulaDetailsDialogComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
