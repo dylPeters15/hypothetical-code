@@ -251,7 +251,7 @@ export class ManufacturingScheduleComponent implements OnInit {
 
 
   async checkLine(item, group): Promise<Boolean> {
-    var name = item.content.split("::")[0];
+    var name = item.content.split("::")[0].split(": ")[0];
     var response = await this.restv2.getSkus(AndVsOr.OR, name, null, null, null, null, null, 1);
     var line = await this.restv2.getLine(AndVsOr.OR, "", "", group.content, "", 1)
     if (line[0]['skus']) {

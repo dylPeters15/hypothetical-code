@@ -28,7 +28,7 @@
                         <p>Deadline: {{goal['date'].valueOf().split('T')[0]}}</p>
                         <div *ngIf= "manufacturingLinesToManage.length > 0">
                             <div draggable="true" (dragstart)="handleDragStart($event, activity)" [ngClass]="['item']" *ngFor="let activity of goal['activities']">
-                                {{activity['sku']['skuname']}}
+                                {{activity['sku']['skuname']}}: {{activity['calculatedhours']}} hours
                             </div>
                         </div>
                     </div>
