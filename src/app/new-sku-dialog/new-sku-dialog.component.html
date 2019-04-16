@@ -19,13 +19,13 @@
 
       <div>
         <mat-form-field style="display: inline-block;">
-          <input type="number" matInput [(ngModel)]="caseupcnumber" placeholder="Case UPC#"
+          <input type="number" matInput [(ngModel)]="caseupcnumber" placeholder="Case UPC#" required
             [errorStateMatcher]="caseupcnumberErrorMatcher" (input)="caseupcnumberChanged()">
           <mat-error>{{caseupcnumberErrorMessage}}</mat-error>
         </mat-form-field>
 
         <mat-form-field style="display: inline-block; padding-left: 10px;">
-          <input type="number" matInput [(ngModel)]="unitupcnumber" placeholder="Unit UPC#"
+          <input type="number" matInput [(ngModel)]="unitupcnumber" placeholder="Unit UPC#" required
             [errorStateMatcher]="unitupcnumberErrorMatcher" (input)="unitupcnumberChanged()">
           <mat-error>{{unitupcnumberErrorMessage}}</mat-error>
         </mat-form-field>
