@@ -611,22 +611,12 @@ export class ManufacturingScheduleComponent implements OnInit {
                 else if (!isOverdue && item['className'] == 'overdue') {
                   item['className'] = 'normal';
                 }
-                
+                var response = await thisObject.restv2.modifyActivity(AndVsOr.AND, activity['_id'], activity['sku']['_id'],
+                activity['numcases'], activity['calculatedhours'], parseInt(newDuration, 10),
+                new Date(item['start']), activity['line']);
                 callback(item);
-                // })
               }
             })
-            // console.log(item['start'])
-            // item['end'] = thisObject.calculateEndDate(new Date(item['start']), Math.round(parseInt(newDuration, 10)));
-            // thisObject.checkOverdue(item['id'], item['end']).then( isOverdue => {
-            //   if (isOverdue && item['className'] != 'orphan') {
-            //     item['className'] = 'overdue';
-            //   }
-            //   else if (!isOverdue && item['className'] == 'overdue') {
-            //     item['className'] = 'normal';
-            //   }
-            //   callback(item);
-            // })
 
           }
         })
