@@ -371,11 +371,11 @@ export class SkuComponent implements OnInit {
                       console.log("modified:", updatedGoal)
                     }
                   }
-                  // affectedActivities.forEach(activity => {
-                  //   this.restv2.deleteActivity(AndVsOr.OR, activity['_id']).then(response => {
-                  //     console.log("Deleted", response)
-                  //   })
-                  // });
+                  affectedActivities.forEach(activity => {
+                    this.restv2.deleteActivity(AndVsOr.OR, activity['_id']).then(response => {
+                      console.log("Deleted", response)
+                    })
+                  });
                   affectedManufacturingLines.forEach((line) => {
                     let newSkus = []; 
                     line['skus'].forEach((oldsku) => {
