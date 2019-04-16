@@ -18,58 +18,33 @@ export class FormulaDetailsDialogComponent implements OnInit {
   formula: any;
   formulaname: string = '';
   formulanumber: number = 0;
-  ingredientsandquantities: any[];
   comment: string = '';
-
-  arrayIngredients: any[] = [];
-  arrayQuantity: any[] = [];
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: any, private dialogRef: MatDialogRef<FormulaDetailsDialogComponent>, public rest: RestService, private snackBar: MatSnackBar, private dialog: MatDialog) { }
 
   ngOnInit() {
-
+    this.formula = this.data.present_formula;
+    console.log("formula here: " + this.formula);
     this.formulaname = this.formula['formulaname'];
     this.formulanumber = this.formula['formulanumber'];
-    this.ingredientsandquantities = this.formula['ingredientsandquantities'];
     this.comment = this.formula['comment'];
     //console.log("my test array is " + this.testArray);
-    // update ingredients and amounts to display
-    for (let i = 0; i < this.ingredientsandquantities.length; i++) {
-      this.arrayIngredients.push(this.ingredientsandquantities[i].ingredient);
-      this.arrayQuantity.push(this.ingredientsandquantities[i].quantity);
-    }
 
-    // Set up accordian event listener
     var acc = document.getElementsByClassName("accordion");
     var i;
-
+    
     for (i = 0; i < acc.length; i++) {
       acc[i].addEventListener("click", function() {
-      /* Toggle between adding and removing the "active" class,
-      to highlight the button that controls the panel */
-      this.classList.toggle("active");
-
-      /* Toggle between hiding and showing the active panel */
-      var panel = this.nextElementSibling;
-      if (panel.style.display === "block") {
-        panel.style.display = "none";
-      } else {
-        panel.style.display = "block";
-      }
-    });
+        this.classList.toggle("active");
+        var panel = this.nextElementSibling;
+        if (panel.style.maxHeight){
+          panel.style.maxHeight = null;
+        } else {
+          panel.style.maxHeight = panel.scrollHeight + "px";
+        } 
+      });
     }
 
-  }
-
-  refreshData() {
-    console.log("refreshing the data");
-    this.arrayIngredients = [];
-    this.arrayQuantity = [];
-    for (let i = 0; i < this.ingredientsandquantities.length; i++) {
-      this.arrayIngredients.push(this.ingredientsandquantities[i].ingredient);
-      this.arrayQuantity.push(this.ingredientsandquantities[i].quantity);
-      console.log("array of index " + i + ": " + this.arrayIngredients[i] + ", " + this.arrayQuantity[i]);
-    }
   }
 
   closeDialog() {

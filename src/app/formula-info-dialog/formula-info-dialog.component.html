@@ -1,6 +1,7 @@
 <h2 mat-dialog-title align="center">{{ formulaname }}</h2>
 <mat-dialog-content align="center">
   <mat-card>
+    
     <mat-card-content style="display: grid; width: 100%; justify-items: center;">
       <button class="accordion">Formula Number</button>
       <div class="panel">
@@ -9,14 +10,16 @@
       
       <button class="accordion">Ingredients and Quantities</button>
       <div class="panel">
-        <div *ngFor="let item of arrayIngredients;let i = index">
-          <p>{{item['ingredientname']}} | {{(arrayQuantity[i] * item.amount).toFixed(4)}} {{item.unitofmeasure}} <button type="submit" (click)="modifyIngredient(item, arrayQuantity[i])">Edit</button><button type="submit" (click)="removeIngredient(item)">X</button></p>
-       </div>
+        <mat-list>
+          <mat-list-item *ngFor="let ingredientandquantity of formula.ingredientsandquantities">
+            {{ingredientandquantity.ingredient.ingredientname}} | {{(ingredientandquantity.quantity * ingredientandquantity.ingredient.amount).toFixed(4)}} {{ingredientandquantity.ingredient.unitofmeasure}}
+          </mat-list-item>
+        </mat-list>
       </div>
       
-      <button class="accordion">Section 3</button>
+      <button class="accordion">Comment</button>
       <div class="panel">
-        <p>Lorem ipsum...</p>
+        <p>{{ comment }}</p>
       </div> 
 
       <!---<p>Beans | 10 lbs <button type="submit">Edit</button><button type="submit">X</button></p> -->
@@ -24,9 +27,6 @@
 
       <br> 
       <br> 
-
-
-        <textarea rows="5" cols="50" style="border:inset 4px grey;" matInput [(ngModel)]="comment" placeholder="Additional Comments"> </textarea>
 
     </mat-card-content>
   </mat-card>
