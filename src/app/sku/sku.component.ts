@@ -275,21 +275,24 @@ export class SkuComponent implements OnInit {
 
 
   deleteSelected() {
-    this.data.forEach(sku => {
+    this.data.forEach(async sku => {
       var affectedManufacturingLines = [];
       var affectedManufacturingLineNames = [];
       var affectedProductLines = [];
       var affectedProductLineNames = [];
+      var affectedActivityNames = [];
       if (sku.checked) {
         var thisobject = this;
         let promise1 = new Promise((resolve, reject) => {
           thisobject.rest.getLine('', '.*','','',50).subscribe(lines => {
             lines.forEach((line) => {
               line['skus'].forEach((skuinline) => {
+                if(skuinline['sku']){
                 console.log('skuinline', skuinline['sku'], sku)
                 if (skuinline['sku']['_id'] == sku['_id']) {
                   affectedManufacturingLines.push(line);
                   affectedManufacturingLineNames.push(line['linename'])
+                }
                 }
               })
               
@@ -302,19 +305,24 @@ export class SkuComponent implements OnInit {
             console.log(lines)
             lines.forEach((line) => {
               line['skus'].forEach((skuinline) => {
-                console.log('skuinline', skuinline['sku'], sku)
-                if (skuinline['sku']['_id'] == sku['_id']) {
-                  affectedProductLines.push(line);
-                  affectedProductLineNames.push(line['productlinename'])
+                if(skuinline['sku']){
+                  console.log('skuinline', skuinline['sku'], sku)
+                  if (skuinline['sku']['_id'] == sku['_id']) {
+                    affectedProductLines.push(line);
+                    affectedProductLineNames.push(line['productlinename'])
+                  }
                 }
+
               })
             });
             resolve();
           });
         });
+        let affectedActivities = await this.restv2.getActivities(AndVsOr.OR, null,null, sku['_id'],50);
+        console.log("Activities Affected:", affectedActivities);
         promise1.then(() => {
           promise2.then(() => {
-            if (affectedManufacturingLines.length == 0 && affectedProductLines.length == 0) {
+            if (affectedManufacturingLines.length == 0 && affectedProductLines.length == 0 && affectedActivities.length == 0) {
               this.deleteSkuConfirmed(sku);
             }
             else {
@@ -322,15 +330,52 @@ export class SkuComponent implements OnInit {
               console.log(affectedProductLineNames);
               totalAffected.push(affectedManufacturingLineNames);
               totalAffected.push(affectedProductLineNames);
+              if(affectedActivities){
+                if(affectedActivities.length == 1){
+                  totalAffected.push(affectedActivities.length + " Activity")
+                }
+                else{
+                  totalAffected.push(affectedActivities.length + " Activities")
+                }
+                
+              }
               const dialogRef = this.dialog.open(ConfirmDeletionDialogComponent, {
                 width: '250px',
                 data: {ingredient: sku['skuname'],
                     affectedFormulaNames: totalAffected}
               }); 
                 
-              dialogRef.afterClosed().subscribe(closeData => {
+              dialogRef.afterClosed().subscribe(async closeData => {
                 if (closeData && closeData['confirmed']) {
                   this.deleteSkuConfirmed(sku);
+
+                  console.log("Affected:", affectedActivities)
+
+                  for(var i = 0; i<affectedActivities.length; i++){
+                    let activity = affectedActivities[i];
+                    console.log("ACT:", activity)
+                    var goals = await this.restv2.getGoals(AndVsOr.OR, null,null, ".*", null,100);
+                    console.log("GOALS", goals)
+                    for(var j = 0; j< goals.length; j++){
+                      let goal = goals[j];
+                      var updatedActivities: any = [];
+                      for(var k = 0; k<goal['activities'].length; k++){
+                        let goalsActivity = goal['activities'][k];
+                        console.log("GOAL ACT:", goalsActivity)
+                        if(goalsActivity['activity']['_id'] != activity['_id']){
+                          updatedActivities.push({activity: goalsActivity['_id']})
+                        }
+                      }
+                      console.log("updating:", updatedActivities)
+                      var updatedGoal = await this.restv2.modifyGoal(AndVsOr.AND, goal['goalname'],goal['goalname'],updatedActivities, goal['date'],goal['enabled']);
+                      console.log("modified:", updatedGoal)
+                    }
+                  }
+                  affectedActivities.forEach(activity => {
+                    this.restv2.deleteActivity(AndVsOr.OR, activity['_id']).then(response => {
+                      console.log("Deleted", response)
+                    })
+                  });
                   affectedManufacturingLines.forEach((line) => {
                     let newSkus = []; 
                     line['skus'].forEach((oldsku) => {
