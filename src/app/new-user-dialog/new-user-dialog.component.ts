@@ -24,7 +24,7 @@ export class NewUserDialogComponent implements OnInit {
   autoCompleteMfgLines: Observable<string[]> = new Observable(observer => {
     this.mfgLineCtrl.valueChanges.subscribe(async newVal => {
       var regex = "(?i).*" + newVal + ".*";
-      var linesFromDB: any[] = await this.restv2.getLine(AndVsOr.AND, null, regex, null, regex, 1000);
+      var linesFromDB: any[] = await this.restv2.getLine(AndVsOr.OR, null, regex, null, regex, 1000);
       var filteredLines = linesFromDB.filter((value, index, array) => {
         for (let selectedLine of this.selectedMfgLines) {
           if (selectedLine.linename == value.linename) {
