@@ -2,7 +2,7 @@
 <mat-dialog-content align="center">
   <mat-card>
       <mat-card-content>
-              <div *ngFor="let item of names;let i = index">
+              <div *ngFor="let item of names;let i = index" >
                   <mat-card-content style="display: grid; width: 100%; justify-items: center;">
                   <button class="accordion">{{item}}</button>
                   <div class="panel">
@@ -58,7 +58,7 @@
                               {{nextManLine}}
                           </mat-list-item>
                       </div> 
-                      
+
                       <button class="inner_accordion">Manufacturing Rate</button>
                       <div class="panel">
                           <br> 

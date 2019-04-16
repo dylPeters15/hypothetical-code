@@ -58,7 +58,7 @@ export class FormulaComponent implements OnInit {
   @ViewChild(MatSort) sort: MatSort;
 
   ngOnInit() {
-    this.paginator.pageSize = 5;
+    this.paginator.pageSize = 20;
     this.productmanager = auth.isAuthenticatedForProductManagerOperation();
     this.refreshData();
   }
@@ -201,13 +201,7 @@ export class FormulaComponent implements OnInit {
 
   async viewAssociatedSkus(formula) {
     // Get list of skus that are associated with this formula
-      var relatedSkus = await this.restv2.getSkus(AndVsOr.OR, null, null, null, null,null, formula, 1000); //1000 is just a large number of skus that use the formula.
-      console.log("related skus:");
-      for (var i = 0; i < relatedSkus.length; i++)
-      {
-        console.log(relatedSkus[i].skuname);
-      }
-
+    var relatedSkus = await this.restv2.getSkus(AndVsOr.OR, null, null, null, null,null, formula, 1000); //1000 is just a large number of skus that use the formula.
     const dialogConfig = new MatDialogConfig();
     dialogConfig.data = {present_skus: relatedSkus};
     this.dialog.open(SkuDetailsDialogComponent, dialogConfig);
