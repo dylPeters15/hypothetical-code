@@ -225,8 +225,6 @@ export class AutoScheduleComponent implements OnInit {
             }
         })
         if (activities.length > 0) {
-            
-            
             while (returnDate == null) {
                 var isValid = true;
                 var minActivityEnd = (new Date(2100, 0, 1)).valueOf();
@@ -240,11 +238,6 @@ export class AutoScheduleComponent implements OnInit {
                     }
                     var endValue = this.calculateEndDate(new Date(setActivity['startdate']), duration).valueOf()
                     console.log('scheduled activity', duration, new Date(startValue), new Date(endValue))
-                    // var temp = new Date(endValue);
-                    // temp.setHours(temp.getHours() + 1);
-                    // if (temp.getHours() > 18 || temp.getHours() < 8) {
-                    //     temp.setHours(temp.getHours() + 14);
-                    // }
                     if (potS <= startValue && potE >= startValue) {
                         console.log('invalid')
                         isValid = false;
@@ -269,14 +262,12 @@ export class AutoScheduleComponent implements OnInit {
                     var potE = this.calculateEndDate(minEndDate, activity['calculatedhours']).valueOf();
                 }
             }
-            return [returnDate, this.calculateEndDate(returnDate, activity['calculatedhours'])];
-            
+            return [returnDate, this.calculateEndDate(returnDate, activity['calculatedhours'])];   
         }
         else {
             console.log('no activities')
             return [start, this.calculateEndDate(start, activity['calculatedhours'])];
-        }
-        
+        }   
     }
  
     deselectAll() {

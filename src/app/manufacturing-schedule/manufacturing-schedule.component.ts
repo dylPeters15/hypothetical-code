@@ -171,7 +171,7 @@ export class ManufacturingScheduleComponent implements OnInit {
 
     var newGroup = this.groups.get(newItem_dropped.group)
     var count = 0;
-    this.manufacturingLinesToManage.forEach(line => {
+    await this.manufacturingLinesToManage.forEach(line => {
       console.log(line['manufacturingline']['_id'])
       if (newItem_dropped['group'] == line['manufacturingline']['_id']) {
         count++;
@@ -182,14 +182,16 @@ export class ManufacturingScheduleComponent implements OnInit {
     if (count == 1) {
       this.checkLine(newItem_dropped, newGroup).then(async isValid => {
         console.log('isValid', isValid)
-        this.refreshData();
+        // this.refreshData();
         if (!isValid) {
-          this.timeline.itemsData.remove(newItem_dropped);
+          // this.timeline.itemsData.remove(newItem_dropped);
+          this.refreshData();
+          this.data.remove(newItem_dropped['id'])
         }
         else {
           var activities = await this.restv2.getActivities(AndVsOr.OR, null, null, null, 500);
           var activityid = newItem_dropped.content.split("::")[1];
-          activities.forEach(activity => {
+          activities.forEach(async activity => {
             if (activity['_id'] == activityid) {
               var className = 'normal';
               var duration = activity['calculatedhours'];
@@ -198,9 +200,8 @@ export class ManufacturingScheduleComponent implements OnInit {
                   duration = activity['sethours'];
                   className = "updated"
                 }
-
               }
-              var start = new Date(activity['startdate'])
+              var start = new Date(newItem_dropped['start'])
               start.setMinutes(0)
               if (start.getHours() < 8) {
                 start.setHours(8);
@@ -209,43 +210,62 @@ export class ManufacturingScheduleComponent implements OnInit {
                 start.setDate(start.getDate() + 1)
                 start.setHours(8)
               }
-              
-              var endDate = this.calculateEndDate(new Date(start), Math.round(duration));
-              this.checkOverdue(activity['_id'], endDate).then(isOverdue => {
-                if (isOverdue) {
-                  className = 'overdue';
+              var potDates = await this.findValidStart(activity, newGroup['id'], new Date(start))
+                console.log('pot Date', potDates)
+                if (potDates) {
+                  console.log('activity to modify', activity)
+                  var modify = await this.restv2.modifyActivity(AndVsOr.AND, activity['_id'], activity['sku']['_id'],
+                  activity['numcases'], activity['calculatedhours'], activity['sethours'],
+                  start, newGroup['id']);
+                  console.log(modify)
+                  // this.refreshData();
+                  var endDate = potDates[1];
+                  // var endDate = this.calculateEndDate(new Date(start), Math.round(duration));
+                  this.checkOverdue(activity['_id'], endDate).then(isOverdue => {
+                    if (isOverdue) {
+                      className = 'overdue';
+                    }
+                    this.timeline.itemsData.add({
+                      id: activity['_id'],
+                      group: newGroup['id'],
+                      start: new Date(start),
+                      end: endDate,
+                      content: activity['sku']['skuname'],
+                      className: className
+                    })
+                    this.refreshData();
+                    this.timeline.itemsData.remove(newItem_dropped['id'])
+
+                    console.log('timeline data', this.timeline.itemsData)
+                    this.visibleData = [];
+                    var newData = this.timeline.getVisibleItems();
+                    console.log(newData)
+                    newData.forEach(item => {
+                      var itemObject = this.timeline.itemsData.get(item);
+                      console.log('data update item', itemObject)
+                      let visibleTable = new DataForVisibleTable(itemObject['id'], itemObject['group'],
+                        itemObject['start'], itemObject['end'], itemObject['content'], itemObject['className']);
+                      this.visibleData.push(visibleTable)
+                      console.log(this.visibleData)
+    
+                    })
+                    this.visibleDataSource = new MatTableDataSource<DataForVisibleTable>(this.visibleData);
+    
+                  })
                 }
-                this.timeline.itemsData.update({
-                  id: newItem_dropped['id'],
-                  group: newGroup['id'],
-                  start: new Date(start),
-                  end: endDate,
-                  content: activity['sku']['skuname'],
-                  className: className
-                })
-                console.log('timeline data', this.timeline.itemsData)
-                this.visibleData = [];
-                var newData = this.timeline.getVisibleItems();
-                console.log(newData)
-                newData.forEach(item => {
-                  var itemObject = this.timeline.itemsData.get(item);
-                  console.log('data update item', itemObject)
-                  let visibleTable = new DataForVisibleTable(itemObject['id'], itemObject['group'],
-                    itemObject['start'], itemObject['end'], itemObject['content'], itemObject['className']);
-                  this.visibleData.push(visibleTable)
-                  console.log(this.visibleData)
-
-                })
-                this.visibleDataSource = new MatTableDataSource<DataForVisibleTable>(this.visibleData);
-
-              })
+                else {
+                  this.refreshData();
+                  this.data.remove(newItem_dropped['id'])
+                  
+                }
             }
           })
         }
       })
     }
     else {
-      this.timeline.itemsData.remove(newItem_dropped);
+      this.refreshData();
+      this.data.remove(newItem_dropped['id'])
     }
   }
 
@@ -257,7 +277,7 @@ export class ManufacturingScheduleComponent implements OnInit {
     if (line[0]['skus']) {
       var count = 0;
       var skuObject;
-      line[0]['skus'].forEach(sku => {
+      await line[0]['skus'].forEach(sku => {
         if (sku['sku']['skuname'] == response[0]['skuname']) {
           count++;
           skuObject = sku['sku']
@@ -280,12 +300,6 @@ export class ManufacturingScheduleComponent implements OnInit {
             console.log('newActivity', newActivity)
           }
         })
-        console.log('modify start', item['start'])
-        var modify = await this.restv2.modifyActivity(AndVsOr.AND, activityid, newActivity['sku']['_id'],
-          newActivity['numcases'], newActivity['calculatedhours'], newActivity['sethours'],
-          item['start'], line[0]['_id']);
-        // var activity = await this.restv2.getActivities(AndVsOr.OR, null, null, skuObject['_id'], 1)
-
         return true;
       }
       else {
@@ -294,6 +308,58 @@ export class ManufacturingScheduleComponent implements OnInit {
     }
 
   }
+
+  async findValidStart(activity, line, start: Date): Promise<Date[]> {
+    var returnDate: Date;
+    var potS = start.valueOf();
+    var potE = this.calculateEndDate(start, activity['calculatedhours']).valueOf();
+    console.log('potential dates', new Date(potS), new Date(potE))
+    var activities = await this.restv2.getActivities(AndVsOr.OR, null, null, null, 100);
+    console.log('activities', activities)
+    if (activities.length > 0) {
+      var isValid = true;
+      var minActivityEnd = (new Date(2100, 0, 1)).valueOf();
+      activities.forEach(setActivity => {
+        if (this.provisionalActivities.includes(setActivity['id']) || 
+        (setActivity['line'] && setActivity['line']['_id'] == line && setActivity['_id'] != activity['_id'])) {
+          console.log('activity', setActivity)
+          var startValue = (new Date(setActivity['startdate'])).valueOf();
+          var duration = setActivity['calculatedhours'];
+          if (setActivity['sethours']) {
+              duration = setActivity['sethours']
+          }
+          var endValue = this.calculateEndDate(new Date(setActivity['startdate']), duration).valueOf()
+          console.log('scheduled activity', duration, new Date(startValue), new Date(endValue))
+          if (potS <= startValue && potE >= startValue) {
+              console.log('invalid')
+              isValid = false;
+              if (endValue < minActivityEnd && startValue >= potS) {
+                  minActivityEnd = endValue;
+              }
+          }
+          else if (potS >= startValue && potS <= endValue) {
+              isValid = false;
+              if (endValue < minActivityEnd && startValue >= potS) {
+                  minActivityEnd = endValue;
+              }
+          }
+        }
+          
+      })
+      if (isValid) {
+          returnDate = new Date(potS);
+          return [returnDate, this.calculateEndDate(returnDate, activity['calculatedhours'])];   
+
+      }
+      else {
+        return null;
+      }
+    }
+    else {
+        console.log('no activities')
+        return [start, this.calculateEndDate(start, activity['calculatedhours'])];
+    }   
+}
 
   async getTimelineGroups(): Promise<void> {
     // create groups
@@ -332,7 +398,7 @@ export class ManufacturingScheduleComponent implements OnInit {
       thisObject.visibleData = [];
       console.log('event', event, properties);
       var newData = thisObject.timeline.getVisibleItems();
-      console.log(newData)
+      console.log(thisObject.timeline.itemsData.get());
       newData.forEach(item => {
         var itemObject = thisObject.timeline.itemsData.get(item);
         let visibleTable = new DataForVisibleTable(itemObject['id'], itemObject['group'],
@@ -488,6 +554,7 @@ export class ManufacturingScheduleComponent implements OnInit {
           callback(item)
         }
         else {
+          console.log('remove activity')
           var getSku = await thisObject.restv2.getSkus(AndVsOr.OR, item['content'], null, null, null, null, null, 1);
           var activity = await thisObject.restv2.getActivities(AndVsOr.AND, item['start'], null, getSku[0]['_id'], 1);
           console.log('activity to delete', activity, activity[0]['startdate'])
