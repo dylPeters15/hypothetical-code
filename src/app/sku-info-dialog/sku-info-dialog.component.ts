@@ -72,6 +72,22 @@ export class SkuDetailsDialogComponent implements OnInit {
         } 
       });
     }
+
+    var acc_inner = document.getElementsByClassName("inner_accordion");
+    var k_inner;
+    
+    for (k_inner = 0; k_inner < acc_inner.length;k_inner++) {
+      acc_inner[k_inner].addEventListener("click", function() {
+        console.log("sku CLICK")
+        this.classList.toggle("active_inner");
+        var panel = this.nextElementSibling;
+        if (panel.style.maxHeight){
+          panel.style.maxHeight = null;
+        } else {
+          panel.style.maxHeight = panel.scrollHeight + "px";
+        } 
+      });
+    }
   }
 
   closeDialog() {
