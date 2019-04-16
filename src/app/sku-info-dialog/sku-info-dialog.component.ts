@@ -52,7 +52,6 @@ export class SkuDetailsDialogComponent implements OnInit {
       this.manufacturingruncosts.push(this.skus[j].manufacturingruncost);
       this.comments.push(this.skus[j].comment);
     }
-
   }
 
   // Calling my event listener in ngOnInit() means it's called before the children have been initialized.
