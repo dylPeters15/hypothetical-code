@@ -11,6 +11,7 @@ import { auth } from '../auth.service';
 import { from } from 'rxjs';
 import { ActivityDetailsComponent } from '../activity-details/activity-details.component';
 import { EnableGoalsDialogComponent } from '../enable-goals-dialog/enable-goals-dialog.component';
+import { ConfirmActionDialogComponent } from '../confirm-action-dialog/confirm-action-dialog.component';
 
 export class ManufacturingGoal {
   activities: any[];
@@ -152,10 +153,22 @@ export class ManufacturingGoalsComponent implements OnInit {
   }
 
   deleteSelected(goal) {
-    this.deleteGoalConfirmed(goal.name);
+    const dialogConfig = new MatDialogConfig();
+    this.dialog.open(ConfirmActionDialogComponent, dialogConfig).afterClosed().subscribe(closeData => {
+        if (closeData && closeData['confirmed']) {
+          this.deleteGoalConfirmed(goal.name);
+        }
+      });
   }
 
-  deleteGoalConfirmed(name) {
+  async deleteGoalConfirmed(name) {
+    var goal = (await this.restv2.getGoals(AndVsOr.AND, null, name, null, null, 1))[0];
+    console.log(goal);
+    for (var i = 0; i < goal.activities.length; i++) {
+      var activity = goal.activities[i].activity;
+      await this.restv2.deleteActivity(AndVsOr.AND, activity._id);
+    }
+
     this.rest.deleteGoal(name).subscribe(response => {
       this.snackBar.open("Goal: " + name + " deleted successfully.", "close", {
         duration: 2000,

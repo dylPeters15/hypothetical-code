@@ -46,6 +46,8 @@ export class NewGoalDialogComponent implements OnInit {
   create_title: String;
   projectionDialogRef: MatDialogRef<SalesProjectionComponent>;
 
+  removedActivities: any[] = [];
+
   @ViewChild('skuInput') skuInput: ElementRef<HTMLInputElement>;
   @ViewChild('auto') matAutocomplete: MatAutocomplete;
 
@@ -115,6 +117,8 @@ export class NewGoalDialogComponent implements OnInit {
     this.activities.forEach(element => {
       this.activityIds.push({activity: element['_id']})
     });
+    this.removedActivities.push(activity);
+    console.log(this.removedActivities);
   }
 
   createGoal() {
@@ -126,6 +130,12 @@ export class NewGoalDialogComponent implements OnInit {
           });
         }
         else{
+
+          //delete all activities that have been removed from this goal:
+          for (let activity of this.removedActivities) {
+            this.restv2.deleteActivity(AndVsOr.AND, activity._id);
+          }
+
           this.snackBar.open("Successfully created Goal: " + this.name + ".", "close", {
             duration: 2000,
           });
@@ -143,6 +153,12 @@ export class NewGoalDialogComponent implements OnInit {
         this.snackBar.open("Successfully modified Goal: " + this.name + ".", "close", {
           duration: 2000,
         });
+
+        //delete all activities that have been removed from this goal:
+        for (let activity of this.removedActivities) {
+          this.restv2.deleteActivity(AndVsOr.AND, activity._id);
+        }
+
         this.closeDialog();
       });
     }
