@@ -78,13 +78,9 @@ export class SkuDetailsDialogComponent implements OnInit {
     let manufacturingLinesWithSku = [];
      var manufacturinglines = await this.restv2.getLine(AndVsOr.OR, null,".*", null,null,50);
      manufacturinglines.forEach(manufacturingline => {
-      console.log("line iz: " + manufacturingline);
-      console.log("line skus iz: " + manufacturingline['skus']);
        manufacturingline['skus'].forEach(manufacturingLineSku => {
-         console.log("We are comparing " + manufacturingLineSku['_id'] + " to " + this.skus[j]['_id']);
-         if(manufacturingLineSku['_id'] == this.skus[j]['_id']){
-           console.log("added shortname " + manufacturingline['shortname']); 
-          manufacturingLinesWithSku.push(manufacturingline['shortname'])
+         if(manufacturingLineSku.sku['_id'] == this.skus[j]['_id']){
+          manufacturingLinesWithSku.push(manufacturingline['shortname']);
          }
        });
      });
