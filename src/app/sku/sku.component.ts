@@ -192,7 +192,8 @@ export class SkuComponent implements OnInit {
         this.data = this.data.filter((value, index, array) => {
           for (let selectedIngredient of this.selectedIngredients) {
             for (let ingredientandquantity of value.formula.ingredientsandquantities) {
-              if (selectedIngredient._id == ingredientandquantity.ingredient) {
+              console.log(ingredientandquantity.ingredient);
+              if (selectedIngredient._id == ingredientandquantity.ingredient._id) {
                 return true;
               }
             }
