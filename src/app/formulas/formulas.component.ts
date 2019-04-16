@@ -11,7 +11,6 @@ import { ingredienttuple } from "../new-formula-dialog/ingredienttuple";
 import { ConfirmDeletionDialogComponent } from '../confirm-deletion-dialog/confirm-deletion-dialog.component';
 import { IngredientsAndQuantitiesDialogComponent } from '../ingredients-and-quantities-dialog/ingredients-and-quantities-dialog.component';
 import { SkuDetailsDialogComponent } from '../sku-info-dialog/sku-info-dialog.component';
-
 import { RestServiceV2, AndVsOr } from '../restv2.service';
 
 export interface FormulaForTable {
