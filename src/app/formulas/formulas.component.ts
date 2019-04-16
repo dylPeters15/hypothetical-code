@@ -44,7 +44,7 @@ export class FormulaComponent implements OnInit {
 
   constructor(public rest:RestService, private snackBar: MatSnackBar, private dialog: MatDialog) { }
   allReplacement = 54321;
-  displayedColumns: string[] = ['checked', 'formulaname', 'formulanumber','ingredientsandquantities', 'comment', 'actions'];
+  displayedColumns: string[] = ['checked', 'formulaname', 'formulanumber','ingredientsandquantities', 'relatedskus', 'comment',  'actions'];
   data: FormulaForTable[] = [];
   dialogRef: MatDialogRef<MoreInfoDialogComponent>;
   newDialogRef: MatDialogRef<NewFormulaDialogComponent>;
@@ -190,6 +190,14 @@ export class FormulaComponent implements OnInit {
 
   viewIngredientsAndQuantities(formula) {
     console.log(formula);
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.data = {formula: formula};
+    this.dialog.open(IngredientsAndQuantitiesDialogComponent, dialogConfig);
+  }
+
+
+  viewAssociatedSkus(formula) {
+    // Get list of skus that are associated with this formula
     const dialogConfig = new MatDialogConfig();
     dialogConfig.data = {formula: formula};
     this.dialog.open(IngredientsAndQuantitiesDialogComponent, dialogConfig);
