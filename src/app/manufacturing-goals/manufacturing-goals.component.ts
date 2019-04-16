@@ -153,12 +153,21 @@ export class ManufacturingGoalsComponent implements OnInit {
   }
 
   deleteSelected(goal) {
-    const dialogConfig = new MatDialogConfig();
-    this.dialog.open(ConfirmActionDialogComponent, dialogConfig).afterClosed().subscribe(closeData => {
-        if (closeData && closeData['confirmed']) {
-          this.deleteGoalConfirmed(goal.name);
-        }
+    console.log("Goal", goal)
+    if(goal.owner == auth.getUsername()){
+      const dialogConfig = new MatDialogConfig();
+      this.dialog.open(ConfirmActionDialogComponent, dialogConfig).afterClosed().subscribe(closeData => {
+          if (closeData && closeData['confirmed']) {
+            this.deleteGoalConfirmed(goal.name);
+          }
+        });
+    }
+    else{
+      this.snackBar.open("You can only delete goals you have created.", "close", {
+        duration: 2000,
       });
+    }
+
   }
 
   async deleteGoalConfirmed(name) {
@@ -220,8 +229,14 @@ export class ManufacturingGoalsComponent implements OnInit {
   }
 
   modifySelected(goal) {
-   
+   if(goal.owner == auth.getUsername()){
     this.modifyManufacturingGoal(goal.name, goal.activities, goal.date, goal.enabled)
+   }
+    else{
+      this.snackBar.open("You can only modify goals you have created.", "close", {
+        duration: 2000,
+      });
+    }
   }
 
     modifyManufacturingGoal(present_goalname, present_activities, present_date, present_enabled) {
