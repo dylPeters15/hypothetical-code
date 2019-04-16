@@ -37,7 +37,7 @@ export class SalesSummaryRowCalcService {
     for (let ingredientandquantity of sku['formula']['ingredientsandquantities']) {
       totalCost += ingredientandquantity['ingredient']['costperpackage'] * ingredientandquantity['quantity'];
     }
-    return totalCost;
+    return totalCost * sku['formulascalingfactor'];
   }
 
   private async avgManufacturingRunSize(sku: any): Promise<Number> {
