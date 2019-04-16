@@ -87,7 +87,7 @@ export class FormulaComponent implements OnInit {
 
   constructor(public restv2: RestServiceV2, public rest:RestService, private snackBar: MatSnackBar, private dialog: MatDialog) { }
   allReplacement = 54321;
-  displayedColumns: string[] = ['checked', 'formulaname', 'formulanumber','ingredientsandquantities', 'relatedskus', 'comment',  'actions'];
+  displayedColumns: string[] = [];
   data: FormulaForTable[] = [];
   dialogRef: MatDialogRef<MoreInfoDialogComponent>;
   newDialogRef: MatDialogRef<NewFormulaDialogComponent>;
@@ -100,6 +100,12 @@ export class FormulaComponent implements OnInit {
   ngOnInit() {
     this.paginator.pageSize = 20;
     this.productmanager = auth.isAuthenticatedForProductManagerOperation();
+    if(this.productmanager){
+      this.displayedColumns = ['checked', 'formulaname', 'formulanumber','ingredientsandquantities', 'relatedskus', 'comment',  'actions'];
+    }
+    else{
+      this.displayedColumns = ['checked', 'formulaname', 'formulanumber','ingredientsandquantities', 'relatedskus', 'comment'];
+    }
     this.refreshData();
   }
 

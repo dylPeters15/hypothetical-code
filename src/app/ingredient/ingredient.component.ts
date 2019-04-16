@@ -93,8 +93,7 @@ export class IngredientComponent  implements OnInit {
 
   constructor(public rest:RestService, private snackBar: MatSnackBar, private dialog: MatDialog, public restv2: RestServiceV2) { }
   allReplacement = 54321;
-  displayedColumns: string[] = ['checked', 'ingredientname', 'ingredientnumber',
-    'vendorinformation', 'packagesize', 'costperpackage', 'comment', 'actions'];
+  displayedColumns: string[] = [];
   data: IngredientForTable[] = [];
   dialogRef: MatDialogRef<MoreInfoDialogComponent>;
   newDialogRef: MatDialogRef<NewIngredientDialogComponent>;
@@ -106,6 +105,14 @@ export class IngredientComponent  implements OnInit {
 
   ngOnInit() {
     this.productmanager = auth.isAuthenticatedForProductManagerOperation();
+    if(this.productmanager){
+      this.displayedColumns = ['checked', 'ingredientname', 'ingredientnumber',
+      'vendorinformation', 'packagesize', 'costperpackage', 'comment', 'actions'];
+    }
+    else{
+      this.displayedColumns = ['checked', 'ingredientname', 'ingredientnumber',
+      'vendorinformation', 'packagesize', 'costperpackage', 'comment'];
+    }
     this.refreshData();
   }
 
