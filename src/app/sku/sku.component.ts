@@ -4,6 +4,7 @@ import {MatSnackBar, MatAutocomplete} from '@angular/material';
 import { MatDialogRef, MatDialog, MatSort, MatDialogConfig, MatTableDataSource, MatPaginator } from "@angular/material";
 import { MoreInfoDialogComponent } from '../more-info-dialog/more-info-dialog.component';
 import { NewSkuDialogComponent } from '../new-sku-dialog/new-sku-dialog.component';
+import {FormulaDetailsDialogComponent} from '../formula-info-dialog/formula-info-dialog.component';
 import { AfterViewChecked } from '@angular/core';
 import { auth } from '../auth.service';
 import {ExportToCsv} from 'export-to-csv';
@@ -148,10 +149,12 @@ export class SkuComponent implements OnInit {
   constructor(public restv2: RestServiceV2, public rest:RestService, private snackBar: MatSnackBar, private dialog: MatDialog) { }
   allReplacement = 54321;
   //displayedColumns: string[] = ['checked', 'skuname', 'skunumber','caseupcnumber', 'unitupcnumber', 'unitsize', 'countpercase', 'formula', 'formulascalingfactor', 'manufacturingrate', 'comment', 'actions'];
-  displayedColumns: string[] = ['checked', 'skuname', 'skunumber', 'unitsize', 'countpercase', 'formula', 'manufacturingrate', 'comment'];
+  displayedColumns: string[] = ['checked', 'skuname', 'skunumber', 'unitsize', 'countpercase', 'formula', 'comment'];
   data: UserForTable[] = [];
   dialogRef: MatDialogRef<MoreInfoDialogComponent>;
   newDialogRef: MatDialogRef<NewSkuDialogComponent>;
+  formulaDetailsRef: MatDialogRef<FormulaDetailsDialogComponent>;
+
   dataSource =  new MatTableDataSource<UserForTable>(this.data);
   productmanager: boolean = false;
   filterQuery: string = "";
@@ -174,7 +177,8 @@ export class SkuComponent implements OnInit {
 
   refreshData(filterQueryData?) {
     filterQueryData = filterQueryData ? "(?i).*"+filterQueryData+".*" : "(?i).*"+this.filterQuery+".*"; //this returns things that have the pattern anywhere in the string
-    this.rest.getSkus("", filterQueryData, null, null, null, "", this.paginator.pageSize*10).subscribe(response => {
+    // this.restv2.getSkus(AndVsOr.OR, oldSku.skuname, oldSku.skuname, null,null,null,null,1);
+    this.restv2.getSkus(AndVsOr.OR, null, '(?i).*' +filterQueryData+'.*', null, null, null, null, this.paginator.pageSize*10).then(response => {
       this.data = response;
       this.data.forEach(user => {
         user['checked'] = false;
@@ -217,6 +221,7 @@ export class SkuComponent implements OnInit {
       this.dataSource.sort = this.sort;
       this.dataSource.paginator = this.paginator;
     });
+
   }
 
   seeInfo(type, content) {
@@ -236,6 +241,12 @@ export class SkuComponent implements OnInit {
     this.newDialogRef.afterClosed().subscribe(event => {
       this.refreshData();
     });
+  }
+
+  seeFormulaDetails(formula) {
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.data = {present_formula: formula};
+    this.formulaDetailsRef = this.dialog.open(FormulaDetailsDialogComponent, dialogConfig);
   }
 
   newSkuButton()

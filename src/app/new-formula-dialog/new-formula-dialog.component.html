@@ -31,5 +31,5 @@
 </mat-dialog-content>
 <mat-dialog-actions align="center">
   <button class="mat-raised-button" (click)="closeDialog()">Cancel</button>
-  <button class="mat-raised-button" (click)="createFormula()" [disabled]="!(formulanumber>0)" color="primary">{{ create_title }}</button>
+  <button class="mat-raised-button" (click)="createFormula()" [disabled]="!(formulaname.length>0)" [disabled]="!(formulanumber>0)" color="primary">{{ create_title }}</button>
 </mat-dialog-actions>

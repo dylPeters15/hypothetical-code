@@ -10,6 +10,7 @@ import {ExportToCsv} from 'export-to-csv';
 import { ingredienttuple } from "../new-formula-dialog/ingredienttuple";
 import { ConfirmDeletionDialogComponent } from '../confirm-deletion-dialog/confirm-deletion-dialog.component';
 import { IngredientsAndQuantitiesDialogComponent } from '../ingredients-and-quantities-dialog/ingredients-and-quantities-dialog.component';
+import { SkuDetailsDialogComponent } from '../sku-info-dialog/sku-info-dialog.component';
 import { RestServiceV2, AndVsOr } from '../restv2.service';
 import { ENTER } from '@angular/cdk/keycodes';
 import { FormControl } from '@angular/forms';
@@ -86,7 +87,7 @@ export class FormulaComponent implements OnInit {
 
   constructor(public restv2: RestServiceV2, public rest:RestService, private snackBar: MatSnackBar, private dialog: MatDialog) { }
   allReplacement = 54321;
-  displayedColumns: string[] = ['checked', 'formulaname', 'formulanumber','ingredientsandquantities', 'comment', 'actions'];
+  displayedColumns: string[] = ['checked', 'formulaname', 'formulanumber','ingredientsandquantities', 'relatedskus', 'comment',  'actions'];
   data: FormulaForTable[] = [];
   dialogRef: MatDialogRef<MoreInfoDialogComponent>;
   newDialogRef: MatDialogRef<NewFormulaDialogComponent>;
@@ -161,7 +162,7 @@ export class FormulaComponent implements OnInit {
   newFormulaButton()
   {
     let blankTuple = [];
-    this.newFormula(false, "", 0, blankTuple, "");
+    this.newFormula(false, "", 1.0, blankTuple, "");
   }
 
   sortData() {
@@ -251,6 +252,15 @@ export class FormulaComponent implements OnInit {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.data = {formula: formula};
     this.dialog.open(IngredientsAndQuantitiesDialogComponent, dialogConfig);
+  }
+
+
+  async viewAssociatedSkus(formula) {
+    // Get list of skus that are associated with this formula
+    var relatedSkus = await this.restv2.getSkus(AndVsOr.OR, null, null, null, null,null, formula, 1000); //1000 is just a large number of skus that use the formula.
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.data = {present_skus: relatedSkus};
+    this.dialog.open(SkuDetailsDialogComponent, dialogConfig);
   }
 
   exportSelected(){

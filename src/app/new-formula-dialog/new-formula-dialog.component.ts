@@ -9,8 +9,6 @@ import { ingredienttuple } from "./ingredienttuple";
 import { RestServiceV2, AndVsOr } from '../restv2.service';
 
 
-
-
 @Component({
   selector: 'app-new-formula-dialog',
   templateUrl: './new-formula-dialog.component.html',
@@ -34,7 +32,7 @@ export class NewFormulaDialogComponent implements OnInit {
   newIngredientDialogRef: MatDialogRef<NewFormulaIngredientDialogComponent>;
 
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: any, private dialogRef: MatDialogRef<NewFormulaDialogComponent>, public rest: RestService, private snackBar: MatSnackBar, private dialog: MatDialog, public restv2: RestServiceV2) { }
+  constructor(@Inject(MAT_DIALOG_DATA) public data: any, private dialogRef: MatDialogRef<NewFormulaDialogComponent>, public restv2: RestServiceV2, public rest: RestService, private snackBar: MatSnackBar, private dialog: MatDialog) { }
 
   ngOnInit() {
 
@@ -178,9 +176,6 @@ export class NewFormulaDialogComponent implements OnInit {
           this.refreshData();
         });
       }
-      
-
-
       });
 
   }
@@ -189,10 +184,31 @@ export class NewFormulaDialogComponent implements OnInit {
     this.addIngredientToFormula(false, "", 0);
   }
 
-  createFormula() {
+  async createFormula(): Promise<void> {
+
+    var response = await this.restv2.getFormulas(AndVsOr.OR, this.formulaname, this.formulaname, null, null, null, 1);
+    if (response.length == 1) {
+      this.snackBar.open("Formula name already exists. Please try a new name", "close", {
+        duration: 4000,
+      });
+    }
+    else{
+      Promise.resolve().then(() =>{this.finishCreateFormula();});
+    }
+  }
+
+  finishCreateFormula()
+  {
     if(this.formulanumber < 0)
     {
       this.snackBar.open("Formula number cannot be negative.", "close", {
+        duration: 4000,
+      });
+    }
+
+    if(this.formulaname.length == 0)
+    {
+      this.snackBar.open("Please enter a valid formula name.", "close", {
         duration: 4000,
       });
     }

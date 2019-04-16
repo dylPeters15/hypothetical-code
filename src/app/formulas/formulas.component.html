@@ -80,6 +80,16 @@
                 <button mat-raised-button (click)="viewIngredientsAndQuantities(formula)" [disabled]="formula['ingredientsandquantities'].length == 0">{{formula['ingredientsandquantities'].length}} <mat-icon>list</mat-icon></button>
               </mat-cell>
             </ng-container>
+
+            <ng-container matColumnDef="relatedskus">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Associated Skus</mat-header-cell>
+                <mat-cell *matCellDef="let formula">
+                  <!-- <div *ngFor="let ingredienttuple of formula['ingredientsandquantities']">
+                      {{ingredienttuple['ingredient']['ingredientname']}}, {{ingredienttuple['quantity']}}<br />
+                  </div> -->
+                  <button mat-raised-button (click)="viewAssociatedSkus(formula)" >Skus <mat-icon>list</mat-icon></button>
+                </mat-cell>
+              </ng-container>
           
             <ng-container matColumnDef="comment">
               <mat-header-cell *matHeaderCellDef mat-sort-header>Comment</mat-header-cell>

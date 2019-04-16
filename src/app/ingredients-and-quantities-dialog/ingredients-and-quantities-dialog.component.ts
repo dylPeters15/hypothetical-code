@@ -14,6 +14,7 @@ export class IngredientsAndQuantitiesDialogComponent implements OnInit {
 
   ngOnInit() {
     this.formula = this.initData.formula;
+    console.log("first ingredient: " + this.formula.ingredientsandquantities[0]['ingredient']);
   }
 
   closeDialog() {
