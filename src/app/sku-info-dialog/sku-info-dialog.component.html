@@ -1,0 +1,96 @@
+<h2 mat-dialog-title align="center">Skus</h2>
+<mat-dialog-content align="center">
+  <mat-card>
+      <mat-card-content>
+              <div *ngFor="let item of names;let i = index" >
+                  <mat-card-content style="display: grid; width: 100%; justify-items: center;">
+                  <button class="accordion">{{item}}</button>
+                  <div class="panel">
+                    <br>   
+                    <button class="inner_accordion">Sku Number</button>
+                      <div class="panel">
+                          <br> 
+                        <p>{{ numbers[i] }}</p>
+                      </div> 
+
+                      <button class="inner_accordion">Case UPC Number</button>
+                      <div class="panel">
+                          <br> 
+                        <p>{{ caseUpcNumbers[i] }}</p>
+                      </div> 
+
+                      <button class="inner_accordion">Unit UPC Number</button>
+                      <div class="panel">
+                          <br> 
+                        <p>{{ unitUpcNumbers[i] }}</p>
+                      </div> 
+
+                      <button class="inner_accordion">Unit Size</button>
+                      <div class="panel">
+                          <br> 
+                        <p>{{ unitSizes[i] }}</p>
+                      </div> 
+
+                      <button class="inner_accordion">Count Per Case</button>
+                      <div class="panel">
+                          <br> 
+                        <p>{{ countPerCases[i] }}</p>
+                      </div> 
+
+                      <button class="inner_accordion">Formula Scaling Factor</button>
+                      <div class="panel">
+                          <br> 
+                        <p>{{ formulascalingfactors[i] }} X {{formulas[i]}}</p>
+                      </div> 
+
+                      <button class="inner_accordion">Product Line</button>
+                      <div class="panel">
+                          <br> 
+                          <mat-list-item *ngFor="let nextLine of productLineNames[i]">
+                              {{nextLine}}
+                          </mat-list-item>
+                      </div> 
+
+                      <button class="inner_accordion">Manufacturing Lines</button>
+                      <div class="panel">
+                          <br> 
+                          <mat-list-item *ngFor="let nextManLine of manufacturingLineNames[i]">
+                              {{nextManLine}}
+                          </mat-list-item>
+                      </div> 
+
+                      <button class="inner_accordion">Manufacturing Rate</button>
+                      <div class="panel">
+                          <br> 
+                        <p>{{ manufacturingrates[i] }}</p>
+                      </div> 
+
+                      <button class="inner_accordion">Manufacturing Setup Cost</button>
+                      <div class="panel">
+                          <br> 
+                        <p>{{ manufacturingsetupcosts[i] }}</p>
+                      </div> 
+
+                      <button class="inner_accordion">Manufacturing Run Cost</button>
+                      <div class="panel">
+                          <br> 
+                        <p>{{ manufacturingruncosts[i] }}</p>
+                      </div> 
+
+                      <button class="inner_accordion">Comment</button>
+                      <div class="panel">
+                          <br> 
+                        <p>{{ comments[i] }}</p>
+                      </div> 
+              </div>
+
+             </mat-card-content>
+            </div>
+      </mat-card-content>
+      <br> 
+      <br> 
+  </mat-card>
+</mat-dialog-content>
+<mat-dialog-actions align="center">
+  <button class="mat-raised-button" (click)="closeDialog()">Close</button>
+</mat-dialog-actions>

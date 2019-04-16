@@ -40,6 +40,7 @@ export class NewUserDialogComponent implements OnInit {
   @ViewChild('auto') matAutocomplete: MatAutocomplete;
   remove(mfgLine) {
     this.selectedMfgLines.splice(this.selectedMfgLines.indexOf(mfgLine), 1);
+    this.form.get('admin').setValue(false);
   }
   selected(event) {
     this.selectedMfgLines.push(event.option.value);
@@ -69,11 +70,26 @@ export class NewUserDialogComponent implements OnInit {
     }
   }
 
+  async adminToggled() {
+    var newAdmin = !this.form.get('admin').value;
+    if (newAdmin) {
+      this.form.get('analyst').setValue(true);
+      this.form.get('productmanager').setValue(true);
+      this.form.get('businessmanager').setValue(true);
+      this.selectedMfgLines = await this.restv2.getLine(AndVsOr.AND, null, null, null, null, 10000);
+      // this.selectedMfgLines = [];
+      // for (let line of lines) {
+      //   this.selectedMfgLines
+      // }
+    }
+  }
+
   analystClicked() {
     var newVal = !this.form.get('analyst').value;
     if (!newVal) {
       this.form.get('productmanager').setValue(false);
       this.form.get('businessmanager').setValue(false);
+      this.form.get('admin').setValue(false);
     }
   }
 
@@ -81,6 +97,8 @@ export class NewUserDialogComponent implements OnInit {
     var newVal = !this.form.get('productmanager').value;
     if (newVal) {
       this.form.get('analyst').setValue(true);
+    } else {
+      this.form.get('admin').setValue(false);
     }
   }
 
@@ -88,6 +106,8 @@ export class NewUserDialogComponent implements OnInit {
     var newVal = !this.form.get('businessmanager').value;
     if (newVal) {
       this.form.get('analyst').setValue(true);
+    } else {
+      this.form.get('admin').setValue(false);
     }
   }
 

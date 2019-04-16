@@ -10,9 +10,44 @@
           <!-- <button mat-raised-button *ngIf="productmanager" (click)="modifySelected()" > Modify Selected </button> -->
           <button mat-raised-button *ngIf="productmanager" (click)="newFormulaButton()" color="primary"> New Formula </button>        <button mat-raised-button (click)="exportSelected()" [disabled]="noneSelected()"> Export Selected </button>
 
-          <mat-form-field>
-            <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter">
-          </mat-form-field>
+          
+
+          <div style="width: 100%;">
+            <mat-form-field style="display: inline-block; width: 45%;">
+              <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter by Formula Name or Number">
+            </mat-form-field>
+  
+            <mat-form-field style="display: inline-block; width: 45%; padding-left: 5%;">
+            <mat-chip-list #ingredientchipList>
+                <mat-chip *ngFor="let ingredient of selectedIngredients" [selectable]="false" [removable]="true"
+                  (removed)="ingredientremove(ingredient)">
+                  {{ingredient['ingredientname']}}
+                  <mat-icon matChipRemove>cancel</mat-icon>
+                </mat-chip>
+                <input placeholder="Filter by Ingredient in Formula" #ingredientInput [formControl]="ingredientCtrl"
+                  [matAutocomplete]="ingredientauto" [matChipInputFor]="ingredientchipList"
+                  [matChipInputSeparatorKeyCodes]="separatorKeysCodes" [matChipInputAddOnBlur]="true"
+                  (matChipInputTokenEnd)="ingredientadd($event)">
+              </mat-chip-list>
+              <mat-autocomplete #ingredientauto="matAutocomplete"
+                (optionSelected)="ingredientselected($event)">
+                <mat-option *ngFor="let ingredientOption of autoCompleteIngredients | async"
+                  [value]="ingredientOption">
+                  {{ingredientOption['ingredientname']}}
+                </mat-option>
+              </mat-autocomplete>
+            </mat-form-field>
+          </div>
+
+
+
+
+
+
+
+
+
+
 
           <mat-table [dataSource]="dataSource" matSort (matSortChange)="sortData($event)" class="mat-elevation-z8">
             <ng-container matColumnDef="checked">
@@ -45,6 +80,16 @@
                 <button mat-raised-button (click)="viewIngredientsAndQuantities(formula)" [disabled]="formula['ingredientsandquantities'].length == 0">{{formula['ingredientsandquantities'].length}} <mat-icon>list</mat-icon></button>
               </mat-cell>
             </ng-container>
+
+            <ng-container matColumnDef="relatedskus">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Associated Skus</mat-header-cell>
+                <mat-cell *matCellDef="let formula">
+                  <!-- <div *ngFor="let ingredienttuple of formula['ingredientsandquantities']">
+                      {{ingredienttuple['ingredient']['ingredientname']}}, {{ingredienttuple['quantity']}}<br />
+                  </div> -->
+                  <button mat-raised-button (click)="viewAssociatedSkus(formula)" >Skus <mat-icon>list</mat-icon></button>
+                </mat-cell>
+              </ng-container>
           
             <ng-container matColumnDef="comment">
               <mat-header-cell *matHeaderCellDef mat-sort-header>Comment</mat-header-cell>

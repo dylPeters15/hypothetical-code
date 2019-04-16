@@ -1,0 +1,68 @@
+/*.manufacturing-calculator {
+    padding: 20px;
+    text-align: center;
+    font-size: 20px;
+  }*/
+
+  table {
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  tr, td{
+    border: 1px solid black;
+    padding: 10px;
+  }
+  
+  .goals-list{
+    list-style-type: none;
+    text-align: center;
+  }
+
+  .my-panel .mat-dialog-container {
+    overflow: hidden;
+    border-radius: 5px;
+    padding: 5px;
+    background-color: orange;
+  }
+
+  /** accordian code for css and some html in formula-info-dialog.component.html came from
+  /** https://www.w3schools.com/howto/howto_js_accordion.asp
+  /* Style the buttons that are used to open and close the accordion panel */
+.accordion {
+  background-color: #eee;
+  color: #444;
+  cursor: pointer;
+  padding: 18px;
+  width: 100%;
+  text-align: left;
+  border: none;
+  outline: none;
+  transition: 0.4s;
+}
+
+/* Add a background color to the button if it is clicked on (add the .active class with JS), and when you move the mouse over it (hover) */
+.active, .accordion:hover {
+  background-color: #ccc;
+}
+
+.panel {
+  padding: 0 18px;
+  background-color: white;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.2s ease-out;
+}
+
+.accordion:after {
+  content: '\02795'; /* Unicode character for "plus" sign (+) */
+  font-size: 13px;
+  color: #777;
+  float: right;
+  margin-left: 5px;
+}
+
+.active:after {
+  content: "\2796"; /* Unicode character for "minus" sign (-) */
+}

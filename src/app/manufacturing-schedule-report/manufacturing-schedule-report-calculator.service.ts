@@ -69,8 +69,8 @@ export class ManufacturingScheduleReportCalculatorService {
           tableData.push({
             ingredientNumber: ingredients.get(ingredientName)['ingredientNumber'],
             ingredientName: ingredientName,
-            numCases: ingredients.get(ingredientName)['numCases'],
-            quantity: ingredients.get(ingredientName)['quantity'] + " " + unitsOfMeasure.get(ingredientName)
+            numCases: ingredients.get(ingredientName)['numCases'].toFixed(2),
+            quantity: ingredients.get(ingredientName)['quantity'].toFixed(2) + " " + unitsOfMeasure.get(ingredientName)
           });
         }
         console.log("Ingredient table data: ",tableData);
@@ -79,13 +79,27 @@ export class ManufacturingScheduleReportCalculatorService {
     });
   }
 
-  calculateEndDate(startDate: Date, hours: Number): Date {
-    var endDate = new Date(startDate);
-    const NUM_HOURS_PER_DAY = 10;
-    while (moment().isoWeekdayCalc([startDate.getUTCFullYear(), startDate.getUTCMonth(), startDate.getUTCDay()], [endDate.getUTCFullYear(), endDate.getUTCMonth(), endDate.getUTCDay()], [2, 3, 4, 5, 6]) * NUM_HOURS_PER_DAY < hours) {
-      endDate.setDate(endDate.getDate() + 1);
+  // calculateEndDate(startDate: Date, hours: Number): Date {
+  //   var endDate = new Date(startDate);
+  //   const NUM_HOURS_PER_DAY = 10;
+  //   while (moment().isoWeekdayCalc([startDate.getUTCFullYear(), startDate.getUTCMonth(), startDate.getUTCDay()], [endDate.getUTCFullYear(), endDate.getUTCMonth(), endDate.getUTCDay()], [2, 3, 4, 5, 6]) * NUM_HOURS_PER_DAY < hours) {
+  //     endDate.setDate(endDate.getDate() + 1);
+  //   }
+  //   return endDate;
+  // }
+
+  calculateEndDate(startDate: Date, hours: number): Date {
+    var endDate = new Date(startDate) 
+    var extraDays = Math.floor(hours / 10);
+    endDate.setDate(endDate.getDate() + extraDays);
+    endDate.setHours(endDate.getHours() + (hours % 10))
+    var endHour = endDate.getHours();
+    if (endHour > 18 || endHour < 8) {
+        endDate.setHours(endHour + 14);
     }
+    
     return endDate;
-  }
+    
+}
 
 }

@@ -1,6 +1,6 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { RestService } from '../rest.service';
-import {MatSnackBar} from '@angular/material';
+import {MatSnackBar, MatAutocomplete} from '@angular/material';
 import { MatDialogRef, MatDialog, MatSort, MatDialogConfig, MatTableDataSource, MatPaginator } from "@angular/material";
 import { MoreInfoDialogComponent } from '../more-info-dialog/more-info-dialog.component';
 import { NewFormulaDialogComponent } from '../new-formula-dialog/new-formula-dialog.component';
@@ -10,6 +10,11 @@ import {ExportToCsv} from 'export-to-csv';
 import { ingredienttuple } from "../new-formula-dialog/ingredienttuple";
 import { ConfirmDeletionDialogComponent } from '../confirm-deletion-dialog/confirm-deletion-dialog.component';
 import { IngredientsAndQuantitiesDialogComponent } from '../ingredients-and-quantities-dialog/ingredients-and-quantities-dialog.component';
+import { SkuDetailsDialogComponent } from '../sku-info-dialog/sku-info-dialog.component';
+import { RestServiceV2, AndVsOr } from '../restv2.service';
+import { ENTER } from '@angular/cdk/keycodes';
+import { FormControl } from '@angular/forms';
+import { Observable } from 'rxjs';
 
 export interface FormulaForTable {
   formulaname: String;
@@ -41,10 +46,48 @@ export class ExportableFormula {
     styleUrls: ['./formulas.component.css']
   })
 export class FormulaComponent implements OnInit {
+  separatorKeysCodes: number[] = [ENTER];
 
-  constructor(public rest:RestService, private snackBar: MatSnackBar, private dialog: MatDialog) { }
+  selectedIngredients = [];
+  ingredientCtrl = new FormControl();
+  autoCompleteIngredients: Observable<string[]> = new Observable(observer => {
+    this.ingredientCtrl.valueChanges.subscribe(async newVal => {
+      var ingredients = await this.restv2.getIngredients(AndVsOr.AND, null, "(?i).*"+newVal+".*", null, 1000);
+      ingredients = ingredients.filter((value, index, array) => {
+        for (let ingredient of this.selectedIngredients) {
+          if (ingredient._id == value._id) {
+            return false;
+          }
+        }
+        return true;
+      });
+      observer.next(ingredients);
+    });
+  });
+  @ViewChild('ingredientInput') ingredientInput: ElementRef<HTMLInputElement>;
+  @ViewChild('ingredientauto') ingredientmatAutocomplete: MatAutocomplete;
+  ingredientremove(ingredient) {
+    for (var i = 0; i < this.selectedIngredients.length; i++) {
+      if (this.selectedIngredients[i]._id == ingredient._id) {
+        this.selectedIngredients.splice(i, 1);
+        i--;
+      }
+    }
+    this.refreshData();
+  }
+  ingredientselected(event){
+    this.selectedIngredients.push(event.option.value);
+    this.refreshData();
+  }
+  ingredientadd(event) {
+    this.ingredientInput.nativeElement.value = "";
+  }
+
+
+
+  constructor(public restv2: RestServiceV2, public rest:RestService, private snackBar: MatSnackBar, private dialog: MatDialog) { }
   allReplacement = 54321;
-  displayedColumns: string[] = ['checked', 'formulaname', 'formulanumber','ingredientsandquantities', 'comment', 'actions'];
+  displayedColumns: string[] = ['checked', 'formulaname', 'formulanumber','ingredientsandquantities', 'relatedskus', 'comment',  'actions'];
   data: FormulaForTable[] = [];
   dialogRef: MatDialogRef<MoreInfoDialogComponent>;
   newDialogRef: MatDialogRef<NewFormulaDialogComponent>;
@@ -55,7 +98,7 @@ export class FormulaComponent implements OnInit {
   @ViewChild(MatSort) sort: MatSort;
 
   ngOnInit() {
-    this.paginator.pageSize = 5;
+    this.paginator.pageSize = 20;
     this.productmanager = auth.isAuthenticatedForProductManagerOperation();
     this.refreshData();
   }
@@ -74,6 +117,22 @@ export class FormulaComponent implements OnInit {
         user['checked'] = false;
       });
       console.log(this.data);
+
+      //filter formulas by ingredients (this is implicitly an OR gate of the ingredients - if a formula contains at least 1 of the selected ingredients it will be shown)
+      if (this.selectedIngredients.length > 0) {
+        this.data = this.data.filter((value, index, array) => {
+          for (let selectedIngredient of this.selectedIngredients) {
+            for (let ingredientandquantity of value.ingredientsandquantities) {
+              if (selectedIngredient._id == ingredientandquantity.ingredient._id) {
+                return true;
+              }
+            }
+          }
+          return false;
+        });
+      }
+
+
       this.dataSource =  new MatTableDataSource<FormulaForTable>(this.data);
       this.dataSource.sort = this.sort;
       this.dataSource.paginator = this.paginator;
@@ -103,7 +162,7 @@ export class FormulaComponent implements OnInit {
   newFormulaButton()
   {
     let blankTuple = [];
-    this.newFormula(false, "", 0, blankTuple, "");
+    this.newFormula(false, "", 1.0, blankTuple, "");
   }
 
   sortData() {
@@ -193,6 +252,15 @@ export class FormulaComponent implements OnInit {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.data = {formula: formula};
     this.dialog.open(IngredientsAndQuantitiesDialogComponent, dialogConfig);
+  }
+
+
+  async viewAssociatedSkus(formula) {
+    // Get list of skus that are associated with this formula
+    var relatedSkus = await this.restv2.getSkus(AndVsOr.OR, null, null, null, null,null, formula, 1000); //1000 is just a large number of skus that use the formula.
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.data = {present_skus: relatedSkus};
+    this.dialog.open(SkuDetailsDialogComponent, dialogConfig);
   }
 
   exportSelected(){

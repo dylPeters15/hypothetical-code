@@ -16,9 +16,9 @@ function getActivity(filterSchema, limit) {
 function createActivity(newObject) {
     console.log("Creating:",newObject)
     return new Promise((resolve, reject) => {
-        let newActivity = new database.manufacturingActivityModel(newObject);
+        let newActivity = new database.manufacturingActivityModel(newObject)
         newActivity.save().then(response => {
-            resolve(response);
+            resolve(response.deepPopulate('sku.formula.ingredientsandquantities.ingredient'));
         }).catch(err => {
             reject(Error(err));
         });

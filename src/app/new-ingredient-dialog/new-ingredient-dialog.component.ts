@@ -33,6 +33,22 @@ export class NewIngredientDialogComponent implements OnInit {
     this.costperpackage = this.data.costperpackage;
     this.comment = this.data.comment;
     this.units = this.data.units;
+    this.initNum();
+  }
+
+  async initNum() {
+    var ingredientnumber = 1;
+    while (this.ingredientnumber == null || this.ingredientnumber == undefined) {
+      var ingredients = await this.restv2.getIngredients(AndVsOr.AND, null, null, ingredientnumber, 1);
+      if (ingredients.length == 1) {
+        ingredientnumber++;
+      } else {
+        this.ingredientnumber = ingredientnumber;
+        if (this.data.ingredientnumber == null || this.data.ingredientnumber == undefined) {
+          this.data.ingredientnumber = this.ingredientnumber;
+        }
+      }
+    }
   }
 
   closeDialog() {

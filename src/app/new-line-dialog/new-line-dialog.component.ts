@@ -23,7 +23,17 @@ export class NewLineDialogComponent implements OnInit {
   skuCtrl = new FormControl();
   filteredSkus: Observable<string[]> = new Observable(observer => {
     this.skuCtrl.valueChanges.subscribe(async newVal => {
-      observer.next(await this.restv2.getSkus(AndVsOr.AND, null, "(?i).*"+newVal+".*", null,null,null,null,1000));
+      var skus = await this.restv2.getSkus(AndVsOr.AND, null, "(?i).*"+newVal+".*", null,null,null,null,1000);
+      console.log("SELECTED SKUS: ",this.selectedSkus);
+      skus = skus.filter((value, index, array) => {
+        for (let sku of this.selectedSkus) {
+          if (sku.sku == value._id) {
+            return false;
+          }
+        }
+        return true;
+      });
+      observer.next(skus);
     });
   });
   linename: string = '';

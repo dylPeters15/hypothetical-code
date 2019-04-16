@@ -1,5 +1,5 @@
 import { AccountSettingsComponent } from './account-settings/account-settings.component';
-import { AdminRouteGuardService } from './route-guard.service';
+import { AdminRouteGuardService, ProductManagerRouteGuardService } from './route-guard.service';
 import { AlreadyLoggedInRouteGuardService } from './route-guard.service';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
@@ -50,6 +50,8 @@ import { NewFormulaIngredientDialogComponent} from './new-formula-ingredient/new
 import { NewFormulaDialogComponent } from './new-formula-dialog/new-formula-dialog.component';
 import { NewIngredientDialogComponent } from './new-ingredient-dialog/new-ingredient-dialog.component';
 import { NewProductLineDialogComponent } from './new-product-line-dialog/new-product-line-dialog.component';
+import { FormulaDetailsDialogComponent } from './formula-info-dialog//formula-info-dialog.component';
+import { SkuDetailsDialogComponent } from './sku-info-dialog//sku-info-dialog.component';
 import { NewSkuDialogComponent } from './new-sku-dialog/new-sku-dialog.component';
 import { AssignSkuManufacturingLines } from './assign-sku-manufacturinglines/assign-sku-manufacturinglines.component';
 import { NewUserDialogComponent } from './new-user-dialog/new-user-dialog.component';
@@ -106,7 +108,7 @@ const appRoutes: Routes = [
   { path: 'formulas', component: FormulaComponent, data: { title: 'Formulas' }, canActivate: [UserRouteGuardService] },
   { path: 'product-line', component: ProductLineComponent, data: { title: 'Product Lines' }, canActivate: [UserRouteGuardService] },
   { path: 'sales-report', component: SalesReportComponent, data: { title: 'Sales Report' }, canActivate: [UserRouteGuardService] },
-  { path: 'import', component: ImportComponent, data: { title: 'Import' }, canActivate: [AdminRouteGuardService] },
+  { path: 'import', component: ImportComponent, data: { title: 'Import' }, canActivate: [ProductManagerRouteGuardService] },
   { path: 'logout', component: LogoutComponent, data: { title: "Logout" }, canActivate: [UserRouteGuardService] },
   { path: '**', redirectTo: 'home' }
 ];
@@ -133,6 +135,8 @@ const appRoutes: Routes = [
     AssignSkuProductlineComponent,
     NewIngredientDialogComponent,
     NewProductLineDialogComponent,
+    FormulaDetailsDialogComponent,
+    SkuDetailsDialogComponent,
     ProductLineTablesComponent,
     ManufacturingGoalsTablesComponent,
     MoreInfoDialogComponent,
@@ -211,7 +215,7 @@ const appRoutes: Routes = [
   bootstrap: [AppComponent],
 
 
-  entryComponents: [AutoScheduleComponent, LegendDetailsComponent, ConfirmDeletionDialogComponent, DeleteProductLineDialogComponent, UserNotificationDialogComponent, NewUserDialogComponent, PasswordConfirmationDialogComponent, PrivacyPolicyDialogComponent, TermsAndConditionsDialogComponent, MoreInfoDialogComponent, NewSkuDialogComponent, NewFormulaDialogComponent, NewFormulaIngredientDialogComponent, NewIngredientDialogComponent, NewGoalDialogComponent, NewProductLineDialogComponent, NewSkuFormulaComponent, ConfirmActionDialogComponent, ImportPreviewDialogComponent, NewLineDialogComponent, EnableGoalsDialogComponent, ModifyActivityDialogComponent, SkuDrilldownComponent, ActivityDetailsComponent, SkuDetailsComponent, AssignSkuManufacturingLines, AssignSkuProductlineComponent, ViewUserMfgLinesDialogComponent, SalesProjectionComponent, IngredientsAndQuantitiesDialogComponent]
+  entryComponents: [AutoScheduleComponent, LegendDetailsComponent, ConfirmDeletionDialogComponent, DeleteProductLineDialogComponent, UserNotificationDialogComponent, NewUserDialogComponent, PasswordConfirmationDialogComponent, PrivacyPolicyDialogComponent, TermsAndConditionsDialogComponent, MoreInfoDialogComponent, NewSkuDialogComponent, NewFormulaDialogComponent, NewFormulaIngredientDialogComponent, NewIngredientDialogComponent, NewGoalDialogComponent, NewProductLineDialogComponent, FormulaDetailsDialogComponent, SkuDetailsDialogComponent, NewSkuFormulaComponent, ConfirmActionDialogComponent, ImportPreviewDialogComponent, NewLineDialogComponent, EnableGoalsDialogComponent, ModifyActivityDialogComponent, SkuDrilldownComponent, ActivityDetailsComponent, SkuDetailsComponent, AssignSkuManufacturingLines, AssignSkuProductlineComponent, ViewUserMfgLinesDialogComponent, SalesProjectionComponent, IngredientsAndQuantitiesDialogComponent]
 
 
 })
