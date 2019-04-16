@@ -589,11 +589,25 @@ export class ManufacturingScheduleComponent implements OnInit {
         var activities = await thisObject.restv2.getActivities(AndVsOr.OR, null, null, null, 500)
         activities.forEach(async activity => {
           if (activity['_id'] == item['id']) {
+            var newDuration = activity['calculatedhours'];
+            if (item['className'] == 'updated') {
+              newDuration = activity['sethours'];
+            }
             var potDates = await thisObject.findValidStart(activity, newGroup['id'], new Date(item['start']))
             if (!potDates) {
               callback(null)
             }
             else {
+              var isOverdue = await thisObject.checkOverdue(item['id'], item['end'])
+                if (isOverdue && item['className'] != 'orphan') {
+                  item['className'] = 'overdue';
+                }
+                else if (!isOverdue && item['className'] == 'overdue') {
+                  item['className'] = 'normal';
+                }
+                var response = await thisObject.restv2.modifyActivity(AndVsOr.AND, activity['_id'], activity['sku']['_id'],
+                activity['numcases'], activity['calculatedhours'], parseInt(newDuration, 10),
+                new Date(item['start']), activity['line']);
               callback(item)
             }
           }
@@ -632,25 +646,20 @@ export class ManufacturingScheduleComponent implements OnInit {
                   item['start'].setHours(8)
                   console.log(item['start'])
                 }
-                // var potDates = await thisObject.findValidStart(activity, newGroup['id'], new Date(item['start']))
-                // if (!potDates) {
-                //   callback(null)
+                item['end'] = thisObject.calculateEndDate(new Date(item['start']), newDuration);
+              
+                // var isOverdue = await thisObject.checkOverdue(item['id'], item['end'])
+                // if (isOverdue && item['className'] != 'orphan') {
+                //   item['className'] = 'overdue';
                 // }
-                // else {
-                  item['end'] = thisObject.calculateEndDate(new Date(item['start']), newDuration);
-                
-                  var isOverdue = await thisObject.checkOverdue(item['id'], item['end'])
-                  if (isOverdue && item['className'] != 'orphan') {
-                    item['className'] = 'overdue';
-                  }
-                  else if (!isOverdue && item['className'] == 'overdue') {
-                    item['className'] = 'normal';
-                  }
-                  var response = await thisObject.restv2.modifyActivity(AndVsOr.AND, activity['_id'], activity['sku']['_id'],
-                  activity['numcases'], activity['calculatedhours'], parseInt(newDuration, 10),
-                  new Date(item['start']), activity['line']);
-  
-                  callback(item);
+                // else if (!isOverdue && item['className'] == 'overdue') {
+                //   item['className'] = 'normal';
+                // }
+                // var response = await thisObject.restv2.modifyActivity(AndVsOr.AND, activity['_id'], activity['sku']['_id'],
+                // activity['numcases'], activity['calculatedhours'], parseInt(newDuration, 10),
+                // new Date(item['start']), activity['line']);
+
+                callback(item);
                 }
                 
               // }
