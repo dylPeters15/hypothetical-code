@@ -360,13 +360,13 @@ export class NewSkuDialogComponent implements OnInit {
     console.log("right now, formula is " + this.formula + ", " + this.selectedFormula); // for some reason formula is the number here?
     var caseAsString = this.caseupcnumber.toString();
     var upcAsString = this.unitupcnumber.toString();
-
-    var caseCheckFlip = caseAsString.substring(0,1) == "0" || caseAsString.substring(0,1) == "1" || caseAsString.substring(0,1) == "6" || caseAsString.substring(0,1) == "7" || caseAsString.substring(0,1) == "8" || caseAsString.substring(0,1) == "9";
-    var caseCheck = !caseCheckFlip;
-    var upcCheckFlip = upcAsString.substring(0,1) == "0" || upcAsString.substring(0,1) == "1" || upcAsString.substring(0,1) == "6" || upcAsString.substring(0,1) == "7" || upcAsString.substring(0,1) == "8" || upcAsString.substring(0,1) == "9";
-    var upcCheck = !upcCheckFlip;
-    var caseCheckLength = caseAsString.length != 12;
-    var upcCheckLength = upcAsString.length != 12;
+    console.log("case as string: " + caseAsString + ". without conversion to string: ");
+    //var caseCheckFlip = caseAsString.substring(0,1) == "0" || caseAsString.substring(0,1) == "1" || caseAsString.substring(0,1) == "6" || caseAsString.substring(0,1) == "7" || caseAsString.substring(0,1) == "8" || caseAsString.substring(0,1) == "9";
+    //var caseCheck = !caseCheckFlip;
+    //var upcCheckFlip = upcAsString.substring(0,1) == "0" || upcAsString.substring(0,1) == "1" || upcAsString.substring(0,1) == "6" || upcAsString.substring(0,1) == "7" || upcAsString.substring(0,1) == "8" || upcAsString.substring(0,1) == "9";
+    //var upcCheck = !upcCheckFlip;
+    //var caseCheckLength = caseAsString.length != 12;
+    //var upcCheckLength = upcAsString.length != 12;
 
     // Don't judge me for this sloppy list of if statements
     if(this.skunumber < 0 || this.caseupcnumber < 0 || this.unitupcnumber < 0 || this.countpercase < 0 || this.formulascalingfactor < 0)
@@ -414,7 +414,6 @@ export class NewSkuDialogComponent implements OnInit {
       {
     if (this.edit == false)
     {
-      console.log("right here, formula name is unfortunately " + this.formulaname);
       var formulaobject = await this.restv2.getFormulas(AndVsOr.OR, null,null,this.formula, null,null,1);
       let formulaId = formulaobject[0]['_id'];
       var created = await this.restv2.createSku(this.skuname, this.skunumber, this.caseupcnumber, this.unitupcnumber, this.unitsize, this.countpercase, this.selectedFormula._id, this.formulascalingfactor, this.manufacturingrate, this.manufacturingsetupcost, this.manufacturingruncost, this.comment);
