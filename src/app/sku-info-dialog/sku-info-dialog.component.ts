@@ -4,6 +4,8 @@ import { RestService } from '../rest.service';
 import { MatSnackBar } from '@angular/material';
 import { MAT_DIALOG_DATA } from '@angular/material';
 import { MatDialogConfig, MatDialog } from "@angular/material";
+import { RestServiceV2, AndVsOr } from '../restv2.service';
+import { loadQueryList } from '@angular/core/src/render3';
 
 
 @Component({
@@ -11,6 +13,7 @@ import { MatDialogConfig, MatDialog } from "@angular/material";
   templateUrl: './sku-info-dialog.component.html',
   styleUrls: ['./sku-info-dialog.component.css']
 })
+
 
 export class SkuDetailsDialogComponent implements OnInit {
 
@@ -27,14 +30,19 @@ export class SkuDetailsDialogComponent implements OnInit {
   manufacturingsetupcosts: Number[] = [];
   manufacturingruncosts: Number[] = [];
   comments: String[] = [];
+  productLineNames: String[][] = [];
+  manufacturingLineNames: String[][] = [];
+  
+
+
 
   //formulaname: string = '';
   //formulanumber: number = 0;
   //comment: string = '';
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: any, private dialogRef: MatDialogRef<SkuDetailsDialogComponent>) { }
+  constructor(public restv2: RestServiceV2, @Inject(MAT_DIALOG_DATA) public data: any, private dialogRef: MatDialogRef<SkuDetailsDialogComponent>) { }
 
-  ngOnInit() {
+  async ngOnInit(): Promise<void> {
     this.skus = this.data.present_skus;
     console.log("skus over here: " + this.skus);
     for(var j = 0; j < this.skus.length; j++)
@@ -51,12 +59,45 @@ export class SkuDetailsDialogComponent implements OnInit {
       this.manufacturingsetupcosts.push(this.skus[j].manufacturingsetupcost);
       this.manufacturingruncosts.push(this.skus[j].manufacturingruncost);
       this.comments.push(this.skus[j].comment);
-    }
+      
+      // Product Lines
+      let productLinesWithSku = [];
+      
+      var productlines = await this.restv2.getProductLines(AndVsOr.OR, null, ".*", 1000);
+      productlines.forEach(productline => {
+       productline['skus'].forEach(productLineSku => {
+         if(productLineSku['sku']['_id'] == this.skus[j]['_id']){
+           productLinesWithSku.push(productline['productlinename'])
+         }
+       });
+
+      });
+      this.productLineNames[j] = productLinesWithSku;
+
+
+    let manufacturingLinesWithSku = [];
+     var manufacturinglines = await this.restv2.getLine(AndVsOr.OR, null,".*", null,null,50);
+     manufacturinglines.forEach(manufacturingline => {
+      console.log("line iz: " + manufacturingline);
+      console.log("line skus iz: " + manufacturingline['skus']);
+       manufacturingline['skus'].forEach(manufacturingLineSku => {
+         console.log("We are comparing " + manufacturingLineSku['_id'] + " to " + this.skus[j]['_id']);
+         if(manufacturingLineSku['_id'] == this.skus[j]['_id']){
+           console.log("added shortname " + manufacturingline['shortname']); 
+          manufacturingLinesWithSku.push(manufacturingline['shortname'])
+         }
+       });
+     });
+     this.manufacturingLineNames[j] = manufacturingLinesWithSku;
+
   }
+  Promise.resolve().then(() =>{this.loadQueryList();});
+
+}
 
   // Calling my event listener in ngOnInit() means it's called before the children have been initialized.
   // I needed to use ngAfterViewInit() hook.
-  ngAfterViewInit() {
+  loadQueryList() {
     var acc = document.getElementsByClassName("accordion");
     var k;
     

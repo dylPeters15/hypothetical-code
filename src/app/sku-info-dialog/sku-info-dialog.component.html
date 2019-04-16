@@ -43,6 +43,22 @@
                         <p>{{ formulascalingfactors[i] }} X {{formulas[i]}}</p>
                       </div> 
 
+                      <button class="inner_accordion">Product Line</button>
+                      <div class="panel">
+                          <br> 
+                          <mat-list-item *ngFor="let nextLine of productLineNames[i]">
+                              {{nextLine}}
+                          </mat-list-item>
+                      </div> 
+
+                      <button class="inner_accordion">Manufacturing Lines</button>
+                      <div class="panel">
+                          <br> 
+                          <mat-list-item *ngFor="let nextManLine of manufacturingLineNames[i]">
+                              {{nextManLine}}
+                          </mat-list-item>
+                      </div> 
+                      
                       <button class="inner_accordion">Manufacturing Rate</button>
                       <div class="panel">
                           <br> 
