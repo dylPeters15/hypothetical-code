@@ -155,7 +155,14 @@ export class ManufacturingGoalsComponent implements OnInit {
     this.deleteGoalConfirmed(goal.name);
   }
 
-  deleteGoalConfirmed(name) {
+  async deleteGoalConfirmed(name) {
+    var goal = (await this.restv2.getGoals(AndVsOr.AND, null, name, null, null, 1))[0];
+    console.log(goal);
+    for (var i = 0; i < goal.activities.length; i++) {
+      var activity = goal.activities[i].activity;
+      await this.restv2.deleteActivity(AndVsOr.AND, activity._id);
+    }
+
     this.rest.deleteGoal(name).subscribe(response => {
       this.snackBar.open("Goal: " + name + " deleted successfully.", "close", {
         duration: 2000,
