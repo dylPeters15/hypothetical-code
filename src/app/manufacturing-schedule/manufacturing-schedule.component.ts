@@ -483,7 +483,7 @@ export class ManufacturingScheduleComponent implements OnInit {
           console.log('activity to delete', activity, activity[0]['startdate'])
 
           thisObject.rest.modifyActivity(activity[0]['_id'], activity[0]['sku']['_id'],
-            activity[0]['numcases'], activity[0]['calculatedhours'], activity[0]['sethours'],
+            activity[0]['numcases'], activity[0]['calculatedhours'], null,
             activity[0]['startdate'], null).subscribe(response => {
               console.log(response)
               thisObject.refreshData();
