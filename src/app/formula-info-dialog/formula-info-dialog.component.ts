@@ -20,11 +20,16 @@ export class FormulaDetailsDialogComponent implements OnInit {
   formulanumber: number = 0;
   comment: string = '';
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: any, private dialogRef: MatDialogRef<FormulaDetailsDialogComponent>, public rest: RestService, private snackBar: MatSnackBar, private dialog: MatDialog) { }
+  constructor(@Inject(MAT_DIALOG_DATA) public data: any, private dialogRef: MatDialogRef<FormulaDetailsDialogComponent>) { }
 
   ngOnInit() {
     this.formula = this.data.present_formula;
     console.log("formula here: " + this.formula);
+    console.log("ingredients and quantities here: " + this.formula.ingredientsandquantities);
+    console.log("first ingredient: " + this.formula.ingredientsandquantities[0]['ingredient']);
+
+
+
     this.formulaname = this.formula['formulaname'];
     this.formulanumber = this.formula['formulanumber'];
     this.comment = this.formula['comment'];

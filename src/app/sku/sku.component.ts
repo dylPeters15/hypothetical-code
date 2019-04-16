@@ -101,7 +101,8 @@ export class SkuComponent implements OnInit {
 
   refreshData(filterQueryData?) {
     filterQueryData = filterQueryData ? "(?i).*"+filterQueryData+".*" : "(?i).*"+this.filterQuery+".*"; //this returns things that have the pattern anywhere in the string
-    this.rest.getSkus("", filterQueryData, null, null, null, "", this.paginator.pageSize*10).subscribe(response => {
+    // this.restv2.getSkus(AndVsOr.OR, oldSku.skuname, oldSku.skuname, null,null,null,null,1);
+    this.restv2.getSkus(AndVsOr.OR, null, '(?i).*' +filterQueryData+'.*', null, null, null, null, this.paginator.pageSize*10).then(response => {
       this.data = response;
       this.data.forEach(user => {
         user['checked'] = false;
@@ -113,6 +114,7 @@ export class SkuComponent implements OnInit {
       this.dataSource.sort = this.sort;
       this.dataSource.paginator = this.paginator;
     });
+
   }
 
   seeInfo(type, content) {
