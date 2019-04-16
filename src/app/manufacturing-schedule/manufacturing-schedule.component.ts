@@ -214,56 +214,56 @@ export class ManufacturingScheduleComponent implements OnInit {
                 start.setHours(8)
               }
               var potDates = await this.findValidStart(activity, newGroup['id'], new Date(start))
-                console.log('pot Date', potDates)
-                if (potDates) {
-                  console.log('activity to modify', activity)
-                  var modify = await this.restv2.modifyActivity(AndVsOr.AND, activity['_id'], activity['sku']['_id'],
-                  activity['numcases'], activity['calculatedhours'], activity['sethours'],
-                  start, newGroup['id']);
-                  console.log(modify)
-                  // this.refreshData();
-                  var endDate = potDates[1];
-                  // var endDate = this.calculateEndDate(new Date(start), Math.round(duration));
-                  this.checkOverdue(activity['_id'], endDate).then(isOverdue => {
-                    if (isOverdue) {
-                      className = 'overdue';
-                    }
-                    this.timeline.itemsData.add({
-                      id: activity['_id'],
-                      group: newGroup['id'],
-                      start: new Date(start),
-                      end: endDate,
-                      content: activity['sku']['skuname'],
-                      className: className
-                    })
-                    this.refreshData();
-                    this.timeline.itemsData.remove(newItem_dropped['id'])
-
-                    console.log('timeline data', this.timeline.itemsData)
-                    this.visibleData = [];
-                    var newData = this.timeline.getVisibleItems();
-                    console.log(newData)
-                    newData.forEach(item => {
-                      var itemObject = this.timeline.itemsData.get(item);
-                      console.log('data update item', itemObject)
-                      let visibleTable = new DataForVisibleTable(itemObject['id'], itemObject['group'],
-                        itemObject['start'], itemObject['end'], itemObject['content'], itemObject['className']);
-                      this.visibleData.push(visibleTable)
-                      console.log(this.visibleData)
-    
-                    })
-                    this.visibleDataSource = new MatTableDataSource<DataForVisibleTable>(this.visibleData);
-    
+              console.log('pot Date', potDates)
+              if (potDates) {
+                console.log('activity to modify', activity)
+                var modify = await this.restv2.modifyActivity(AndVsOr.AND, activity['_id'], activity['sku']['_id'],
+                activity['numcases'], activity['calculatedhours'], activity['sethours'],
+                start, newGroup['id']);
+                console.log(modify)
+                // this.refreshData();
+                var endDate = potDates[1];
+                // var endDate = this.calculateEndDate(new Date(start), Math.round(duration));
+                this.checkOverdue(activity['_id'], endDate).then(isOverdue => {
+                  if (isOverdue) {
+                    className = 'overdue';
+                  }
+                  this.timeline.itemsData.add({
+                    id: activity['_id'],
+                    group: newGroup['id'],
+                    start: new Date(start),
+                    end: endDate,
+                    content: activity['sku']['skuname'],
+                    className: className
                   })
-                }
-                else {
-                  this.snackBar.open("Activities on schedule cannot overlap.",  "close", {
-                    duration: 4000,
-                  });
                   this.refreshData();
-                  this.data.remove(newItem_dropped['id'])
-                  
-                }
+                  this.timeline.itemsData.remove(newItem_dropped['id'])
+
+                  console.log('timeline data', this.timeline.itemsData)
+                  this.visibleData = [];
+                  var newData = this.timeline.getVisibleItems();
+                  console.log(newData)
+                  newData.forEach(item => {
+                    var itemObject = this.timeline.itemsData.get(item);
+                    console.log('data update item', itemObject)
+                    let visibleTable = new DataForVisibleTable(itemObject['id'], itemObject['group'],
+                      itemObject['start'], itemObject['end'], itemObject['content'], itemObject['className']);
+                    this.visibleData.push(visibleTable)
+                    console.log(this.visibleData)
+  
+                  })
+                  this.visibleDataSource = new MatTableDataSource<DataForVisibleTable>(this.visibleData);
+  
+                })
+              }
+              else {
+                this.snackBar.open("Activities on schedule cannot overlap.",  "close", {
+                  duration: 4000,
+                });
+                this.refreshData();
+                this.data.remove(newItem_dropped['id'])
+                
+              }
             }
           })
         }
@@ -577,32 +577,61 @@ export class ManufacturingScheduleComponent implements OnInit {
       },
 
       onMoving: async function (item, callback): Promise<void> {
-        // console.log(item, callback);
-        // var newGroup = thisObject.groups.get(item['group']);
-        // console.log(newGroup)
-        // thisObject.checkLine(item, newGroup).then(isValid => {
-        //   console.log('isValid', isValid)
-        //   if (!isValid) {
-        //     callback(null)
-        //   }
-        //   else {
-        //     console.log(item['start'])
-        //     var startTime = parseInt((item['start'].toString().split(' ')[4]).split(':')[0], 10);
-        //     // if (startTime < 8 || startTime > 18) {
-        //     //   item['start'] = new Date((new Date(item['start'])).valueOf() - 1000 * 60 * 60 * 14);
-        //     // }
-        //     thisObject.checkOverdue(item['id'], item['end']).then( isOverdue => {
-        //       if (isOverdue && item['className'] != 'orphan') {
-        //         item['className'] = 'overdue';
-        //       }
-        //       else if (!isOverdue && item['className'] == 'overdue') {
-        //         item['className'] = 'normal';
-        //       }
-        //       callback(item);
-        //     })
+        console.log(item, callback);
+        var newGroup = thisObject.groups.get(item['group']);
+        console.log(newGroup);
+        if (item['className'] == 'provisional') {
+          callback(null);
+        }
+        thisObject.checkLine(item, newGroup).then(async isValid => {
+          console.log('isValid', isValid)
+          if (!isValid) {
+            callback(null)
+          }
+          else {
+            var activities = await thisObject.restv2.getActivities(AndVsOr.OR, null, null, null, 500)
+            activities.forEach(async activity => {
+              if (activity['_id'] == item['id']) {
+                var newDuration = activity['calculatedhours'];
+                if (item['className'] == 'updated') {
+                  newDuration = activity['sethours'];
+                }
+                item['start'] = new Date(item['start'])
+                item['start'].setMinutes(0)
+                if (item['start'].getHours() < 8) {
+                  item['start'].setHours(8);
+                }
+                if (item['start'].getHours() > 18) {
+                  item['start'].setDate(item['start'].getDate() + 1)
+                  item['start'].setHours(8)
+                  console.log(item['start'])
+                }
+                var potDates = await thisObject.findValidStart(activity, newGroup['id'], new Date(item['start']))
+                if (!potDates) {
+                  callback(null)
+                }
+                else {
+                  item['end'] = potDates[1];
+                
+                  var isOverdue = await thisObject.checkOverdue(item['id'], item['end'])
+                  if (isOverdue && item['className'] != 'orphan') {
+                    item['className'] = 'overdue';
+                  }
+                  else if (!isOverdue && item['className'] == 'overdue') {
+                    item['className'] = 'normal';
+                  }
+                  var response = await thisObject.restv2.modifyActivity(AndVsOr.AND, activity['_id'], activity['sku']['_id'],
+                  activity['numcases'], activity['calculatedhours'], parseInt(newDuration, 10),
+                  new Date(item['start']), activity['line']);
+  
+                  callback(item);
+                }
+                
+              }
+            })
 
-        //   }
-        // })
+          }
+        })
         console.log('moving')
         callback(null)
       },
